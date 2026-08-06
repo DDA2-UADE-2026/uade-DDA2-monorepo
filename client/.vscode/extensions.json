@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "yoavbls.pretty-ts-errors",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "typescriptteam.native-preview"
+  ]
+}

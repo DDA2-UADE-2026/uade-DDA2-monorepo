@@ -1,0 +1,9 @@
+export default {
+  input: 'http://localhost:8080/v3/api-docs',
+  output: 'src/api/generated',
+  plugins: [
+    '@hey-api/client-fetch',
+    '@hey-api/sdk',
+    '@tanstack/react-query',
+  ],
+}
