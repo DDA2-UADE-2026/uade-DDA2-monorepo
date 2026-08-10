@@ -10,43 +10,196 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as IndexRouteImport } from "./routes/index"
-import { Route as LoadingTestRouteImport } from "./routes/loading-test"
+import { Route as R403RouteImport } from "./routes/403"
+import { Route as R404RouteImport } from "./routes/404"
+import { Route as AppRouteRouteImport } from "./routes/_app/route"
+import { Route as AuthRouteRouteImport } from "./routes/_auth/route"
+import { Route as AppGestionRouteRouteImport } from "./routes/_app/gestion/route"
+import { Route as AppPortalRouteRouteImport } from "./routes/_app/portal/route"
+import { Route as AuthCallbackRouteImport } from "./routes/_auth/callback"
+import { Route as AuthCambiarRolRouteImport } from "./routes/_auth/cambiar-rol"
+import { Route as AuthLoginRouteImport } from "./routes/_auth/login"
+import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index"
+import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
+import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
+import { Route as AppGestionAuditoriaIndexRouteImport } from "./routes/_app/gestion/auditoria/index"
+import { Route as AppGestionAuditoriaEventosRouteImport } from "./routes/_app/gestion/auditoria/eventos"
 
 const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoadingTestRoute = LoadingTestRouteImport.update({
-  id: "/loading-test",
-  path: "/loading-test",
+const R403Route = R403RouteImport.update({
+  id: "/403",
+  path: "/403",
   getParentRoute: () => rootRouteImport,
 } as any)
+const R404Route = R404RouteImport.update({
+  id: "/404",
+  path: "/404",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: "/_app",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: "/_auth",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppGestionRouteRoute = AppGestionRouteRouteImport.update({
+  id: "/gestion",
+  path: "/gestion",
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppPortalRouteRoute = AppPortalRouteRouteImport.update({
+  id: "/portal",
+  path: "/portal",
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: "/callback",
+  path: "/callback",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthCambiarRolRoute = AuthCambiarRolRouteImport.update({
+  id: "/cambiar-rol",
+  path: "/cambiar-rol",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: "/login",
+  path: "/login",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AppGestionIndexRoute = AppGestionIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => AppGestionRouteRoute,
+} as any)
+const AppGestionAuditoriaRouteRoute =
+  AppGestionAuditoriaRouteRouteImport.update({
+    id: "/auditoria",
+    path: "/auditoria",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppPortalIndexRoute = AppPortalIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => AppPortalRouteRoute,
+} as any)
+const AppGestionAuditoriaIndexRoute =
+  AppGestionAuditoriaIndexRouteImport.update({
+    id: "/",
+    path: "/",
+    getParentRoute: () => AppGestionAuditoriaRouteRoute,
+  } as any)
+const AppGestionAuditoriaEventosRoute =
+  AppGestionAuditoriaEventosRouteImport.update({
+    id: "/eventos",
+    path: "/eventos",
+    getParentRoute: () => AppGestionAuditoriaRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
-  "/loading-test": typeof LoadingTestRoute
+  "/403": typeof R403Route
+  "/404": typeof R404Route
+  "/gestion": typeof AppGestionRouteRouteWithChildren
+  "/portal": typeof AppPortalRouteRouteWithChildren
+  "/callback": typeof AuthCallbackRoute
+  "/cambiar-rol": typeof AuthCambiarRolRoute
+  "/login": typeof AuthLoginRoute
+  "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
+  "/gestion/": typeof AppGestionIndexRoute
+  "/portal/": typeof AppPortalIndexRoute
+  "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
+  "/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
-  "/loading-test": typeof LoadingTestRoute
+  "/403": typeof R403Route
+  "/404": typeof R404Route
+  "/callback": typeof AuthCallbackRoute
+  "/cambiar-rol": typeof AuthCambiarRolRoute
+  "/login": typeof AuthLoginRoute
+  "/gestion": typeof AppGestionIndexRoute
+  "/portal": typeof AppPortalIndexRoute
+  "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
+  "/gestion/auditoria": typeof AppGestionAuditoriaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
-  "/loading-test": typeof LoadingTestRoute
+  "/_app": typeof AppRouteRouteWithChildren
+  "/_auth": typeof AuthRouteRouteWithChildren
+  "/403": typeof R403Route
+  "/404": typeof R404Route
+  "/_app/gestion": typeof AppGestionRouteRouteWithChildren
+  "/_app/portal": typeof AppPortalRouteRouteWithChildren
+  "/_auth/callback": typeof AuthCallbackRoute
+  "/_auth/cambiar-rol": typeof AuthCambiarRolRoute
+  "/_auth/login": typeof AuthLoginRoute
+  "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
+  "/_app/gestion/": typeof AppGestionIndexRoute
+  "/_app/portal/": typeof AppPortalIndexRoute
+  "/_app/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
+  "/_app/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/loading-test"
+  fullPaths:
+    | "/"
+    | "/403"
+    | "/404"
+    | "/gestion"
+    | "/portal"
+    | "/callback"
+    | "/cambiar-rol"
+    | "/login"
+    | "/gestion/auditoria"
+    | "/gestion/"
+    | "/portal/"
+    | "/gestion/auditoria/eventos"
+    | "/gestion/auditoria/"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/loading-test"
-  id: "__root__" | "/" | "/loading-test"
+  to:
+    | "/"
+    | "/403"
+    | "/404"
+    | "/callback"
+    | "/cambiar-rol"
+    | "/login"
+    | "/gestion"
+    | "/portal"
+    | "/gestion/auditoria/eventos"
+    | "/gestion/auditoria"
+  id:
+    | "__root__"
+    | "/"
+    | "/_app"
+    | "/_auth"
+    | "/403"
+    | "/404"
+    | "/_app/gestion"
+    | "/_app/portal"
+    | "/_auth/callback"
+    | "/_auth/cambiar-rol"
+    | "/_auth/login"
+    | "/_app/gestion/auditoria"
+    | "/_app/gestion/"
+    | "/_app/portal/"
+    | "/_app/gestion/auditoria/eventos"
+    | "/_app/gestion/auditoria/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  LoadingTestRoute: typeof LoadingTestRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  R403Route: typeof R403Route
+  R404Route: typeof R404Route
 }
 
 declare module "@tanstack/react-router" {
@@ -58,19 +211,185 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/loading-test": {
-      id: "/loading-test"
-      path: "/loading-test"
-      fullPath: "/loading-test"
-      preLoaderRoute: typeof LoadingTestRouteImport
+    "/403": {
+      id: "/403"
+      path: "/403"
+      fullPath: "/403"
+      preLoaderRoute: typeof R403RouteImport
       parentRoute: typeof rootRouteImport
+    }
+    "/404": {
+      id: "/404"
+      path: "/404"
+      fullPath: "/404"
+      preLoaderRoute: typeof R404RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/_app": {
+      id: "/_app"
+      path: ""
+      fullPath: "/"
+      preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/_auth": {
+      id: "/_auth"
+      path: ""
+      fullPath: "/"
+      preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/_app/gestion": {
+      id: "/_app/gestion"
+      path: "/gestion"
+      fullPath: "/gestion"
+      preLoaderRoute: typeof AppGestionRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    "/_app/portal": {
+      id: "/_app/portal"
+      path: "/portal"
+      fullPath: "/portal"
+      preLoaderRoute: typeof AppPortalRouteRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    "/_auth/callback": {
+      id: "/_auth/callback"
+      path: "/callback"
+      fullPath: "/callback"
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/_auth/cambiar-rol": {
+      id: "/_auth/cambiar-rol"
+      path: "/cambiar-rol"
+      fullPath: "/cambiar-rol"
+      preLoaderRoute: typeof AuthCambiarRolRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/_auth/login": {
+      id: "/_auth/login"
+      path: "/login"
+      fullPath: "/login"
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/_app/gestion/": {
+      id: "/_app/gestion/"
+      path: "/"
+      fullPath: "/gestion/"
+      preLoaderRoute: typeof AppGestionIndexRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/auditoria": {
+      id: "/_app/gestion/auditoria"
+      path: "/auditoria"
+      fullPath: "/gestion/auditoria"
+      preLoaderRoute: typeof AppGestionAuditoriaRouteRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/portal/": {
+      id: "/_app/portal/"
+      path: "/"
+      fullPath: "/portal/"
+      preLoaderRoute: typeof AppPortalIndexRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
+    "/_app/gestion/auditoria/": {
+      id: "/_app/gestion/auditoria/"
+      path: "/"
+      fullPath: "/gestion/auditoria/"
+      preLoaderRoute: typeof AppGestionAuditoriaIndexRouteImport
+      parentRoute: typeof AppGestionAuditoriaRouteRoute
+    }
+    "/_app/gestion/auditoria/eventos": {
+      id: "/_app/gestion/auditoria/eventos"
+      path: "/eventos"
+      fullPath: "/gestion/auditoria/eventos"
+      preLoaderRoute: typeof AppGestionAuditoriaEventosRouteImport
+      parentRoute: typeof AppGestionAuditoriaRouteRoute
     }
   }
 }
 
+interface AppGestionAuditoriaRouteRouteChildren {
+  AppGestionAuditoriaEventosRoute: typeof AppGestionAuditoriaEventosRoute
+  AppGestionAuditoriaIndexRoute: typeof AppGestionAuditoriaIndexRoute
+}
+
+const AppGestionAuditoriaRouteRouteChildren: AppGestionAuditoriaRouteRouteChildren =
+  {
+    AppGestionAuditoriaEventosRoute: AppGestionAuditoriaEventosRoute,
+    AppGestionAuditoriaIndexRoute: AppGestionAuditoriaIndexRoute,
+  }
+
+const AppGestionAuditoriaRouteRouteWithChildren =
+  AppGestionAuditoriaRouteRoute._addFileChildren(
+    AppGestionAuditoriaRouteRouteChildren,
+  )
+
+interface AppGestionRouteRouteChildren {
+  AppGestionAuditoriaRouteRoute: typeof AppGestionAuditoriaRouteRouteWithChildren
+  AppGestionIndexRoute: typeof AppGestionIndexRoute
+}
+
+const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
+  AppGestionAuditoriaRouteRoute: AppGestionAuditoriaRouteRouteWithChildren,
+  AppGestionIndexRoute: AppGestionIndexRoute,
+}
+
+const AppGestionRouteRouteWithChildren = AppGestionRouteRoute._addFileChildren(
+  AppGestionRouteRouteChildren,
+)
+
+interface AppPortalRouteRouteChildren {
+  AppPortalIndexRoute: typeof AppPortalIndexRoute
+}
+
+const AppPortalRouteRouteChildren: AppPortalRouteRouteChildren = {
+  AppPortalIndexRoute: AppPortalIndexRoute,
+}
+
+const AppPortalRouteRouteWithChildren = AppPortalRouteRoute._addFileChildren(
+  AppPortalRouteRouteChildren,
+)
+
+interface AppRouteRouteChildren {
+  AppGestionRouteRoute: typeof AppGestionRouteRouteWithChildren
+  AppPortalRouteRoute: typeof AppPortalRouteRouteWithChildren
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppGestionRouteRoute: AppGestionRouteRouteWithChildren,
+  AppPortalRouteRoute: AppPortalRouteRouteWithChildren,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
+interface AuthRouteRouteChildren {
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthCambiarRolRoute: typeof AuthCambiarRolRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthCallbackRoute: AuthCallbackRoute,
+  AuthCambiarRolRoute: AuthCambiarRolRoute,
+  AuthLoginRoute: AuthLoginRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  LoadingTestRoute: LoadingTestRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
+  R403Route: R403Route,
+  R404Route: R404Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -8,7 +8,7 @@ function RouteComponent() {
   return (
     <div>
       <div>Hello "/"!</div>
-      <Link to="/loading-test" className="underline">
+      <Link to="/" className="underline">
         Test loading bar
       </Link>
     </div>

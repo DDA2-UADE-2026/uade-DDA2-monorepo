@@ -8,7 +8,11 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   ...pluginRouter.configs['flat/recommended'],
-  globalIgnores(['dist', 'src/routeTree.gen.ts']),
+  globalIgnores([
+    '.tanstack',
+    'dist',
+    'src/routeTree.gen.ts'
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

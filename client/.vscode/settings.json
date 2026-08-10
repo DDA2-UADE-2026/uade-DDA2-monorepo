@@ -1,12 +1,15 @@
 {
     "git.addAICoAuthor": "off",
     "files.readonlyInclude": {
+        "**/.tanstack/**": true,
         "**/routeTree.gen.ts": true
     },
     "files.watcherExclude": {
+        "**/.tanstack/**": true,
         "**/routeTree.gen.ts": true
     },
     "search.exclude": {
+        "**/.tanstack/**": true,
         "**/routeTree.gen.ts": true
     }
 }
