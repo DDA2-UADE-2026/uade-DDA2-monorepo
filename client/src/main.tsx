@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from '@/providers/theme-provider'
-import './index.css'
+import { TooltipProvider } from "@/components/ui/tooltip"
+import '@index.css'
 
 const queryClient = new QueryClient()
 
@@ -28,7 +29,9 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <RouterProvider router={router} />
+          <TooltipProvider>
+            <RouterProvider router={router} />
+          </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>,
