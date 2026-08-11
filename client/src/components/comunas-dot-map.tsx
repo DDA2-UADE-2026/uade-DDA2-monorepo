@@ -1,28 +1,10 @@
-/**
- * Dot-matrix map engine.
- *
- * Renders a full-viewport orthogonal grid of square dots. Dots that fall inside
- * a feature polygon (a CABA comuna) are lit; the engine cycles through features,
- * revealing each one with a wave that radiates from its centroid.
- *
- * Framework-agnostic — no React, no map library. One canvas, one rAF loop.
- *
- * Performance notes:
- *  - Grid membership is computed once per layout (resize), not per frame.
- *  - Per frame the dots are counting-sorted into 24 alpha/colour "slots" so the
- *    draw loop only touches `fillStyle` 24 times instead of ~10.000 times.
- *  - Squares via fillRect, not arcs — roughly 4x cheaper at this dot count.
- */
+/* eslint-disable react-refresh/only-export-components */
+import { useEffect, useRef, useState } from 'react';
 
-const RAD = Math.PI / 180;
+import { cn } from '@/lib/utils';
 
-const IDLE_LEVELS = 8;
-const ACTIVE_LEVELS = 16;
-const SLOTS = IDLE_LEVELS + ACTIVE_LEVELS;
-const BLOOM_FROM = SLOTS - 4;
-
-export type FlatRing = number[]; // [lon, lat, lon, lat, ...]
-export type FlatPolygon = FlatRing[]; // [outerRing, ...holes]
+export type FlatRing = number[];
+export type FlatPolygon = FlatRing[];
 
 export interface MapFeature {
   id: string;
@@ -31,61 +13,148 @@ export interface MapFeature {
   polygons: FlatPolygon[];
 }
 
+const ACCENTS: Record<string, string> = {
+  Constitucion: 'Constitución',
+  'San Nicolas': 'San Nicolás',
+  Nunez: 'Núñez',
+  'Velez Sarsfield': 'Vélez Sarsfield',
+  'Villa Ortuzar': 'Villa Ortúzar',
+  'Villa Pueyrredon': 'Villa Pueyrredón',
+  'Villa Gral. Mitre': 'Villa General Mitre',
+  'Villa General Mitre': 'Villa General Mitre',
+  Agronomia: 'Agronomía',
+  'Parque Avellaneda': 'Parque Avellaneda',
+  'Nueva Pompeya': 'Nueva Pompeya',
+};
+
+function prettyBarrio(name: string): string {
+  const trimmed = name.trim();
+  return ACCENTS[trimmed] ?? trimmed;
+}
+
+function flattenPolygon(coords: unknown): FlatPolygon {
+  const rings = Array.isArray(coords) ? (coords as number[][][]) : [];
+  return rings.map((ring) => {
+    const flat: number[] = new Array(ring.length * 2);
+    for (let i = 0; i < ring.length; i++) {
+      flat[i * 2] = ring[i][0];
+      flat[i * 2 + 1] = ring[i][1];
+    }
+    return flat;
+  });
+}
+
+interface GeoFeature {
+  geometry?: { type?: string; coordinates?: unknown };
+  properties?: Record<string, unknown>;
+  id?: unknown;
+}
+
+function parseComunas(geojson: unknown): MapFeature[] {
+  const fc = geojson as { features?: GeoFeature[] };
+  const out: MapFeature[] = [];
+
+  for (const f of fc?.features ?? []) {
+    const geom = f.geometry;
+    if (!geom?.coordinates) continue;
+
+    const props = f.properties ?? {};
+    const rawId = props.comuna ?? props.COMUNAS ?? props.COMUNA ?? props.id ?? f.id;
+    const num = Number(rawId);
+    const id = Number.isFinite(num) ? String(num) : String(rawId ?? out.length + 1);
+
+    const rawBarrios = String(props.barrios ?? props.BARRIOS ?? '');
+    const sublabels = rawBarrios
+      .split(',')
+      .map(prettyBarrio)
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b, 'es'));
+
+    let polygons: FlatPolygon[] = [];
+    if (geom.type === 'Polygon') {
+      polygons = [flattenPolygon(geom.coordinates)];
+    } else if (geom.type === 'MultiPolygon') {
+      polygons = (geom.coordinates as unknown[]).map(flattenPolygon);
+    }
+    polygons = polygons.filter((p) => p.length && p[0].length >= 6);
+    if (!polygons.length) continue;
+
+    out.push({ id, label: `Comuna ${id}`, sublabels, polygons });
+  }
+
+  out.sort((a, b) => Number(a.id) - Number(b.id));
+  return out;
+}
+
+const comunasCache = new Map<string, Promise<MapFeature[]>>();
+
+function loadComunas(url: string): Promise<MapFeature[]> {
+  let pending = comunasCache.get(url);
+  if (!pending) {
+    pending = fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        return res.json();
+      })
+      .then(parseComunas)
+      .catch((err) => {
+        comunasCache.delete(url); // let a later mount retry
+        throw err;
+      });
+    comunasCache.set(url, pending);
+  }
+  return pending;
+}
+
+const RAD = Math.PI / 180;
+
+const IDLE_LEVELS = 8;
+const ACTIVE_LEVELS = 16;
+const SLOTS = IDLE_LEVELS + ACTIVE_LEVELS;
+const BLOOM_FROM = SLOTS - 4;
+
 export interface DotMapColors {
   base: string;
   accent: string;
 }
 
 export interface DotMapOptions {
-  /** Grid spacing in CSS px. Lower = denser = prettier = slower. */
   gap: number;
-  /** Base square edge length in CSS px. */
   dotSize: number;
-  /** Fraction of the smaller viewport axis the city should occupy. */
   fit: number;
-  /** Recentre the city, as a fraction of viewport width/height. */
   offsetX: number;
   offsetY: number;
-  /** Time each feature stays active. */
   cycleMs: number;
-  /** Ramp time for a single dot to reach full intensity. */
   revealMs: number;
-  /** Extra delay between the centroid dot and the outermost dot. */
   spreadMs: number;
-  /** Exponential decay constant for dots that just went inactive. */
   fadeMs: number;
   alphaOutside: number;
   alphaIdle: number;
-  /** Amplitude of the slow survey sweep across in-city dots. */
   alphaSweep: number;
-  /** px added to the edge of a fully-lit dot. */
   activeGrow: number;
   bloom: boolean;
-  /** Hard ceiling on dot count; gap is widened automatically to respect it. */
   maxDots: number;
   reducedMotion: boolean;
 }
 
-export const DEFAULT_OPTIONS: DotMapOptions = {
+const DEFAULT_OPTIONS: DotMapOptions = {
   gap: 13,
   dotSize: 2.4,
   fit: 0.86,
   offsetX: 0,
   offsetY: 0,
-  cycleMs: 3800,
-  revealMs: 620,
-  spreadMs: 900,
-  fadeMs: 520,
-  alphaOutside: 0.07,
-  alphaIdle: 0.2,
+  cycleMs: 4600,
+  revealMs: 760,
+  spreadMs: 1080,
+  fadeMs: 620,
+  alphaOutside: 0.20,
+  alphaIdle: 0.60,
   alphaSweep: 0.13,
-  activeGrow: 2.2,
+  activeGrow: 3.4,
   bloom: true,
-  maxDots: 14000,
+  maxDots: 20000,
   reducedMotion: false,
 };
-
-/* ------------------------------------------------------------------ utils */
 
 function ringContains(x: number, y: number, r: Float64Array): boolean {
   let inside = false;
@@ -117,7 +186,6 @@ function polysContain(x: number, y: number, polys: Float64Array[][]): boolean {
   return false;
 }
 
-/** Deterministic 0..1 from an integer — stable dot texture across resizes. */
 function hash01(i: number): number {
   let x = Math.imul(i + 1, 0x9e3779b1);
   x ^= x >>> 15;
@@ -126,12 +194,7 @@ function hash01(i: number): number {
   return (x >>> 0) / 4294967296;
 }
 
-/**
- * Resolve any CSS colour the browser can parse (oklch, hsl, hex, colour
- * function) down to sRGB bytes, by painting one pixel and reading it back.
- * Cheap and only runs on theme change.
- */
-export function resolveRgb(color: string, fallback: [number, number, number]): [number, number, number] {
+function resolveRgb(color: string, fallback: [number, number, number]): [number, number, number] {
   try {
     const c = document.createElement('canvas');
     c.width = 1;
@@ -143,7 +206,6 @@ export function resolveRgb(color: string, fallback: [number, number, number]): [
     const before = g.fillStyle;
     g.fillStyle = color;
     if (g.fillStyle === before && color.trim() !== '#000') {
-      // The browser rejected the string and kept the previous value.
       const probe = document.createElement('span');
       probe.style.color = color;
       if (!probe.style.color) return fallback;
@@ -156,8 +218,7 @@ export function resolveRgb(color: string, fallback: [number, number, number]): [
   }
 }
 
-/** Legacy shadcn stores bare HSL channels ("222.2 47.4% 11.2%"). Wrap them. */
-export function normalizeCssColor(value: string): string {
+function normalizeCssColor(value: string): string {
   const s = value.trim();
   if (!s) return s;
   if (/^(#|rgb|hsl|oklch|oklab|lab|lch|color|var)/i.test(s)) return s;
@@ -165,14 +226,12 @@ export function normalizeCssColor(value: string): string {
   return s;
 }
 
-/* ----------------------------------------------------------------- engine */
-
 interface Projected {
   bbox: [number, number, number, number];
   polys: Float64Array[][];
 }
 
-export class DotMapEngine {
+class DotMapEngine {
   onActiveChange?: (index: number, feature: MapFeature | undefined) => void;
 
   private canvas: HTMLCanvasElement;
@@ -210,6 +269,7 @@ export class DotMapEngine {
   private last = 0;
   private raf = 0;
   private running = false;
+  private wantsToRun = false;
 
   constructor(canvas: HTMLCanvasElement, options?: Partial<DotMapOptions>) {
     this.canvas = canvas;
@@ -235,7 +295,7 @@ export class DotMapEngine {
   }
 
   setColors(colors: DotMapColors) {
-    this.baseRgb = resolveRgb(normalizeCssColor(colors.base), this.baseRgb);
+    this.baseRgb = resolveRgb(normalizeCssColor(colors.accent), this.baseRgb);
     this.accentRgb = resolveRgb(normalizeCssColor(colors.accent), this.accentRgb);
     this.buildPalette();
     if (!this.running) this.paint();
@@ -262,10 +322,12 @@ export class DotMapEngine {
     this.canvas.style.width = `${w}px`;
     this.canvas.style.height = `${h}px`;
     this.layout();
-    if (!this.running) this.paint();
+    if (this.wantsToRun && !this.running) this.start();
+    else if (!this.running) this.paint();
   }
 
   start() {
+    this.wantsToRun = true;
     if (this.running || !this.w) return;
     this.running = true;
     const now = performance.now();
@@ -280,6 +342,7 @@ export class DotMapEngine {
   }
 
   stop() {
+    this.wantsToRun = false;
     this.running = false;
     cancelAnimationFrame(this.raf);
   }
@@ -316,7 +379,7 @@ export class DotMapEngine {
     }
     for (let k = 0; k < ACTIVE_LEVELS; k++) {
       const t = k / (ACTIVE_LEVELS - 1);
-      const mix = Math.min(1, t * 1.35); // reach accent hue before peak alpha
+      const mix = Math.min(1, t * 1.6);
       const r = Math.round(br + (ar - br) * mix);
       const g = Math.round(bg + (ag - bg) * mix);
       const b = Math.round(bb + (ab - bb) * mix);
@@ -328,7 +391,7 @@ export class DotMapEngine {
     this.bloomPalette = [];
     for (let s = BLOOM_FROM; s < SLOTS; s++) {
       const t = (s - IDLE_LEVELS) / (ACTIVE_LEVELS - 1);
-      this.bloomPalette.push(`rgba(${ar},${ag},${ab},${(0.055 * t).toFixed(3)})`);
+      this.bloomPalette.push(`rgba(${ar},${ag},${ab},${(0.11 * t).toFixed(3)})`);
     }
   }
 
@@ -358,7 +421,6 @@ export class DotMapEngine {
 
     const opts = this.opts;
 
-    // 1. Web Mercator bounds over every ring.
     let mnx = Infinity;
     let mny = Infinity;
     let mxx = -Infinity;
@@ -378,7 +440,6 @@ export class DotMapEngine {
       }
     }
 
-    // 2. Project every ring into screen space once, and cache feature bboxes.
     if (this.features.length && Number.isFinite(mnx)) {
       const bw = mxx - mnx || 1;
       const bh = mxy - mny || 1;
@@ -415,7 +476,6 @@ export class DotMapEngine {
       this.proj = [];
     }
 
-    // 3. Grid, widened if it would exceed the dot budget.
     let gap = opts.gap;
     const estimate = (Math.ceil(w / gap) + 1) * (Math.ceil(h / gap) + 1);
     if (estimate > opts.maxDots) gap *= Math.sqrt(estimate / opts.maxDots);
@@ -461,8 +521,6 @@ export class DotMapEngine {
       }
     }
 
-    // 4. Normalised distance from each dot to its feature centroid — this is
-    //    what staggers the reveal wave.
     const cxs = new Float64Array(nf);
     const cys = new Float64Array(nf);
     const maxd = new Float64Array(nf);
@@ -506,15 +564,12 @@ export class DotMapEngine {
     this.activeStart = now;
     this.onActiveChange?.(this.active, this.features[this.active]);
   }
-
-  /** One static repaint — used when paused, resized or re-themed. */
   private paint() {
     this.frame(performance.now(), true);
   }
 
   private frame(now: number, still = false) {
     const gap = now - this.last;
-    // Tab was backgrounded (or we just resumed): don't burn the whole cycle.
     if (gap > 500) this.activeStart += gap;
     const dt = still ? 0 : Math.min(64, gap || 16);
     this.last = now;
@@ -535,13 +590,12 @@ export class DotMapEngine {
     const outsideSlot = Math.round((o.alphaOutside / maxIdle) * (IDLE_LEVELS - 1));
     const sweepPhase = now * 0.00096;
 
-    // --- classify -----------------------------------------------------------
     this.counts.fill(0);
     for (let i = 0; i < n; i++) {
       const own = this.owner[i];
       let inten = this.intensity[i];
 
-      if (own === active) {
+      if (active >= 0 && own === active) {
         const local = (elapsed - this.dist[i] * spread) / reveal;
         const t = local <= 0 ? 0 : local >= 1 ? 1 : local * local * (3 - 2 * local);
         if (t > inten) inten = t;
@@ -561,7 +615,6 @@ export class DotMapEngine {
       } else {
         let a = o.alphaIdle;
         if (!rm && o.alphaSweep > 0) {
-          // Narrow band sweeping diagonally across the city — the "survey line".
           let b = Math.sin((this.px[i] * 0.55 + this.py[i]) * 0.01 - sweepPhase) * 0.5 + 0.5;
           const b2 = b * b;
           b = b2 * b2 * b2;
@@ -573,7 +626,6 @@ export class DotMapEngine {
       this.counts[s]++;
     }
 
-    // --- counting sort into slot order (allocation free) --------------------
     let acc = 0;
     for (let s = 0; s < SLOTS; s++) {
       this.offsets[s] = acc;
@@ -582,7 +634,6 @@ export class DotMapEngine {
     }
     for (let i = 0; i < n; i++) this.order[this.cursor[this.slot[i]]++] = i;
 
-    // --- draw: bloom underlay, then dots ------------------------------------
     if (o.bloom && !rm) {
       for (let s = BLOOM_FROM; s < SLOTS; s++) {
         const c = this.counts[s];
@@ -612,4 +663,144 @@ export class DotMapEngine {
 
     if (!still && elapsed >= (rm ? o.cycleMs * 2 : o.cycleMs)) this.advance(now);
   }
+}
+
+export interface ComunasDotMapProps {
+  src?: string;
+  className?: string;
+  options?: Partial<DotMapOptions>;
+  paused?: boolean;
+  onActiveChange?: (feature: MapFeature, index: number) => void;
+}
+
+function readColors(el: HTMLElement): DotMapColors {
+  const cs = getComputedStyle(el);
+  const pick = (...names: string[]) => {
+    for (const n of names) {
+      const v = cs.getPropertyValue(n).trim();
+      if (v) return v;
+    }
+    return '';
+  };
+  return {
+    base: pick('--dotmap-base', '--muted-foreground', '--foreground') || '#94a3b8',
+    accent: pick('--dotmap-accent', '--primary') || '#38bdf8',
+  };
+}
+
+export function ComunasDotMap({
+  src = '/geo/comunas.geojson',
+  className,
+  options,
+  paused = false,
+  onActiveChange,
+}: ComunasDotMapProps) {
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const engineRef = useRef<DotMapEngine | null>(null);
+  const callbackRef = useRef(onActiveChange);
+  const pausedRef = useRef(paused);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    callbackRef.current = onActiveChange;
+  }, [onActiveChange]);
+
+  useEffect(() => {
+    const host = hostRef.current;
+    const canvas = canvasRef.current;
+    if (!host || !canvas) return;
+
+    const engine = new DotMapEngine(canvas);
+    engineRef.current = engine;
+    engine.onActiveChange = (index, feature) => {
+      if (feature) callbackRef.current?.(feature, index);
+    };
+
+    const applyColors = () => engine.setColors(readColors(host));
+    applyColors();
+
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const applyMotion = () => engine.setOptions({ reducedMotion: motionQuery.matches });
+    applyMotion();
+    motionQuery.addEventListener('change', applyMotion);
+
+    const themeObserver = new MutationObserver(applyColors);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class', 'style', 'data-theme'],
+    });
+
+    let resizeFrame = 0;
+    const observer = new ResizeObserver((entries) => {
+      const rect = entries[0]?.contentRect;
+      if (!rect) return;
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        engine.resize(rect.width, rect.height, window.devicePixelRatio || 1);
+      });
+    });
+    observer.observe(host);
+
+    const handleVisibility = () => {
+      if (document.hidden) engine.stop();
+      else if (!pausedRef.current) engine.start();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    if (!pausedRef.current) engine.start();
+
+    return () => {
+      cancelAnimationFrame(resizeFrame);
+      observer.disconnect();
+      themeObserver.disconnect();
+      motionQuery.removeEventListener('change', applyMotion);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      engine.destroy();
+      engineRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadComunas(src)
+      .then((features) => {
+        if (cancelled) return;
+        engineRef.current?.setFeatures(features);
+        setReady(true);
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        console.warn(`[ComunasDotMap] could not load ${src}`, error);
+        setReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+
+  const optionsKey = JSON.stringify(options ?? {});
+  useEffect(() => {
+    engineRef.current?.setOptions(JSON.parse(optionsKey) as Partial<DotMapOptions>);
+  }, [optionsKey]);
+
+  useEffect(() => {
+    pausedRef.current = paused;
+    const engine = engineRef.current;
+    if (!engine) return;
+    if (paused || document.hidden) engine.stop();
+    else engine.start();
+  }, [paused]);
+
+  return (
+    <div ref={hostRef} aria-hidden className={cn('relative h-full w-full overflow-hidden', className)}>
+      <canvas
+        ref={canvasRef}
+        className={cn(
+          'block h-full w-full transition-opacity duration-1200 ease-out',
+          ready ? 'opacity-100' : 'opacity-0',
+        )}
+      />
+    </div>
+  );
 }
