@@ -4,10 +4,9 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { TooltipProvider } from "@/components/ui/tooltip"
-import '@index.css'
+import './index.css'
 
 const queryClient = new QueryClient()
-
 
 // Importar el árbol de rutas generado
 import { routeTree } from './routeTree.gen'
