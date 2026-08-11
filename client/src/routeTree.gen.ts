@@ -17,12 +17,13 @@ import { Route as AuthRouteRouteImport } from "./routes/_auth/route"
 import { Route as AppGestionRouteRouteImport } from "./routes/_app/gestion/route"
 import { Route as AppPortalRouteRouteImport } from "./routes/_app/portal/route"
 import { Route as AuthCallbackRouteImport } from "./routes/_auth/callback"
-import { Route as AuthCambiarRolRouteImport } from "./routes/_auth/cambiar-rol"
 import { Route as AuthLoginRouteImport } from "./routes/_auth/login"
+import { Route as AuthSeleccionarRolRouteImport } from "./routes/_auth/seleccionar-rol"
 import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index"
 import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
 import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
 import { Route as AppGestionAuditoriaIndexRouteImport } from "./routes/_app/gestion/auditoria/index"
+import { Route as AppGestionAuditoriaDlqRouteImport } from "./routes/_app/gestion/auditoria/dlq"
 import { Route as AppGestionAuditoriaEventosRouteImport } from "./routes/_app/gestion/auditoria/eventos"
 
 const IndexRoute = IndexRouteImport.update({
@@ -63,14 +64,14 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: "/callback",
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthCambiarRolRoute = AuthCambiarRolRouteImport.update({
-  id: "/cambiar-rol",
-  path: "/cambiar-rol",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: "/login",
   path: "/login",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthSeleccionarRolRoute = AuthSeleccionarRolRouteImport.update({
+  id: "/seleccionar-rol",
+  path: "/seleccionar-rol",
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AppGestionIndexRoute = AppGestionIndexRouteImport.update({
@@ -95,6 +96,11 @@ const AppGestionAuditoriaIndexRoute =
     path: "/",
     getParentRoute: () => AppGestionAuditoriaRouteRoute,
   } as any)
+const AppGestionAuditoriaDlqRoute = AppGestionAuditoriaDlqRouteImport.update({
+  id: "/dlq",
+  path: "/dlq",
+  getParentRoute: () => AppGestionAuditoriaRouteRoute,
+} as any)
 const AppGestionAuditoriaEventosRoute =
   AppGestionAuditoriaEventosRouteImport.update({
     id: "/eventos",
@@ -109,11 +115,12 @@ export interface FileRoutesByFullPath {
   "/gestion": typeof AppGestionRouteRouteWithChildren
   "/portal": typeof AppPortalRouteRouteWithChildren
   "/callback": typeof AuthCallbackRoute
-  "/cambiar-rol": typeof AuthCambiarRolRoute
   "/login": typeof AuthLoginRoute
+  "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/gestion/": typeof AppGestionIndexRoute
   "/portal/": typeof AppPortalIndexRoute
+  "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
 }
@@ -122,10 +129,11 @@ export interface FileRoutesByTo {
   "/403": typeof R403Route
   "/404": typeof R404Route
   "/callback": typeof AuthCallbackRoute
-  "/cambiar-rol": typeof AuthCambiarRolRoute
   "/login": typeof AuthLoginRoute
+  "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion": typeof AppGestionIndexRoute
   "/portal": typeof AppPortalIndexRoute
+  "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaIndexRoute
 }
@@ -139,11 +147,12 @@ export interface FileRoutesById {
   "/_app/gestion": typeof AppGestionRouteRouteWithChildren
   "/_app/portal": typeof AppPortalRouteRouteWithChildren
   "/_auth/callback": typeof AuthCallbackRoute
-  "/_auth/cambiar-rol": typeof AuthCambiarRolRoute
   "/_auth/login": typeof AuthLoginRoute
+  "/_auth/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/_app/gestion/": typeof AppGestionIndexRoute
   "/_app/portal/": typeof AppPortalIndexRoute
+  "/_app/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/_app/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/_app/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
 }
@@ -156,11 +165,12 @@ export interface FileRouteTypes {
     | "/gestion"
     | "/portal"
     | "/callback"
-    | "/cambiar-rol"
     | "/login"
+    | "/seleccionar-rol"
     | "/gestion/auditoria"
     | "/gestion/"
     | "/portal/"
+    | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/auditoria/"
   fileRoutesByTo: FileRoutesByTo
@@ -169,10 +179,11 @@ export interface FileRouteTypes {
     | "/403"
     | "/404"
     | "/callback"
-    | "/cambiar-rol"
     | "/login"
+    | "/seleccionar-rol"
     | "/gestion"
     | "/portal"
+    | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/auditoria"
   id:
@@ -185,11 +196,12 @@ export interface FileRouteTypes {
     | "/_app/gestion"
     | "/_app/portal"
     | "/_auth/callback"
-    | "/_auth/cambiar-rol"
     | "/_auth/login"
+    | "/_auth/seleccionar-rol"
     | "/_app/gestion/auditoria"
     | "/_app/gestion/"
     | "/_app/portal/"
+    | "/_app/gestion/auditoria/dlq"
     | "/_app/gestion/auditoria/eventos"
     | "/_app/gestion/auditoria/"
   fileRoutesById: FileRoutesById
@@ -260,18 +272,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    "/_auth/cambiar-rol": {
-      id: "/_auth/cambiar-rol"
-      path: "/cambiar-rol"
-      fullPath: "/cambiar-rol"
-      preLoaderRoute: typeof AuthCambiarRolRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     "/_auth/login": {
       id: "/_auth/login"
       path: "/login"
       fullPath: "/login"
       preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/_auth/seleccionar-rol": {
+      id: "/_auth/seleccionar-rol"
+      path: "/seleccionar-rol"
+      fullPath: "/seleccionar-rol"
+      preLoaderRoute: typeof AuthSeleccionarRolRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     "/_app/gestion/": {
@@ -302,6 +314,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionAuditoriaIndexRouteImport
       parentRoute: typeof AppGestionAuditoriaRouteRoute
     }
+    "/_app/gestion/auditoria/dlq": {
+      id: "/_app/gestion/auditoria/dlq"
+      path: "/dlq"
+      fullPath: "/gestion/auditoria/dlq"
+      preLoaderRoute: typeof AppGestionAuditoriaDlqRouteImport
+      parentRoute: typeof AppGestionAuditoriaRouteRoute
+    }
     "/_app/gestion/auditoria/eventos": {
       id: "/_app/gestion/auditoria/eventos"
       path: "/eventos"
@@ -313,12 +332,14 @@ declare module "@tanstack/react-router" {
 }
 
 interface AppGestionAuditoriaRouteRouteChildren {
+  AppGestionAuditoriaDlqRoute: typeof AppGestionAuditoriaDlqRoute
   AppGestionAuditoriaEventosRoute: typeof AppGestionAuditoriaEventosRoute
   AppGestionAuditoriaIndexRoute: typeof AppGestionAuditoriaIndexRoute
 }
 
 const AppGestionAuditoriaRouteRouteChildren: AppGestionAuditoriaRouteRouteChildren =
   {
+    AppGestionAuditoriaDlqRoute: AppGestionAuditoriaDlqRoute,
     AppGestionAuditoriaEventosRoute: AppGestionAuditoriaEventosRoute,
     AppGestionAuditoriaIndexRoute: AppGestionAuditoriaIndexRoute,
   }
@@ -370,14 +391,14 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 
 interface AuthRouteRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
-  AuthCambiarRolRoute: typeof AuthCambiarRolRoute
   AuthLoginRoute: typeof AuthLoginRoute
+  AuthSeleccionarRolRoute: typeof AuthSeleccionarRolRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
-  AuthCambiarRolRoute: AuthCambiarRolRoute,
   AuthLoginRoute: AuthLoginRoute,
+  AuthSeleccionarRolRoute: AuthSeleccionarRolRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

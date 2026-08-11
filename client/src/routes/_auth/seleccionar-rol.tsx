@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/_auth/cambiar-rol")({
+export const Route = createFileRoute("/_auth/seleccionar-rol")({
   component: RouteComponent,
 })
 
