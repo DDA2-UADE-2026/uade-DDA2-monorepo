@@ -19,7 +19,7 @@ El repositorio utiliza un flujo de ramas basado en pull requests para separar el
 - `develop` solo recibe pull requests desde ramas con el formato `feature/*`.
 - Todo pull request debe pasar estos checks de GitHub Actions:
   - `validate-source-branch`
-  - `client-lint-build`
+  - `client-build`
   - `server-assemble`
 - Los pull requests deben estar dirigidos a la rama correcta antes de solicitar revisión.
 
@@ -108,7 +108,7 @@ Antes de solicitar el merge, verificar que:
 - El destino sea `develop`.
 - El nombre de la rama comience con `feature/`.
 - `validate-source-branch` esté aprobado.
-- `client-lint-build` esté aprobado.
+- `client-build` esté aprobado.
 - `server-assemble` esté aprobado.
 - No existan conflictos.
 
@@ -143,7 +143,7 @@ Antes del merge:
 
 1. Verificar que el destino sea `main`.
 2. Confirmar que `validate-source-branch` esté aprobado.
-3. Confirmar que `client-lint-build` esté aprobado.
+3. Confirmar que `client-build` esté aprobado.
 4. Confirmar que `server-assemble` esté aprobado.
 5. Resolver cualquier conflicto.
 6. Hacer merge del pull request.
@@ -184,7 +184,7 @@ Configurar las siguientes reglas:
 Los checks obligatorios son:
 
 - `validate-source-branch`
-- `client-lint-build`
+- `client-build`
 - `server-assemble`
 
 La validación del origen de cada pull request se realiza en `.github/workflows/branch-policy.yml`. El check permite únicamente:
@@ -194,7 +194,7 @@ develop -> main
 feature/* -> develop
 ```
 
-La compilación y el lint se ejecutan mediante `.github/workflows/ci.yml`.
+La compilación del frontend y del backend se ejecuta mediante `.github/workflows/ci.yml`. El lint del frontend queda desactivado temporalmente hasta definir la nueva herramienta.
 
 ## Resumen del flujo
 
@@ -207,4 +207,3 @@ develop
                                       |
                                       +--> Pull request -> main
 ```
-
