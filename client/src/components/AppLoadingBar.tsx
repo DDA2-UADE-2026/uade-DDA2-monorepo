@@ -32,9 +32,9 @@ export function AppLoadingBar() {
   if (progress === 0) return null
 
   return (
-    <div className="top-0 left-0 w-full h-0.5 z-50 fixed">
+    <div className="bottom-0 left-0 w-full h-0 z-50 fixed overflow-visible">
       <div
-        className="h-full origin-left bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.7)] transition-transform duration-200 ease-out will-change-transform"
+        className="h-0.5 -mt-0.5 origin-left bg-[#5d39ff] shadow-[0_0_8px_#5d39ff99] transition-transform duration-200 ease-out will-change-transform"
         style={{ transform: `scaleX(${progress / 100})` }}
       />
     </div>
