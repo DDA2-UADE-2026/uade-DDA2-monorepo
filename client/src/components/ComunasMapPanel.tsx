@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { ComunasDotMap, type MapFeature } from '@/components/comunas-dot-map';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ComunasDotMap, type MapFeature } from '@/components/visual/comunas-dot-map';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function ComunasMapPanel() {
   const [active, setActive] = useState<MapFeature | null>(null);

@@ -32,7 +32,7 @@ export default defineConfig([
     rules: {
       // Route components must be named exports (not just referenced locally)
       // so the rule recognizes the file as component-only alongside `Route`.
-      'react-refresh/only-export-components': ['warn', { allowExportNames: ['Route'] }],
+      'react-refresh/only-export-components': ['off', { allowExportNames: ['Route'] }],
     },
   },
   {

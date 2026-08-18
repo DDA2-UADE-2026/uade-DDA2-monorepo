@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/_auth/callback")({
+export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/_auth/callback"!</div>
+  return <div>Hello "/_auth/register"!</div>
 }
