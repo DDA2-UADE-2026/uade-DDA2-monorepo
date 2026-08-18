@@ -49,7 +49,6 @@ const OPERACION_NAV: readonly SidebarNavItem[] = [
     url: "/gestion/turnos",
     icon: IconCalendarEvent,
     items: [
-      { title: "Turnos del centro", url: "/gestion/turnos" },
       { title: "Nuevo turno", url: "/gestion/turnos/nuevo" },
       { title: "Mi agenda", url: "/gestion/turnos/agenda" },
     ],

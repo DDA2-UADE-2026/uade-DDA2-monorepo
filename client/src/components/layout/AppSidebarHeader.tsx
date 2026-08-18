@@ -12,10 +12,10 @@ function AppSidebarHeader() {
         to="/"
         className="flex w-full items-center gap-2 overflow-hidden font-heading text-sm font-semibold group-data-[collapsible=icon]:justify-start justify-center"
       >
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
-          <IconCube className="size-4.5" />
+        <div className="flex size-8 shrink-0 z-10! items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <IconCube className="size-4.5 z-10!" />
         </div>
-        <span className="truncate">{BRAND_NAME}</span>
+        <span className="truncate z-15!">{BRAND_NAME}</span>
       </Link>
       <span className="absolute -bottom-3 left-1/2 -translate-1/2 h-6 w-36 z-0
         blur-xl bg-blue-500 opacity-50 dark:inline hidden"/>
