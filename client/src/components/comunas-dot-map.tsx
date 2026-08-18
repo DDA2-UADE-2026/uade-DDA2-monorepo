@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { IconLoader } from '@tabler/icons-react';
 
 import { cn } from '@/lib/utils';
 
@@ -800,6 +801,14 @@ export function ComunasDotMap({
           ready ? 'opacity-100' : 'opacity-0',
         )}
       />
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center justify-center transition-opacity duration-300 ease-out',
+          ready ? 'pointer-events-none opacity-0' : 'opacity-100',
+        )}
+      >
+        <IconLoader className="size-6 animate-spin text-muted-foreground" />
+      </div>
     </div>
   );
 }
