@@ -1,9 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Outlet } from "@tanstack/react-router"
+
+import { PortalSidebar } from "@/components/layout/PortalSidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export const Route = createFileRoute("/_app/portal")({
-  component: RouteComponent,
+  component: PortalLayout,
 })
 
-function RouteComponent() {
-  return <div>Hello "/_app/portal"!</div>
+function PortalLayout() {
+  return (
+    <SidebarProvider>
+      <PortalSidebar />
+      <SidebarInset>
+        <Outlet />
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
