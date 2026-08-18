@@ -57,7 +57,7 @@
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
 
-    --dotmap-color: oklch(0.457 0.24 277.023);
+    --dotmap-color: oklch(53.306% 0.26477 278.609);
 }
 
 .dark {
@@ -93,7 +93,7 @@
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
 
-    --dotmap-color: oklch(36.738% 0.21347 272.808);
+    --dotmap-color: oklch(46.61% 0.2735 272.395);
 }
 
 @theme inline {

@@ -1,7 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
-const ComunasMapPanel = lazy(() => import('@/components/ComunasMapPanel'));
+const ComunasMapPanel = lazy(() => import('@/components/auth/ComunasMapPanel'));
 const MAP_BREAKPOINT = '(min-width: 768px)';
 
 /** Only mount the map panel once there's actually room to show it split
