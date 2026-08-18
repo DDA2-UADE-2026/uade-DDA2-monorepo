@@ -5,11 +5,14 @@ import com.uade.dda2.server.feature.log.entity.Log
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.repository.LogRepository
+import com.uade.dda2.server.feature.notification.event.ResourceUpdatedEvent
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 
 @Service
 class LogService(
     private val logRepository: LogRepository,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     fun record(
         user: User?,
@@ -18,8 +21,8 @@ class LogService(
         entityId: String,
         oldValues: String? = null,
         newValues: String? = null,
-    ): Log =
-        logRepository.save(
+    ): Log {
+        val log = logRepository.save(
             Log(
                 user = user,
                 action = action,
@@ -29,6 +32,9 @@ class LogService(
                 newValues = newValues,
             ),
         )
+        eventPublisher.publishEvent(ResourceUpdatedEvent(entityType, entityId, action))
+        return log
+    }
 
     fun recordLogin(user: User): Log =
         record(
