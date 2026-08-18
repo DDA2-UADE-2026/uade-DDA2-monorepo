@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  client-build:
+    name: client-build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  server-assemble:
+    name: server-assemble
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Build server
+        working-directory: server
+        run: ./gradlew assemble --no-daemon

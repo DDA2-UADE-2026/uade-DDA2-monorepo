@@ -1,0 +1,29 @@
+name: Branch policy
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  validate-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate source branch
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          case "$BASE_BRANCH:$HEAD_BRANCH" in
+            main:develop|develop:feature/*)
+              ;;
+            *)
+              echo "PR no permitido: $HEAD_BRANCH -> $BASE_BRANCH"
+              echo "Permitidos: develop -> main y feature/* -> develop"
+              exit 1
+              ;;
+          esac

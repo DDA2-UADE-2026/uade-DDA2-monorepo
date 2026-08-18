@@ -4,6 +4,6 @@ export const Route = createFileRoute("/404")({
   component: RouteComponent,
 })
 
-function RouteComponent() {
+export function RouteComponent() {
   return <div>Hello "/404"!</div>
 }
