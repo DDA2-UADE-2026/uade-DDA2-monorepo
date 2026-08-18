@@ -4,6 +4,6 @@ export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
 })
 
-function RouteComponent() {
+export function RouteComponent() {
   return <div>Hello "/_auth/login"!</div>
 }
