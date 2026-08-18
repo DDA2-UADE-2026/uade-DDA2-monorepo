@@ -127,9 +127,9 @@ export interface DotMapColors {
 // Forced palette — kept in JS so the map never inherits/blends with page CSS.
 // The map always renders dark, independent of the site's light/dark theme.
 const DOT_MAP_COLORS: DotMapColors = {
-  bg: [15, 17, 21],
-  map: [148, 163, 184],
-  selection: [129, 140, 248],
+  bg: [12, 15, 18],
+  map: [140, 158, 200],
+  selection: [50, 80, 248],
 };
 
 export interface DotMapOptions {
@@ -152,7 +152,7 @@ export interface DotMapOptions {
 }
 
 const DEFAULT_OPTIONS: DotMapOptions = {
-  gap: 13,
+  gap: 12,
   dotSize: 2.4,
   fit: 0.86,
   offsetX: 0,
