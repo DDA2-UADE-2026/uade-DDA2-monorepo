@@ -3,7 +3,7 @@ import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
 import { IconEye, IconEyeOff, IconId, IconLock, IconMail, IconUser } from "@tabler/icons-react"
 
-import { AuthCard } from "@/components/auth/auth-card"
+import { AuthCard } from "@/components/auth/AuthCard"
 import { registerSchema } from "@/components/auth/schemas"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { AuthBrand } from "@/components/auth/auth-brand"
+import { AuthBrand } from "@/components/auth/AuchBrand"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { cn } from "@/lib/utils"
 import {

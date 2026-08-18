@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { ComunasDotMap, type MapFeature } from '@/components/visual/comunas-dot-map';
+import { ComunasDotMap, type MapFeature } from '@/components/visual/ComunasDotMap';
 
 export default function ComunasMapPanel() {
   const [active, setActive] = useState<MapFeature | null>(null);
