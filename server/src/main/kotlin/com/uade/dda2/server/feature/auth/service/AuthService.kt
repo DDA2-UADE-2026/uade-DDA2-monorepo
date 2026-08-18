@@ -25,7 +25,7 @@ class AuthService(
     private val logService: LogService,
 ) {
     @Transactional
-    fun login(request: LoginRequest): LoginResponse {
+    fun login(request: LoginRequest): LoginResult {
         val user = authValidator.validLoginUser(
             user = userRepository.findByUsernameIgnoreCase(request.username.trim()),
             rawPassword = request.password,
@@ -40,11 +40,13 @@ class AuthService(
         )
         logService.recordLogin(user)
 
-        return LoginResponse(
+        return LoginResult(
             token = token,
-            expiresIn = jwtProperties.expirationSeconds,
-            user = userResponse,
-            permissions = permissions,
+            response = LoginResponse(
+                expiresIn = jwtProperties.expirationSeconds,
+                user = userResponse,
+                permissions = permissions,
+            ),
         )
     }
 

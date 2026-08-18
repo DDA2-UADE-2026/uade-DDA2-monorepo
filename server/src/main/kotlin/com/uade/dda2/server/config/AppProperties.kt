@@ -7,6 +7,10 @@ data class JwtProperties(
     var issuer: String = "social-development-api",
     var secret: String = "change-me-change-me-change-me-change-me-32chars",
     var expirationSeconds: Long = 28_800,
+    var cookieName: String = "access_token",
+    // false solo hace falta en dev/CI sobre HTTP con un host que no sea "localhost"
+    // (los browsers tratan "localhost" como contexto seguro y sí mandan cookies Secure ahí).
+    var cookieSecure: Boolean = true,
 )
 
 @ConfigurationProperties("app.cors")

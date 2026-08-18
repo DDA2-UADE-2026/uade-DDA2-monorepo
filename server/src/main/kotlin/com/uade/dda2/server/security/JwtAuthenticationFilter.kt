@@ -1,5 +1,6 @@
 package com.uade.dda2.server.security
 
+import com.uade.dda2.server.config.JwtProperties
 import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -16,13 +17,14 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
     private val securityErrorResponseWriter: SecurityErrorResponseWriter,
+    private val jwtProperties: JwtProperties,
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val token = bearerToken(request)
+        val token = cookieToken(request)
         if (token == null) {
             filterChain.doFilter(request, response)
             return
@@ -61,11 +63,9 @@ class JwtAuthenticationFilter(
         }
     }
 
-    private fun bearerToken(request: HttpServletRequest): String? {
-        val authorization = request.getHeader("Authorization") ?: return null
-        if (!authorization.startsWith("Bearer ", ignoreCase = true)) {
-            return null
-        }
-        return authorization.substringAfter("Bearer ").trim().takeIf(String::isNotBlank)
-    }
+    private fun cookieToken(request: HttpServletRequest): String? =
+        request.cookies
+            ?.firstOrNull { it.name == jwtProperties.cookieName }
+            ?.value
+            ?.takeIf(String::isNotBlank)
 }
