@@ -169,6 +169,16 @@ dependencies {
 
 	// Procesador de anotaciones Lombok para código de tests.
 	testAnnotationProcessor("org.projectlombok:lombok")
+
+
+	// ─────────────────────────────────────────────
+	// Testing - Generación de documentación OpenAPI
+	// ─────────────────────────────────────────────
+
+	// Base de datos en memoria usada solo para levantar el contexto de
+	// Spring bajo el perfil "docs" (ver OpenApiDocsGenerationTest), para
+	// no depender de una Postgres real al generar el spec en CI.
+	testRuntimeOnly("com.h2database:h2")
 }
 
 kotlin {
@@ -185,4 +195,15 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.register<Test>("generateOpenApiDocs") {
+	group = "documentation"
+	description = "Levanta el contexto de Spring con el perfil 'docs' (H2) y vuelca el spec de OpenAPI en build/openapi/openapi.json"
+	testClassesDirs = sourceSets.test.get().output.classesDirs
+	classpath = sourceSets.test.get().runtimeClasspath
+	filter {
+		includeTestsMatching("com.uade.dda2.server.OpenApiDocsGenerationTest")
+	}
+	outputs.dir(layout.buildDirectory.dir("openapi"))
 }
