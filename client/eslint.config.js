@@ -30,7 +30,17 @@ export default defineConfig([
   {
     files: ['src/routes/**/*.tsx'],
     rules: {
+      // Route components must be named exports (not just referenced locally)
+      // so the rule recognizes the file as component-only alongside `Route`.
       'react-refresh/only-export-components': ['warn', { allowExportNames: ['Route'] }],
+    },
+  },
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      // shadcn/ui components intentionally co-export helpers (variants, contexts, hooks)
+      // alongside the component from the same file.
+      'react-refresh/only-export-components': 'off',
     },
   },
 ])

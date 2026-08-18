@@ -38,7 +38,7 @@ export const Route = createFileRoute('/_auth')({
  * animation cycle inside it — never unmounts while navigating between
  * /login, /register, /sso, etc.
  */
-function AuthLayout() {
+export function AuthLayout() {
   const showMap = useShowMapPanel();
 
   return (
