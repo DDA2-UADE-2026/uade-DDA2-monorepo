@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
 import { AuthBrand } from "@/components/auth/auth-brand"
+import { ThemeToggle } from "@/components/ThemeToggle"
 import { cn } from "@/lib/utils"
 import {
   Card,
@@ -21,7 +22,10 @@ interface AuthCardProps {
 
 function AuthCard({ title, description, children, footer, className }: AuthCardProps) {
   return (
-    <Card className={cn("w-full sm:max-w-md", className)}>
+    <Card className={cn("relative w-full sm:max-w-md", className)}>
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <CardHeader className="flex flex-col items-center gap-4 text-center">
         <AuthBrand />
         <div className="flex flex-col gap-1.5">
