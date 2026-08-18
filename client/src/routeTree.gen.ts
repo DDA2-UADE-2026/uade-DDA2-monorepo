@@ -18,6 +18,7 @@ import { Route as AppGestionRouteRouteImport } from "./routes/_app/gestion/route
 import { Route as AppPortalRouteRouteImport } from "./routes/_app/portal/route"
 import { Route as AuthCallbackRouteImport } from "./routes/_auth/callback"
 import { Route as AuthLoginRouteImport } from "./routes/_auth/login"
+import { Route as AuthRegisterRouteImport } from "./routes/_auth/register"
 import { Route as AuthSeleccionarRolRouteImport } from "./routes/_auth/seleccionar-rol"
 import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index"
 import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
@@ -69,6 +70,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: "/login",
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: "/register",
+  path: "/register",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthSeleccionarRolRoute = AuthSeleccionarRolRouteImport.update({
   id: "/seleccionar-rol",
   path: "/seleccionar-rol",
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   "/portal": typeof AppPortalRouteRouteWithChildren
   "/callback": typeof AuthCallbackRoute
   "/login": typeof AuthLoginRoute
+  "/register": typeof AuthRegisterRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/gestion/": typeof AppGestionIndexRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   "/404": typeof R404Route
   "/callback": typeof AuthCallbackRoute
   "/login": typeof AuthLoginRoute
+  "/register": typeof AuthRegisterRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion": typeof AppGestionIndexRoute
   "/portal": typeof AppPortalIndexRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   "/_app/portal": typeof AppPortalRouteRouteWithChildren
   "/_auth/callback": typeof AuthCallbackRoute
   "/_auth/login": typeof AuthLoginRoute
+  "/_auth/register": typeof AuthRegisterRoute
   "/_auth/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/_app/gestion/": typeof AppGestionIndexRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | "/portal"
     | "/callback"
     | "/login"
+    | "/register"
     | "/seleccionar-rol"
     | "/gestion/auditoria"
     | "/gestion/"
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | "/404"
     | "/callback"
     | "/login"
+    | "/register"
     | "/seleccionar-rol"
     | "/gestion"
     | "/portal"
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | "/_app/portal"
     | "/_auth/callback"
     | "/_auth/login"
+    | "/_auth/register"
     | "/_auth/seleccionar-rol"
     | "/_app/gestion/auditoria"
     | "/_app/gestion/"
@@ -277,6 +289,13 @@ declare module "@tanstack/react-router" {
       path: "/login"
       fullPath: "/login"
       preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    "/_auth/register": {
+      id: "/_auth/register"
+      path: "/register"
+      fullPath: "/register"
+      preLoaderRoute: typeof AuthRegisterRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     "/_auth/seleccionar-rol": {
@@ -392,12 +411,14 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 interface AuthRouteRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthLoginRoute: typeof AuthLoginRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
   AuthSeleccionarRolRoute: typeof AuthSeleccionarRolRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   AuthLoginRoute: AuthLoginRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
   AuthSeleccionarRolRoute: AuthSeleccionarRolRoute,
 }
 

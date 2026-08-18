@@ -1,12 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
-// Keeps the dot-map engine, canvas and GeoJSON parsing out of the initial
-// bundle — the auth routes need to render the form immediately.
-const ComunasMapPanel = lazy(() => import('@/components/comunas-map-panel'));
-
-// Tailwind's `md` breakpoint — kept as a constant so the JS mount gate and
-// the `md:` classes below can't drift apart.
+const ComunasMapPanel = lazy(() => import('@/components/auth/ComunasMapPanel'));
 const MAP_BREAKPOINT = '(min-width: 768px)';
 
 /** Only mount the map panel once there's actually room to show it split
@@ -30,15 +25,7 @@ export const Route = createFileRoute('/_auth')({
   component: AuthLayout,
 });
 
-/**
- * Split-screen auth layout: form left, map right, at `md` and up. Below
- * `md` the map panel isn't rendered — just the centered form, full height.
- *
- * `_auth` stays pathless (leading underscore) so this layout — and the map's
- * animation cycle inside it — never unmounts while navigating between
- * /login, /register, /sso, etc.
- */
-export function AuthLayout() {
+function AuthLayout() {
   const showMap = useShowMapPanel();
 
   return (
@@ -49,7 +36,9 @@ export function AuthLayout() {
 
       {showMap ? (
         <div className="relative hidden border-l border-border md:block">
-          <Suspense fallback={<div className="h-full w-full bg-background" />}>
+          <Suspense fallback={
+            <div className="h-full w-full bg-background" />
+          }>
             <ComunasMapPanel />
           </Suspense>
         </div>
