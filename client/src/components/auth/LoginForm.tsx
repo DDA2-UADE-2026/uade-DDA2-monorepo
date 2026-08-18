@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
-import { IconEye, IconEyeOff, IconLock, IconUser } from "@tabler/icons-react"
+import { IconEye, IconEyeOff, IconId, IconLock, IconUser } from "@tabler/icons-react"
 
-import { AuthCard } from "@/components/auth/auth-card"
+import { AuthCard } from "@/components/auth/AuthCard"
 import { loginSchema } from "@/components/auth/schemas"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
@@ -13,6 +13,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import { Separator } from "@/components/ui/separator"
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -49,6 +50,23 @@ function LoginForm() {
         </>
       }
     >
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => {
+          // TODO: wire up to the real Ciudadanos SSO flow once it's available.
+          console.log("login with Ciudadanos")
+        }}
+      >
+        <IconId />
+        Iniciar sesión con Ciudadanos
+      </Button>
+      <div className="my-4 flex items-center gap-3">
+        <Separator className="flex-1" />
+        <span className="text-xs text-muted-foreground">O CONTINUÁ CON</span>
+        <Separator className="flex-1" />
+      </div>
       <form
         id="login-form"
         onSubmit={(e) => {

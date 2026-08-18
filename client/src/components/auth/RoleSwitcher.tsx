@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { IconBuildingCommunity, IconCircleCheck, IconLogout, IconUsers } from "@tabler/icons-react"
 
-import { AuthCard } from "@/components/auth/auth-card"
+import { AuthCard } from "@/components/auth/AuthCard"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 

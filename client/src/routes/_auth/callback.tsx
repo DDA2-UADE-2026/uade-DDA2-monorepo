@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { IconLoader2 } from "@tabler/icons-react"
 
-import { AuthBrand } from "@/components/auth/auth-brand"
+import { AuthBrand } from "@/components/auth/AuchBrand"
 
 export const Route = createFileRoute("/_auth/callback")({
   component: RouteComponent,
