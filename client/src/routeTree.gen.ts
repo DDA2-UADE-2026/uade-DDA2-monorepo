@@ -23,7 +23,9 @@ import { Route as AuthSeleccionarRolRouteImport } from "./routes/_auth/seleccion
 import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index"
 import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
 import { Route as AppGestionIndicadoresRouteImport } from "./routes/_app/gestion/indicadores"
+import { Route as AppGestionPerfilRouteImport } from "./routes/_app/gestion/perfil"
 import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
+import { Route as AppPortalPerfilRouteImport } from "./routes/_app/portal/perfil"
 import { Route as AppGestionAuditoriaIndexRouteImport } from "./routes/_app/gestion/auditoria/index"
 import { Route as AppGestionAuditoriaDlqRouteImport } from "./routes/_app/gestion/auditoria/dlq"
 import { Route as AppGestionAuditoriaEventosRouteImport } from "./routes/_app/gestion/auditoria/eventos"
@@ -138,9 +140,19 @@ const AppGestionIndicadoresRoute = AppGestionIndicadoresRouteImport.update({
   path: "/indicadores",
   getParentRoute: () => AppGestionRouteRoute,
 } as any)
+const AppGestionPerfilRoute = AppGestionPerfilRouteImport.update({
+  id: "/perfil",
+  path: "/perfil",
+  getParentRoute: () => AppGestionRouteRoute,
+} as any)
 const AppPortalIndexRoute = AppPortalIndexRouteImport.update({
   id: "/",
   path: "/",
+  getParentRoute: () => AppPortalRouteRoute,
+} as any)
+const AppPortalPerfilRoute = AppPortalPerfilRouteImport.update({
+  id: "/perfil",
+  path: "/perfil",
   getParentRoute: () => AppPortalRouteRoute,
 } as any)
 const AppGestionAuditoriaIndexRoute =
@@ -409,6 +421,8 @@ export interface FileRoutesByFullPath {
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
+  "/gestion/perfil": typeof AppGestionPerfilRoute
+  "/portal/perfil": typeof AppPortalPerfilRoute
   "/gestion/": typeof AppGestionIndexRoute
   "/portal/": typeof AppPortalIndexRoute
   "/gestion/casos/$solicitudId": typeof AppGestionCasosSolicitudIdRouteRouteWithChildren
@@ -465,6 +479,8 @@ export interface FileRoutesByTo {
   "/register": typeof AuthRegisterRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
+  "/gestion/perfil": typeof AppGestionPerfilRoute
+  "/portal/perfil": typeof AppPortalPerfilRoute
   "/gestion": typeof AppGestionIndexRoute
   "/portal": typeof AppPortalIndexRoute
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
@@ -524,6 +540,8 @@ export interface FileRoutesById {
   "/_auth/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/_app/gestion/indicadores": typeof AppGestionIndicadoresRoute
+  "/_app/gestion/perfil": typeof AppGestionPerfilRoute
+  "/_app/portal/perfil": typeof AppPortalPerfilRoute
   "/_app/gestion/": typeof AppGestionIndexRoute
   "/_app/portal/": typeof AppPortalIndexRoute
   "/_app/gestion/casos/$solicitudId": typeof AppGestionCasosSolicitudIdRouteRouteWithChildren
@@ -585,6 +603,8 @@ export interface FileRouteTypes {
     | "/seleccionar-rol"
     | "/gestion/auditoria"
     | "/gestion/indicadores"
+    | "/gestion/perfil"
+    | "/portal/perfil"
     | "/gestion/"
     | "/portal/"
     | "/gestion/casos/$solicitudId"
@@ -641,6 +661,8 @@ export interface FileRouteTypes {
     | "/register"
     | "/seleccionar-rol"
     | "/gestion/indicadores"
+    | "/gestion/perfil"
+    | "/portal/perfil"
     | "/gestion"
     | "/portal"
     | "/gestion/auditoria/dlq"
@@ -699,6 +721,8 @@ export interface FileRouteTypes {
     | "/_auth/seleccionar-rol"
     | "/_app/gestion/auditoria"
     | "/_app/gestion/indicadores"
+    | "/_app/gestion/perfil"
+    | "/_app/portal/perfil"
     | "/_app/gestion/"
     | "/_app/portal/"
     | "/_app/gestion/casos/$solicitudId"
@@ -855,11 +879,25 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionIndicadoresRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
+    "/_app/gestion/perfil": {
+      id: "/_app/gestion/perfil"
+      path: "/perfil"
+      fullPath: "/gestion/perfil"
+      preLoaderRoute: typeof AppGestionPerfilRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
     "/_app/portal/": {
       id: "/_app/portal/"
       path: "/"
       fullPath: "/portal/"
       preLoaderRoute: typeof AppPortalIndexRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
+    "/_app/portal/perfil": {
+      id: "/_app/portal/perfil"
+      path: "/perfil"
+      fullPath: "/portal/perfil"
+      preLoaderRoute: typeof AppPortalPerfilRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
     "/_app/gestion/auditoria/": {
@@ -1254,6 +1292,7 @@ const AppGestionProgramasProgramaIdRouteRouteWithChildren =
 interface AppGestionRouteRouteChildren {
   AppGestionAuditoriaRouteRoute: typeof AppGestionAuditoriaRouteRouteWithChildren
   AppGestionIndicadoresRoute: typeof AppGestionIndicadoresRoute
+  AppGestionPerfilRoute: typeof AppGestionPerfilRoute
   AppGestionIndexRoute: typeof AppGestionIndexRoute
   AppGestionCasosSolicitudIdRouteRoute: typeof AppGestionCasosSolicitudIdRouteRouteWithChildren
   AppGestionCentrosCentroIdRouteRoute: typeof AppGestionCentrosCentroIdRouteRouteWithChildren
@@ -1281,6 +1320,7 @@ interface AppGestionRouteRouteChildren {
 const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionAuditoriaRouteRoute: AppGestionAuditoriaRouteRouteWithChildren,
   AppGestionIndicadoresRoute: AppGestionIndicadoresRoute,
+  AppGestionPerfilRoute: AppGestionPerfilRoute,
   AppGestionIndexRoute: AppGestionIndexRoute,
   AppGestionCasosSolicitudIdRouteRoute:
     AppGestionCasosSolicitudIdRouteRouteWithChildren,
@@ -1317,6 +1357,7 @@ const AppGestionRouteRouteWithChildren = AppGestionRouteRoute._addFileChildren(
 )
 
 interface AppPortalRouteRouteChildren {
+  AppPortalPerfilRoute: typeof AppPortalPerfilRoute
   AppPortalIndexRoute: typeof AppPortalIndexRoute
   AppPortalCampaniasActividadIdRoute: typeof AppPortalCampaniasActividadIdRoute
   AppPortalProgramasProgramaIdRoute: typeof AppPortalProgramasProgramaIdRoute
@@ -1332,6 +1373,7 @@ interface AppPortalRouteRouteChildren {
 }
 
 const AppPortalRouteRouteChildren: AppPortalRouteRouteChildren = {
+  AppPortalPerfilRoute: AppPortalPerfilRoute,
   AppPortalIndexRoute: AppPortalIndexRoute,
   AppPortalCampaniasActividadIdRoute: AppPortalCampaniasActividadIdRoute,
   AppPortalProgramasProgramaIdRoute: AppPortalProgramasProgramaIdRoute,
