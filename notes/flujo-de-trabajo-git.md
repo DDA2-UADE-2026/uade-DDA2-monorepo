@@ -17,10 +17,13 @@ El repositorio utiliza un flujo de ramas basado en pull requests para separar el
 - No se permiten pushes directos a `main` ni `develop`.
 - `main` solo recibe pull requests desde `develop`.
 - `develop` solo recibe pull requests desde ramas con el formato `feature/*`.
-- Todo pull request debe pasar estos checks de GitHub Actions:
+- Todo pull request debe pasar los checks aplicables de GitHub Actions:
   - `validate-source-branch`
-  - `client-build`
+  - `client-lint-build`
   - `server-assemble`
+- `client-lint-build` se ejecuta si el cambio incluye archivos de `client/`.
+- `server-assemble` se ejecuta si el cambio incluye archivos de `server/`.
+- Si el cambio incluye ambos directorios, se ejecutan ambos checks.
 - Los pull requests deben estar dirigidos a la rama correcta antes de solicitar revisión.
 
 ## Convención de nombres
@@ -108,7 +111,7 @@ Antes de solicitar el merge, verificar que:
 - El destino sea `develop`.
 - El nombre de la rama comience con `feature/`.
 - `validate-source-branch` esté aprobado.
-- `client-build` esté aprobado.
+- `client-lint-build` esté aprobado.
 - `server-assemble` esté aprobado.
 - No existan conflictos.
 
@@ -143,7 +146,7 @@ Antes del merge:
 
 1. Verificar que el destino sea `main`.
 2. Confirmar que `validate-source-branch` esté aprobado.
-3. Confirmar que `client-build` esté aprobado.
+3. Confirmar que `client-lint-build` esté aprobado.
 4. Confirmar que `server-assemble` esté aprobado.
 5. Resolver cualquier conflicto.
 6. Hacer merge del pull request.
@@ -184,7 +187,7 @@ Configurar las siguientes reglas:
 Los checks obligatorios son:
 
 - `validate-source-branch`
-- `client-build`
+- `client-lint-build`
 - `server-assemble`
 
 La validación del origen de cada pull request se realiza en `.github/workflows/branch-policy.yml`. El check permite únicamente:
@@ -194,7 +197,25 @@ develop -> main
 feature/* -> develop
 ```
 
-La compilación del frontend y del backend se ejecuta mediante `.github/workflows/ci.yml`. El lint del frontend queda desactivado temporalmente hasta definir la nueva herramienta.
+El lint y la compilación del frontend, junto con la compilación del backend, se ejecutan mediante `.github/workflows/ci.yml` solo cuando se modifican archivos de la aplicación correspondiente.
+
+## Deploy
+
+El workflow `.github/workflows/deploy.yml` se ejecuta después de que `CI` termina correctamente en un push a `develop` o `main`.
+
+Publica estas imágenes en Docker Hub:
+
+| Rama | Frontend | Backend |
+|---|---|---|
+| `develop` | `<usuario>/uade-dda2-client:develop` | `<usuario>/uade-dda2-server:develop` |
+| `main` | `<usuario>/uade-dda2-client:latest` | `<usuario>/uade-dda2-server:latest` |
+
+El repositorio de GitHub debe tener estos Actions secrets:
+
+- `DOCKERHUB_USERNAME`: usuario o namespace de Docker Hub.
+- `DOCKERHUB_TOKEN`: access token de Docker Hub con permisos de escritura.
+
+Los repositorios `uade-dda2-client` y `uade-dda2-server` deben existir en Docker Hub. En Dokploy, configurar las aplicaciones de desarrollo con el tag `develop` y las de producción con el tag `latest`. Para el despliegue automático, conectar el webhook de cada repositorio de Docker Hub con la aplicación correspondiente de Dokploy.
 
 ## Resumen del flujo
 
