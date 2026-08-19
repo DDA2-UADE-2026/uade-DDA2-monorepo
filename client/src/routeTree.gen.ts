@@ -34,6 +34,9 @@ import { Route as AppGestionCasosIndexRouteImport } from "./routes/_app/gestion/
 import { Route as AppGestionCasosSolicitudIdRouteRouteImport } from "./routes/_app/gestion/casos/$solicitudId/route"
 import { Route as AppGestionCentrosIndexRouteImport } from "./routes/_app/gestion/centros/index"
 import { Route as AppGestionCentrosCentroIdRouteRouteImport } from "./routes/_app/gestion/centros/$centroId/route"
+import { Route as AppGestionDebugDocumentacionEventosRouteImport } from "./routes/_app/gestion/debug/documentacion-eventos"
+import { Route as AppGestionDebugDocumentacionLocalRouteImport } from "./routes/_app/gestion/debug/documentacion-local"
+import { Route as AppGestionDebugEstadoRedRouteImport } from "./routes/_app/gestion/debug/estado-red"
 import { Route as AppGestionIntervencionesIndexRouteImport } from "./routes/_app/gestion/intervenciones/index"
 import { Route as AppGestionIntervencionesPlanIdRouteImport } from "./routes/_app/gestion/intervenciones/$planId"
 import { Route as AppGestionProgramasIndexRouteImport } from "./routes/_app/gestion/programas/index"
@@ -195,6 +198,24 @@ const AppGestionCentrosCentroIdRouteRoute =
   AppGestionCentrosCentroIdRouteRouteImport.update({
     id: "/centros/$centroId",
     path: "/centros/$centroId",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionDebugDocumentacionEventosRoute =
+  AppGestionDebugDocumentacionEventosRouteImport.update({
+    id: "/debug/documentacion-eventos",
+    path: "/debug/documentacion-eventos",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionDebugDocumentacionLocalRoute =
+  AppGestionDebugDocumentacionLocalRouteImport.update({
+    id: "/debug/documentacion-local",
+    path: "/debug/documentacion-local",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionDebugEstadoRedRoute =
+  AppGestionDebugEstadoRedRouteImport.update({
+    id: "/debug/estado-red",
+    path: "/debug/estado-red",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
 const AppGestionIntervencionesIndexRoute =
@@ -396,6 +417,9 @@ export interface FileRoutesByFullPath {
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
+  "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
+  "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/gestion/programas/nuevo": typeof AppGestionProgramasNuevoRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
@@ -446,6 +470,9 @@ export interface FileRoutesByTo {
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
+  "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
+  "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/gestion/programas/nuevo": typeof AppGestionProgramasNuevoRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
@@ -505,6 +532,9 @@ export interface FileRoutesById {
   "/_app/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/_app/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/_app/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/_app/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
+  "/_app/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
+  "/_app/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/_app/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/_app/gestion/programas/nuevo": typeof AppGestionProgramasNuevoRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
@@ -563,6 +593,9 @@ export interface FileRouteTypes {
     | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/beneficios/$beneficioId"
+    | "/gestion/debug/documentacion-eventos"
+    | "/gestion/debug/documentacion-local"
+    | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
     | "/gestion/programas/nuevo"
     | "/gestion/turnos/agenda"
@@ -613,6 +646,9 @@ export interface FileRouteTypes {
     | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/beneficios/$beneficioId"
+    | "/gestion/debug/documentacion-eventos"
+    | "/gestion/debug/documentacion-local"
+    | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
     | "/gestion/programas/nuevo"
     | "/gestion/turnos/agenda"
@@ -671,6 +707,9 @@ export interface FileRouteTypes {
     | "/_app/gestion/auditoria/dlq"
     | "/_app/gestion/auditoria/eventos"
     | "/_app/gestion/beneficios/$beneficioId"
+    | "/_app/gestion/debug/documentacion-eventos"
+    | "/_app/gestion/debug/documentacion-local"
+    | "/_app/gestion/debug/estado-red"
     | "/_app/gestion/intervenciones/$planId"
     | "/_app/gestion/programas/nuevo"
     | "/_app/gestion/turnos/agenda"
@@ -891,6 +930,27 @@ declare module "@tanstack/react-router" {
       path: "/centros/$centroId"
       fullPath: "/gestion/centros/$centroId"
       preLoaderRoute: typeof AppGestionCentrosCentroIdRouteRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/debug/documentacion-eventos": {
+      id: "/_app/gestion/debug/documentacion-eventos"
+      path: "/debug/documentacion-eventos"
+      fullPath: "/gestion/debug/documentacion-eventos"
+      preLoaderRoute: typeof AppGestionDebugDocumentacionEventosRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/debug/documentacion-local": {
+      id: "/_app/gestion/debug/documentacion-local"
+      path: "/debug/documentacion-local"
+      fullPath: "/gestion/debug/documentacion-local"
+      preLoaderRoute: typeof AppGestionDebugDocumentacionLocalRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/debug/estado-red": {
+      id: "/_app/gestion/debug/estado-red"
+      path: "/debug/estado-red"
+      fullPath: "/gestion/debug/estado-red"
+      preLoaderRoute: typeof AppGestionDebugEstadoRedRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/intervenciones/": {
@@ -1199,6 +1259,9 @@ interface AppGestionRouteRouteChildren {
   AppGestionCentrosCentroIdRouteRoute: typeof AppGestionCentrosCentroIdRouteRouteWithChildren
   AppGestionProgramasProgramaIdRouteRoute: typeof AppGestionProgramasProgramaIdRouteRouteWithChildren
   AppGestionBeneficiosBeneficioIdRoute: typeof AppGestionBeneficiosBeneficioIdRoute
+  AppGestionDebugDocumentacionEventosRoute: typeof AppGestionDebugDocumentacionEventosRoute
+  AppGestionDebugDocumentacionLocalRoute: typeof AppGestionDebugDocumentacionLocalRoute
+  AppGestionDebugEstadoRedRoute: typeof AppGestionDebugEstadoRedRoute
   AppGestionIntervencionesPlanIdRoute: typeof AppGestionIntervencionesPlanIdRoute
   AppGestionProgramasNuevoRoute: typeof AppGestionProgramasNuevoRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
@@ -1226,6 +1289,11 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionProgramasProgramaIdRouteRoute:
     AppGestionProgramasProgramaIdRouteRouteWithChildren,
   AppGestionBeneficiosBeneficioIdRoute: AppGestionBeneficiosBeneficioIdRoute,
+  AppGestionDebugDocumentacionEventosRoute:
+    AppGestionDebugDocumentacionEventosRoute,
+  AppGestionDebugDocumentacionLocalRoute:
+    AppGestionDebugDocumentacionLocalRoute,
+  AppGestionDebugEstadoRedRoute: AppGestionDebugEstadoRedRoute,
   AppGestionIntervencionesPlanIdRoute: AppGestionIntervencionesPlanIdRoute,
   AppGestionProgramasNuevoRoute: AppGestionProgramasNuevoRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,

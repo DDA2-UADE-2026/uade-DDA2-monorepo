@@ -7,6 +7,8 @@
 @import "@fontsource-variable/jetbrains-mono";
 @import "./typeset.css";
 
+@custom-variant dark (&:is(.dark *));
+
 :root {
   --font-figtree: 'Figtree Variable', sans-serif;
   --font-jetbrains-mono: 'JetBrains Mono Variable', monospace;
@@ -43,17 +45,6 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 }
-
-.typeset-docs {
-  --typeset-font-body: var(--font-figtree);
-  --typeset-font-heading: var(--font-figtree);
-  --typeset-font-mono: var(--font-jetbrains-mono);
-  --typeset-size: 16px;
-  --typeset-leading: 1.75;
-  --typeset-flow: 1.25em;
-}
-
-@custom-variant dark (&:is(.dark *));
 
 .dark {
     --background: oklch(0.141 0.005 285.823);
@@ -142,4 +133,17 @@
   html {
     @apply font-sans;
     }
+}
+
+.typeset-docs {
+  --typeset-font-body: var(--font-figtree);
+  --typeset-font-heading: var(--font-figtree);
+  --typeset-font-mono: var(--font-jetbrains-mono);
+  --typeset-size: 16px;
+  --typeset-leading: 1.75;
+  --typeset-flow: 1.25em;
+}
+
+body {
+  position: relative;
 }
