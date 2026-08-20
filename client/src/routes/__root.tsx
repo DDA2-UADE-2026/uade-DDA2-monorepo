@@ -17,9 +17,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
       <AppLoadingBar />
-        <Suspense fallback={<></>}>
-          <AppCommandShortcut />
-        </Suspense>
+      <Suspense fallback={<></>}>
+        <AppCommandShortcut />
+      </Suspense>
       <Outlet />
       <TanStackRouterDevtools />
       <ReactQueryDevtools />

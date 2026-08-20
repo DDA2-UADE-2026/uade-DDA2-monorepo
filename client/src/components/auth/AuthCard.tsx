@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import { AuthBrand } from "@/components/auth/AuchBrand"
+import { AuthBrand } from "@/components/auth/AuthBrand"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { cn } from "@/lib/utils"
 import {
@@ -26,9 +26,9 @@ function AuthCard({ title, description, children, footer, className }: AuthCardP
       <div className="absolute right-4 top-4">
         <ThemeToggle />
       </div>
-      <CardHeader className="flex flex-col items-center gap-4 text-center">
+      <CardHeader className="flex flex-col items-center gap-7 text-center">
         <AuthBrand />
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1">
           <CardTitle className="text-xl">{title}</CardTitle>
           {description ? <CardDescription>{description}</CardDescription> : null}
         </div>
