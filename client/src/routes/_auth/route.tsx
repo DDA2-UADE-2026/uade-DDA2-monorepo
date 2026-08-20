@@ -31,7 +31,7 @@ function AuthLayout() {
 
   return (
     <div className="grid min-h-svh bg-background md:grid-cols-2">
-      <main className="flex min-h-svh items-center justify-center px-6 py-10 md:min-h-0 md:py-12 relative!">
+      <main className="flex min-h-svh items-center justify-center px-6 py-10 md:min-h-0 md:py-12 relative! not-order-2">
         <div className="absolute inset-0 pointer-events-none z-0! dark:opacity-100 opacity-75">
           <Suspense fallback={null}>
             <SideRaysBackground

@@ -20,7 +20,7 @@ function PageHeader({ className, children, ...props }: ComponentProps<"header">)
       {...props}
     >
       <SidebarTrigger />
-      <Separator orientation="vertical" className="h-4" />
+      <Separator orientation="vertical" className="h-14" />
       {children}
     </header>
   )

@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useLocation } from "@tanstack/react-router"
 import { IconArrowsExchange, IconDotsVertical, IconLogout, IconUserCircle } from "@tabler/icons-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -23,6 +23,8 @@ const MOCK_USER = {
 /** Shared sidebar footer user menu — used by both PortalSidebar and GestionSidebar. */
 function SidebarUser() {
   const { isMobile } = useSidebar()
+  const { pathname } = useLocation()
+  const perfilUrl = pathname.startsWith("/portal") ? "/portal/perfil" : "/gestion/perfil"
 
   return (
     <SidebarMenuItem>
@@ -64,13 +66,7 @@ function SidebarUser() {
             </DropdownMenuLabel>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="rounded-lg"
-            onClick={() => {
-              // TODO: link to the real profile route once it exists.
-              console.log("go to profile")
-            }}
-          >
+          <DropdownMenuItem className="rounded-lg" render={<Link to={perfilUrl} />}>
             <IconUserCircle />
             Mi perfil
           </DropdownMenuItem>

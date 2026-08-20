@@ -1,5 +1,6 @@
 import { useLocation } from "@tanstack/react-router"
 import {
+  IconApi,
   IconBuilding,
   IconCalendarEvent,
   IconChartBar,
@@ -9,6 +10,8 @@ import {
   IconHeartHandshake,
   IconHome2,
   IconHomeCheck,
+  IconNetwork,
+  IconRoute,
   IconShieldCheck,
   IconSpeakerphone,
 } from "@tabler/icons-react"
@@ -70,6 +73,12 @@ const ANALISIS_NAV: readonly SidebarNavItem[] = [
   },
 ]
 
+const DEBUG_NAV: readonly SidebarNavItem[] = [
+  { title: "Documentación local", url: "/gestion/debug/documentacion-local", icon: IconApi },
+  { title: "Documentación eventos", url: "/gestion/debug/documentacion-eventos", icon: IconRoute },
+  { title: "Estado de red", url: "/gestion/debug/estado-red", icon: IconNetwork },
+]
+
 function GestionSidebar() {
   const { pathname } = useLocation()
 
@@ -88,6 +97,13 @@ function GestionSidebar() {
           <SidebarGroupLabel>Análisis</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarNavMenu items={ANALISIS_NAV} pathname={pathname} />
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Debug</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarNavMenu items={DEBUG_NAV} pathname={pathname} />
           </SidebarGroupContent>
         </SidebarGroup>
 
