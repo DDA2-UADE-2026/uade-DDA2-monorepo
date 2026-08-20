@@ -75,7 +75,7 @@ function RouteComponent() {
       <SiteHeader />
 
       <section className="relative flex min-h-svh items-center justify-center overflow-hidden px-6">
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-75 dark:opacity-100">
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-45 dark:opacity-100">
           <Suspense fallback={null}>
             <SideRaysBackground
               speed={2.5}
