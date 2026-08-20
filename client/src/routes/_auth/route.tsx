@@ -1,12 +1,10 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
-// Keeps the dot-map engine, canvas and GeoJSON parsing out of the initial
-// bundle — the auth routes need to render the form immediately.
-const ComunasMapPanel = lazy(() => import('@/components/comunas-map-panel'));
+import { RouteErrorPage } from '@/components/errors/RouteErrorPage';
 
-// Tailwind's `md` breakpoint — kept as a constant so the JS mount gate and
-// the `md:` classes below can't drift apart.
+const SideRaysBackground = lazy(() => import('@/components/visual/SideRaysBackground'));
+const ComunasMapPanel = lazy(() => import('@/components/auth/ComunasMapPanel'));
 const MAP_BREAKPOINT = '(min-width: 768px)';
 
 /** Only mount the map panel once there's actually room to show it split
@@ -28,28 +26,40 @@ function useShowMapPanel() {
 
 export const Route = createFileRoute('/_auth')({
   component: AuthLayout,
+  errorComponent: RouteErrorPage,
 });
 
-/**
- * Split-screen auth layout: form left, map right, at `md` and up. Below
- * `md` the map panel isn't rendered — just the centered form, full height.
- *
- * `_auth` stays pathless (leading underscore) so this layout — and the map's
- * animation cycle inside it — never unmounts while navigating between
- * /login, /register, /sso, etc.
- */
-export function AuthLayout() {
+function AuthLayout() {
   const showMap = useShowMapPanel();
 
   return (
     <div className="grid min-h-svh bg-background md:grid-cols-2">
-      <main className="flex min-h-svh items-center justify-center px-6 py-10 md:min-h-0 md:py-12">
+      <main className="flex min-h-svh items-center justify-center px-6 py-10 md:min-h-0 md:py-12 relative! not-order-2">
+        <div className="absolute inset-0 pointer-events-none z-0! dark:opacity-100 opacity-45">
+          <Suspense fallback={null}>
+            <SideRaysBackground
+              speed={2.5}
+              rayColor1={'#2b7fff'}
+              rayColor2={'#3c3cfa'}
+              intensity={2}
+              spread={2}
+              origin="top-right"
+              tilt={0}
+              saturation={1.5}
+              blend={0.75}
+              falloff={1.6}
+              opacity={1}
+            />
+          </Suspense>
+        </div>
         <Outlet />
       </main>
 
       {showMap ? (
         <div className="relative hidden border-l border-border md:block">
-          <Suspense fallback={<div className="h-full w-full bg-background" />}>
+          <Suspense fallback={
+            <div className="h-full w-full bg-background" />
+          }>
             <ComunasMapPanel />
           </Suspense>
         </div>

@@ -1,0 +1,34 @@
+package com.uade.dda2.server
+
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.io.File
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+@ActiveProfiles("docs")
+class OpenApiDocsGenerationTest {
+
+    @Autowired
+    lateinit var mockMvc: MockMvc
+
+    @Test
+    fun `dumps the OpenAPI spec to build openapi openapi json`() {
+        val spec =
+            mockMvc.perform(get("/api-docs"))
+                .andExpect(status().isOk)
+                .andReturn()
+                .response
+                .contentAsString
+
+        val outputDir = File("build/openapi")
+        outputDir.mkdirs()
+        File(outputDir, "openapi.json").writeText(spec)
+    }
+}

@@ -11,6 +11,15 @@ spring:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     hikari:
       maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  servlet:
+    multipart:
+      max-file-size:
+        ${MULTIPART_MAX_FILE_SIZE:10MB}
+      max-request-size:
+        ${MULTIPART_MAX_REQUEST_SIZE:10MB}
   jpa:
     open-in-view: false
     show-sql: ${JPA_SHOW_SQL:false}
@@ -20,7 +29,26 @@ spring:
       hibernate:
         jdbc:
           time_zone: UTC
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+springdoc:
+  show-actuator: true
+  show-login-endpoint: true
+  show-oauth2-endpoints: true
+  api-docs:
+    enabled: true
+    path: ${API_DOCS_PATH:/api-docs}
+  swagger-ui:
+    enabled: true
+    path: ${SWAGGER_UI_PATH:/swagger-ui}
 app:
   security:
     jwt:

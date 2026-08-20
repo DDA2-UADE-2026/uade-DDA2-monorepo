@@ -113,10 +113,24 @@ const ACTIVE_LEVELS = 16;
 const SLOTS = IDLE_LEVELS + ACTIVE_LEVELS;
 const BLOOM_FROM = SLOTS - 4;
 
+const OUTLINE_ALPHA = 0.3;
+const OUTLINE_WIDTH = 1.25;
+
+type RGB = [number, number, number];
+
 export interface DotMapColors {
-  base: string;
-  accent: string;
+  bg: RGB;
+  map: RGB;
+  selection: RGB;
 }
+
+// Forced palette — kept in JS so the map never inherits/blends with page CSS.
+// The map always renders dark, independent of the site's light/dark theme.
+const DOT_MAP_COLORS: DotMapColors = {
+  bg: [12, 15, 18],
+  map: [140, 158, 200],
+  selection: [50, 80, 248],
+};
 
 export interface DotMapOptions {
   gap: number;
@@ -138,7 +152,7 @@ export interface DotMapOptions {
 }
 
 const DEFAULT_OPTIONS: DotMapOptions = {
-  gap: 13,
+  gap: 12,
   dotSize: 2.4,
   fit: 0.86,
   offsetX: 0,
@@ -194,38 +208,6 @@ function hash01(i: number): number {
   return (x >>> 0) / 4294967296;
 }
 
-function resolveRgb(color: string, fallback: [number, number, number]): [number, number, number] {
-  try {
-    const c = document.createElement('canvas');
-    c.width = 1;
-    c.height = 1;
-    const g = c.getContext('2d', { willReadFrequently: true });
-    if (!g) return fallback;
-    g.fillStyle = '#000';
-    g.fillRect(0, 0, 1, 1);
-    const before = g.fillStyle;
-    g.fillStyle = color;
-    if (g.fillStyle === before && color.trim() !== '#000') {
-      const probe = document.createElement('span');
-      probe.style.color = color;
-      if (!probe.style.color) return fallback;
-    }
-    g.fillRect(0, 0, 1, 1);
-    const d = g.getImageData(0, 0, 1, 1).data;
-    return [d[0], d[1], d[2]];
-  } catch {
-    return fallback;
-  }
-}
-
-function normalizeCssColor(value: string): string {
-  const s = value.trim();
-  if (!s) return s;
-  if (/^(#|rgb|hsl|oklch|oklab|lab|lch|color|var)/i.test(s)) return s;
-  if (/^[\d.]+\s+[\d.]+%\s+[\d.]+%$/.test(s)) return `hsl(${s})`;
-  return s;
-}
-
 interface Projected {
   bbox: [number, number, number, number];
   polys: Float64Array[][];
@@ -259,8 +241,10 @@ class DotMapEngine {
   private offsets = new Int32Array(SLOTS);
   private cursor = new Int32Array(SLOTS);
 
-  private baseRgb: [number, number, number] = [148, 163, 184];
-  private accentRgb: [number, number, number] = [56, 189, 248];
+  private bgRgb: RGB = DOT_MAP_COLORS.bg;
+  private bgStyle = '';
+  private baseRgb: RGB = DOT_MAP_COLORS.map;
+  private accentRgb: RGB = DOT_MAP_COLORS.selection;
   private palette: string[] = [];
   private bloomPalette: string[] = [];
 
@@ -295,8 +279,9 @@ class DotMapEngine {
   }
 
   setColors(colors: DotMapColors) {
-    this.baseRgb = resolveRgb(normalizeCssColor(colors.accent), this.baseRgb);
-    this.accentRgb = resolveRgb(normalizeCssColor(colors.accent), this.accentRgb);
+    this.bgRgb = colors.bg;
+    this.baseRgb = colors.map;
+    this.accentRgb = colors.selection;
     this.buildPalette();
     if (!this.running) this.paint();
   }
@@ -367,6 +352,9 @@ class DotMapEngine {
   /* ------------------------------------------------------------- internals */
 
   private buildPalette() {
+    const [bgR, bgG, bgB] = this.bgRgb;
+    this.bgStyle = `rgb(${bgR},${bgG},${bgB})`;
+
     const [br, bg, bb] = this.baseRgb;
     const [ar, ag, ab] = this.accentRgb;
     const { alphaIdle, alphaSweep } = this.opts;
@@ -568,6 +556,27 @@ class DotMapEngine {
     this.frame(performance.now(), true);
   }
 
+  private strokeBoundaries() {
+    if (!this.proj.length) return;
+    const { ctx } = this;
+    ctx.beginPath();
+    for (const { polys } of this.proj) {
+      for (const rings of polys) {
+        for (const ring of rings) {
+          if (ring.length < 6) continue;
+          ctx.moveTo(ring[0], ring[1]);
+          for (let i = 2; i < ring.length; i += 2) ctx.lineTo(ring[i], ring[i + 1]);
+          ctx.closePath();
+        }
+      }
+    }
+    const [r, g, b] = this.baseRgb;
+    ctx.strokeStyle = `rgba(${r},${g},${b},${OUTLINE_ALPHA})`;
+    ctx.lineWidth = OUTLINE_WIDTH;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
   private frame(now: number, still = false) {
     const gap = now - this.last;
     if (gap > 500) this.activeStart += gap;
@@ -576,7 +585,8 @@ class DotMapEngine {
 
     const { ctx, w, h, n } = this;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = this.bgStyle;
+    ctx.fillRect(0, 0, w, h);
     if (!n) return;
 
     const o = this.opts;
@@ -661,6 +671,8 @@ class DotMapEngine {
       }
     }
 
+    this.strokeBoundaries();
+
     if (!still && elapsed >= (rm ? o.cycleMs * 2 : o.cycleMs)) this.advance(now);
   }
 }
@@ -671,21 +683,6 @@ export interface ComunasDotMapProps {
   options?: Partial<DotMapOptions>;
   paused?: boolean;
   onActiveChange?: (feature: MapFeature, index: number) => void;
-}
-
-function readColors(el: HTMLElement): DotMapColors {
-  const cs = getComputedStyle(el);
-  const pick = (...names: string[]) => {
-    for (const n of names) {
-      const v = cs.getPropertyValue(n).trim();
-      if (v) return v;
-    }
-    return '';
-  };
-  return {
-    base: pick('--dotmap-base', '--muted-foreground', '--foreground') || '#94a3b8',
-    accent: pick('--dotmap-accent', '--primary') || '#38bdf8',
-  };
 }
 
 export function ComunasDotMap({
@@ -717,19 +714,14 @@ export function ComunasDotMap({
       if (feature) callbackRef.current?.(feature, index);
     };
 
-    const applyColors = () => engine.setColors(readColors(host));
-    applyColors();
+    // Colors are forced and constant — this map always renders dark, regardless of site theme.
+    engine.setColors(DOT_MAP_COLORS);
+    host.style.backgroundColor = `rgb(${DOT_MAP_COLORS.bg[0]}, ${DOT_MAP_COLORS.bg[1]}, ${DOT_MAP_COLORS.bg[2]})`;
 
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const applyMotion = () => engine.setOptions({ reducedMotion: motionQuery.matches });
     applyMotion();
     motionQuery.addEventListener('change', applyMotion);
-
-    const themeObserver = new MutationObserver(applyColors);
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class', 'style', 'data-theme'],
-    });
 
     let resizeFrame = 0;
     const observer = new ResizeObserver((entries) => {
@@ -753,7 +745,6 @@ export function ComunasDotMap({
     return () => {
       cancelAnimationFrame(resizeFrame);
       observer.disconnect();
-      themeObserver.disconnect();
       motionQuery.removeEventListener('change', applyMotion);
       document.removeEventListener('visibilitychange', handleVisibility);
       engine.destroy();

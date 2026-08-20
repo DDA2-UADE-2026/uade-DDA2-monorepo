@@ -25,3 +25,5 @@ dist-ssr
 
 # TanStack generated cache
 .tanstack/
+
+.env
