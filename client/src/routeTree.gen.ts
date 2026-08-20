@@ -24,6 +24,7 @@ import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index
 import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
 import { Route as AppGestionIndicadoresRouteImport } from "./routes/_app/gestion/indicadores"
 import { Route as AppGestionPerfilRouteImport } from "./routes/_app/gestion/perfil"
+import { Route as AppGestionTestErrorRouteImport } from "./routes/_app/gestion/test-error"
 import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
 import { Route as AppPortalPerfilRouteImport } from "./routes/_app/portal/perfil"
 import { Route as AppGestionAuditoriaIndexRouteImport } from "./routes/_app/gestion/auditoria/index"
@@ -143,6 +144,11 @@ const AppGestionIndicadoresRoute = AppGestionIndicadoresRouteImport.update({
 const AppGestionPerfilRoute = AppGestionPerfilRouteImport.update({
   id: "/perfil",
   path: "/perfil",
+  getParentRoute: () => AppGestionRouteRoute,
+} as any)
+const AppGestionTestErrorRoute = AppGestionTestErrorRouteImport.update({
+  id: "/test-error",
+  path: "/test-error",
   getParentRoute: () => AppGestionRouteRoute,
 } as any)
 const AppPortalIndexRoute = AppPortalIndexRouteImport.update({
@@ -422,6 +428,7 @@ export interface FileRoutesByFullPath {
   "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/gestion/perfil": typeof AppGestionPerfilRoute
+  "/gestion/test-error": typeof AppGestionTestErrorRoute
   "/portal/perfil": typeof AppPortalPerfilRoute
   "/gestion/": typeof AppGestionIndexRoute
   "/portal/": typeof AppPortalIndexRoute
@@ -480,6 +487,7 @@ export interface FileRoutesByTo {
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/gestion/perfil": typeof AppGestionPerfilRoute
+  "/gestion/test-error": typeof AppGestionTestErrorRoute
   "/portal/perfil": typeof AppPortalPerfilRoute
   "/gestion": typeof AppGestionIndexRoute
   "/portal": typeof AppPortalIndexRoute
@@ -541,6 +549,7 @@ export interface FileRoutesById {
   "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/_app/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/_app/gestion/perfil": typeof AppGestionPerfilRoute
+  "/_app/gestion/test-error": typeof AppGestionTestErrorRoute
   "/_app/portal/perfil": typeof AppPortalPerfilRoute
   "/_app/gestion/": typeof AppGestionIndexRoute
   "/_app/portal/": typeof AppPortalIndexRoute
@@ -604,6 +613,7 @@ export interface FileRouteTypes {
     | "/gestion/auditoria"
     | "/gestion/indicadores"
     | "/gestion/perfil"
+    | "/gestion/test-error"
     | "/portal/perfil"
     | "/gestion/"
     | "/portal/"
@@ -662,6 +672,7 @@ export interface FileRouteTypes {
     | "/seleccionar-rol"
     | "/gestion/indicadores"
     | "/gestion/perfil"
+    | "/gestion/test-error"
     | "/portal/perfil"
     | "/gestion"
     | "/portal"
@@ -722,6 +733,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/auditoria"
     | "/_app/gestion/indicadores"
     | "/_app/gestion/perfil"
+    | "/_app/gestion/test-error"
     | "/_app/portal/perfil"
     | "/_app/gestion/"
     | "/_app/portal/"
@@ -884,6 +896,13 @@ declare module "@tanstack/react-router" {
       path: "/perfil"
       fullPath: "/gestion/perfil"
       preLoaderRoute: typeof AppGestionPerfilRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/test-error": {
+      id: "/_app/gestion/test-error"
+      path: "/test-error"
+      fullPath: "/gestion/test-error"
+      preLoaderRoute: typeof AppGestionTestErrorRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/portal/": {
@@ -1293,6 +1312,7 @@ interface AppGestionRouteRouteChildren {
   AppGestionAuditoriaRouteRoute: typeof AppGestionAuditoriaRouteRouteWithChildren
   AppGestionIndicadoresRoute: typeof AppGestionIndicadoresRoute
   AppGestionPerfilRoute: typeof AppGestionPerfilRoute
+  AppGestionTestErrorRoute: typeof AppGestionTestErrorRoute
   AppGestionIndexRoute: typeof AppGestionIndexRoute
   AppGestionCasosSolicitudIdRouteRoute: typeof AppGestionCasosSolicitudIdRouteRouteWithChildren
   AppGestionCentrosCentroIdRouteRoute: typeof AppGestionCentrosCentroIdRouteRouteWithChildren
@@ -1321,6 +1341,7 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionAuditoriaRouteRoute: AppGestionAuditoriaRouteRouteWithChildren,
   AppGestionIndicadoresRoute: AppGestionIndicadoresRoute,
   AppGestionPerfilRoute: AppGestionPerfilRoute,
+  AppGestionTestErrorRoute: AppGestionTestErrorRoute,
   AppGestionIndexRoute: AppGestionIndexRoute,
   AppGestionCasosSolicitudIdRouteRoute:
     AppGestionCasosSolicitudIdRouteRouteWithChildren,
