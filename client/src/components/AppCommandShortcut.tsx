@@ -1,40 +1,40 @@
-import React from "react"
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { useEffect, useState } from "react"
+import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Link } from "@tanstack/react-router"
-import { Icon3dCubeSphere, IconKey as KeyRound, IconSquare as Square, IconUser as User } from "@tabler/icons-react"
+import { Icon3dCubeSphere, IconKey, IconUser } from "@tabler/icons-react"
 
 const navigationItemsCustom = [
   {
     title: "Onboarding",
     url: "/auth/onboarding",
-    icon: KeyRound, 
+    icon: IconKey,
   },
   {
     title: "Crear Cuenta",
     url: "/auth/signup",
-    icon: KeyRound,
+    icon: IconKey,
   },
   {
     title: "Iniciar Sesión",
     url: "/auth/login",
-    icon: KeyRound,
+    icon: IconKey,
   },
   {
     title: "Perfil",
     url: "/dashboard/profile",
-    icon: User,
+    icon: IconUser,
   },
   {
     title: "Base Path",
     url: "/",
-    icon: Square
+    icon: Icon3dCubeSphere,
   }
 ]
 
-export function CommandMenu() {
-  const [open, setOpen] = React.useState(false)
+export default function AppCommandShortcut() {
+  const [open, setOpen] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
@@ -47,29 +47,22 @@ export function CommandMenu() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Escribe o busca un comando" />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Comandos de aplicación">
-          {navigationItemsCustom.map((item) => (
-            <CommandItem key={item.title} asChild>
-              <Link to={item.url} className="flex items-center gap-2">
-                <item.icon className="w-4 h-4" />
-                <span>{item.title}</span>
-              </Link>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandGroup heading="Links de navegación">
-            <CommandItem asChild>
-              <Link to="/" className="flex items-center gap-2">
-                <Icon3dCubeSphere className="w-4 h-4" />
-                <span>test</span>
-              </Link>
-            </CommandItem>
-        </CommandGroup>
-      </CommandList>
+      <Command>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Comandos de aplicación">
+            {navigationItemsCustom.map((item) => (
+              <CommandItem key={item.title} asChild>
+                <Link to={item.url} className="flex items-center gap-2">
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.title}</span>
+                </Link>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
     </CommandDialog>
   )
 }
