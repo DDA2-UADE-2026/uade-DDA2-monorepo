@@ -1,6 +1,8 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
+import { RouteErrorPage } from '@/components/errors/RouteErrorPage';
+
 const SideRaysBackground = lazy(() => import('@/components/visual/SideRaysBackground'));
 const ComunasMapPanel = lazy(() => import('@/components/auth/ComunasMapPanel'));
 const MAP_BREAKPOINT = '(min-width: 768px)';
@@ -24,6 +26,7 @@ function useShowMapPanel() {
 
 export const Route = createFileRoute('/_auth')({
   component: AuthLayout,
+  errorComponent: RouteErrorPage,
 });
 
 function AuthLayout() {
