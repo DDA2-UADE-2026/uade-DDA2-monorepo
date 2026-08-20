@@ -5,14 +5,8 @@ import type { QueryClient } from '@tanstack/react-query'
 import { AppLoadingBar } from '@/components/AppLoadingBar'
 import { RouteErrorPage } from '@/components/errors/RouteErrorPage'
 import { Toaster } from 'sonner'
-import { lazy, Suspense, type JSX, createElement } from 'react'
-
-let CommandMenu: React.LazyExoticComponent<() => JSX.Element> | null = null
-if (import.meta.env.DEV) {
-  CommandMenu = lazy(() => import('@/components/AppCommandShortcut').then(module => ({
-    default: () => createElement(module.CommandMenu || module)
-  })))
-}
+import { Suspense, lazy } from 'react'
+const AppCommandShortcut = lazy(() => import('@/components/AppCommandShortcut'))
 
 interface RouterContext {
   queryClient: QueryClient
@@ -23,11 +17,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
       <AppLoadingBar />
-      {CommandMenu && (
-        <Suspense fallback={null}>
-          <CommandMenu />
+        <Suspense fallback={<></>}>
+          <AppCommandShortcut />
         </Suspense>
-      )}
       <Outlet />
       <TanStackRouterDevtools />
       <ReactQueryDevtools />
