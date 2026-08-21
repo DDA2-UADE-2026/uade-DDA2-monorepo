@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
-import { IconEye, IconEyeOff, IconId, IconLock, IconMail, IconUser } from "@tabler/icons-react"
+import { IconEye, IconEyeOff, IconId, IconLock, IconMail, IconUser, IconUserPlus } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
 import { registerSchema } from "@/components/auth/schemas"
@@ -38,6 +38,7 @@ function RegisterForm() {
     <AuthCard
       title="Creá tu cuenta"
       description="Completá tus datos para empezar a usarla."
+      icon={IconUserPlus}
       footer={
         <>
           <Button type="submit" form="register-form" className="w-full">
