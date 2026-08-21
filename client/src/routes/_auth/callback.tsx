@@ -1,8 +1,8 @@
 import { useEffect } from "react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { IconLoader2 } from "@tabler/icons-react"
+import { IconLoader2, IconShieldCheck } from "@tabler/icons-react"
 
-import { AuthBrand } from "@/components/auth/AuthBrand"
+import { AuthCard } from "@/components/auth/AuthCard"
 
 export const Route = createFileRoute("/_auth/callback")({
   component: RouteComponent,
@@ -24,12 +24,14 @@ function RouteComponent() {
   }, [navigate])
 
   return (
-    <div className="flex w-full flex-col items-center gap-6 text-center">
-      <AuthBrand />
-      <div className="flex flex-col items-center gap-3">
+    <AuthCard
+      title="Verificando tu sesión"
+      description="Te estamos redirigiendo, un momento…"
+      icon={IconShieldCheck}
+    >
+      <div className="flex flex-col items-center gap-3 py-2">
         <IconLoader2 className="size-6 animate-spin text-muted-foreground" aria-hidden="true" />
-        <p className="text-sm text-muted-foreground">Verificando tu sesión, te estamos redirigiendo…</p>
       </div>
-    </div>
+    </AuthCard>
   )
 }

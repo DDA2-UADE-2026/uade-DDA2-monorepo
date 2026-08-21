@@ -12,7 +12,7 @@ function SiteHeader() {
           to="/"
           className={"relative flex items-center gap-2 sm:gap-3 font-heading text-sm font-semibold"}>
           <AppLogoIconThemed className="h-8 z-60" />
-          <AppLogoTitleThemed className="h-9 z-60" />
+          <AppLogoTitleThemed className="h-8 z-60" />
           <span className="z-55 absolute -left-10 -top-6 h-12 dark:bg-blue-700 bg-blue-500/80 blur-2xl bottom-0 w-20"></span>
         </Link>
         <div className="flex items-center gap-2">
