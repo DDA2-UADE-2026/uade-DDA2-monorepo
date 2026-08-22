@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
-import { IconEye, IconEyeOff, IconId, IconLock, IconUser } from "@tabler/icons-react"
+import { IconEye, IconEyeOff, IconId, IconLock, IconLogin2, IconUser } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
 import { loginSchema } from "@/components/auth/schemas"
@@ -36,6 +36,7 @@ function LoginForm() {
     <AuthCard
       title="Iniciar sesión"
       description="Ingresá tus credenciales para acceder a tu cuenta."
+      icon={IconLogin2}
       footer={
         <>
           <Button type="submit" form="login-form" className="w-full">

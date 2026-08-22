@@ -14,8 +14,8 @@ function AppSidebarHeader() {
         <AppLogoIconThemed className="shrink-0 z-10! h-6.5" />
         <AppLogoTitleThemed className="truncate z-15! h-7" />
       </Link>
-      <span className="absolute -bottom-3 left-1/2 -translate-1/2 h-6 w-36 z-0
-        blur-xl bg-emerald-400 dark:bg-emerald-400 opacity-40 dark:opacity-60"/>
+      <span className="absolute -bottom-3 left-1/2 -translate-1/2 h-5 w-40 z-0
+        blur-xl bg-blue-400 dark:bg-blue-500 opacity-75"/>
     </SidebarHeader>
   )
 }

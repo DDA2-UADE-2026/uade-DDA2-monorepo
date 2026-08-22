@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "@tanstack/react-router"
-import { IconBuildingCommunity, IconCircleCheck, IconLogout, IconUsers } from "@tabler/icons-react"
+import { IconBuildingCommunity, IconCircleCheck, IconLogout, IconUsers, IconUserCog } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,7 @@ function RoleSwitcher() {
     <AuthCard
       title="Elegí cómo continuar"
       description="Tu cuenta tiene acceso a más de un rol."
+      icon={IconUserCog}
       className="sm:max-w-lg"
       footer={
         <>
