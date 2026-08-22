@@ -5,9 +5,9 @@ spring:
   application:
     name: social-development-api
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/db_template}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     hikari:
       maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
@@ -59,3 +59,5 @@ app:
     allowed-origins:
       - ${CORS_ALLOWED_ORIGIN_1:http://localhost:3000}
       - ${CORS_ALLOWED_ORIGIN_2:http://127.0.0.1:3000}
+      - ${CORS_ALLOWED_ORIGIN_3}
+      - ${CORS_ALLOWED_ORIGIN_4}
