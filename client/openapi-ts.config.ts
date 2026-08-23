@@ -5,5 +5,6 @@ export default {
     '@hey-api/client-fetch',
     '@hey-api/sdk',
     '@tanstack/react-query',
+    'zod',
   ],
 }
