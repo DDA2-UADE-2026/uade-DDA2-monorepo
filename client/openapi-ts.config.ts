@@ -1,6 +1,6 @@
 export default {
-  input: 'http://localhost:8080/v3/api-docs', // TODO: Wire a implementacion real
-  output: 'src/api/generated',
+  input: 'https://api-muni-uade-dev.fabriziob.com/api-docs',
+  output: 'src/generated',
   plugins: [
     '@hey-api/client-fetch',
     '@hey-api/sdk',
