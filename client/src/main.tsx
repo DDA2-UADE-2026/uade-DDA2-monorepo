@@ -21,6 +21,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
+console.log("Current environment: ", import.meta.env.MODE)
 console.log("Using server URL: ", import.meta.env.VITE_SERVER_URL)
 console.log("Using client URL: ", import.meta.env.VITE_CLIENT_URL)
 
