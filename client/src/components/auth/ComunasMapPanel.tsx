@@ -1,42 +1,49 @@
-import { useState } from 'react';
+import { Suspense, lazy } from 'react';
 import { IconMapPin } from '@tabler/icons-react';
 
-import { ComunasDotMap, type MapFeature } from '@/components/visual/ComunasDotMap';
 import { useIpLocation } from '@/hooks/use-ip-city';
 
+const ArgentinaLocationMap = lazy(() =>
+  import('@/components/visual/ArgentinaLocationMap').then((module) => ({
+    default: module.ArgentinaLocationMap,
+  })),
+);
+
 export default function ComunasMapPanel() {
-  const [active, setActive] = useState<MapFeature | null>(null);
-  const { city: ipCity } = useIpLocation();
+  const ipLocation = useIpLocation();
 
   return (
-    <div aria-hidden className="dark pointer-events-none relative h-full w-full overflow-hidden bg-background">
-      <ComunasDotMap
-        className="absolute inset-0"
-        onActiveChange={(feature) => setActive(feature)}
-      />
+    <div
+      aria-hidden
+      className="dark pointer-events-none relative h-full w-full overflow-hidden bg-background"
+    >
+      <Suspense fallback={<div className="absolute inset-0 bg-zinc-950" />}>
+        <ArgentinaLocationMap
+          className="absolute inset-0"
+          location={ipLocation}
+        />
+      </Suspense>
 
-      {ipCity ? (
-        <div className="absolute inset-x-4 top-4 sm:inset-x-6 sm:top-6 md:inset-x-10 md:top-10 lg:inset-x-14 lg:top-14">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background/40 px-3 py-1.5 text-xs text-foreground/70 backdrop-blur-sm">
-            <IconMapPin className="size-3.5 shrink-0" />
-            <span>Estás conectado cerca de {ipCity}</span>
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-zinc-950/90 via-zinc-950/35 to-transparent sm:h-1/2" />
+      <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-zinc-950/25 to-transparent" />
+
+      <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6 md:inset-x-8 md:bottom-8 lg:inset-x-12 lg:bottom-12">
+        <div className="max-w-xs rounded-2xl bg-zinc-950/45 p-4 text-white shadow-2xl backdrop-blur-sm">
+          <div className="flex items-center gap-3.5">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-500 text-white">
+              <IconMapPin className="size-5" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase text-blue-300">
+                Tu ubicación aproximada
+              </p>
+              <p className="truncate text-base font-semibold text-white translate-y-px">
+                {ipLocation.city}, {ipLocation.region}
+              </p>
+            </div>
           </div>
         </div>
-      ) : null}
-
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background/60 via-background/40 to-transparent sm:h-1/2" />
-
-      {active ? (
-        <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6 md:inset-x-10 md:bottom-10 lg:inset-x-14 lg:bottom-14">
-          <p className="-mb-8 select-none text-[4.5rem] font-bold leading-none text-foreground/8 sm:-mb-15 sm:text-[7rem] md:-mb-17 md:text-[10rem] lg:-mb-20 lg:text-[12rem] dark:text-foreground/5">
-            {active.id.padStart(2, '0')}
-          </p>
-          <p className="text-base font-medium text-foreground sm:text-lg md:text-xl">Comuna {active.id}</p>
-          <p className="mt-1 line-clamp-2 max-w-xs text-sm text-muted-foreground sm:max-w-sm md:max-w-md lg:max-w-lg">
-            {active.sublabels.join(', ')}
-          </p>
-        </div>
-      ) : null}
+      </div>
     </div>
   );
 }

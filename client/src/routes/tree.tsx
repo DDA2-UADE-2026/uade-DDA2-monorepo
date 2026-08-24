@@ -98,7 +98,7 @@ function TreeColumn({
             rel="noopener noreferrer"
             className="group flex items-center gap-4 rounded-2xl border border-border bg-card/60 p-4 backdrop-blur-md transition-colors hover:border-primary/40 hover:bg-card/80"
           >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 border-border border">
               <LinkIcon className="size-5" />
             </span>
             <span className="flex flex-1 flex-col gap-0.5">
