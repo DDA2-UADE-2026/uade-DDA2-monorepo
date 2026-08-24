@@ -2,9 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { z } from 'zod'
+import { es } from 'zod/locales'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { TooltipProvider } from "@/components/ui/tooltip"
 import './index.css'
+
+z.config(es())
 
 const queryClient = new QueryClient()
 
@@ -20,6 +24,10 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
+
+console.log("Current environment: ", import.meta.env.MODE)
+console.log("Using server URL: ", import.meta.env.VITE_SERVER_URL)
+console.log("Using client URL: ", import.meta.env.VITE_CLIENT_URL)
 
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {

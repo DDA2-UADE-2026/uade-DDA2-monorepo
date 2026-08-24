@@ -1,10 +1,9 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
-import { Link } from "@tanstack/react-router"
 import { IconEye, IconEyeOff, IconId, IconLock, IconLogin2, IconUser } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
-import { loginSchema } from "@/components/auth/schemas"
+import { zLoginRequest } from "@/generated/zod.gen"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import {
@@ -24,7 +23,7 @@ function LoginForm() {
       password: "",
     },
     validators: {
-      onChange: loginSchema,
+      onChange: zLoginRequest,
     },
     onSubmit: async ({ value }) => {
       // TODO: wire up to the real auth API once it's available.
@@ -38,17 +37,9 @@ function LoginForm() {
       description="Ingresá tus credenciales para acceder a tu cuenta."
       icon={IconLogin2}
       footer={
-        <>
-          <Button type="submit" form="login-form" className="w-full">
-            Iniciar sesión
-          </Button>
-          <p className="text-center text-sm text-muted-foreground">
-            ¿No tenés cuenta?{" "}
-            <Link to="/register" className="font-medium text-foreground underline-offset-4 hover:underline">
-              Registrate
-            </Link>
-          </p>
-        </>
+        <Button type="submit" form="login-form" className="w-full">
+          Iniciar sesión
+        </Button>
       }
     >
       <Button
