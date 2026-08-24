@@ -133,6 +133,10 @@
   html {
     @apply font-sans;
     }
+
+  * {
+    scrollbar-width: thin;
+  }
 }
 
 .typeset-docs {
