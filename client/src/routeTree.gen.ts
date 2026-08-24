@@ -14,6 +14,7 @@ import { Route as R403RouteImport } from "./routes/403"
 import { Route as R404RouteImport } from "./routes/404"
 import { Route as AppRouteRouteImport } from "./routes/_app/route"
 import { Route as AuthRouteRouteImport } from "./routes/_auth/route"
+import { Route as TreeRouteImport } from "./routes/tree"
 import { Route as AppGestionRouteRouteImport } from "./routes/_app/gestion/route"
 import { Route as AppPortalRouteRouteImport } from "./routes/_app/portal/route"
 import { Route as AuthCallbackRouteImport } from "./routes/_auth/callback"
@@ -93,6 +94,11 @@ const AppRouteRoute = AppRouteRouteImport.update({
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: "/_auth",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TreeRoute = TreeRouteImport.update({
+  id: "/tree",
+  path: "/tree",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppGestionRouteRoute = AppGestionRouteRouteImport.update({
@@ -419,6 +425,7 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/403": typeof R403Route
   "/404": typeof R404Route
+  "/tree": typeof TreeRoute
   "/gestion": typeof AppGestionRouteRouteWithChildren
   "/portal": typeof AppPortalRouteRouteWithChildren
   "/callback": typeof AuthCallbackRoute
@@ -481,6 +488,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/403": typeof R403Route
   "/404": typeof R404Route
+  "/tree": typeof TreeRoute
   "/callback": typeof AuthCallbackRoute
   "/login": typeof AuthLoginRoute
   "/register": typeof AuthRegisterRoute
@@ -540,6 +548,7 @@ export interface FileRoutesById {
   "/_auth": typeof AuthRouteRouteWithChildren
   "/403": typeof R403Route
   "/404": typeof R404Route
+  "/tree": typeof TreeRoute
   "/_app/gestion": typeof AppGestionRouteRouteWithChildren
   "/_app/portal": typeof AppPortalRouteRouteWithChildren
   "/_auth/callback": typeof AuthCallbackRoute
@@ -604,6 +613,7 @@ export interface FileRouteTypes {
     | "/"
     | "/403"
     | "/404"
+    | "/tree"
     | "/gestion"
     | "/portal"
     | "/callback"
@@ -666,6 +676,7 @@ export interface FileRouteTypes {
     | "/"
     | "/403"
     | "/404"
+    | "/tree"
     | "/callback"
     | "/login"
     | "/register"
@@ -724,6 +735,7 @@ export interface FileRouteTypes {
     | "/_auth"
     | "/403"
     | "/404"
+    | "/tree"
     | "/_app/gestion"
     | "/_app/portal"
     | "/_auth/callback"
@@ -789,6 +801,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   R403Route: typeof R403Route
   R404Route: typeof R404Route
+  TreeRoute: typeof TreeRoute
 }
 
 declare module "@tanstack/react-router" {
@@ -826,6 +839,13 @@ declare module "@tanstack/react-router" {
       path: ""
       fullPath: "/"
       preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/tree": {
+      id: "/tree"
+      path: "/tree"
+      fullPath: "/tree"
+      preLoaderRoute: typeof TreeRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/_app/gestion": {
@@ -1453,6 +1473,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   R403Route: R403Route,
   R404Route: R404Route,
+  TreeRoute: TreeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
