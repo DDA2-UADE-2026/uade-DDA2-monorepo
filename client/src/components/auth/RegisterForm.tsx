@@ -1,12 +1,22 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
-import { IconEye, IconEyeOff, IconId, IconLock, IconMail, IconUser, IconUserPlus } from "@tabler/icons-react"
 import * as z from "zod"
-
 import { AuthCard } from "@/components/auth/AuthCard"
+import {
+  IconEye,
+  IconEyeOff,
+  IconId,
+  IconInfoCircle,
+  IconLock,
+  IconMail,
+  IconUser,
+  IconUserPlus,
+} from "@tabler/icons-react"
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
@@ -57,7 +67,7 @@ function RegisterForm() {
       icon={IconUserPlus}
       footer={
         <>
-          <Button type="submit" form="register-form" className="w-full">
+          <Button type="submit" form="register-form" className="w-full" disabled>
             Crear cuenta
           </Button>
           <p className="text-center text-sm text-muted-foreground">
@@ -69,6 +79,13 @@ function RegisterForm() {
         </>
       }
     >
+      <Alert className="mb-4">
+        <IconInfoCircle />
+        <AlertTitle>El registro está deshabilitado</AlertTitle>
+        <AlertDescription>
+          Por el momento no se pueden crear cuentas nuevas. Volvé a intentarlo más adelante.
+        </AlertDescription>
+      </Alert>
       <form
         id="register-form"
         onSubmit={(e) => {
@@ -77,7 +94,8 @@ function RegisterForm() {
           form.handleSubmit()
         }}
       >
-        <FieldGroup>
+        <FieldSet disabled>
+          <FieldGroup>
           <form.Field
             name="name"
             children={(field) => {
@@ -226,7 +244,8 @@ function RegisterForm() {
               )
             }}
           />
-        </FieldGroup>
+          </FieldGroup>
+        </FieldSet>
       </form>
     </AuthCard>
   )

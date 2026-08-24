@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { IconMapPin } from '@tabler/icons-react';
 
 import { ComunasDotMap, type MapFeature } from '@/components/visual/ComunasDotMap';
+import { useIpCity } from '@/hooks/use-ip-city';
 
 export default function ComunasMapPanel() {
   const [active, setActive] = useState<MapFeature | null>(null);
+  const ipCity = useIpCity();
 
   return (
     <div aria-hidden className="dark pointer-events-none relative h-full w-full overflow-hidden bg-background">
@@ -11,6 +14,15 @@ export default function ComunasMapPanel() {
         className="absolute inset-0"
         onActiveChange={(feature) => setActive(feature)}
       />
+
+      {ipCity ? (
+        <div className="absolute inset-x-4 top-4 sm:inset-x-6 sm:top-6 md:inset-x-10 md:top-10 lg:inset-x-14 lg:top-14">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background/40 px-3 py-1.5 text-xs text-foreground/70 backdrop-blur-sm">
+            <IconMapPin className="size-3.5 shrink-0" />
+            <span>Estás conectado cerca de {ipCity}</span>
+          </div>
+        </div>
+      ) : null}
 
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background/60 via-background/40 to-transparent sm:h-1/2" />
 
