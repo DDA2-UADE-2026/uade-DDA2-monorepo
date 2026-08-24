@@ -24,13 +24,17 @@ const FALLBACK_IP_LOCATION: IpLocation = {
 };
 
 async function fetchIpLocation(): Promise<IpLocation> {
+  if (import.meta.env.DEV) return FALLBACK_IP_LOCATION;
+
   try {
     const response = await fetch(`${CLIENT_URL}/cdn-cgi/trace`);
     if (!response.ok) return FALLBACK_IP_LOCATION;
 
     const headers = response.headers;
-    const latitude = Number(headers.get('acf-iplatitude'));
-    const longitude = Number(headers.get('acf-iplongitude'));
+    const latitudeHeader = headers.get('acf-iplatitude');
+    const longitudeHeader = headers.get('acf-iplongitude');
+    const latitude = latitudeHeader ? Number(latitudeHeader) : Number.NaN;
+    const longitude = longitudeHeader ? Number(longitudeHeader) : Number.NaN;
 
     return {
       city: headers.get('acf-ipcity') ?? FALLBACK_IP_LOCATION.city,
@@ -55,7 +59,17 @@ const ipLocationQueryOptions = queryOptions({
 });
 
 export function useIpLocation() {
-  const { data } = useQuery(ipLocationQueryOptions);
+  const { data, isFetched } = useQuery(ipLocationQueryOptions);
 
-  return data ?? FALLBACK_IP_LOCATION;
+  if (import.meta.env.DEV) {
+    return {
+      ...FALLBACK_IP_LOCATION,
+      isResolved: true,
+    };
+  }
+
+  return {
+    ...(data ?? FALLBACK_IP_LOCATION),
+    isResolved: isFetched,
+  };
 }
