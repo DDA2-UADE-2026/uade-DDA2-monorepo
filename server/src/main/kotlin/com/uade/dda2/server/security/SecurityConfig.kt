@@ -19,12 +19,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val securityErrorResponseWriter: SecurityErrorResponseWriter,
+    private val corsProperties: CorsProperties,
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain =
         http
             .csrf { it.disable() }
             .cors { }
+            .headers { headers ->
+                headers.frameOptions { it.disable() }
+                headers.contentSecurityPolicy { csp ->
+                    val frameAncestors = (listOf("'self'") + corsProperties.nonBlankOrigins).joinToString(" ")
+                    csp.policyDirectives("frame-ancestors $frameAncestors")
+                }
+            }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .exceptionHandling {
                 it.authenticationEntryPoint { request, response, _ ->
@@ -61,7 +69,7 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(corsProperties: CorsProperties): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = corsProperties.allowedOrigins
+            allowedOrigins = corsProperties.nonBlankOrigins
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Authorization", "Content-Type")
             exposedHeaders = listOf("Authorization")
