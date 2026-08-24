@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import {
   IconArrowUpRight,
   IconBolt,
@@ -9,6 +9,7 @@ import {
 } from "@tabler/icons-react"
 
 import { BackendStatusPill } from "@/components/BackendStatusPill"
+import { ThemeToggle } from "@/components/ThemeToggle"
 import AppLogoIconThemed from "@/components/branding/AppLogoIconThemed"
 import AppLogoTitleThemed from "@/components/branding/AppLogoTitleThemed"
 import { cn } from "@/lib/utils"
@@ -135,9 +136,12 @@ function RouteComponent() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-10 px-6 py-16 sm:py-20">
         <div className="flex flex-col items-start gap-5 lg:flex-row-reverse lg:items-center lg:justify-between">
-          <div className="flex items-center gap-3">
-            <AppLogoIconThemed className="h-14" />
-            <AppLogoTitleThemed className="h-14" />
+          <div className="flex items-center gap-4">
+            <Link to="/" aria-label="Ir al inicio" className="flex items-center gap-3">
+              <AppLogoIconThemed className="h-14" />
+              <AppLogoTitleThemed className="h-14" />
+            </Link>
+            <ThemeToggle />
           </div>
           <div className="flex flex-col gap-1 text-left">
             <h1 className="text-balance font-heading text-3xl font-semibold tracking-tight sm:text-4xl">

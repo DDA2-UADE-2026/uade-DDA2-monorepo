@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { IconMapPin } from '@tabler/icons-react';
 
 import { ComunasDotMap, type MapFeature } from '@/components/visual/ComunasDotMap';
-import { useIpCity } from '@/hooks/use-ip-city';
+import { useIpLocation } from '@/hooks/use-ip-city';
 
 export default function ComunasMapPanel() {
   const [active, setActive] = useState<MapFeature | null>(null);
-  const ipCity = useIpCity();
+  const { city: ipCity } = useIpLocation();
 
   return (
     <div aria-hidden className="dark pointer-events-none relative h-full w-full overflow-hidden bg-background">
