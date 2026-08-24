@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
+import { BackendStatusPill } from '@/components/BackendStatusPill';
 import { RouteErrorPage } from '@/components/errors/RouteErrorPage';
 
 const SideRaysBackground = lazy(() => import('@/components/visual/SideRaysBackground'));
@@ -52,7 +53,10 @@ function AuthLayout() {
             />
           </Suspense>
         </div>
-        <Outlet />
+        <div className="flex w-full flex-col items-center gap-4">
+          <Outlet />
+          <BackendStatusPill />
+        </div>
       </main>
 
       {showMap ? (

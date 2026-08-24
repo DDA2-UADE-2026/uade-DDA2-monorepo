@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { queryOptions, useQuery } from "@tanstack/react-query"
 import { IconCircleCheck, IconCircleX, IconLoader2 } from "@tabler/icons-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { PageHeader } from "@/components/layout/PageHeader"
+import { useBackendHealth } from "@/hooks/use-backend-health"
 
 export const Route = createFileRoute("/_app/gestion/debug/estado-red")({
   component: RouteComponent,
@@ -11,26 +11,10 @@ export const Route = createFileRoute("/_app/gestion/debug/estado-red")({
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL
 
-async function fetchBackendHealth(): Promise<{ status: string }> {
-  const response = await fetch(`${SERVER_URL}/actuator/health`)
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`)
-  }
-  return response.json()
-}
-
-const backendHealthQueryOptions = queryOptions({
-  queryKey: ["debug", "estado-red", "backend"],
-  queryFn: fetchBackendHealth,
-  retry: false,
-})
-
 // TODO: hoy solo chequea el backend principal. Sumar acá el resto de los
 // módulos/servicios a medida que existan.
 function RouteComponent() {
-  const { data, isPending, isError, error } = useQuery({
-    ...backendHealthQueryOptions,
-  })
+  const { data, isPending, isError, error } = useBackendHealth()
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -56,7 +40,7 @@ function RouteComponent() {
           ) : (
             <>
               <IconCircleCheck className="size-4 text-emerald-500" />
-              <span className="text-sm">{data.status}</span>
+              <span className="text-sm">{String(data.status ?? "UP")}</span>
             </>
           )}
         </CardContent>
