@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { IconBuildingCommunity, IconChevronRight, IconLogout, IconUsers, IconUserCog } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
 import { Button } from "@/components/ui/button"
+import { useLogout } from "@/hooks/use-auth"
 
 // Fake roles for now — a real user could come back from the API with one
 // role (skip this screen) or several (show only the ones they actually have).
@@ -25,6 +26,7 @@ const ROLES = [
 
 function RoleSwitcher() {
   const navigate = useNavigate()
+  const logout = useLogout()
 
   return (
     <AuthCard
@@ -33,7 +35,14 @@ function RoleSwitcher() {
       icon={IconUserCog}
       className="sm:max-w-lg"
       footer={
-        <Button variant="destructive" className="w-full" render={<Link to="/login" />}>
+        <Button
+          variant="destructive"
+          className="w-full"
+          onClick={() => {
+            logout()
+            navigate({ to: "/login" })
+          }}
+        >
           <IconLogout />
           Cerrar sesión y cambiar de cuenta
         </Button>

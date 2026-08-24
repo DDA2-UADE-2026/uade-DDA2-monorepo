@@ -11,6 +11,7 @@ import {
   IconUser,
 } from "@tabler/icons-react"
 
+import { useMe } from "@/hooks/use-auth"
 import { cn } from "@/lib/utils"
 
 const MOCK_CASOS = [
@@ -46,6 +47,10 @@ const NAV_ICONS = [
 
 /** Decorative phone-frame mock of the app's "Mis programas sociales" screen. */
 function AppPhoneMock() {
+  const { data } = useMe()
+  const user = data?.user
+  const firstName = (user?.name || user?.username)?.split(" ")[0]
+
   return (
     <div
       className="relative mx-auto flex h-[39rem] w-full max-w-[31rem] select-none items-center justify-center sm:h-[42rem]"
@@ -95,7 +100,7 @@ function AppPhoneMock() {
           <div className="flex h-[35rem] flex-col bg-[linear-gradient(180deg,color-mix(in_oklab,var(--primary)_8%,var(--background))_0%,var(--background)_34%)] px-4 pb-4 pt-12 sm:h-[38rem] sm:px-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-medium text-primary">Hola, Sofía</p>
+                <p className="text-[10px] font-medium text-primary">Hola, {firstName || "Sofía"}</p>
                 <p className="font-heading text-base font-semibold tracking-tight">Tu espacio social</p>
               </div>
               <span className="relative flex size-9 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm ring-1 ring-border">

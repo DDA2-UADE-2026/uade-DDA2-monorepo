@@ -44,7 +44,8 @@ export default defineConfig(({ mode }) => {
               changeOrigin: true,
               rewrite: (path) => path.replace(/^\/proxy/, ''),
               configure: (proxy) => {
-                proxy.on('proxyReq', (_proxyReq, req) => {
+                proxy.on('proxyReq', (proxyReq, req) => {
+                  proxyReq.removeHeader('origin')
                   console.log(`[proxy] -> ${req.method} ${req.url}`)
                 })
                 proxy.on('proxyRes', (proxyRes, req) => {

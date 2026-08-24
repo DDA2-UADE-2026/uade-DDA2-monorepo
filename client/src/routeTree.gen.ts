@@ -17,9 +17,8 @@ import { Route as AuthRouteRouteImport } from "./routes/_auth/route"
 import { Route as TreeRouteImport } from "./routes/tree"
 import { Route as AppGestionRouteRouteImport } from "./routes/_app/gestion/route"
 import { Route as AppPortalRouteRouteImport } from "./routes/_app/portal/route"
+import { Route as AuthGuestRouteRouteImport } from "./routes/_auth/_guest/route"
 import { Route as AuthCallbackRouteImport } from "./routes/_auth/callback"
-import { Route as AuthLoginRouteImport } from "./routes/_auth/login"
-import { Route as AuthRegisterRouteImport } from "./routes/_auth/register"
 import { Route as AuthSeleccionarRolRouteImport } from "./routes/_auth/seleccionar-rol"
 import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index"
 import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
@@ -28,6 +27,8 @@ import { Route as AppGestionPerfilRouteImport } from "./routes/_app/gestion/perf
 import { Route as AppGestionTestErrorRouteImport } from "./routes/_app/gestion/test-error"
 import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
 import { Route as AppPortalPerfilRouteImport } from "./routes/_app/portal/perfil"
+import { Route as AuthGuestLoginRouteImport } from "./routes/_auth/_guest/login"
+import { Route as AuthGuestRegisterRouteImport } from "./routes/_auth/_guest/register"
 import { Route as AppGestionAuditoriaIndexRouteImport } from "./routes/_app/gestion/auditoria/index"
 import { Route as AppGestionAuditoriaDlqRouteImport } from "./routes/_app/gestion/auditoria/dlq"
 import { Route as AppGestionAuditoriaEventosRouteImport } from "./routes/_app/gestion/auditoria/eventos"
@@ -111,19 +112,13 @@ const AppPortalRouteRoute = AppPortalRouteRouteImport.update({
   path: "/portal",
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AuthGuestRouteRoute = AuthGuestRouteRouteImport.update({
+  id: "/_guest",
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: "/callback",
   path: "/callback",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: "/login",
-  path: "/login",
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: "/register",
-  path: "/register",
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthSeleccionarRolRoute = AuthSeleccionarRolRouteImport.update({
@@ -166,6 +161,16 @@ const AppPortalPerfilRoute = AppPortalPerfilRouteImport.update({
   id: "/perfil",
   path: "/perfil",
   getParentRoute: () => AppPortalRouteRoute,
+} as any)
+const AuthGuestLoginRoute = AuthGuestLoginRouteImport.update({
+  id: "/login",
+  path: "/login",
+  getParentRoute: () => AuthGuestRouteRoute,
+} as any)
+const AuthGuestRegisterRoute = AuthGuestRegisterRouteImport.update({
+  id: "/register",
+  path: "/register",
+  getParentRoute: () => AuthGuestRouteRoute,
 } as any)
 const AppGestionAuditoriaIndexRoute =
   AppGestionAuditoriaIndexRouteImport.update({
@@ -429,14 +434,14 @@ export interface FileRoutesByFullPath {
   "/gestion": typeof AppGestionRouteRouteWithChildren
   "/portal": typeof AppPortalRouteRouteWithChildren
   "/callback": typeof AuthCallbackRoute
-  "/login": typeof AuthLoginRoute
-  "/register": typeof AuthRegisterRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/gestion/perfil": typeof AppGestionPerfilRoute
   "/gestion/test-error": typeof AppGestionTestErrorRoute
   "/portal/perfil": typeof AppPortalPerfilRoute
+  "/login": typeof AuthGuestLoginRoute
+  "/register": typeof AuthGuestRegisterRoute
   "/gestion/": typeof AppGestionIndexRoute
   "/portal/": typeof AppPortalIndexRoute
   "/gestion/casos/$solicitudId": typeof AppGestionCasosSolicitudIdRouteRouteWithChildren
@@ -490,13 +495,13 @@ export interface FileRoutesByTo {
   "/404": typeof R404Route
   "/tree": typeof TreeRoute
   "/callback": typeof AuthCallbackRoute
-  "/login": typeof AuthLoginRoute
-  "/register": typeof AuthRegisterRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/gestion/perfil": typeof AppGestionPerfilRoute
   "/gestion/test-error": typeof AppGestionTestErrorRoute
   "/portal/perfil": typeof AppPortalPerfilRoute
+  "/login": typeof AuthGuestLoginRoute
+  "/register": typeof AuthGuestRegisterRoute
   "/gestion": typeof AppGestionIndexRoute
   "/portal": typeof AppPortalIndexRoute
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
@@ -551,15 +556,16 @@ export interface FileRoutesById {
   "/tree": typeof TreeRoute
   "/_app/gestion": typeof AppGestionRouteRouteWithChildren
   "/_app/portal": typeof AppPortalRouteRouteWithChildren
+  "/_auth/_guest": typeof AuthGuestRouteRouteWithChildren
   "/_auth/callback": typeof AuthCallbackRoute
-  "/_auth/login": typeof AuthLoginRoute
-  "/_auth/register": typeof AuthRegisterRoute
   "/_auth/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
   "/_app/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/_app/gestion/perfil": typeof AppGestionPerfilRoute
   "/_app/gestion/test-error": typeof AppGestionTestErrorRoute
   "/_app/portal/perfil": typeof AppPortalPerfilRoute
+  "/_auth/_guest/login": typeof AuthGuestLoginRoute
+  "/_auth/_guest/register": typeof AuthGuestRegisterRoute
   "/_app/gestion/": typeof AppGestionIndexRoute
   "/_app/portal/": typeof AppPortalIndexRoute
   "/_app/gestion/casos/$solicitudId": typeof AppGestionCasosSolicitudIdRouteRouteWithChildren
@@ -617,14 +623,14 @@ export interface FileRouteTypes {
     | "/gestion"
     | "/portal"
     | "/callback"
-    | "/login"
-    | "/register"
     | "/seleccionar-rol"
     | "/gestion/auditoria"
     | "/gestion/indicadores"
     | "/gestion/perfil"
     | "/gestion/test-error"
     | "/portal/perfil"
+    | "/login"
+    | "/register"
     | "/gestion/"
     | "/portal/"
     | "/gestion/casos/$solicitudId"
@@ -678,13 +684,13 @@ export interface FileRouteTypes {
     | "/404"
     | "/tree"
     | "/callback"
-    | "/login"
-    | "/register"
     | "/seleccionar-rol"
     | "/gestion/indicadores"
     | "/gestion/perfil"
     | "/gestion/test-error"
     | "/portal/perfil"
+    | "/login"
+    | "/register"
     | "/gestion"
     | "/portal"
     | "/gestion/auditoria/dlq"
@@ -738,15 +744,16 @@ export interface FileRouteTypes {
     | "/tree"
     | "/_app/gestion"
     | "/_app/portal"
+    | "/_auth/_guest"
     | "/_auth/callback"
-    | "/_auth/login"
-    | "/_auth/register"
     | "/_auth/seleccionar-rol"
     | "/_app/gestion/auditoria"
     | "/_app/gestion/indicadores"
     | "/_app/gestion/perfil"
     | "/_app/gestion/test-error"
     | "/_app/portal/perfil"
+    | "/_auth/_guest/login"
+    | "/_auth/_guest/register"
     | "/_app/gestion/"
     | "/_app/portal/"
     | "/_app/gestion/casos/$solicitudId"
@@ -862,25 +869,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppPortalRouteRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    "/_auth/_guest": {
+      id: "/_auth/_guest"
+      path: ""
+      fullPath: "/"
+      preLoaderRoute: typeof AuthGuestRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     "/_auth/callback": {
       id: "/_auth/callback"
       path: "/callback"
       fullPath: "/callback"
       preLoaderRoute: typeof AuthCallbackRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    "/_auth/login": {
-      id: "/_auth/login"
-      path: "/login"
-      fullPath: "/login"
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    "/_auth/register": {
-      id: "/_auth/register"
-      path: "/register"
-      fullPath: "/register"
-      preLoaderRoute: typeof AuthRegisterRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     "/_auth/seleccionar-rol": {
@@ -938,6 +938,20 @@ declare module "@tanstack/react-router" {
       fullPath: "/portal/perfil"
       preLoaderRoute: typeof AppPortalPerfilRouteImport
       parentRoute: typeof AppPortalRouteRoute
+    }
+    "/_auth/_guest/login": {
+      id: "/_auth/_guest/login"
+      path: "/login"
+      fullPath: "/login"
+      preLoaderRoute: typeof AuthGuestLoginRouteImport
+      parentRoute: typeof AuthGuestRouteRoute
+    }
+    "/_auth/_guest/register": {
+      id: "/_auth/_guest/register"
+      path: "/register"
+      fullPath: "/register"
+      preLoaderRoute: typeof AuthGuestRegisterRouteImport
+      parentRoute: typeof AuthGuestRouteRoute
     }
     "/_app/gestion/auditoria/": {
       id: "/_app/gestion/auditoria/"
@@ -1449,17 +1463,29 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
+interface AuthGuestRouteRouteChildren {
+  AuthGuestLoginRoute: typeof AuthGuestLoginRoute
+  AuthGuestRegisterRoute: typeof AuthGuestRegisterRoute
+}
+
+const AuthGuestRouteRouteChildren: AuthGuestRouteRouteChildren = {
+  AuthGuestLoginRoute: AuthGuestLoginRoute,
+  AuthGuestRegisterRoute: AuthGuestRegisterRoute,
+}
+
+const AuthGuestRouteRouteWithChildren = AuthGuestRouteRoute._addFileChildren(
+  AuthGuestRouteRouteChildren,
+)
+
 interface AuthRouteRouteChildren {
+  AuthGuestRouteRoute: typeof AuthGuestRouteRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
   AuthSeleccionarRolRoute: typeof AuthSeleccionarRolRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthGuestRouteRoute: AuthGuestRouteRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
   AuthSeleccionarRolRoute: AuthSeleccionarRolRoute,
 }
 
