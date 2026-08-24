@@ -189,9 +189,7 @@ export function ArgentinaLocationMap({
       <div
         className={cn(
           'pointer-events-none absolute left-1/2 top-1/2 mt-30 flex -translate-x-1/2 items-center gap-3 text-white transition-all duration-700',
-          showLocationLabel
-            ? 'translate-y-0 opacity-100'
-            : 'translate-y-2 opacity-0',
+          showLocationLabel ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0',
         )}
       >
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg shadow-blue-950/40">
@@ -207,7 +205,20 @@ export function ArgentinaLocationMap({
         </div>
       </div>
 
-      <p className="pointer-events-none absolute right-4 top-4 text-[9px] font-medium tracking-wide text-white/45 md:right-6 md:top-6">
+      <div
+        className={cn(
+          'pointer-events-none absolute left-1/2 top-1/2 -mt-38 flex -translate-x-1/2 items-center gap-3 text-white transition-all duration-700',
+          showLocationLabel ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0',
+        )}
+      >
+        <div className="whitespace-nowrap [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-200">
+            Conectado desde
+          </p>
+        </div>
+      </div>
+
+      <p className="pointer-events-none absolute bottom-4 md:bottom-6 left-4 md:left-6 right-4 md:right-6 text-[9px] font-medium text-white/80 text-center">
         © OpenFreeMap · © OpenMapTiles · © OpenStreetMap contributors
       </p>
     </div>
