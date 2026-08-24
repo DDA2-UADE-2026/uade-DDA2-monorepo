@@ -22,7 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: ${{ github.event.workflow_run.head_branch == 'main' && 'latest' || 'develop' }}
-
+      VITE_SERVER_URL: ${{ github.event.workflow_run.head_branch == 'main' && vars.PRODUCTION_SERVER_URL || vars.DEVELOP_SERVER_URL }}
+      VITE_CLIENT_URL: ${{ github.event.workflow_run.head_branch == 'main' && vars.PRODUCTION_CLIENT_URL || vars.DEVELOP_CLIENT_URL }}
     steps:
       - name: Checkout tested commit
         uses: actions/checkout@v4
@@ -43,6 +44,9 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/uade-dda2-client:${{ env.IMAGE_TAG }}
           platforms: linux/amd64
+          build-args: |
+            VITE_SERVER_URL=${{ env.VITE_SERVER_URL }}
+            VITE_CLIENT_URL=${{ env.VITE_CLIENT_URL }}
 
       - name: Build and push server image
         uses: docker/build-push-action@v7

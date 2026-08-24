@@ -1,9 +1,20 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
-import { IconEye, IconEyeOff, IconId, IconLock, IconLogin2, IconUser } from "@tabler/icons-react"
+import { useNavigate } from "@tanstack/react-router"
+import {
+  IconAlertTriangle,
+  IconEye,
+  IconEyeOff,
+  IconId,
+  IconLock,
+  IconLogin2,
+  IconUser,
+} from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
+import { useLogin } from "@/hooks/use-auth"
 import { zLoginRequest } from "@/generated/zod.gen"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import {
@@ -16,6 +27,8 @@ import { Separator } from "@/components/ui/separator"
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
+  const login = useLogin()
 
   const form = useForm({
     defaultValues: {
@@ -25,9 +38,11 @@ function LoginForm() {
     validators: {
       onChange: zLoginRequest,
     },
-    onSubmit: async ({ value }) => {
-      // TODO: wire up to the real auth API once it's available.
-      console.log("login", value)
+    onSubmit: ({ value }) => {
+      login.mutate(
+        { body: value },
+        { onSuccess: () => navigate({ to: "/seleccionar-rol" }) }
+      )
     },
   })
 
@@ -37,8 +52,8 @@ function LoginForm() {
       description="Ingresá tus credenciales para acceder a tu cuenta."
       icon={IconLogin2}
       footer={
-        <Button type="submit" form="login-form" className="w-full">
-          Iniciar sesión
+        <Button type="submit" form="login-form" className="w-full" disabled={login.isPending}>
+          {login.isPending ? "Ingresando…" : "Iniciar sesión"}
         </Button>
       }
     >
@@ -59,6 +74,13 @@ function LoginForm() {
         <span className="text-xs text-muted-foreground">O CONTINUÁ CON</span>
         <Separator className="flex-1" />
       </div>
+      {login.isError && (
+        <Alert variant="destructive" className="mb-4">
+          <IconAlertTriangle />
+          <AlertTitle>No pudimos iniciar sesión</AlertTitle>
+          <AlertDescription>Revisá tu usuario y contraseña e intentá de nuevo.</AlertDescription>
+        </Alert>
+      )}
       <form
         id="login-form"
         onSubmit={(e) => {
