@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size
 
 data class UpdateRoleRequest(
     @field:NotBlank(message = "name is required")
-    @field:Size(max = 50, message = "name must be at most 50 characters")
+    @field:Size(min = 1, max = 50, message = "name must be at most 50 characters")
     val name: String = "",
 
     val permissions: List<String> = emptyList(),

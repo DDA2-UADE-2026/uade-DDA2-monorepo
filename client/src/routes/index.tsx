@@ -12,6 +12,7 @@ import {
 
 import { AppPhoneMock } from "@/components/landing/AppPhoneMock"
 import { SiteHeader } from "@/components/landing/SiteHeader"
+import { BackendStatusPill } from "@/components/BackendStatusPill"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
@@ -209,6 +210,7 @@ function RouteComponent() {
             <p className="text-xs">Módulo Desarrollo Social · Municipalidad UADE</p>
           </div>
           <div className="flex items-center gap-6">
+            <BackendStatusPill />
             <Link to="/login" className="hover:text-foreground">
               Iniciar sesión
             </Link>

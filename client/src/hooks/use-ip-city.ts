@@ -1,28 +1,23 @@
-import { useSyncExternalStore } from 'react';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 
-const CLIENT_URL = import.meta.env.VITE_CLIENT_URL || 'http://localhost:8080';
+const CLIENT_URL = import.meta.env.VITE_CLIENT_URL;
+const REFETCH_INTERVAL_MS = 60 * 60 * 1000;
 
-let ipCity: string | null = null;
-const listeners = new Set<() => void>();
-
-function setIpCity(value: string | null) {
-  ipCity = value;
-  listeners.forEach((listener) => listener());
+async function fetchIpCity(): Promise<string | null> {
+  const response = await fetch(`${CLIENT_URL}/cdn-cgi/trace`);
+  return response.headers.get('acf-ipcity');
 }
 
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-function getSnapshot() {
-  return ipCity;
-}
-
-fetch(`${CLIENT_URL}/cdn-cgi/trace`)
-  .then((response) => setIpCity(response.headers.get('acf-ipcity')))
-  .catch(() => setIpCity(null));
+const ipCityQueryOptions = queryOptions({
+  queryKey: ['ip-city'],
+  queryFn: fetchIpCity,
+  staleTime: REFETCH_INTERVAL_MS,
+  refetchInterval: REFETCH_INTERVAL_MS,
+  retry: 3,
+});
 
 export function useIpCity() {
-  return useSyncExternalStore(subscribe, getSnapshot);
+  const { data } = useQuery(ipCityQueryOptions);
+
+  return data ?? null;
 }

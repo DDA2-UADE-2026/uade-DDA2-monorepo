@@ -3,7 +3,7 @@ import { useForm } from "@tanstack/react-form"
 import { IconEye, IconEyeOff, IconId, IconLock, IconLogin2, IconUser } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
-import { loginSchema } from "@/components/auth/schemas"
+import { zLoginRequest } from "@/generated/zod.gen"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import {
@@ -23,7 +23,7 @@ function LoginForm() {
       password: "",
     },
     validators: {
-      onChange: loginSchema,
+      onChange: zLoginRequest,
     },
     onSubmit: async ({ value }) => {
       // TODO: wire up to the real auth API once it's available.

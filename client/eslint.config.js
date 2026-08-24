@@ -13,7 +13,8 @@ export default defineConfig([
   globalIgnores([
     '.tanstack',
     'dist',
-    'src/routeTree.gen.ts'
+    'src/routeTree.gen.ts',
+    'src/generated'
   ]),
   {
     files: ['**/*.{ts,tsx}'],
