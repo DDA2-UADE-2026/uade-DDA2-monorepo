@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { IconMapPin } from '@tabler/icons-react';
 import { Map, Marker, setWorkerUrl } from 'maplibre-gl';
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 setWorkerUrl(workerUrl);
@@ -53,6 +54,7 @@ export function ArgentinaLocationMap({
   location,
 }: ArgentinaLocationMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showLocationLabel, setShowLocationLabel] = useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -149,6 +151,7 @@ export function ArgentinaLocationMap({
             bearing: map.getBearing(),
             pitch: finalPitch,
           });
+          setShowLocationLabel(true);
           startOrbit();
         }, flyDuration);
       }, delay);
@@ -182,6 +185,27 @@ export function ArgentinaLocationMap({
 
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(9,9,11,0.12),transparent_45%,rgba(9,9,11,0.25))]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-zinc-950/35 to-transparent" />
+
+      <div
+        className={cn(
+          'pointer-events-none absolute left-1/2 top-1/2 mt-30 flex -translate-x-1/2 items-center gap-3 text-white transition-all duration-700',
+          showLocationLabel
+            ? 'translate-y-0 opacity-100'
+            : 'translate-y-2 opacity-0',
+        )}
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg shadow-blue-950/40">
+          <IconMapPin className="size-5" />
+        </span>
+        <div className="whitespace-nowrap [text-shadow:0_2px_12px_rgba(0,0,0,0.8)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-200">
+            Tu ubicación aproximada
+          </p>
+          <p className="mt-0.5 text-xl font-semibold tracking-tight">
+            {location.city}, {location.region}
+          </p>
+        </div>
+      </div>
 
       <p className="pointer-events-none absolute right-4 top-4 text-[9px] font-medium tracking-wide text-white/45 md:right-6 md:top-6">
         © OpenFreeMap · © OpenMapTiles · © OpenStreetMap contributors
