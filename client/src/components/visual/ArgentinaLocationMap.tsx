@@ -7,7 +7,7 @@ import type { IpLocation } from '@/hooks/use-ip-city';
 import { cn } from '@/lib/utils';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
-const MAP_STYLE = 'https://tiles.openfreemap.org/styles/dark';
+const MAP_STYLE = '/geo/fabrizio-custom-darkmatter-tiles.json';
 const ARGENTINA_CENTER: [number, number] = [-64, -38];
 const ARGENTINA_ZOOM = 3.15;
 const DESTINATION_ZOOM = 14.75;
