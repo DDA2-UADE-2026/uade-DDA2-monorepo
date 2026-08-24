@@ -12,4 +12,7 @@ data class JwtProperties(
 @ConfigurationProperties("app.cors")
 data class CorsProperties(
     var allowedOrigins: List<String> = listOf("http://localhost:3000", "http://127.0.0.1:3000"),
-)
+) {
+    val nonBlankOrigins: List<String>
+        get() = allowedOrigins.filter { it.isNotBlank() }
+}

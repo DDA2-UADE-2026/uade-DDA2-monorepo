@@ -33,13 +33,13 @@ const DEV_LINKS: TreeLink[] = [
     title: "Sitio de desarrollo",
     description: "Última versión desplegada desde la rama develop.",
     icon: IconWorld,
-    link: "#",
+    link: "https://app-muni-uade-dev.fabriziob.com/",
   },
   {
     title: "Documentación de la API",
     description: "Swagger/OpenAPI del ambiente de desarrollo.",
     icon: IconFileText,
-    link: "#",
+    link: "https://api-muni-uade-dev.fabriziob.com/swagger-ui/index.html",
   },
   {
     title: "Eventos asíncronos",
@@ -54,13 +54,13 @@ const PROD_LINKS: TreeLink[] = [
     title: "Sitio de producción",
     description: "Última versión desplegada desde la rama main.",
     icon: IconWorld,
-    link: "#",
+    link: "https://app-muni-uade.fabriziob.com/",
   },
   {
     title: "Documentación de la API",
     description: "Swagger/OpenAPI del ambiente de producción.",
     icon: IconFileText,
-    link: "#",
+    link: "https://api-muni-uade.fabriziob.com/swagger-ui/index.html",
   },
   {
     title: "Eventos asíncronos",
