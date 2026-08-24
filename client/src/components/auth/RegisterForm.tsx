@@ -2,9 +2,9 @@ import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
 import { IconEye, IconEyeOff, IconId, IconLock, IconMail, IconUser, IconUserPlus } from "@tabler/icons-react"
+import * as z from "zod"
 
 import { AuthCard } from "@/components/auth/AuthCard"
-import { registerSchema } from "@/components/auth/schemas"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
 import {
@@ -13,6 +13,22 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
+
+// No hay endpoint de registro público en el backend (solo /auth/login y
+// /auth/me) — este schema no sale del cliente generado y es de uso
+// temporal hasta que se defina el flujo real (que va a migrar a cookies).
+const registerSchema = z
+  .object({
+    name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
+    username: z.string().min(3, "El usuario debe tener al menos 3 caracteres."),
+    email: z.email("Ingresá un correo electrónico válido."),
+    password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden.",
+    path: ["confirmPassword"],
+  })
 
 function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
