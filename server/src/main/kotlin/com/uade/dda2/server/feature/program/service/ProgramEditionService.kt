@@ -4,6 +4,7 @@ import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.program.dto.request.CreateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.request.UpdateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionListResponse
+import com.uade.dda2.server.feature.program.dto.response.ProgramEditionOptionResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
@@ -12,6 +13,7 @@ import com.uade.dda2.server.feature.program.error.ProgramEditionErrors
 import com.uade.dda2.server.feature.program.error.ProgramErrors
 import com.uade.dda2.server.feature.program.mapper.toEntity
 import com.uade.dda2.server.feature.program.mapper.toListResponse
+import com.uade.dda2.server.feature.program.mapper.toOptionResponse
 import com.uade.dda2.server.feature.program.mapper.toResponse
 import com.uade.dda2.server.feature.program.mapper.updateFrom
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
@@ -52,6 +54,18 @@ class ProgramEditionService(
     @Transactional(readOnly = true)
     fun get(id: UUID): ProgramEditionResponse =
         findEdition(id).toResponse()
+
+    @Transactional(readOnly = true)
+    fun options(programId: UUID): List<ProgramEditionOptionResponse> {
+        findProgram(programId)
+
+        return programEditionRepository
+            .findAllByProgramIdAndStatusNotOrderByNameAsc(
+                programId = programId,
+                status = ProgramEditionStatus.CLOSED,
+            )
+            .map { it.toOptionResponse() }
+    }
 
     @Transactional
     fun create(

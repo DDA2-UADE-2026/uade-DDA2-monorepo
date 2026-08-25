@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.program.repository
 
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
+import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -12,6 +13,11 @@ interface ProgramEditionRepository : JpaRepository<ProgramEdition, UUID> {
         programId: UUID,
         pageable: Pageable,
     ): Page<ProgramEdition>
+
+    fun findAllByProgramIdAndStatusNotOrderByNameAsc(
+        programId: UUID,
+        status: ProgramEditionStatus,
+    ): List<ProgramEdition>
 
     fun existsByProgramIdAndNormalizedName(
         programId: UUID,

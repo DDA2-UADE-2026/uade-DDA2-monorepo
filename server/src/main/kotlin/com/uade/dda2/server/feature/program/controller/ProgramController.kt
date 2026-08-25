@@ -3,6 +3,7 @@ package com.uade.dda2.server.feature.program.controller
 import com.uade.dda2.server.feature.program.dto.request.CreateProgramRequest
 import com.uade.dda2.server.feature.program.dto.request.UpdateProgramRequest
 import com.uade.dda2.server.feature.program.dto.response.ProgramListResponse
+import com.uade.dda2.server.feature.program.dto.response.ProgramOptionResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramResponse
 import com.uade.dda2.server.feature.program.service.ProgramService
 import jakarta.validation.Valid
@@ -43,6 +44,11 @@ class ProgramController(
             page = page,
             size = size,
         )
+
+    @PreAuthorize("hasAuthority('programs:view')")
+    @GetMapping("/options")
+    fun options(): List<ProgramOptionResponse> =
+        programService.options()
 
     @PreAuthorize("hasAuthority('programs:view')")
     @GetMapping("/{id}")

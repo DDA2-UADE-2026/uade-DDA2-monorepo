@@ -98,6 +98,26 @@
           "response": []
         },
         {
+          "name": "Listar opciones de programas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/programs/options",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "programs",
+                "options"
+              ]
+            },
+            "description": "Devuelve pares id y name ordenados alfabéticamente para utilizar en selects."
+          },
+          "response": []
+        },
+        {
           "name": "Obtener programa",
           "request": {
             "method": "GET",
@@ -308,6 +328,28 @@
                 }
               ]
             }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar opciones de ediciones por programa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/program-editions/program/{{programId}}/options",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "program-editions",
+                "program",
+                "{{programId}}",
+                "options"
+              ]
+            },
+            "description": "Devuelve pares id y name de las ediciones no cerradas del programa, ordenados alfabéticamente para utilizar en selects."
           },
           "response": []
         },

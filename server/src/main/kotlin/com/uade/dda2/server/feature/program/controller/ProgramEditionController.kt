@@ -3,6 +3,7 @@ package com.uade.dda2.server.feature.program.controller
 import com.uade.dda2.server.feature.program.dto.request.CreateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.request.UpdateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionListResponse
+import com.uade.dda2.server.feature.program.dto.response.ProgramEditionOptionResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionResponse
 import com.uade.dda2.server.feature.program.service.ProgramEditionService
 import jakarta.validation.Valid
@@ -50,6 +51,13 @@ class ProgramEditionController(
             page = page,
             size = size,
         )
+
+    @PreAuthorize("hasAuthority('programs:view')")
+    @GetMapping("/program/{programId}/options")
+    fun options(
+        @PathVariable programId: UUID,
+    ): List<ProgramEditionOptionResponse> =
+        programEditionService.options(programId)
 
     @PreAuthorize("hasAuthority('programs:view')")
     @GetMapping("/{id}")

@@ -4,11 +4,13 @@ import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.program.dto.request.CreateProgramRequest
 import com.uade.dda2.server.feature.program.dto.request.UpdateProgramRequest
 import com.uade.dda2.server.feature.program.dto.response.ProgramListResponse
+import com.uade.dda2.server.feature.program.dto.response.ProgramOptionResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.error.ProgramErrors
 import com.uade.dda2.server.feature.program.mapper.toEntity
 import com.uade.dda2.server.feature.program.mapper.toListResponse
+import com.uade.dda2.server.feature.program.mapper.toOptionResponse
 import com.uade.dda2.server.feature.program.mapper.toResponse
 import com.uade.dda2.server.feature.program.mapper.updateFrom
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
@@ -41,6 +43,12 @@ class ProgramService(
     @Transactional(readOnly = true)
     fun get(id: UUID): ProgramResponse =
         findProgram(id).toResponse()
+
+    @Transactional(readOnly = true)
+    fun options(): List<ProgramOptionResponse> =
+        programRepository
+            .findAllByOrderByNameAsc()
+            .map { it.toOptionResponse() }
 
     @Transactional
     fun create(request: CreateProgramRequest): ProgramResponse {

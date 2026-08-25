@@ -5,6 +5,7 @@ import com.uade.dda2.server.feature.program.dto.request.CreateProgramEditionRequ
 import com.uade.dda2.server.feature.program.dto.request.UpdateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionListItemResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionListResponse
+import com.uade.dda2.server.feature.program.dto.response.ProgramEditionOptionResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramEditionResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
@@ -75,4 +76,10 @@ fun Page<ProgramEdition>.toListResponse(): ProgramEditionListResponse =
         size = size,
         totalElements = totalElements,
         totalPages = totalPages,
+    )
+
+fun ProgramEdition.toOptionResponse(): ProgramEditionOptionResponse =
+    ProgramEditionOptionResponse(
+        id = requireNotNull(id),
+        name = name,
     )

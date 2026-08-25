@@ -6,6 +6,7 @@ import com.uade.dda2.server.feature.program.dto.request.UpdateProgramRequest
 import com.uade.dda2.server.feature.program.dto.response.ProgramCreatedByResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramListItemResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramListResponse
+import com.uade.dda2.server.feature.program.dto.response.ProgramOptionResponse
 import com.uade.dda2.server.feature.program.dto.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import org.springframework.data.domain.Page
@@ -58,6 +59,12 @@ fun Page<Program>.toListResponse(): ProgramListResponse =
 
 fun User.toProgramCreatedByResponse(): ProgramCreatedByResponse =
     ProgramCreatedByResponse(
+        id = requireNotNull(id),
+        name = name,
+    )
+
+fun Program.toOptionResponse(): ProgramOptionResponse =
+    ProgramOptionResponse(
         id = requireNotNull(id),
         name = name,
     )

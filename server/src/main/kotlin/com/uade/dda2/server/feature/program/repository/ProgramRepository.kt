@@ -10,6 +10,8 @@ interface ProgramRepository : JpaRepository<Program, UUID> {
 
     fun findAllByOrderByNameAsc(pageable: Pageable): Page<Program>
 
+    fun findAllByOrderByNameAsc(): List<Program>
+
     fun existsByNormalizedName(normalizedName: String): Boolean
 
     fun existsByNormalizedNameAndIdNot(
