@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router"
-import { IconArrowsExchange, IconDotsVertical, IconLogout, IconUserCircle } from "@tabler/icons-react"
+import { IconArrowsExchange, IconDotsVertical, IconLogout, IconPalette, IconUserCircle } from "@tabler/icons-react"
 
+import { ThemeMenuItems } from "@/components/ThemeMenuItems"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -9,17 +10,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { useLogout, useMe } from "@/hooks/use-auth"
-
-function getInitials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean)
-  if (parts.length === 0) return "?"
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-}
+import { getUserInitials } from "@/lib/user-display"
 
 /** Shared sidebar footer user menu — used by both PortalSidebar and GestionSidebar. */
 function SidebarUser() {
@@ -32,7 +30,7 @@ function SidebarUser() {
 
   const displayName = data?.user?.name || data?.user?.username || "Usuario"
   const email = data?.user?.email ?? ""
-  const initials = getInitials(displayName)
+  const initials = getUserInitials(displayName)
 
   const handleLogout = () => {
     logout()
@@ -87,6 +85,15 @@ function SidebarUser() {
             <IconArrowsExchange />
             Cambiar de rol
           </DropdownMenuItem>
+          <DropdownMenuSub >
+            <DropdownMenuSubTrigger className="rounded-lg">
+              <IconPalette />
+              Tema
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <ThemeMenuItems />
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             variant="destructive"

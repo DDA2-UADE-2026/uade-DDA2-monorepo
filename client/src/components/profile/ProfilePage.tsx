@@ -1,4 +1,4 @@
-import { ProfileForm } from "@/components/profile/ProfileForm"
+import { ProfileForm, type ProfileDisplayType } from "@/components/profile/ProfileForm"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
 /**
@@ -6,11 +6,11 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
  * shared presentation component, one thin route file per branch). No
  * PageHeader here, so the trigger floats to keep the sidebar reachable.
  */
-function ProfilePage() {
+function ProfilePage({ displayType }: { displayType: ProfileDisplayType }) {
   return (
     <div className="relative flex h-full w-full items-center justify-center px-6 py-10">
       <SidebarTrigger variant="secondary" className="absolute top-3 left-3 z-50" />
-      <ProfileForm />
+      <ProfileForm displayType={displayType} />
     </div>
   )
 }

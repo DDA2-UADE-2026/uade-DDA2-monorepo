@@ -109,11 +109,11 @@ function RouteComponent() {
 
             <h1 className="mt-6 max-w-3xl text-balance font-heading text-[2.65rem] font-semibold leading-[1.05] tracking-[-0.045em] sm:text-6xl lg:text-[4.25rem]">
               La ayuda que necesitás,{" "}
-              <span className="relative whitespace-nowrap text-primary">
+              <span className="relative whitespace-nowrap text-primary dark:text-foreground">
                 sin vueltas
                 <svg
                   aria-hidden="true"
-                  className="absolute -bottom-2 left-0 h-3 w-full text-primary/25"
+                  className="absolute -bottom-2 left-0 h-3 w-full text-primary/25 dark:text-foreground/25"
                   viewBox="0 0 240 12"
                   preserveAspectRatio="none"
                 >
