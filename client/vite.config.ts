@@ -5,6 +5,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import tailwindcss from '@tailwindcss/vite'
 import { qrcode } from 'vite-plugin-qrcode';
 import { visualizer } from 'rollup-plugin-visualizer'
+import { devtools } from "@tanstack/devtools-vite"
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -12,6 +13,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      devtools(),
       tailwindcss(),
       tanstackRouter({
         target: 'react',
