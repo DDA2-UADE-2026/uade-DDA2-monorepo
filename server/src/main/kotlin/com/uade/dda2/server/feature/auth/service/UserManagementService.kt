@@ -15,6 +15,8 @@ import com.uade.dda2.server.feature.log.repository.LogRepository
 import com.uade.dda2.server.feature.log.service.LogService
 import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.entity.User
+import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
+import com.uade.dda2.server.feature.program.repository.ProgramRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,6 +31,8 @@ class UserManagementService(
     private val logService: LogService,
     private val passwordEncoder: PasswordEncoder,
     private val jsonMapper: JsonMapper,
+    private val programRepository: ProgramRepository,
+    private val programEditionRepository: ProgramEditionRepository,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): List<UserManagementResponse> =
@@ -111,6 +115,17 @@ class UserManagementService(
         }
 
         val user = findUser(id)
+
+        if (
+            programRepository.existsByCreatedById(id) ||
+            programEditionRepository.existsByCreatedById(id)
+        ) {
+            throw ConflictException(
+                code = "USER_HAS_PROGRAM_REFERENCES",
+                message = "The user cannot be deleted because it created programs or program editions.",
+            )
+        }
+
         val oldValues = json(userSnapshot(user))
 
         user.roles.clear()

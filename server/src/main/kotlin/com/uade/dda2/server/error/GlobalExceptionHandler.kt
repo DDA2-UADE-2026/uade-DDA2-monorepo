@@ -1,6 +1,8 @@
 package com.uade.dda2.server.error
 
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.ConstraintViolationException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -10,6 +12,7 @@ import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.HandlerMethodValidationException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -54,6 +57,24 @@ class GlobalExceptionHandler {
             )
     }
 
+    @ExceptionHandler(
+        HandlerMethodValidationException::class,
+        ConstraintViolationException::class,
+    )
+    fun handleMethodValidation(
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> =
+        ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(
+                ErrorResponse(
+                    message = "Validation failed.",
+                    code = "VALIDATION_ERROR",
+                    status = HttpStatus.BAD_REQUEST.value(),
+                    path = request.requestURI,
+                ),
+            )
+
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleUnreadableBody(request: HttpServletRequest): ResponseEntity<ErrorResponse> =
         ResponseEntity
@@ -78,6 +99,21 @@ class GlobalExceptionHandler {
                     message = "Invalid username or password.",
                     code = "AUTH_INVALID_CREDENTIALS",
                     status = HttpStatus.UNAUTHORIZED.value(),
+                    path = request.requestURI,
+                ),
+            )
+
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handleDataIntegrityViolation(
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> =
+        ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(
+                ErrorResponse(
+                    message = "The operation conflicts with existing related data.",
+                    code = "DATA_INTEGRITY_VIOLATION",
+                    status = HttpStatus.CONFLICT.value(),
                     path = request.requestURI,
                 ),
             )
