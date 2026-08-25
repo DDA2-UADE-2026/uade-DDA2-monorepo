@@ -11,6 +11,8 @@ import {
   IconUser,
 } from "@tabler/icons-react"
 
+import { toast } from "sonner"
+
 import { AuthCard } from "@/components/auth/AuthCard"
 import { useLogin } from "@/hooks/use-auth"
 import { zLoginRequest } from "@/generated/zod.gen"
@@ -60,10 +62,11 @@ function LoginForm() {
       <Button
         type="button"
         variant="outline"
-        className="w-full"
+        className="w-full aria-disabled:opacity-50"
+        aria-disabled="true"
         onClick={() => {
           // TODO: wire up to the real Ciudadanos SSO flow once it's available.
-          console.log("login with Ciudadanos")
+          toast.error("Esta función no está disponible")
         }}
       >
         <IconId />
