@@ -41,14 +41,14 @@ class GlobalExceptionHandler {
             .allErrors
             .map {
                 val field = (it as? FieldError)?.field ?: it.objectName
-                FieldErrorResponse(field = field, message = it.defaultMessage ?: "Invalid value")
+                FieldErrorResponse(field = field, message = it.defaultMessage ?: "Valor inválido.")
             }
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "Validation failed.",
+                    message = "La validación falló.",
                     code = "VALIDATION_ERROR",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
@@ -68,7 +68,7 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "Validation failed.",
+                    message = "La validación falló.",
                     code = "VALIDATION_ERROR",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
@@ -81,7 +81,7 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "Invalid request body.",
+                    message = "El cuerpo de la solicitud es inválido.",
                     code = "INVALID_REQUEST_BODY",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
@@ -96,7 +96,7 @@ class GlobalExceptionHandler {
             .status(HttpStatus.UNAUTHORIZED)
             .body(
                 ErrorResponse(
-                    message = "Invalid username or password.",
+                    message = "El nombre de usuario o la contraseña son inválidos.",
                     code = "AUTH_INVALID_CREDENTIALS",
                     status = HttpStatus.UNAUTHORIZED.value(),
                     path = request.requestURI,
@@ -111,7 +111,7 @@ class GlobalExceptionHandler {
             .status(HttpStatus.CONFLICT)
             .body(
                 ErrorResponse(
-                    message = "The operation conflicts with existing related data.",
+                    message = "La operación entra en conflicto con datos relacionados existentes.",
                     code = "DATA_INTEGRITY_VIOLATION",
                     status = HttpStatus.CONFLICT.value(),
                     path = request.requestURI,
