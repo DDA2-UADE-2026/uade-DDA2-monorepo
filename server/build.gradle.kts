@@ -178,6 +178,7 @@ dependencies {
 	// Base de datos en memoria usada solo para levantar el contexto de
 	// Spring bajo el perfil "docs" (ver OpenApiDocsGenerationTest), para
 	// no depender de una Postgres real al generar el spec en CI.
+	developmentOnly("com.h2database:h2")
 	testRuntimeOnly("com.h2database:h2")
 }
 
