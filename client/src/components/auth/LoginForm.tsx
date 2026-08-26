@@ -11,8 +11,6 @@ import {
   IconUser,
 } from "@tabler/icons-react"
 
-import { toast } from "sonner"
-
 import { AuthCard } from "@/components/auth/AuthCard"
 import { useLogin } from "@/hooks/use-auth"
 import { zLoginRequestWritable } from "@/generated/zod.gen"
