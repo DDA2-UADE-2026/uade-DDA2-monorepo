@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
         target: 'react',
         autoCodeSplitting: true,
         quoteStyle: "double",
+        
       }),
       react(),
       babel({ presets: [reactCompilerPreset()] }),
