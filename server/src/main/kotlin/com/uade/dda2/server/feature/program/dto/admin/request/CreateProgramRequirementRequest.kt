@@ -13,13 +13,13 @@ data class CreateProgramRequirementRequest(
 
     @field:Schema(description = "Valor que debe cumplir el postulante.", example = "18-25")
     @field:NotBlank(message = "El valor del requisito es obligatorio.")
-    @field:Schema(description = "Explicación complementaria del requisito.", example = "Tener entre 18 y 25 años al momento de la inscripción.", nullable = true)
     @field:Size(
         max = 255,
         message = "El valor del requisito no puede superar los 255 caracteres.",
     )
     val value: String,
 
+    @field:Schema(description = "Explicación complementaria del requisito.", example = "Tener entre 18 y 25 años al momento de la inscripción.", nullable = true)
     @field:Size(
         max = 500,
         message = "La descripción no puede superar los 500 caracteres.",
