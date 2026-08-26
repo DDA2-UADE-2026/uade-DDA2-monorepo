@@ -55,7 +55,11 @@ class AdminProgramController(
 
     @PreAuthorize("hasAuthority('programs:management:view')")
     @GetMapping("/options")
-    @Operation(summary = "Listar opciones de programas", description = "Devuelve una lista reducida de programas para controles de selección.")
+    @Operation(
+        operationId = "listProgramOptions",
+        summary = "Listar opciones de programas",
+        description = "Devuelve una lista reducida de programas para controles de selección.",
+    )
     fun options(): List<ProgramOptionResponse> =
         adminProgramService.options()
 

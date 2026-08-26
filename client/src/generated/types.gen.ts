@@ -2660,14 +2660,14 @@ export type FindAll5Responses = {
 
 export type FindAll5Response = FindAll5Responses[keyof FindAll5Responses];
 
-export type OptionsData = {
+export type ListProgramOptionsData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/api/admin/programs/options';
 };
 
-export type OptionsErrors = {
+export type ListProgramOptionsErrors = {
     /**
      * No autenticado.
      */
@@ -2682,18 +2682,18 @@ export type OptionsErrors = {
     500: ErrorResponse;
 };
 
-export type OptionsError = OptionsErrors[keyof OptionsErrors];
+export type ListProgramOptionsError = ListProgramOptionsErrors[keyof ListProgramOptionsErrors];
 
-export type OptionsResponses = {
+export type ListProgramOptionsResponses = {
     /**
      * OK
      */
     200: Array<ProgramOptionResponse>;
 };
 
-export type OptionsResponse = OptionsResponses[keyof OptionsResponses];
+export type ListProgramOptionsResponse = ListProgramOptionsResponses[keyof ListProgramOptionsResponses];
 
-export type Options1Data = {
+export type ListProgramEditionOptionsData = {
     body?: never;
     path: {
         /**
@@ -2705,7 +2705,7 @@ export type Options1Data = {
     url: '/api/admin/program-editions/program/{programId}/options';
 };
 
-export type Options1Errors = {
+export type ListProgramEditionOptionsErrors = {
     /**
      * La solicitud es inválida.
      */
@@ -2728,16 +2728,16 @@ export type Options1Errors = {
     500: ErrorResponse;
 };
 
-export type Options1Error = Options1Errors[keyof Options1Errors];
+export type ListProgramEditionOptionsError = ListProgramEditionOptionsErrors[keyof ListProgramEditionOptionsErrors];
 
-export type Options1Responses = {
+export type ListProgramEditionOptionsResponses = {
     /**
      * OK
      */
     200: Array<ProgramEditionOptionResponse>;
 };
 
-export type Options1Response = Options1Responses[keyof Options1Responses];
+export type ListProgramEditionOptionsResponse = ListProgramEditionOptionsResponses[keyof ListProgramEditionOptionsResponses];
 
 export type LinksData = {
     body?: never;

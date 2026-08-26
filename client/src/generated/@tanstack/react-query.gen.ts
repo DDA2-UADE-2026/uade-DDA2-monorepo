@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, close, create, create1, create2, create3, create4, create5, create6, delete_, delete1, delete2, delete3, delete4, delete5, delete6, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, health, info, links, list, list1, login, me, options, type Options, options1, suspend, update, update1, update2, update3, update4, update5 } from '../sdk.gen';
-import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseError, CloseResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, CreateData, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, ListData, ListError, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, Options1Data, Options1Error, Options1Response, OptionsData, OptionsError, OptionsResponse, SuspendData, SuspendError, SuspendResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, UpdateData, UpdateError, UpdateResponse } from '../types.gen';
+import { activate, close, create, create1, create2, create3, create4, create5, create6, delete_, delete1, delete2, delete3, delete4, delete5, delete6, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, health, info, links, list, list1, listProgramEditionOptions, listProgramOptions, login, me, type Options, suspend, update, update1, update2, update3, update4, update5 } from '../sdk.gen';
+import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseError, CloseResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, CreateData, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, ListData, ListError, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, SuspendData, SuspendError, SuspendResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, UpdateData, UpdateError, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -888,16 +888,16 @@ export const findAll5Options = (options: Options<FindAll5Data>) => queryOptions<
     queryKey: findAll5QueryKey(options)
 });
 
-export const optionsQueryKey = (options?: Options<OptionsData>) => createQueryKey('options', options);
+export const listProgramOptionsQueryKey = (options?: Options<ListProgramOptionsData>) => createQueryKey('listProgramOptions', options);
 
 /**
  * Listar opciones de programas
  *
  * Devuelve una lista reducida de programas para controles de selección.
  */
-export const optionsOptions = (options?: Options<OptionsData>) => queryOptions<OptionsResponse, OptionsError, OptionsResponse, ReturnType<typeof optionsQueryKey>>({
+export const listProgramOptionsOptions = (options?: Options<ListProgramOptionsData>) => queryOptions<ListProgramOptionsResponse, ListProgramOptionsError, ListProgramOptionsResponse, ReturnType<typeof listProgramOptionsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await options({
+        const { data } = await listProgramOptions({
             ...options,
             ...queryKey[0],
             signal,
@@ -905,19 +905,19 @@ export const optionsOptions = (options?: Options<OptionsData>) => queryOptions<O
         });
         return data;
     },
-    queryKey: optionsQueryKey(options)
+    queryKey: listProgramOptionsQueryKey(options)
 });
 
-export const options1QueryKey = (options: Options<Options1Data>) => createQueryKey('options1', options);
+export const listProgramEditionOptionsQueryKey = (options: Options<ListProgramEditionOptionsData>) => createQueryKey('listProgramEditionOptions', options);
 
 /**
  * Listar opciones de ediciones
  *
  * Devuelve las ediciones de un programa en formato reducido para controles de selección.
  */
-export const options1Options = (options: Options<Options1Data>) => queryOptions<Options1Response, Options1Error, Options1Response, ReturnType<typeof options1QueryKey>>({
+export const listProgramEditionOptionsOptions = (options: Options<ListProgramEditionOptionsData>) => queryOptions<ListProgramEditionOptionsResponse, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ReturnType<typeof listProgramEditionOptionsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await options1({
+        const { data } = await listProgramEditionOptions({
             ...options,
             ...queryKey[0],
             signal,
@@ -925,7 +925,7 @@ export const options1Options = (options: Options<Options1Data>) => queryOptions<
         });
         return data;
     },
-    queryKey: options1QueryKey(options)
+    queryKey: listProgramEditionOptionsQueryKey(options)
 });
 
 export const linksQueryKey = (options?: Options<LinksData>) => createQueryKey('links', options);

@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router"
 import { IconArrowsExchange, IconDotsVertical, IconLogout, IconPalette, IconUserCircle } from "@tabler/icons-react"
 
 import { ThemeMenuItems } from "@/components/ThemeMenuItems"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { UserAvatar } from "@/components/UserAvatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { useLogout, useMe } from "@/hooks/use-auth"
-import { getUserInitials } from "@/lib/user-display"
 
 /** Shared sidebar footer user menu — used by both PortalSidebar and GestionSidebar. */
 function SidebarUser() {
@@ -30,7 +29,6 @@ function SidebarUser() {
 
   const displayName = data?.user?.name || data?.user?.username || "Usuario"
   const email = data?.user?.email ?? ""
-  const initials = getUserInitials(displayName)
 
   const handleLogout = () => {
     logout()
@@ -48,9 +46,7 @@ function SidebarUser() {
             />
           }
         >
-          <Avatar size="sm">
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
+          <UserAvatar size="sm" addBlob user={data?.user ?? { name: displayName, email }} />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{displayName}</span>
             <span className="truncate text-xs text-sidebar-foreground/70">{email}</span>
@@ -66,9 +62,7 @@ function SidebarUser() {
           <DropdownMenuGroup>
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar size="sm">
-                  <AvatarFallback>{initials}</AvatarFallback>
-                </Avatar>
+                <UserAvatar size="sm" addBlob user={data?.user ?? { name: displayName, email }} />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{displayName}</span>
                   <span className="truncate text-xs text-muted-foreground">{email}</span>

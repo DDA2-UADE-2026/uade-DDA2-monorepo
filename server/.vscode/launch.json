@@ -7,7 +7,8 @@
             "request": "launch",
             "mainClass": "com.uade.dda2.server.ServerApplicationKt",
             "projectName": "server",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": "-Duser.timezone=UTC"
         },
         {
             "type": "java",

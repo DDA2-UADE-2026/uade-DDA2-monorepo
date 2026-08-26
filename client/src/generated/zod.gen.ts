@@ -775,16 +775,16 @@ export const zFindAll5Response = z.array(zProgramIncompatibilityResponse);
 /**
  * OK
  */
-export const zOptionsResponse = z.array(zProgramOptionResponse);
+export const zListProgramOptionsResponse = z.array(zProgramOptionResponse);
 
-export const zOptions1Path = z.object({
+export const zListProgramEditionOptionsPath = z.object({
     programId: z.uuid()
 });
 
 /**
  * OK
  */
-export const zOptions1Response = z.array(zProgramEditionOptionResponse);
+export const zListProgramEditionOptionsResponse = z.array(zProgramEditionOptionResponse);
 
 /**
  * OK
