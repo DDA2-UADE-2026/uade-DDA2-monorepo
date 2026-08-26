@@ -1,13 +1,13 @@
 package com.uade.dda2.server.feature.program.mapper
 
 import com.uade.dda2.server.feature.auth.entity.User
-import com.uade.dda2.server.feature.program.dto.request.CreateProgramRequest
-import com.uade.dda2.server.feature.program.dto.request.UpdateProgramRequest
-import com.uade.dda2.server.feature.program.dto.response.ProgramCreatedByResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramListItemResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramListResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramOptionResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramResponse
+import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramRequest
+import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramRequest
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramCreatedByResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramListItemResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramListResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramOptionResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import org.springframework.data.domain.Page
 

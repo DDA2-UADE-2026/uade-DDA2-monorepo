@@ -1,6 +1,6 @@
 package com.uade.dda2.server.feature.program.mapper
 
-import com.uade.dda2.server.feature.program.dto.response.ProgramIncompatibilityResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramIncompatibilityResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramIncompatibility
 import com.uade.dda2.server.feature.program.entity.ProgramIncompatibilityId

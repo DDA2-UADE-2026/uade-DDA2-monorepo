@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
-    "name": "DDA2 - Program Feature",
-    "description": "Colección para probar programas, ediciones, requisitos, beneficios e incompatibilidades. El script de colección inicializa la variable global baseUrl en http://localhost:8080 si todavía no existe. La request de login guarda automáticamente el JWT en la variable global token. Los IDs creados se mantienen como variables de colección para encadenar las requests.",
+    "name": "DDA2 - Admin Program Feature",
+    "description": "Colección para probar los endpoints administrativos de programas, ediciones, requisitos, beneficios e incompatibilidades. El script de colección inicializa la variable global baseUrl en http://localhost:8080 si todavía no existe. La request de login guarda automáticamente el JWT en la variable global token. Los IDs creados se mantienen como variables de colección para encadenar las requests.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -75,12 +75,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs?page=0&size=20",
+              "raw": "{{baseUrl}}/api/admin/programs?page=0&size=20",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs"
               ],
               "query": [
@@ -103,12 +104,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs/options",
+              "raw": "{{baseUrl}}/api/admin/programs/options",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "options"
               ]
@@ -123,12 +125,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}",
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "{{firstProgramId}}"
               ]
@@ -142,12 +145,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}/incompatibilities",
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}/incompatibilities",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "{{firstProgramId}}",
                 "incompatibilities"
@@ -189,12 +193,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/programs",
+              "raw": "{{baseUrl}}/api/admin/programs",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs"
               ]
             }
@@ -207,12 +212,13 @@
             "method": "POST",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}/incompatibilities/{{secondProgramId}}",
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}/incompatibilities/{{secondProgramId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "{{firstProgramId}}",
                 "incompatibilities",
@@ -242,12 +248,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}",
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "{{firstProgramId}}"
               ]
@@ -261,12 +268,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}/incompatibilities/{{secondProgramId}}",
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}/incompatibilities/{{secondProgramId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "{{firstProgramId}}",
                 "incompatibilities",
@@ -282,12 +290,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/programs/{{secondProgramId}}",
+              "raw": "{{baseUrl}}/api/admin/programs/{{secondProgramId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "programs",
                 "{{secondProgramId}}"
               ]
@@ -307,12 +316,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/program/{{programId}}?page=0&size=20",
+              "raw": "{{baseUrl}}/api/admin/program-editions/program/{{programId}}?page=0&size=20",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "program",
                 "{{programId}}"
@@ -337,12 +347,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/program/{{programId}}/options",
+              "raw": "{{baseUrl}}/api/admin/program-editions/program/{{programId}}/options",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "program",
                 "{{programId}}",
@@ -359,12 +370,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}"
               ]
@@ -405,12 +417,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/program/{{programId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/program/{{programId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "program",
                 "{{programId}}"
@@ -439,12 +452,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}"
               ]
@@ -458,12 +472,13 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/activate",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/activate",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "activate"
@@ -478,12 +493,13 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/suspend",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/suspend",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "suspend"
@@ -498,12 +514,13 @@
             "method": "PATCH",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/close",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/close",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "close"
@@ -519,12 +536,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}"
               ]
@@ -544,12 +562,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/requirements",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "requirements"
@@ -564,12 +583,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/requirements/{{requirementId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements/{{requirementId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "requirements",
@@ -612,12 +632,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/requirements",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "requirements"
@@ -646,12 +667,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/requirements/{{requirementId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements/{{requirementId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "requirements",
@@ -667,12 +689,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/requirements/{{requirementId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements/{{requirementId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "requirements",
@@ -693,12 +716,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/benefits",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "benefits"
@@ -713,12 +737,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/benefits/{{benefitId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits/{{benefitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "benefits",
@@ -761,12 +786,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/benefits",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "benefits"
@@ -795,12 +821,13 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/benefits/{{benefitId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits/{{benefitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "benefits",
@@ -816,12 +843,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/program-editions/{{editionId}}/benefits/{{benefitId}}",
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits/{{benefitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
+                "admin",
                 "program-editions",
                 "{{editionId}}",
                 "benefits",

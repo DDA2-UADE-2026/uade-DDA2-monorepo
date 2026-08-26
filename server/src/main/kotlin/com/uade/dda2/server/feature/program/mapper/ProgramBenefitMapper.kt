@@ -1,8 +1,8 @@
 package com.uade.dda2.server.feature.program.mapper
 
-import com.uade.dda2.server.feature.program.dto.request.CreateProgramBenefitRequest
-import com.uade.dda2.server.feature.program.dto.request.UpdateProgramBenefitRequest
-import com.uade.dda2.server.feature.program.dto.response.ProgramBenefitResponse
+import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramBenefitRequest
+import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramBenefitRequest
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramBenefitResponse
 import com.uade.dda2.server.feature.program.entity.ProgramBenefit
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 

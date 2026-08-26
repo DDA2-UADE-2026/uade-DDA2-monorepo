@@ -1,12 +1,12 @@
 package com.uade.dda2.server.feature.program.mapper
 
 import com.uade.dda2.server.feature.auth.entity.User
-import com.uade.dda2.server.feature.program.dto.request.CreateProgramEditionRequest
-import com.uade.dda2.server.feature.program.dto.request.UpdateProgramEditionRequest
-import com.uade.dda2.server.feature.program.dto.response.ProgramEditionListItemResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramEditionListResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramEditionOptionResponse
-import com.uade.dda2.server.feature.program.dto.response.ProgramEditionResponse
+import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramEditionRequest
+import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramEditionRequest
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionListItemResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionListResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionOptionResponse
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus

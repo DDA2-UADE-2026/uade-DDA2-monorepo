@@ -1,8 +1,8 @@
 package com.uade.dda2.server.feature.program.mapper
 
-import com.uade.dda2.server.feature.program.dto.request.CreateProgramRequirementRequest
-import com.uade.dda2.server.feature.program.dto.request.UpdateProgramRequirementRequest
-import com.uade.dda2.server.feature.program.dto.response.ProgramRequirementResponse
+import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramRequirementRequest
+import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramRequirementRequest
+import com.uade.dda2.server.feature.program.dto.admin.response.ProgramRequirementResponse
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.ProgramRequirement
 
