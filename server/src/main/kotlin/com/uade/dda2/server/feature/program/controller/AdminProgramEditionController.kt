@@ -64,7 +64,11 @@ class AdminProgramEditionController(
 
     @PreAuthorize("hasAuthority('programs:management:view')")
     @GetMapping("/program/{programId}/options")
-    @Operation(summary = "Listar opciones de ediciones", description = "Devuelve las ediciones de un programa en formato reducido para controles de selección.")
+    @Operation(
+        operationId = "listProgramEditionOptions",
+        summary = "Listar opciones de ediciones",
+        description = "Devuelve las ediciones de un programa en formato reducido para controles de selección.",
+    )
     fun options(
         @Parameter(description = "UUID del programa.")
         @PathVariable programId: UUID,

@@ -13,7 +13,7 @@ import {
 
 import { AuthCard } from "@/components/auth/AuthCard"
 import { useLogin } from "@/hooks/use-auth"
-import { zLoginRequest } from "@/generated/zod.gen"
+import { zLoginRequestWritable } from "@/generated/zod.gen"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
@@ -37,7 +37,7 @@ function LoginForm() {
       password: "",
     },
     validators: {
-      onChange: zLoginRequest,
+      onChange: zLoginRequestWritable,
     },
     onSubmit: ({ value }) => {
       login.mutate(
