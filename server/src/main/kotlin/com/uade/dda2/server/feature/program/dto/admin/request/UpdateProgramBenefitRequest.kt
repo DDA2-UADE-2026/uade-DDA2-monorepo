@@ -9,7 +9,7 @@ import java.math.BigDecimal
 @Schema(description = "Datos requeridos para actualizar un beneficio.")
 data class UpdateProgramBenefitRequest(
 
-    @field:Schema(description = "Tipo actualizado del beneficio.", example = "MONETARY")
+    @field:Schema(description = "Tipo actualizado del beneficio.", example = "HOUSING_SUBSIDY")
     val benefitType: ProgramBenefitType,
 
     @field:Schema(description = "Descripción actualizada del beneficio.", example = "Asignación mensual para transporte y materiales.", nullable = true)

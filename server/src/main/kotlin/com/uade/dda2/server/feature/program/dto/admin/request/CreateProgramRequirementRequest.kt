@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size
 @Schema(description = "Datos requeridos para crear un requisito.")
 data class CreateProgramRequirementRequest(
 
-    @field:Schema(description = "Tipo de requisito exigido.", example = "AGE")
+    @field:Schema(description = "Tipo de requisito exigido.", example = "MIN_AGE")
     val type: ProgramRequirementType,
 
     @field:Schema(description = "Valor que debe cumplir el postulante.", example = "18-25")

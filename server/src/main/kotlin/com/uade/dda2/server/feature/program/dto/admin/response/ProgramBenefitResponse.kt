@@ -11,7 +11,7 @@ data class ProgramBenefitResponse(
     val id: UUID,
     @field:Schema(description = "UUID de la edición que ofrece el beneficio.", example = "650e8400-e29b-41d4-a716-446655440001", format = "uuid", accessMode = Schema.AccessMode.READ_ONLY)
     val programEditionId: UUID,
-    @field:Schema(description = "Tipo de beneficio.", example = "MONETARY", accessMode = Schema.AccessMode.READ_ONLY)
+    @field:Schema(description = "Tipo de beneficio.", example = "HOUSING_SUBSIDY", accessMode = Schema.AccessMode.READ_ONLY)
     val benefitType: ProgramBenefitType,
     @field:Schema(description = "Descripción complementaria del beneficio.", example = "Asignación mensual para transporte.", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
     val description: String?,
