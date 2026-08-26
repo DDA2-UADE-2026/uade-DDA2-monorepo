@@ -41,7 +41,7 @@ class SecurityConfig(
                         response = response,
                         status = HttpStatus.UNAUTHORIZED,
                         code = "AUTH_UNAUTHENTICATED",
-                        message = "Unauthenticated.",
+                        message = "No autenticado.",
                     )
                 }
                 it.accessDeniedHandler { request, response, _ ->
@@ -50,7 +50,7 @@ class SecurityConfig(
                         response = response,
                         status = HttpStatus.FORBIDDEN,
                         code = "AUTH_FORBIDDEN",
-                        message = "The user does not have permission to perform this action.",
+                        message = "El usuario no posee permiso para realizar esta acción.",
                     )
                 }
             }
