@@ -2,85 +2,415 @@
 
 import * as z from 'zod';
 
+/**
+ * Datos requeridos para actualizar un usuario.
+ */
 export const zUpdateUserRequest = z.object({
-    username: z.string().min(0).max(80),
-    password: z.string().min(8).max(72).optional(),
-    name: z.string().min(0).max(150),
-    email: z.email().min(0).max(180),
+    username: z.string().min(1).max(80),
+    name: z.string().min(1).max(150),
+    email: z.email().min(1).max(180),
     active: z.boolean().optional(),
     roles: z.array(z.string()).optional()
 });
 
+/**
+ * Detalle administrativo de un usuario.
+ */
 export const zUserManagementResponse = z.object({
-    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    username: z.string().optional(),
-    name: z.string().optional(),
-    email: z.string().optional(),
-    active: z.boolean().optional(),
-    roles: z.array(z.string()).optional(),
-    permissions: z.array(z.string()).optional(),
-    createdAt: z.iso.datetime().optional(),
-    updatedAt: z.iso.datetime().optional()
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    username: z.string().readonly().optional(),
+    name: z.string().readonly().optional(),
+    email: z.email().readonly().optional(),
+    active: z.boolean().readonly().optional(),
+    roles: z.array(z.string()).readonly().optional(),
+    permissions: z.array(z.string()).readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
 });
 
+/**
+ * Datos requeridos para actualizar un rol.
+ */
 export const zUpdateRoleRequest = z.object({
-    name: z.string().min(0).max(50),
+    name: z.string().min(1).max(50),
     permissions: z.array(z.string()).optional()
 });
 
+/**
+ * Rol y permisos asociados.
+ */
 export const zRoleResponse = z.object({
-    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    name: z.string().optional(),
-    permissions: z.array(z.string()).optional()
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    name: z.string().readonly().optional(),
+    permissions: z.array(z.string()).readonly().optional()
 });
 
+/**
+ * Datos requeridos para actualizar un programa social.
+ */
+export const zUpdateProgramRequest = z.object({
+    name: z.string().min(0).max(200),
+    objective: z.string().optional()
+});
+
+/**
+ * Referencia al usuario que creó el registro.
+ */
+export const zProgramCreatedByResponse = z.object({
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    name: z.string().readonly().optional()
+});
+
+/**
+ * Detalle completo de un programa social.
+ */
+export const zProgramResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    name: z.string().readonly().optional(),
+    objective: z.string().readonly().optional(),
+    createdBy: zProgramCreatedByResponse.readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
+});
+
+/**
+ * Datos requeridos para actualizar una edición de un programa.
+ */
+export const zUpdateProgramEditionRequest = z.object({
+    name: z.string().min(0).max(200),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    maxCapacity: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Detalle completo de una edición de programa.
+ */
+export const zProgramEditionResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    programId: z.uuid().readonly().optional(),
+    programName: z.string().readonly().optional(),
+    name: z.string().readonly().optional(),
+    startDate: z.iso.date().readonly().optional(),
+    endDate: z.iso.date().readonly().optional(),
+    maxCapacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    currentEnrollment: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    status: z.enum([
+        'DRAFT',
+        'ACTIVE',
+        'SUSPENDED',
+        'CLOSED'
+    ]).readonly().optional(),
+    createdBy: zProgramCreatedByResponse.readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
+});
+
+/**
+ * Datos requeridos para actualizar un requisito.
+ */
+export const zUpdateProgramRequirementRequest = z.object({
+    type: z.enum([
+        'MIN_AGE',
+        'MAX_INCOME',
+        'RESIDENCY_YEARS',
+        'HAS_CHILDREN'
+    ]).optional(),
+    value: z.string().min(0).max(255),
+    description: z.string().min(0).max(500).optional()
+});
+
+/**
+ * Requisito asociado a una edición de programa.
+ */
+export const zProgramRequirementResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    programEditionId: z.uuid().readonly().optional(),
+    type: z.enum([
+        'MIN_AGE',
+        'MAX_INCOME',
+        'RESIDENCY_YEARS',
+        'HAS_CHILDREN'
+    ]).readonly().optional(),
+    value: z.string().readonly().optional(),
+    description: z.string().readonly().optional()
+});
+
+/**
+ * Datos requeridos para actualizar un beneficio.
+ */
+export const zUpdateProgramBenefitRequest = z.object({
+    benefitType: z.enum([
+        'TAX_EXEMPTION',
+        'HOUSING_SUBSIDY',
+        'FOOD_ASSISTANCE',
+        'UTILITY_SUBSIDY'
+    ]).optional(),
+    description: z.string().min(0).max(500).optional(),
+    amount: z.number().gte(0).optional()
+});
+
+/**
+ * Beneficio asociado a una edición de programa.
+ */
+export const zProgramBenefitResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    programEditionId: z.uuid().readonly().optional(),
+    benefitType: z.enum([
+        'TAX_EXEMPTION',
+        'HOUSING_SUBSIDY',
+        'FOOD_ASSISTANCE',
+        'UTILITY_SUBSIDY'
+    ]).readonly().optional(),
+    description: z.string().readonly().optional(),
+    amount: z.number().gte(0).readonly().optional()
+});
+
+/**
+ * Datos requeridos para crear un usuario.
+ */
 export const zCreateUserRequest = z.object({
-    username: z.string().min(0).max(80),
-    password: z.string().min(8).max(72),
-    name: z.string().min(0).max(150),
-    email: z.email().min(0).max(180),
+    username: z.string().min(1).max(80),
+    name: z.string().min(1).max(150),
+    email: z.email().min(1).max(180),
     active: z.boolean().optional(),
     roles: z.array(z.string()).optional()
 });
 
+/**
+ * Datos requeridos para crear un rol.
+ */
 export const zCreateRoleRequest = z.object({
-    name: z.string().min(0).max(50),
+    name: z.string().min(1).max(50),
     permissions: z.array(z.string()).optional()
 });
 
+/**
+ * Credenciales requeridas para iniciar sesión.
+ */
 export const zLoginRequest = z.object({
-    username: z.string().min(1),
-    password: z.string().min(1)
+    username: z.string().min(1)
 });
 
+/**
+ * Datos públicos de un usuario autenticado.
+ */
 export const zUserResponse = z.object({
-    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    username: z.string().optional(),
-    name: z.string().optional(),
-    email: z.string().optional(),
-    roles: z.array(z.string()).optional(),
-    permissions: z.array(z.string()).optional()
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    username: z.string().readonly().optional(),
+    name: z.string().readonly().optional(),
+    email: z.email().readonly().optional(),
+    roles: z.array(z.string()).readonly().optional(),
+    permissions: z.array(z.string()).readonly().optional()
 });
 
+/**
+ * Resultado de un inicio de sesión exitoso.
+ */
 export const zLoginResponse = z.object({
-    token: z.string().optional(),
-    expiresIn: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    user: zUserResponse.optional(),
-    permissions: z.array(z.string()).optional()
+    token: z.string().readonly().optional(),
+    expiresIn: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    user: zUserResponse.readonly().optional(),
+    permissions: z.array(z.string()).readonly().optional()
 });
 
+/**
+ * Datos requeridos para crear un programa social.
+ */
+export const zCreateProgramRequest = z.object({
+    name: z.string().min(0).max(200),
+    objective: z.string().optional()
+});
+
+/**
+ * Relación de incompatibilidad entre dos programas.
+ */
+export const zProgramIncompatibilityResponse = z.object({
+    programId: z.uuid().readonly().optional(),
+    programName: z.string().readonly().optional(),
+    incompatibleWithProgramId: z.uuid().readonly().optional(),
+    incompatibleWithProgramName: z.string().readonly().optional()
+});
+
+/**
+ * Datos requeridos para crear un requisito.
+ */
+export const zCreateProgramRequirementRequest = z.object({
+    type: z.enum([
+        'MIN_AGE',
+        'MAX_INCOME',
+        'RESIDENCY_YEARS',
+        'HAS_CHILDREN'
+    ]).optional(),
+    value: z.string().min(0).max(255),
+    description: z.string().min(0).max(500).optional()
+});
+
+/**
+ * Datos requeridos para crear un beneficio.
+ */
+export const zCreateProgramBenefitRequest = z.object({
+    benefitType: z.enum([
+        'TAX_EXEMPTION',
+        'HOUSING_SUBSIDY',
+        'FOOD_ASSISTANCE',
+        'UTILITY_SUBSIDY'
+    ]).optional(),
+    description: z.string().min(0).max(500).optional(),
+    amount: z.number().gte(0).optional()
+});
+
+/**
+ * Datos requeridos para crear una edición de un programa.
+ */
+export const zCreateProgramEditionRequest = z.object({
+    name: z.string().min(0).max(200),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    maxCapacity: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Permiso disponible en el sistema.
+ */
 export const zPermissionResponse = z.object({
-    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    name: z.string().optional()
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    name: z.string().readonly().optional()
 });
 
+/**
+ * Perfil del usuario autenticado.
+ */
 export const zMeResponse = z.object({
-    user: zUserResponse.optional()
+    user: zUserResponse.readonly().optional()
+});
+
+/**
+ * Resumen de un programa incluido en un listado.
+ */
+export const zProgramListItemResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    name: z.string().readonly().optional(),
+    objective: z.string().readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
+});
+
+/**
+ * Página de programas sociales.
+ */
+export const zProgramListResponse = z.object({
+    content: z.array(zProgramListItemResponse).readonly().optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional()
+});
+
+/**
+ * Opción reducida de un programa para controles de selección.
+ */
+export const zProgramOptionResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    name: z.string().readonly().optional()
+});
+
+/**
+ * Resumen de una edición incluida en un listado.
+ */
+export const zProgramEditionListItemResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    programId: z.uuid().readonly().optional(),
+    programName: z.string().readonly().optional(),
+    name: z.string().readonly().optional(),
+    startDate: z.iso.date().readonly().optional(),
+    endDate: z.iso.date().readonly().optional(),
+    maxCapacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    currentEnrollment: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    status: z.enum([
+        'DRAFT',
+        'ACTIVE',
+        'SUSPENDED',
+        'CLOSED'
+    ]).readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
+});
+
+/**
+ * Página de ediciones de un programa.
+ */
+export const zProgramEditionListResponse = z.object({
+    content: z.array(zProgramEditionListItemResponse).readonly().optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional()
+});
+
+/**
+ * Opción reducida de una edición para controles de selección.
+ */
+export const zProgramEditionOptionResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    name: z.string().readonly().optional()
 });
 
 export const zLink = z.object({
     href: z.string().optional(),
     templated: z.boolean().optional()
+});
+
+/**
+ * Detalle de un campo que no superó la validación.
+ */
+export const zFieldErrorResponse = z.object({
+    field: z.string().optional(),
+    message: z.string().optional()
+});
+
+/**
+ * Respuesta estándar de error de la API.
+ */
+export const zErrorResponse = z.object({
+    message: z.string().optional(),
+    code: z.string().optional(),
+    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    timestamp: z.iso.datetime().optional(),
+    path: z.string().optional(),
+    fields: z.array(zFieldErrorResponse).optional()
+});
+
+/**
+ * Datos requeridos para actualizar un usuario.
+ */
+export const zUpdateUserRequestWritable = z.object({
+    username: z.string().min(1).max(80),
+    password: z.string().min(8).max(72).optional(),
+    name: z.string().min(1).max(150),
+    email: z.email().min(1).max(180),
+    active: z.boolean().optional(),
+    roles: z.array(z.string()).optional()
+});
+
+/**
+ * Datos requeridos para crear un usuario.
+ */
+export const zCreateUserRequestWritable = z.object({
+    username: z.string().min(1).max(80),
+    password: z.string().min(8).max(72),
+    name: z.string().min(1).max(150),
+    email: z.email().min(1).max(180),
+    active: z.boolean().optional(),
+    roles: z.array(z.string()).optional()
+});
+
+/**
+ * Credenciales requeridas para iniciar sesión.
+ */
+export const zLoginRequestWritable = z.object({
+    username: z.string().min(1),
+    password: z.string().min(1)
 });
 
 export const zDeletePath = z.object({
@@ -101,7 +431,7 @@ export const zFindByIdPath = z.object({
  */
 export const zFindByIdResponse = zUserManagementResponse;
 
-export const zUpdateBody = zUpdateUserRequest;
+export const zUpdateBody = zUpdateUserRequestWritable;
 
 export const zUpdatePath = z.object({
     id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
@@ -141,12 +471,134 @@ export const zUpdate1Path = z.object({
  */
 export const zUpdate1Response = zRoleResponse;
 
+export const zDelete2Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete2Response = z.void();
+
+export const zFindById2Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindById2Response = zProgramResponse;
+
+export const zUpdate2Body = zUpdateProgramRequest;
+
+export const zUpdate2Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdate2Response = zProgramResponse;
+
+export const zDelete3Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete3Response = z.void();
+
+export const zFindById3Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindById3Response = zProgramEditionResponse;
+
+export const zUpdate3Body = zUpdateProgramEditionRequest;
+
+export const zUpdate3Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdate3Response = zProgramEditionResponse;
+
+export const zDelete4Path = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete4Response = z.void();
+
+export const zFindById4Path = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindById4Response = zProgramRequirementResponse;
+
+export const zUpdate4Body = zUpdateProgramRequirementRequest;
+
+export const zUpdate4Path = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdate4Response = zProgramRequirementResponse;
+
+export const zDelete5Path = z.object({
+    editionId: z.uuid(),
+    benefitId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete5Response = z.void();
+
+export const zFindById5Path = z.object({
+    editionId: z.uuid(),
+    benefitId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindById5Response = zProgramBenefitResponse;
+
+export const zUpdate5Body = zUpdateProgramBenefitRequest;
+
+export const zUpdate5Path = z.object({
+    editionId: z.uuid(),
+    benefitId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdate5Response = zProgramBenefitResponse;
+
 /**
  * OK
  */
 export const zFindAllResponse = z.array(zUserManagementResponse);
 
-export const zCreateBody = zCreateUserRequest;
+export const zCreateBody = zCreateUserRequestWritable;
 
 /**
  * Created
@@ -165,22 +617,174 @@ export const zCreate1Body = zCreateRoleRequest;
  */
 export const zCreate1Response = zRoleResponse;
 
-export const zLoginBody = zLoginRequest;
+export const zLoginBody = zLoginRequestWritable;
 
 /**
  * OK
  */
 export const zLoginResponse2 = zLoginResponse;
 
+export const zListQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
 /**
  * OK
  */
-export const zFindAll2Response = z.array(zPermissionResponse);
+export const zListResponse = zProgramListResponse;
+
+export const zCreate2Body = zCreateProgramRequest;
+
+/**
+ * Created
+ */
+export const zCreate2Response = zProgramResponse;
+
+export const zDelete6Path = z.object({
+    programId: z.uuid(),
+    incompatibleProgramId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete6Response = z.void();
+
+export const zCreate3Path = z.object({
+    programId: z.uuid(),
+    incompatibleProgramId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreate3Response = zProgramIncompatibilityResponse;
+
+export const zFindAll2Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindAll2Response = z.array(zProgramRequirementResponse);
+
+export const zCreate4Body = zCreateProgramRequirementRequest;
+
+export const zCreate4Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreate4Response = zProgramRequirementResponse;
+
+export const zFindAll3Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindAll3Response = z.array(zProgramBenefitResponse);
+
+export const zCreate5Body = zCreateProgramBenefitRequest;
+
+export const zCreate5Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreate5Response = zProgramBenefitResponse;
+
+export const zList1Path = z.object({
+    programId: z.uuid()
+});
+
+export const zList1Query = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * OK
+ */
+export const zList1Response = zProgramEditionListResponse;
+
+export const zCreate6Body = zCreateProgramEditionRequest;
+
+export const zCreate6Path = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreate6Response = zProgramEditionResponse;
+
+export const zSuspendPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zSuspendResponse = zProgramEditionResponse;
+
+export const zClosePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zCloseResponse = zProgramEditionResponse;
+
+export const zActivatePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateResponse = zProgramEditionResponse;
+
+/**
+ * OK
+ */
+export const zFindAll4Response = z.array(zPermissionResponse);
 
 /**
  * OK
  */
 export const zMeResponse2 = zMeResponse;
+
+export const zFindAll5Path = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zFindAll5Response = z.array(zProgramIncompatibilityResponse);
+
+/**
+ * OK
+ */
+export const zOptionsResponse = z.array(zProgramOptionResponse);
+
+export const zOptions1Path = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zOptions1Response = z.array(zProgramEditionOptionResponse);
 
 /**
  * OK

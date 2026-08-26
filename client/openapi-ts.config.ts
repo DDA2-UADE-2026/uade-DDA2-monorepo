@@ -1,5 +1,5 @@
 export default {
-  input: 'https://api-muni-uade-dev.fabriziob.com/api-docs',
+  input: 'http://localhost:8080/api-docs',
   output: 'src/generated',
   plugins: [
     {

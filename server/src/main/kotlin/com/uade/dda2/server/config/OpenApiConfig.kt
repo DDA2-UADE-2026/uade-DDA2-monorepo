@@ -1,6 +1,7 @@
 package com.uade.dda2.server.config
 
 import com.uade.dda2.server.error.ErrorResponse
+import io.swagger.v3.core.converter.ModelConverters
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.PathItem
@@ -33,19 +34,24 @@ class OpenApiConfig {
                     .contact(Contact().name("Equipo de Desarrollo Social")),
             )
             .components(
-                Components().addSecuritySchemes(
-                    JWT_SECURITY_SCHEME,
-                    SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                        .description("Token JWT obtenido al iniciar sesión. Ingrese únicamente el token, sin el prefijo Bearer."),
-                ),
+                Components().apply {
+                    addSecuritySchemes(
+                        JWT_SECURITY_SCHEME,
+                        SecurityScheme()
+                            .type(SecurityScheme.Type.HTTP)
+                            .scheme("bearer")
+                            .bearerFormat("JWT")
+                            .description("Token JWT obtenido al iniciar sesión. Ingrese únicamente el token, sin el prefijo Bearer."),
+                    )
+                },
             )
 
     @Bean
     fun commonOpenApiResponses(): OpenApiCustomizer =
         OpenApiCustomizer { openApi ->
+            ModelConverters.getInstance()
+                .readAll(ErrorResponse::class.java)
+                .forEach { (name, schema) -> openApi.components.addSchemas(name, schema) }
             openApi.paths?.forEach { (path, pathItem) ->
                 pathItem.readOperationsMap().forEach { (method, operation) ->
                     actuatorDescriptions[path]?.let { (summary, description) ->
