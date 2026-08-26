@@ -25,13 +25,17 @@ export default defineConfig(({ mode }) => {
       qrcode({
         filter: (url) => url.startsWith('http://192.168.0')
       }),
-      visualizer({
-        filename: 'dist/bundle-report.html',
-        template: 'treemap',
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-      }) as PluginOption,
+      ...(mode === 'visualizer'
+        ? [
+            visualizer({
+              filename: 'dist/bundle-report.html',
+              template: 'treemap',
+              open: true,
+              gzipSize: true,
+              brotliSize: true,
+            }) as PluginOption,
+          ]
+        : []),
     ],
     resolve: {
       alias: {

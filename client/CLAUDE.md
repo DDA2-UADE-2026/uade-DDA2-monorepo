@@ -76,6 +76,6 @@ Light/dark/system theme state is a custom implementation (`src/providers/theme-p
 
 - React Compiler is enabled via Babel (`@rolldown/plugin-babel` + `reactCompilerPreset`) in `vite.config.ts` — it affects dev/build performance but generally means manual `useMemo`/`useCallback` are unnecessary for typical component code.
 - `vite-plugin-qrcode` prints a LAN QR code in dev (filtered to `192.168.0.*`).
-- `rollup-plugin-visualizer` writes a bundle treemap to `dist/bundle-report.html` and auto-opens it on every build.
+- `npm run gen:visualizer` writes a bundle treemap to `dist/bundle-report.html` and opens it; regular builds do not run the visualizer.
 - Env vars: `VITE_SERVER_URL` (backend base URL, used by the generated API client) and `VITE_CLIENT_URL`. See `.env.example`.
 - Production is a static build served by nginx in a container (`Dockerfile`/`nginx.conf`), with SPA fallback (`try_files … /index.html`) — deep links must work without server-side route awareness.

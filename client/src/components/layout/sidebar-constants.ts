@@ -13,7 +13,9 @@ import {
   IconNetwork,
   IconRoute,
   IconShieldCheck,
+  IconShieldLock,
   IconSpeakerphone,
+  IconUsers,
 } from "@tabler/icons-react"
 
 import type { SidebarNavItem } from "@/components/layout/SidebarNavMenu"
@@ -67,6 +69,8 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     ],
   },
   { title: "Campañas", url: "/gestion/campanias", icon: IconSpeakerphone },
+  { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
+  { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },
 ]
 
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [

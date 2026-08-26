@@ -1,9 +1,10 @@
 import { useNavigate } from "@tanstack/react-router"
-import { IconBuildingCommunity, IconChevronRight, IconLogout, IconUsers, IconUserCog } from "@tabler/icons-react"
+import { IconBuildingCommunity, IconChevronRight, IconLogout, IconUsers } from "@tabler/icons-react"
 
 import { AuthCard } from "@/components/auth/AuthCard"
+import { UserAvatar } from "@/components/UserAvatar"
 import { Button } from "@/components/ui/button"
-import { useLogout } from "@/hooks/use-auth"
+import { useLogout, useMe } from "@/hooks/use-auth"
 
 // Fake roles for now — a real user could come back from the API with one
 // role (skip this screen) or several (show only the ones they actually have).
@@ -27,12 +28,14 @@ const ROLES = [
 function RoleSwitcher() {
   const navigate = useNavigate()
   const logout = useLogout()
+  const { data } = useMe()
+  const user = data?.user ?? { name: "Usuario" }
 
   return (
     <AuthCard
       title="Elegí cómo continuar"
       description="Tu cuenta tiene acceso a más de un rol."
-      icon={IconUserCog}
+      headerVisual={<UserAvatar addBlob user={user} className="size-16" fallbackClassName="text-lg" />}
       className="sm:max-w-lg"
       footer={
         <Button

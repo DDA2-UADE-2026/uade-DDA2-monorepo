@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { IconAt, IconMail, IconShieldCheck, IconUser } from '@tabler/icons-react'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { UserAvatar } from '@/components/UserAvatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -16,7 +16,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import type { UserResponse } from '@/generated/types.gen'
 import { useMe } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
-import { getUserInitials } from '@/lib/user-display'
 
 export type ProfileDisplayType = 'portal' | 'gestion'
 
@@ -102,9 +101,7 @@ function AuthenticatedProfile({
   return (
     <Card className={cn('relative w-full', displayType === 'gestion' ? 'sm:max-w-xl' : 'sm:max-w-md')}>
       <CardHeader className="flex flex-col items-center gap-4 text-center">
-        <Avatar className="size-16">
-          <AvatarFallback className="text-lg">{getUserInitials(displayName)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar className="size-16" fallbackClassName="text-lg" user={user} />
         <div className="flex flex-col gap-1.5">
           <CardTitle className="text-xl">Mi perfil</CardTitle>
           <CardDescription>Información de tu cuenta.</CardDescription>
