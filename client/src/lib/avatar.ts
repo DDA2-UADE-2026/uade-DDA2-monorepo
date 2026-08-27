@@ -21,6 +21,9 @@ const CURRENT_USER_AVATAR_KEY = "current-user-avatar"
 const CURRENT_USER_AVATAR_EVENT = "current-user-avatar-change"
 const AVATAR_STYLE_VERSION = 2
 
+let cachedStoredAvatarValue: string | null | undefined
+let cachedStoredAvatar: StoredAvatar | null = null
+
 interface ColorDef {
   h: number;
   s: number;
@@ -117,15 +120,24 @@ export function getAvatarUserLabel(user: AvatarUser): string {
 
 export function readCurrentUserAvatar(): StoredAvatar | null {
   const value = localStorage.getItem(CURRENT_USER_AVATAR_KEY)
-  if (!value) return null
+  if (value === cachedStoredAvatarValue) return cachedStoredAvatar
+
+  cachedStoredAvatarValue = value
+  if (!value) {
+    cachedStoredAvatar = null
+    return cachedStoredAvatar
+  }
+
   try {
     const stored = JSON.parse(value) as StoredAvatar
-    return stored.version === AVATAR_STYLE_VERSION && stored.identity && stored.src
+    cachedStoredAvatar = stored.version === AVATAR_STYLE_VERSION && stored.identity && stored.src
       ? stored
       : null
   } catch {
-    return null
+    cachedStoredAvatar = null
   }
+
+  return cachedStoredAvatar
 }
 
 export function saveCurrentUserAvatar(user: AvatarUser): void {
