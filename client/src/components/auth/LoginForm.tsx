@@ -11,11 +11,9 @@ import {
   IconUser,
 } from "@tabler/icons-react"
 
-import { toast } from "sonner"
-
 import { AuthCard } from "@/components/auth/AuthCard"
 import { useLogin } from "@/hooks/use-auth"
-import { zLoginRequest } from "@/generated/zod.gen"
+import { zLoginRequestWritable } from "@/generated/zod.gen"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
@@ -26,6 +24,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -38,7 +37,7 @@ function LoginForm() {
       password: "",
     },
     validators: {
-      onChange: zLoginRequest,
+      onChange: zLoginRequestWritable,
     },
     onSubmit: ({ value }) => {
       login.mutate(
@@ -59,19 +58,25 @@ function LoginForm() {
         </Button>
       }
     >
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full aria-disabled:opacity-50"
-        aria-disabled="true"
-        onClick={() => {
-          // TODO: wire up to the real Ciudadanos SSO flow once it's available.
-          toast.error("Esta función no está disponible")
-        }}
-      >
-        <IconId />
-        Iniciar sesión con Ciudadanos
-      </Button>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full aria-disabled:opacity-50"
+              aria-disabled="true"
+            >
+              <IconId />
+              Iniciar sesión con Ciudadanos
+            </Button>
+          }
+        />
+        <TooltipContent>
+          {/* TODO: remove once the real Ciudadanos SSO flow is available. */}
+          Esta función no está disponible
+        </TooltipContent>
+      </Tooltip>
       <div className="my-4 flex items-center gap-3">
         <Separator className="flex-1" />
         <span className="text-xs text-muted-foreground">O CONTINUÁ CON</span>

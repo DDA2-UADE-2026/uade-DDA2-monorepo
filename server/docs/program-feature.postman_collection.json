@@ -1,0 +1,989 @@
+{
+  "info": {
+    "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
+    "name": "DDA2 - Program Feature",
+    "description": "Colección para probar los endpoints ciudadanos y administrativos de programas, ediciones, requisitos, beneficios e incompatibilidades. El script de colección inicializa la variable global baseUrl en http://localhost:8080 si todavía no existe. La request de login guarda automáticamente el JWT en la variable global token. Los IDs creados se mantienen como variables de colección para encadenar las requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37274374"
+  },
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "Login y guardar token global",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login exitoso', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.token).to.be.a('string').and.not.empty;",
+                  "    pm.globals.set('token', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Configurar username y password como variables de colección. Un login exitoso actualiza pm.globals.token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Programas disponibles para ciudadanos",
+      "item": [
+        {
+          "name": "Listar programas disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/programs?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "programs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Lista los programas que tienen al menos una edición activa vigente o futura. Requiere autenticación, pero no permisos administrativos."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener detalle de programa disponible",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "programs",
+                "{{firstProgramId}}"
+              ]
+            },
+            "description": "Obtiene las ediciones activas no finalizadas del programa, con sus beneficios y requisitos, más las incompatibilidades del programa."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Programas",
+      "item": [
+        {
+          "name": "Listar programas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar opciones de programas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/options",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "options"
+              ]
+            },
+            "description": "Devuelve pares id y name ordenados alfabéticamente para utilizar en selects."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener programa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{firstProgramId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar incompatibilidades",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}/incompatibilities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{firstProgramId}}",
+                "incompatibilities"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear programa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Programa Postman #2\",\n  \"objective\": \"Programa creado desde la colección de Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear incompatibilidad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}/incompatibilities/{{secondProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{firstProgramId}}",
+                "incompatibilities",
+                "{{secondProgramId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar programa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Programa Postman #2\",\n  \"objective\": \"Objetivo actualizado desde Postman, para incompatibilidad\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{firstProgramId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar incompatibilidad",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{firstProgramId}}/incompatibilities/{{secondProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{firstProgramId}}",
+                "incompatibilities",
+                "{{secondProgramId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar programa auxiliar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{secondProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{secondProgramId}}"
+              ]
+            },
+            "description": "Elimina el programa auxiliar después de borrar la incompatibilidad. Devuelve 409 mientras tenga ediciones o incompatibilidades asociadas."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ediciones de programas",
+      "item": [
+        {
+          "name": "Listar ediciones por programa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/program/{{programId}}?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "program",
+                "{{programId}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar opciones de ediciones por programa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/program/{{programId}}/options",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "program",
+                "{{programId}}",
+                "options"
+              ]
+            },
+            "description": "Devuelve pares id y name de las ediciones no cerradas del programa, ordenados alfabéticamente para utilizar en selects."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener edición",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear edición",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Edición Postman 2026\",\n  \"startDate\": \"2026-09-01\",\n  \"endDate\": \"2026-12-31\",\n  \"maxCapacity\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/program/{{programId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "program",
+                "{{programId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar edición",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Edición Postman actualizada 2026\",\n  \"startDate\": \"2026-09-01\",\n  \"endDate\": \"2027-01-31\",\n  \"maxCapacity\": 120\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activar edición",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/activate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "activate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Suspender edición",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/suspend",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "suspend"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cerrar edición",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/close",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "close"
+              ]
+            },
+            "description": "Una vez cerrada, la edición y su configuración dejan de ser modificables."
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar edición",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}"
+              ]
+            },
+            "description": "Devuelve 409 si está cerrada, tiene inscripciones, requisitos o beneficios."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Requisitos",
+      "item": [
+        {
+          "name": "Listar requisitos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "requirements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener requisito",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements/{{requirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "requirements",
+                "{{requirementId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear requisito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"MIN_AGE\",\n  \"value\": \"18\",\n  \"description\": \"Edad mínima requerida\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "requirements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar requisito",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"MAX_INCOME\",\n  \"value\": \"500000.00\",\n  \"description\": \"Ingreso máximo actualizado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements/{{requirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "requirements",
+                "{{requirementId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar requisito",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/requirements/{{requirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "requirements",
+                "{{requirementId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Beneficios",
+      "item": [
+        {
+          "name": "Listar beneficios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "benefits"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener beneficio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits/{{benefitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "benefits",
+                "{{benefitId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear beneficio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"benefitType\": \"HOUSING_SUBSIDY\",\n  \"description\": \"Subsidio habitacional de prueba\",\n  \"amount\": 250000.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "benefits"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar beneficio",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"benefitType\": \"UTILITY_SUBSIDY\",\n  \"description\": \"Subsidio de servicios actualizado\",\n  \"amount\": 75000.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits/{{benefitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "benefits",
+                "{{benefitId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar beneficio",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/benefits/{{benefitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "benefits",
+                "{{benefitId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          "const defaultBaseUrl = 'http://localhost:8080';",
+          "const configuredBaseUrl = pm.globals.get('baseUrl') || defaultBaseUrl;",
+          "pm.globals.set('baseUrl', configuredBaseUrl.replace(/\\/+$/, ''));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "requests": {},
+        "exec": [
+          "pm.test('La API no responde con un error 5xx', function () {",
+          "    pm.expect(pm.response.code).to.be.below(500);",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "username",
+      "value": "admin"
+    },
+    {
+      "key": "password",
+      "value": "admin"
+    },
+    {
+      "key": "firstProgramId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "secondProgramId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "editionId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "requirementId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "benefitId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "programId",
+      "value": ""
+    }
+  ]
+}

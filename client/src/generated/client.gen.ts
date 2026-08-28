@@ -15,4 +15,4 @@ import type { ClientOptions as ClientOptions2 } from './types.gen';
  */
 export type CreateClientConfig<T extends ClientOptions = ClientOptions2> = (override?: Config<ClientOptions & T>) => Config<Required<ClientOptions> & T>;
 
-export const client: Client = createClient(createClientConfig(createConfig<ClientOptions2>({ baseUrl: 'http://api-muni-uade-dev.fabriziob.com' })));
+export const client: Client = createClient(createClientConfig(createConfig<ClientOptions2>({ baseUrl: 'http://localhost:8080' })));

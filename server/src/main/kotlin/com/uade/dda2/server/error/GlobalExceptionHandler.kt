@@ -1,6 +1,8 @@
 package com.uade.dda2.server.error
 
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.ConstraintViolationException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -10,6 +12,7 @@ import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.HandlerMethodValidationException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -38,14 +41,14 @@ class GlobalExceptionHandler {
             .allErrors
             .map {
                 val field = (it as? FieldError)?.field ?: it.objectName
-                FieldErrorResponse(field = field, message = it.defaultMessage ?: "Invalid value")
+                FieldErrorResponse(field = field, message = it.defaultMessage ?: "Valor inválido.")
             }
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "Validation failed.",
+                    message = "La validación falló.",
                     code = "VALIDATION_ERROR",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
@@ -54,13 +57,31 @@ class GlobalExceptionHandler {
             )
     }
 
+    @ExceptionHandler(
+        HandlerMethodValidationException::class,
+        ConstraintViolationException::class,
+    )
+    fun handleMethodValidation(
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> =
+        ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(
+                ErrorResponse(
+                    message = "La validación falló.",
+                    code = "VALIDATION_ERROR",
+                    status = HttpStatus.BAD_REQUEST.value(),
+                    path = request.requestURI,
+                ),
+            )
+
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleUnreadableBody(request: HttpServletRequest): ResponseEntity<ErrorResponse> =
         ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "Invalid request body.",
+                    message = "El cuerpo de la solicitud es inválido.",
                     code = "INVALID_REQUEST_BODY",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
@@ -75,9 +96,24 @@ class GlobalExceptionHandler {
             .status(HttpStatus.UNAUTHORIZED)
             .body(
                 ErrorResponse(
-                    message = "Invalid username or password.",
+                    message = "El nombre de usuario o la contraseña son inválidos.",
                     code = "AUTH_INVALID_CREDENTIALS",
                     status = HttpStatus.UNAUTHORIZED.value(),
+                    path = request.requestURI,
+                ),
+            )
+
+    @ExceptionHandler(DataIntegrityViolationException::class)
+    fun handleDataIntegrityViolation(
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> =
+        ResponseEntity
+            .status(HttpStatus.CONFLICT)
+            .body(
+                ErrorResponse(
+                    message = "La operación entra en conflicto con datos relacionados existentes.",
+                    code = "DATA_INTEGRITY_VIOLATION",
+                    status = HttpStatus.CONFLICT.value(),
                     path = request.requestURI,
                 ),
             )

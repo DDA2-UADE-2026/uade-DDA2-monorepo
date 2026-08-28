@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { Create1Data, Create1Responses, CreateData, CreateResponses, Delete1Data, Delete1Responses, DeleteData, DeleteResponses, FindAll1Data, FindAll1Responses, FindAll2Data, FindAll2Responses, FindAllData, FindAllResponses, FindById1Data, FindById1Responses, FindByIdData, FindByIdResponses, HealthData, HealthResponses, InfoData, InfoResponses, LinksData, LinksResponses, LoginData, LoginResponses, MeData, MeResponses, Update1Data, Update1Responses, UpdateData, UpdateResponses } from './types.gen';
+import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseErrors, CloseResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, CreateData, CreateErrors, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, DeleteData, DeleteErrors, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, ListData, ListErrors, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, SuspendData, SuspendErrors, SuspendResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, UpdateData, UpdateErrors, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -18,11 +18,35 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
-export const delete_ = <ThrowOnError extends boolean = false>(options: Options<DeleteData, ThrowOnError>): RequestResult<DeleteResponses, unknown, ThrowOnError> => (options.client ?? client).delete<DeleteResponses, unknown, ThrowOnError>({ url: '/users/{id}', ...options });
+/**
+ * Eliminar un usuario
+ *
+ * Elimina el usuario indicado si no existen relaciones que lo impidan.
+ */
+export const delete_ = <ThrowOnError extends boolean = false>(options: Options<DeleteData, ThrowOnError>): RequestResult<DeleteResponses, DeleteErrors, ThrowOnError> => (options.client ?? client).delete<DeleteResponses, DeleteErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/users/{id}',
+    ...options
+});
 
-export const findById = <ThrowOnError extends boolean = false>(options: Options<FindByIdData, ThrowOnError>): RequestResult<FindByIdResponses, unknown, ThrowOnError> => (options.client ?? client).get<FindByIdResponses, unknown, ThrowOnError>({ url: '/users/{id}', ...options });
+/**
+ * Consultar un usuario
+ *
+ * Devuelve el usuario identificado por su ID.
+ */
+export const findById = <ThrowOnError extends boolean = false>(options: Options<FindByIdData, ThrowOnError>): RequestResult<FindByIdResponses, FindByIdErrors, ThrowOnError> => (options.client ?? client).get<FindByIdResponses, FindByIdErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/users/{id}',
+    ...options
+});
 
-export const update = <ThrowOnError extends boolean = false>(options: Options<UpdateData, ThrowOnError>): RequestResult<UpdateResponses, unknown, ThrowOnError> => (options.client ?? client).put<UpdateResponses, unknown, ThrowOnError>({
+/**
+ * Actualizar un usuario
+ *
+ * Actualiza los datos, el estado y los roles del usuario indicado.
+ */
+export const update = <ThrowOnError extends boolean = false>(options: Options<UpdateData, ThrowOnError>): RequestResult<UpdateResponses, UpdateErrors, ThrowOnError> => (options.client ?? client).put<UpdateResponses, UpdateErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/users/{id}',
     ...options,
     headers: {
@@ -31,11 +55,35 @@ export const update = <ThrowOnError extends boolean = false>(options: Options<Up
     }
 });
 
-export const delete1 = <ThrowOnError extends boolean = false>(options: Options<Delete1Data, ThrowOnError>): RequestResult<Delete1Responses, unknown, ThrowOnError> => (options.client ?? client).delete<Delete1Responses, unknown, ThrowOnError>({ url: '/roles/{id}', ...options });
+/**
+ * Eliminar un rol
+ *
+ * Elimina el rol indicado si no existen relaciones que lo impidan.
+ */
+export const delete1 = <ThrowOnError extends boolean = false>(options: Options<Delete1Data, ThrowOnError>): RequestResult<Delete1Responses, Delete1Errors, ThrowOnError> => (options.client ?? client).delete<Delete1Responses, Delete1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/roles/{id}',
+    ...options
+});
 
-export const findById1 = <ThrowOnError extends boolean = false>(options: Options<FindById1Data, ThrowOnError>): RequestResult<FindById1Responses, unknown, ThrowOnError> => (options.client ?? client).get<FindById1Responses, unknown, ThrowOnError>({ url: '/roles/{id}', ...options });
+/**
+ * Consultar un rol
+ *
+ * Devuelve el rol identificado por su ID.
+ */
+export const findById1 = <ThrowOnError extends boolean = false>(options: Options<FindById1Data, ThrowOnError>): RequestResult<FindById1Responses, FindById1Errors, ThrowOnError> => (options.client ?? client).get<FindById1Responses, FindById1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/roles/{id}',
+    ...options
+});
 
-export const update1 = <ThrowOnError extends boolean = false>(options: Options<Update1Data, ThrowOnError>): RequestResult<Update1Responses, unknown, ThrowOnError> => (options.client ?? client).put<Update1Responses, unknown, ThrowOnError>({
+/**
+ * Actualizar un rol
+ *
+ * Reemplaza el nombre y los permisos del rol indicado.
+ */
+export const update1 = <ThrowOnError extends boolean = false>(options: Options<Update1Data, ThrowOnError>): RequestResult<Update1Responses, Update1Errors, ThrowOnError> => (options.client ?? client).put<Update1Responses, Update1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/roles/{id}',
     ...options,
     headers: {
@@ -44,9 +92,172 @@ export const update1 = <ThrowOnError extends boolean = false>(options: Options<U
     }
 });
 
-export const findAll = <ThrowOnError extends boolean = false>(options?: Options<FindAllData, ThrowOnError>): RequestResult<FindAllResponses, unknown, ThrowOnError> => (options?.client ?? client).get<FindAllResponses, unknown, ThrowOnError>({ url: '/users', ...options });
+/**
+ * Eliminar un programa
+ *
+ * Elimina el programa si no existen relaciones que lo impidan.
+ */
+export const delete2 = <ThrowOnError extends boolean = false>(options: Options<Delete2Data, ThrowOnError>): RequestResult<Delete2Responses, Delete2Errors, ThrowOnError> => (options.client ?? client).delete<Delete2Responses, Delete2Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{id}',
+    ...options
+});
 
-export const create = <ThrowOnError extends boolean = false>(options: Options<CreateData, ThrowOnError>): RequestResult<CreateResponses, unknown, ThrowOnError> => (options.client ?? client).post<CreateResponses, unknown, ThrowOnError>({
+/**
+ * Consultar un programa
+ *
+ * Devuelve el detalle del programa identificado por su UUID.
+ */
+export const findById2 = <ThrowOnError extends boolean = false>(options: Options<FindById2Data, ThrowOnError>): RequestResult<FindById2Responses, FindById2Errors, ThrowOnError> => (options.client ?? client).get<FindById2Responses, FindById2Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{id}',
+    ...options
+});
+
+/**
+ * Actualizar un programa
+ *
+ * Actualiza el nombre y el objetivo del programa indicado.
+ */
+export const update2 = <ThrowOnError extends boolean = false>(options: Options<Update2Data, ThrowOnError>): RequestResult<Update2Responses, Update2Errors, ThrowOnError> => (options.client ?? client).put<Update2Responses, Update2Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Eliminar una edición
+ *
+ * Elimina la edición si su estado y sus relaciones lo permiten.
+ */
+export const delete3 = <ThrowOnError extends boolean = false>(options: Options<Delete3Data, ThrowOnError>): RequestResult<Delete3Responses, Delete3Errors, ThrowOnError> => (options.client ?? client).delete<Delete3Responses, Delete3Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{id}',
+    ...options
+});
+
+/**
+ * Consultar una edición
+ *
+ * Devuelve el detalle de la edición indicada.
+ */
+export const findById3 = <ThrowOnError extends boolean = false>(options: Options<FindById3Data, ThrowOnError>): RequestResult<FindById3Responses, FindById3Errors, ThrowOnError> => (options.client ?? client).get<FindById3Responses, FindById3Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{id}',
+    ...options
+});
+
+/**
+ * Actualizar una edición
+ *
+ * Actualiza los datos de la edición indicada.
+ */
+export const update3 = <ThrowOnError extends boolean = false>(options: Options<Update3Data, ThrowOnError>): RequestResult<Update3Responses, Update3Errors, ThrowOnError> => (options.client ?? client).put<Update3Responses, Update3Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Eliminar un requisito
+ *
+ * Elimina el requisito indicado de la edición.
+ */
+export const delete4 = <ThrowOnError extends boolean = false>(options: Options<Delete4Data, ThrowOnError>): RequestResult<Delete4Responses, Delete4Errors, ThrowOnError> => (options.client ?? client).delete<Delete4Responses, Delete4Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}',
+    ...options
+});
+
+/**
+ * Consultar un requisito
+ *
+ * Devuelve un requisito perteneciente a la edición indicada.
+ */
+export const findById4 = <ThrowOnError extends boolean = false>(options: Options<FindById4Data, ThrowOnError>): RequestResult<FindById4Responses, FindById4Errors, ThrowOnError> => (options.client ?? client).get<FindById4Responses, FindById4Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}',
+    ...options
+});
+
+/**
+ * Actualizar un requisito
+ *
+ * Actualiza los datos del requisito indicado.
+ */
+export const update4 = <ThrowOnError extends boolean = false>(options: Options<Update4Data, ThrowOnError>): RequestResult<Update4Responses, Update4Errors, ThrowOnError> => (options.client ?? client).put<Update4Responses, Update4Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Eliminar un beneficio
+ *
+ * Elimina el beneficio indicado de la edición.
+ */
+export const delete5 = <ThrowOnError extends boolean = false>(options: Options<Delete5Data, ThrowOnError>): RequestResult<Delete5Responses, Delete5Errors, ThrowOnError> => (options.client ?? client).delete<Delete5Responses, Delete5Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}',
+    ...options
+});
+
+/**
+ * Consultar un beneficio
+ *
+ * Devuelve un beneficio perteneciente a la edición indicada.
+ */
+export const findById5 = <ThrowOnError extends boolean = false>(options: Options<FindById5Data, ThrowOnError>): RequestResult<FindById5Responses, FindById5Errors, ThrowOnError> => (options.client ?? client).get<FindById5Responses, FindById5Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}',
+    ...options
+});
+
+/**
+ * Actualizar un beneficio
+ *
+ * Actualiza los datos del beneficio indicado.
+ */
+export const update5 = <ThrowOnError extends boolean = false>(options: Options<Update5Data, ThrowOnError>): RequestResult<Update5Responses, Update5Errors, ThrowOnError> => (options.client ?? client).put<Update5Responses, Update5Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar usuarios
+ *
+ * Devuelve todos los usuarios con sus roles y permisos efectivos.
+ */
+export const findAll = <ThrowOnError extends boolean = false>(options?: Options<FindAllData, ThrowOnError>): RequestResult<FindAllResponses, FindAllErrors, ThrowOnError> => (options?.client ?? client).get<FindAllResponses, FindAllErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/users',
+    ...options
+});
+
+/**
+ * Crear un usuario
+ *
+ * Registra un usuario y le asigna los roles indicados.
+ */
+export const create = <ThrowOnError extends boolean = false>(options: Options<CreateData, ThrowOnError>): RequestResult<CreateResponses, CreateErrors, ThrowOnError> => (options.client ?? client).post<CreateResponses, CreateErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/users',
     ...options,
     headers: {
@@ -55,9 +266,24 @@ export const create = <ThrowOnError extends boolean = false>(options: Options<Cr
     }
 });
 
-export const findAll1 = <ThrowOnError extends boolean = false>(options?: Options<FindAll1Data, ThrowOnError>): RequestResult<FindAll1Responses, unknown, ThrowOnError> => (options?.client ?? client).get<FindAll1Responses, unknown, ThrowOnError>({ url: '/roles', ...options });
+/**
+ * Listar roles
+ *
+ * Devuelve todos los roles con sus permisos asociados.
+ */
+export const findAll1 = <ThrowOnError extends boolean = false>(options?: Options<FindAll1Data, ThrowOnError>): RequestResult<FindAll1Responses, FindAll1Errors, ThrowOnError> => (options?.client ?? client).get<FindAll1Responses, FindAll1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/roles',
+    ...options
+});
 
-export const create1 = <ThrowOnError extends boolean = false>(options: Options<Create1Data, ThrowOnError>): RequestResult<Create1Responses, unknown, ThrowOnError> => (options.client ?? client).post<Create1Responses, unknown, ThrowOnError>({
+/**
+ * Crear un rol
+ *
+ * Crea un rol y le asigna el conjunto de permisos indicado.
+ */
+export const create1 = <ThrowOnError extends boolean = false>(options: Options<Create1Data, ThrowOnError>): RequestResult<Create1Responses, Create1Errors, ThrowOnError> => (options.client ?? client).post<Create1Responses, Create1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/roles',
     ...options,
     headers: {
@@ -66,7 +292,12 @@ export const create1 = <ThrowOnError extends boolean = false>(options: Options<C
     }
 });
 
-export const login = <ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>): RequestResult<LoginResponses, unknown, ThrowOnError> => (options.client ?? client).post<LoginResponses, unknown, ThrowOnError>({
+/**
+ * Iniciar sesión
+ *
+ * Valida las credenciales y devuelve un token JWT junto con los datos del usuario.
+ */
+export const login = <ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>): RequestResult<LoginResponses, LoginErrors, ThrowOnError> => (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
     url: '/auth/login',
     ...options,
     headers: {
@@ -75,21 +306,245 @@ export const login = <ThrowOnError extends boolean = false>(options: Options<Log
     }
 });
 
-export const findAll2 = <ThrowOnError extends boolean = false>(options?: Options<FindAll2Data, ThrowOnError>): RequestResult<FindAll2Responses, unknown, ThrowOnError> => (options?.client ?? client).get<FindAll2Responses, unknown, ThrowOnError>({ url: '/permissions', ...options });
-
-export const me = <ThrowOnError extends boolean = false>(options?: Options<MeData, ThrowOnError>): RequestResult<MeResponses, unknown, ThrowOnError> => (options?.client ?? client).get<MeResponses, unknown, ThrowOnError>({ url: '/auth/me', ...options });
+/**
+ * Listar programas
+ *
+ * Devuelve una página del catálogo de programas sociales.
+ */
+export const list = <ThrowOnError extends boolean = false>(options?: Options<ListData, ThrowOnError>): RequestResult<ListResponses, ListErrors, ThrowOnError> => (options?.client ?? client).get<ListResponses, ListErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs',
+    ...options
+});
 
 /**
- * Actuator root web endpoint
+ * Crear un programa
+ *
+ * Registra un nuevo programa social.
  */
-export const links = <ThrowOnError extends boolean = false>(options?: Options<LinksData, ThrowOnError>): RequestResult<LinksResponses, unknown, ThrowOnError> => (options?.client ?? client).get<LinksResponses, unknown, ThrowOnError>({ url: '/actuator', ...options });
+export const create2 = <ThrowOnError extends boolean = false>(options: Options<Create2Data, ThrowOnError>): RequestResult<Create2Responses, Create2Errors, ThrowOnError> => (options.client ?? client).post<Create2Responses, Create2Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
 
 /**
- * Actuator web endpoint 'info'
+ * Eliminar una incompatibilidad
+ *
+ * Elimina la relación de incompatibilidad entre los programas indicados.
  */
-export const info = <ThrowOnError extends boolean = false>(options?: Options<InfoData, ThrowOnError>): RequestResult<InfoResponses, unknown, ThrowOnError> => (options?.client ?? client).get<InfoResponses, unknown, ThrowOnError>({ url: '/actuator/info', ...options });
+export const delete6 = <ThrowOnError extends boolean = false>(options: Options<Delete6Data, ThrowOnError>): RequestResult<Delete6Responses, Delete6Errors, ThrowOnError> => (options.client ?? client).delete<Delete6Responses, Delete6Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}',
+    ...options
+});
 
 /**
- * Actuator web endpoint 'health'
+ * Crear una incompatibilidad
+ *
+ * Declara que dos programas son incompatibles entre sí.
  */
-export const health = <ThrowOnError extends boolean = false>(options?: Options<HealthData, ThrowOnError>): RequestResult<HealthResponses, unknown, ThrowOnError> => (options?.client ?? client).get<HealthResponses, unknown, ThrowOnError>({ url: '/actuator/health', ...options });
+export const create3 = <ThrowOnError extends boolean = false>(options: Options<Create3Data, ThrowOnError>): RequestResult<Create3Responses, Create3Errors, ThrowOnError> => (options.client ?? client).post<Create3Responses, Create3Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}',
+    ...options
+});
+
+/**
+ * Listar requisitos
+ *
+ * Devuelve todos los requisitos de la edición indicada.
+ */
+export const findAll2 = <ThrowOnError extends boolean = false>(options: Options<FindAll2Data, ThrowOnError>): RequestResult<FindAll2Responses, FindAll2Errors, ThrowOnError> => (options.client ?? client).get<FindAll2Responses, FindAll2Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/requirements',
+    ...options
+});
+
+/**
+ * Crear un requisito
+ *
+ * Agrega un requisito a la edición indicada.
+ */
+export const create4 = <ThrowOnError extends boolean = false>(options: Options<Create4Data, ThrowOnError>): RequestResult<Create4Responses, Create4Errors, ThrowOnError> => (options.client ?? client).post<Create4Responses, Create4Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/requirements',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar beneficios
+ *
+ * Devuelve todos los beneficios de la edición indicada.
+ */
+export const findAll3 = <ThrowOnError extends boolean = false>(options: Options<FindAll3Data, ThrowOnError>): RequestResult<FindAll3Responses, FindAll3Errors, ThrowOnError> => (options.client ?? client).get<FindAll3Responses, FindAll3Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/benefits',
+    ...options
+});
+
+/**
+ * Crear un beneficio
+ *
+ * Agrega un beneficio a la edición indicada.
+ */
+export const create5 = <ThrowOnError extends boolean = false>(options: Options<Create5Data, ThrowOnError>): RequestResult<Create5Responses, Create5Errors, ThrowOnError> => (options.client ?? client).post<Create5Responses, Create5Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{editionId}/benefits',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar ediciones
+ *
+ * Devuelve una página de ediciones pertenecientes a un programa.
+ */
+export const list1 = <ThrowOnError extends boolean = false>(options: Options<List1Data, ThrowOnError>): RequestResult<List1Responses, List1Errors, ThrowOnError> => (options.client ?? client).get<List1Responses, List1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/program/{programId}',
+    ...options
+});
+
+/**
+ * Crear una edición
+ *
+ * Crea una edición para el programa indicado.
+ */
+export const create6 = <ThrowOnError extends boolean = false>(options: Options<Create6Data, ThrowOnError>): RequestResult<Create6Responses, Create6Errors, ThrowOnError> => (options.client ?? client).post<Create6Responses, Create6Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/program/{programId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Suspender una edición
+ *
+ * Cambia la edición al estado suspendido cuando la transición es válida.
+ */
+export const suspend = <ThrowOnError extends boolean = false>(options: Options<SuspendData, ThrowOnError>): RequestResult<SuspendResponses, SuspendErrors, ThrowOnError> => (options.client ?? client).patch<SuspendResponses, SuspendErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{id}/suspend',
+    ...options
+});
+
+/**
+ * Cerrar una edición
+ *
+ * Cambia la edición al estado cerrado cuando la transición es válida.
+ */
+export const close = <ThrowOnError extends boolean = false>(options: Options<CloseData, ThrowOnError>): RequestResult<CloseResponses, CloseErrors, ThrowOnError> => (options.client ?? client).patch<CloseResponses, CloseErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{id}/close',
+    ...options
+});
+
+/**
+ * Activar una edición
+ *
+ * Cambia la edición al estado activo cuando la transición es válida.
+ */
+export const activate = <ThrowOnError extends boolean = false>(options: Options<ActivateData, ThrowOnError>): RequestResult<ActivateResponses, ActivateErrors, ThrowOnError> => (options.client ?? client).patch<ActivateResponses, ActivateErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/{id}/activate',
+    ...options
+});
+
+/**
+ * Listar permisos
+ *
+ * Devuelve todos los permisos registrados en el sistema.
+ */
+export const findAll4 = <ThrowOnError extends boolean = false>(options?: Options<FindAll4Data, ThrowOnError>): RequestResult<FindAll4Responses, FindAll4Errors, ThrowOnError> => (options?.client ?? client).get<FindAll4Responses, FindAll4Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/permissions',
+    ...options
+});
+
+/**
+ * Consultar mi perfil
+ *
+ * Devuelve la identidad y los permisos del usuario autenticado.
+ */
+export const me = <ThrowOnError extends boolean = false>(options?: Options<MeData, ThrowOnError>): RequestResult<MeResponses, MeErrors, ThrowOnError> => (options?.client ?? client).get<MeResponses, MeErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/me',
+    ...options
+});
+
+/**
+ * Listar incompatibilidades
+ *
+ * Devuelve los programas incompatibles con el programa indicado.
+ */
+export const findAll5 = <ThrowOnError extends boolean = false>(options: Options<FindAll5Data, ThrowOnError>): RequestResult<FindAll5Responses, FindAll5Errors, ThrowOnError> => (options.client ?? client).get<FindAll5Responses, FindAll5Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/incompatibilities',
+    ...options
+});
+
+/**
+ * Listar opciones de programas
+ *
+ * Devuelve una lista reducida de programas para controles de selección.
+ */
+export const listProgramOptions = <ThrowOnError extends boolean = false>(options?: Options<ListProgramOptionsData, ThrowOnError>): RequestResult<ListProgramOptionsResponses, ListProgramOptionsErrors, ThrowOnError> => (options?.client ?? client).get<ListProgramOptionsResponses, ListProgramOptionsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/options',
+    ...options
+});
+
+/**
+ * Listar opciones de ediciones
+ *
+ * Devuelve las ediciones de un programa en formato reducido para controles de selección.
+ */
+export const listProgramEditionOptions = <ThrowOnError extends boolean = false>(options: Options<ListProgramEditionOptionsData, ThrowOnError>): RequestResult<ListProgramEditionOptionsResponses, ListProgramEditionOptionsErrors, ThrowOnError> => (options.client ?? client).get<ListProgramEditionOptionsResponses, ListProgramEditionOptionsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/program-editions/program/{programId}/options',
+    ...options
+});
+
+/**
+ * Consultar Actuator
+ *
+ * Devuelve los enlaces de descubrimiento de los endpoints operativos disponibles.
+ */
+export const links = <ThrowOnError extends boolean = false>(options?: Options<LinksData, ThrowOnError>): RequestResult<LinksResponses, LinksErrors, ThrowOnError> => (options?.client ?? client).get<LinksResponses, LinksErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/actuator',
+    ...options
+});
+
+/**
+ * Consultar información de la aplicación
+ *
+ * Devuelve la información operativa publicada por la aplicación.
+ */
+export const info = <ThrowOnError extends boolean = false>(options?: Options<InfoData, ThrowOnError>): RequestResult<InfoResponses, InfoErrors, ThrowOnError> => (options?.client ?? client).get<InfoResponses, InfoErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/actuator/info',
+    ...options
+});
+
+/**
+ * Consultar el estado de salud
+ *
+ * Informa el estado de salud actual de la aplicación.
+ */
+export const health = <ThrowOnError extends boolean = false>(options?: Options<HealthData, ThrowOnError>): RequestResult<HealthResponses, HealthErrors, ThrowOnError> => (options?.client ?? client).get<HealthResponses, HealthErrors, ThrowOnError>({ url: '/actuator/health', ...options });

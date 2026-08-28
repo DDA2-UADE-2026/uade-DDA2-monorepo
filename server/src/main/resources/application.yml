@@ -49,6 +49,9 @@ springdoc:
   swagger-ui:
     enabled: true
     path: ${SWAGGER_UI_PATH:/swagger-ui}
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
 app:
   security:
     jwt:

@@ -1,0 +1,154 @@
+Project social_development_api {
+  database_type: 'PostgreSQL'
+  Note: 'Modelo derivado de las entidades JPA actuales de la API.'
+}
+
+Enum log_action {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+}
+
+Enum log_entity_type {
+  permissions
+  roles
+  users
+}
+
+Enum program_edition_status {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+Enum program_benefit_type {
+  TAX_EXEMPTION
+  HOUSING_SUBSIDY
+  FOOD_ASSISTANCE
+  UTILITY_SUBSIDY
+}
+
+Enum program_requirement_type {
+  MIN_AGE
+  MAX_INCOME
+  RESIDENCY_YEARS
+  HAS_CHILDREN
+}
+
+Table permissions {
+  id bigint [pk, increment]
+  name varchar(100) [not null, unique]
+}
+
+Table roles {
+  id bigint [pk, increment]
+  name varchar(50) [not null, unique]
+}
+
+Table role_permissions {
+  role_id bigint [not null, ref: > roles.id]
+  permission_id bigint [not null, ref: > permissions.id]
+
+  indexes {
+    (role_id, permission_id) [pk]
+  }
+}
+
+Table users {
+  id bigint [pk, increment]
+  username varchar(80) [not null, unique]
+  password_hash varchar(100) [not null]
+  name varchar(150) [not null]
+  email varchar(180) [not null]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz
+}
+
+Table user_roles {
+  user_id bigint [not null, ref: > users.id]
+  role_id bigint [not null, ref: > roles.id]
+
+  indexes {
+    (user_id, role_id) [pk]
+  }
+}
+
+Table logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id, note: 'Nullable; la aplicación limpia la referencia antes de eliminar un usuario.']
+  action log_action [not null, note: 'Persistido como varchar(20).']
+  entity_type log_entity_type [not null, note: 'Persistido como varchar(100) mediante LogEntityTypeConverter.']
+  entity_id varchar(255) [not null]
+  old_values jsonb
+  new_values jsonb
+  created_at timestamptz [not null]
+
+  indexes {
+    (entity_type, entity_id) [name: 'ix_logs_entity']
+    user_id [name: 'ix_logs_user_id']
+    created_at [name: 'ix_logs_created_at']
+  }
+}
+
+Table program {
+  id uuid [pk]
+  name varchar(200) [not null]
+  normalized_name varchar(200) [not null, note: 'Nombre recortado y convertido a minúsculas por la aplicación.']
+  objective text
+  created_by bigint [not null, ref: > users.id]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    normalized_name [unique, name: 'uk_program_normalized_name']
+  }
+}
+
+Table program_edition {
+  id uuid [pk]
+  program_id uuid [not null, ref: > program.id]
+  name varchar(200) [not null]
+  normalized_name varchar(200) [not null, note: 'Nombre recortado y convertido a minúsculas por la aplicación.']
+  start_date date [not null]
+  end_date date [not null]
+  max_capacity integer [not null]
+  current_enrollment integer [not null, note: 'Valor inicial asignado por la aplicación: 0.']
+  status program_edition_status [not null, note: 'Persistido como varchar(30). Valor inicial asignado por la aplicación: DRAFT.']
+  created_by bigint [not null, ref: > users.id]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (program_id, normalized_name) [unique, name: 'uk_program_edition_program_normalized_name']
+  }
+}
+
+Table program_benefit {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  benefit_type program_benefit_type [not null, note: 'Persistido como varchar(50).']
+  description varchar(500)
+  amount decimal(19,2)
+}
+
+Table program_requirement {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  type program_requirement_type [not null, note: 'Persistido como varchar(50).']
+  value varchar(255) [not null]
+  description varchar(500)
+}
+
+Table program_incompatibility {
+  program_id uuid [not null, ref: > program.id]
+  incompatible_with_program_id uuid [not null, ref: > program.id]
+
+  indexes {
+    (program_id, incompatible_with_program_id) [pk]
+  }
+
+  Note: 'La aplicación almacena los UUID en orden canónico para representar cada incompatibilidad una sola vez.'
+}
