@@ -2,6 +2,8 @@ package com.uade.dda2.server.feature.program.validator
 
 import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramEditionRequest
+import com.uade.dda2.server.feature.enrollmentperiod.entity.EnrollmentPeriodStatus
+import com.uade.dda2.server.feature.enrollmentperiod.repository.EnrollmentPeriodRepository
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
@@ -18,6 +20,7 @@ class AdminProgramEditionValidator(
     private val programEditionRepository: ProgramEditionRepository,
     private val programBenefitRepository: ProgramBenefitRepository,
     private val programRequirementRepository: ProgramRequirementRepository,
+    private val enrollmentPeriodRepository: EnrollmentPeriodRepository,
 ) {
 
     fun validateCreate(
@@ -59,6 +62,12 @@ class AdminProgramEditionValidator(
             endDate = request.endDate,
         )
 
+        validateEnrollmentPeriodsRemainWithinEdition(
+            edition = edition,
+            startDate = request.startDate,
+            endDate = request.endDate,
+        )
+
         validateCapacity(request.maxCapacity)
 
         validateCapacityAgainstCurrentEnrollment(
@@ -96,6 +105,17 @@ class AdminProgramEditionValidator(
                 newStatus = newStatus,
             )
         }
+
+        val editionId = requireNotNull(edition.id)
+        if (
+            newStatus != ProgramEditionStatus.ACTIVE &&
+            enrollmentPeriodRepository.existsByProgramEditionIdAndStatus(
+                programEditionId = editionId,
+                status = EnrollmentPeriodStatus.OPEN,
+            )
+        ) {
+            throw ProgramEditionErrors.hasOpenEnrollmentPeriod(editionId)
+        }
     }
 
     fun validateDelete(edition: ProgramEdition) {
@@ -107,7 +127,8 @@ class AdminProgramEditionValidator(
 
         if (
             programBenefitRepository.existsByProgramEditionId(editionId) ||
-            programRequirementRepository.existsByProgramEditionId(editionId)
+            programRequirementRepository.existsByProgramEditionId(editionId) ||
+            enrollmentPeriodRepository.existsByProgramEditionId(editionId)
         ) {
             throw ProgramEditionErrors.hasConfiguration(editionId)
         }
@@ -178,6 +199,24 @@ class AdminProgramEditionValidator(
             throw ProgramEditionErrors.capacityBelowCurrentEnrollment(
                 currentEnrollment = currentEnrollment,
             )
+        }
+    }
+
+    private fun validateEnrollmentPeriodsRemainWithinEdition(
+        edition: ProgramEdition,
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ) {
+        val editionId = requireNotNull(edition.id)
+
+        if (
+            enrollmentPeriodRepository.existsOutsideDateRange(
+                programEditionId = editionId,
+                startDate = startDate,
+                endDate = endDate,
+            )
+        ) {
+            throw ProgramEditionErrors.dateRangeExcludesEnrollmentPeriods(editionId)
         }
     }
 }

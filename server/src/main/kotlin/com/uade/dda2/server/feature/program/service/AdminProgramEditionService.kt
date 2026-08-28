@@ -101,7 +101,7 @@ class AdminProgramEditionService(
         id: UUID,
         request: UpdateProgramEditionRequest,
     ): ProgramEditionResponse {
-        val edition = findEdition(id)
+        val edition = findEditionForUpdate(id)
 
         adminProgramEditionValidator.validateUpdate(
             edition = edition,
@@ -145,7 +145,7 @@ class AdminProgramEditionService(
 
     @Transactional
     fun delete(id: UUID) {
-        val edition = findEdition(id)
+        val edition = findEditionForUpdate(id)
 
         adminProgramEditionValidator.validateDelete(edition)
 
@@ -156,7 +156,7 @@ class AdminProgramEditionService(
         id: UUID,
         status: ProgramEditionStatus,
     ): ProgramEditionResponse {
-        val edition = findEdition(id)
+        val edition = findEditionForUpdate(id)
 
         adminProgramEditionValidator.validateStatusTransition(
             edition = edition,
@@ -183,4 +183,8 @@ class AdminProgramEditionService(
             .orElseThrow {
                 ProgramEditionErrors.notFound(id)
             }
+
+    private fun findEditionForUpdate(id: UUID): ProgramEdition =
+        programEditionRepository.findByIdForUpdate(id)
+            ?: throw ProgramEditionErrors.notFound(id)
 }

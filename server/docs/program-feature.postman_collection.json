@@ -608,6 +608,148 @@
       ]
     },
     {
+      "name": "Períodos de inscripción",
+      "item": [
+        {
+          "name": "Listar períodos de inscripción",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener período de inscripción",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Crear período de inscripción",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('enrollmentPeriodId', response.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"openDate\": \"2026-09-10\",\n  \"closeDate\": \"2026-10-10\",\n  \"notes\": \"Período creado desde Postman\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods"]
+            },
+            "description": "El período se crea en estado SCHEDULED. Las fechas deben estar dentro de la edición y no pueden solaparse con otro período."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar período de inscripción",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"openDate\": \"2026-09-10\",\n  \"closeDate\": \"2026-10-15\",\n  \"notes\": \"Período actualizado desde Postman\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}"]
+            },
+            "description": "No permite editar un período cerrado ni modificar su estado directamente."
+          },
+          "response": []
+        },
+        {
+          "name": "Abrir período de inscripción",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/open",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "open"]
+            },
+            "description": "Requiere una edición ACTIVE, que la fecha actual esté dentro del período y que no exista otro período OPEN para la edición."
+          },
+          "response": []
+        },
+        {
+          "name": "Suspender período de inscripción",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/suspend",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "suspend"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reabrir período de inscripción",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/reopen",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "reopen"]
+            },
+            "description": "Solo permite reabrir un período suspendido que todavía no haya vencido y si no existe otro período OPEN para la edición."
+          },
+          "response": []
+        },
+        {
+          "name": "Cerrar período de inscripción",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/close",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "close"]
+            },
+            "description": "CLOSED es terminal y no permite nuevas modificaciones."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Requisitos",
       "item": [
         {
@@ -971,6 +1113,10 @@
     },
     {
       "key": "editionId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "enrollmentPeriodId",
       "value": "00000000-0000-0000-0000-000000000000"
     },
     {

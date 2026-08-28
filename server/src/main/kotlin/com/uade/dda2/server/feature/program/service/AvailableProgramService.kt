@@ -2,6 +2,8 @@ package com.uade.dda2.server.feature.program.service
 
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramDetailResponse
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramListResponse
+import com.uade.dda2.server.feature.enrollmentperiod.entity.EnrollmentPeriodStatus
+import com.uade.dda2.server.feature.enrollmentperiod.repository.EnrollmentPeriodRepository
 import com.uade.dda2.server.feature.program.entity.ProgramBenefit
 import com.uade.dda2.server.feature.program.entity.ProgramRequirement
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
@@ -27,6 +29,7 @@ class AvailableProgramService(
     private val programBenefitRepository: ProgramBenefitRepository,
     private val programRequirementRepository: ProgramRequirementRepository,
     private val programIncompatibilityRepository: ProgramIncompatibilityRepository,
+    private val enrollmentPeriodRepository: EnrollmentPeriodRepository,
 ) {
 
     @Transactional(readOnly = true)
@@ -91,12 +94,21 @@ class AvailableProgramService(
             .findAllByProgramEditionIdIn(editionIds)
             .sortedWith(compareBy(ProgramRequirement::type, ProgramRequirement::description))
             .groupBy { requireNotNull(it.programEdition.id) }
+        val enrollmentPeriodsByEdition = enrollmentPeriodRepository
+            .findAllByProgramEditionIdInAndStatusAndOpenDateLessThanEqualAndCloseDateGreaterThanEqualOrderByOpenDateAsc(
+                programEditionIds = editionIds,
+                status = EnrollmentPeriodStatus.OPEN,
+                openDate = today,
+                closeDate = today,
+            )
+            .groupBy { requireNotNull(it.programEdition.id) }
 
         val editionResponses = editions.map { edition ->
             val editionId = requireNotNull(edition.id)
             edition.toAvailableResponse(
                 benefits = benefitsByEdition[editionId].orEmpty().map { it.toAvailableResponse() },
                 requirements = requirementsByEdition[editionId].orEmpty().map { it.toAvailableResponse() },
+                enrollmentPeriods = enrollmentPeriodsByEdition[editionId].orEmpty().map { it.toAvailableResponse() },
             )
         }
         val incompatibilities = programIncompatibilityRepository
