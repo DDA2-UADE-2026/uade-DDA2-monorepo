@@ -11,6 +11,10 @@ interface ProgramRequirementRepository :
         programEditionId: UUID,
     ): List<ProgramRequirement>
 
+    fun findAllByProgramEditionIdIn(
+        programEditionIds: Collection<UUID>,
+    ): List<ProgramRequirement>
+
     fun findByIdAndProgramEditionId(
         id: UUID,
         programEditionId: UUID,

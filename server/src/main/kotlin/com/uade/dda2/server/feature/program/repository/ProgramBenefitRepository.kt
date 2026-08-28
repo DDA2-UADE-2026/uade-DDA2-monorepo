@@ -11,6 +11,10 @@ interface ProgramBenefitRepository :
         programEditionId: UUID,
     ): List<ProgramBenefit>
 
+    fun findAllByProgramEditionIdIn(
+        programEditionIds: Collection<UUID>,
+    ): List<ProgramBenefit>
+
     fun findByIdAndProgramEditionId(
         id: UUID,
         programEditionId: UUID,

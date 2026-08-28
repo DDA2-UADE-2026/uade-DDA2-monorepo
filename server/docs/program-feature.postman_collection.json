@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
-    "name": "DDA2 - Admin Program Feature",
-    "description": "Colección para probar los endpoints administrativos de programas, ediciones, requisitos, beneficios e incompatibilidades. El script de colección inicializa la variable global baseUrl en http://localhost:8080 si todavía no existe. La request de login guarda automáticamente el JWT en la variable global token. Los IDs creados se mantienen como variables de colección para encadenar las requests.",
+    "name": "DDA2 - Program Feature",
+    "description": "Colección para probar los endpoints ciudadanos y administrativos de programas, ediciones, requisitos, beneficios e incompatibilidades. El script de colección inicializa la variable global baseUrl en http://localhost:8080 si todavía no existe. La request de login guarda automáticamente el JWT en la variable global token. Los IDs creados se mantienen como variables de colección para encadenar las requests.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -61,6 +61,60 @@
               ]
             },
             "description": "Configurar username y password como variables de colección. Un login exitoso actualiza pm.globals.token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Programas disponibles para ciudadanos",
+      "item": [
+        {
+          "name": "Listar programas disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/programs?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "programs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Lista los programas que tienen al menos una edición activa vigente o futura. Requiere autenticación, pero no permisos administrativos."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener detalle de programa disponible",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/programs/{{firstProgramId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "programs",
+                "{{firstProgramId}}"
+              ]
+            },
+            "description": "Obtiene las ediciones activas no finalizadas del programa, con sus beneficios y requisitos, más las incompatibilidades del programa."
           },
           "response": []
         }
