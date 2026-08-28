@@ -64,3 +64,7 @@ app:
       - ${CORS_ALLOWED_ORIGIN_2:http://127.0.0.1:3000}
       - ${CORS_ALLOWED_ORIGIN_3:}
       - ${CORS_ALLOWED_ORIGIN_4:}
+  enrollment-period:
+    expiration:
+      cron: "${ENROLLMENT_PERIOD_EXPIRATION_CRON:0 5 0 * * *}"
+      zone-id: ${ENROLLMENT_PERIOD_TIME_ZONE:America/Argentina/Buenos_Aires}

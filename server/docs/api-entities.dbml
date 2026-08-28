@@ -14,6 +14,14 @@ Enum log_entity_type {
   permissions
   roles
   users
+  enrollment_period
+}
+
+Enum enrollment_period_status {
+  SCHEDULED
+  OPEN
+  SUSPENDED
+  CLOSED
 }
 
 Enum program_edition_status {
@@ -124,6 +132,29 @@ Table program_edition {
   indexes {
     (program_id, normalized_name) [unique, name: 'uk_program_edition_program_normalized_name']
   }
+}
+
+Table enrollment_period {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  open_date date [not null]
+  close_date date [not null]
+  status enrollment_period_status [not null, note: 'Persistido como varchar(20). Valor inicial asignado por la aplicación: SCHEDULED.']
+  notes varchar(1000)
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (program_edition_id, open_date, close_date) [name: 'ix_enrollment_period_edition_dates']
+    (status, open_date, close_date) [name: 'ix_enrollment_period_status_dates']
+    (program_edition_id, status) [name: 'ix_enrollment_period_edition_status']
+  }
+
+  checks {
+    `open_date <= close_date` [name: 'ck_enrollment_period_date_range']
+  }
+
+  Note: 'Los rangos son inclusivos. La aplicación impide solapamientos y más de un período OPEN por edición. Un proceso diario cierra los períodos SCHEDULED, OPEN o SUSPENDED cuyo close_date ya pasó.'
 }
 
 Table program_benefit {

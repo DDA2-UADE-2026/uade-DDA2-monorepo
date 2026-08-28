@@ -1,6 +1,7 @@
 package com.uade.dda2.server.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
+import java.time.ZoneId
 
 @ConfigurationProperties("app.security.jwt")
 data class JwtProperties(
@@ -15,4 +16,12 @@ data class CorsProperties(
 ) {
     val nonBlankOrigins: List<String>
         get() = allowedOrigins.filter { it.isNotBlank() }
+}
+
+@ConfigurationProperties("app.enrollment-period.expiration")
+data class EnrollmentPeriodExpirationProperties(
+    var cron: String = "0 5 0 * * *",
+    var zoneId: String = "America/Argentina/Buenos_Aires",
+) {
+    fun zone(): ZoneId = ZoneId.of(zoneId)
 }

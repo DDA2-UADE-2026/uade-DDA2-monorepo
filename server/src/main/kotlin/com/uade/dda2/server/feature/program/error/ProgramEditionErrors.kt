@@ -67,7 +67,19 @@ object ProgramEditionErrors {
     fun hasConfiguration(id: UUID): ConflictException =
         ConflictException(
             code = "PROGRAM_EDITION_HAS_CONFIGURATION",
-            message = "No se puede eliminar la edición '$id' porque tiene requisitos o beneficios asociados.",
+            message = "No se puede eliminar la edición '$id' porque tiene requisitos, beneficios o períodos de inscripción asociados.",
+        )
+
+    fun hasOpenEnrollmentPeriod(id: UUID): ConflictException =
+        ConflictException(
+            code = "PROGRAM_EDITION_HAS_OPEN_ENROLLMENT_PERIOD",
+            message = "No se puede suspender o cerrar la edición '$id' mientras tenga un período de inscripción abierto.",
+        )
+
+    fun dateRangeExcludesEnrollmentPeriods(id: UUID): ConflictException =
+        ConflictException(
+            code = "PROGRAM_EDITION_DATE_RANGE_EXCLUDES_ENROLLMENT_PERIODS",
+            message = "Las nuevas fechas de la edición '$id' dejan períodos de inscripción fuera de su rango.",
         )
 
     fun hasEnrollments(

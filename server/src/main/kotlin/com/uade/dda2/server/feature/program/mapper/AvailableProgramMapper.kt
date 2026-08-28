@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.program.mapper
 
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramBenefitResponse
+import com.uade.dda2.server.feature.program.dto.available.response.AvailableEnrollmentPeriodResponse
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramDetailResponse
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramEditionResponse
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramIncompatibilityResponse
@@ -11,6 +12,7 @@ import com.uade.dda2.server.feature.program.entity.ProgramBenefit
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.ProgramIncompatibility
 import com.uade.dda2.server.feature.program.entity.ProgramRequirement
+import com.uade.dda2.server.feature.enrollmentperiod.entity.EnrollmentPeriod
 import java.util.UUID
 
 fun Program.toAvailableListItemResponse(
@@ -43,6 +45,7 @@ fun Program.toAvailableDetailResponse(
 fun ProgramEdition.toAvailableResponse(
     benefits: List<AvailableProgramBenefitResponse>,
     requirements: List<AvailableProgramRequirementResponse>,
+    enrollmentPeriods: List<AvailableEnrollmentPeriodResponse>,
 ): AvailableProgramEditionResponse =
     AvailableProgramEditionResponse(
         id = requireNotNull(id),
@@ -55,6 +58,14 @@ fun ProgramEdition.toAvailableResponse(
         status = status,
         benefits = benefits,
         requirements = requirements,
+        enrollmentPeriods = enrollmentPeriods,
+    )
+
+fun EnrollmentPeriod.toAvailableResponse(): AvailableEnrollmentPeriodResponse =
+    AvailableEnrollmentPeriodResponse(
+        id = requireNotNull(id),
+        openDate = openDate,
+        closeDate = closeDate,
     )
 
 fun ProgramBenefit.toAvailableResponse(): AvailableProgramBenefitResponse =
