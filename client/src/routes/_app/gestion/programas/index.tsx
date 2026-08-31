@@ -3,9 +3,9 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
 
+import { DataPagination } from "@/components/DataPagination"
 import { OutletNavContent, OutletNavRightButton, OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { Button } from "@/components/ui/button"
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { listOptions } from "@/generated/@tanstack/react-query.gen"
 
@@ -18,16 +18,6 @@ export const Route = createFileRoute("/_app/gestion/programas/")({
   validateSearch: searchSchema,
   component: RouteComponent,
 })
-
-function getPaginationRange(current: number, total: number) {
-  if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1)
-  const pages: (number | "ellipsis")[] = [1]
-  if (current > 3) pages.push("ellipsis")
-  for (let page = Math.max(2, current - 1); page <= Math.min(total - 1, current + 1); page++) pages.push(page)
-  if (current < total - 2) pages.push("ellipsis")
-  pages.push(total)
-  return pages
-}
 
 function RouteComponent() {
   const { page } = Route.useSearch()
@@ -94,18 +84,7 @@ function RouteComponent() {
           </div>
         </div>
         {!isPending && !isError && totalItems > 0 && (
-          <div className="flex shrink-0 flex-col-reverse items-center gap-3 border-t px-4 py-3 sm:flex-row sm:justify-between lg:px-6">
-            <p className="text-sm text-muted-foreground">Mostrando {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, totalItems)} de {totalItems}</p>
-            <Pagination className="mx-0 w-auto"><PaginationContent>
-              <PaginationItem><PaginationPrevious href="#" text="Anterior" aria-disabled={currentPage === 1} className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setPage(Math.max(1, currentPage - 1)) }} /></PaginationItem>
-              {getPaginationRange(currentPage, totalPages).map((item, index) => item === "ellipsis" ? (
-                <PaginationItem key={`ellipsis-${index}`}><PaginationEllipsis /></PaginationItem>
-              ) : (
-                <PaginationItem key={item}><PaginationLink href="#" isActive={item === currentPage} onClick={(event) => { event.preventDefault(); setPage(item) }}>{item}</PaginationLink></PaginationItem>
-              ))}
-              <PaginationItem><PaginationNext href="#" text="Siguiente" aria-disabled={currentPage === totalPages} className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined} onClick={(event) => { event.preventDefault(); setPage(Math.min(totalPages, currentPage + 1)) }} /></PaginationItem>
-            </PaginationContent></Pagination>
-          </div>
+          <DataPagination page={currentPage} totalPages={totalPages} totalItems={totalItems} pageSize={PAGE_SIZE} onPageChange={setPage} />
         )}
       </SidebarShellContent>
     </SidebarShell>

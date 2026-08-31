@@ -23,6 +23,7 @@ import {
   SidebarShell,
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
+import { DataPagination } from "@/components/DataPagination"
 import { UserAvatar } from "@/components/UserAvatar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -50,15 +51,6 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
 import {
   Select,
   SelectContent,
@@ -94,25 +86,6 @@ export const Route = createFileRoute("/_app/gestion/usuarios/")({
 })
 
 const PAGE_SIZE = 10
-
-function getPaginationRange(
-  current: number,
-  total: number,
-): (number | "ellipsis")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
-
-  const pages: (number | "ellipsis")[] = [1]
-  if (current > 3) pages.push("ellipsis")
-
-  const start = Math.max(2, current - 1)
-  const end = Math.min(total - 1, current + 1)
-  for (let page = start; page <= end; page++) pages.push(page)
-
-  if (current < total - 2) pages.push("ellipsis")
-  pages.push(total)
-
-  return pages
-}
 
 function RouteComponent() {
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } =
@@ -243,70 +216,7 @@ function RouteComponent() {
         </div>
 
         {!isPending && !isError && totalItems > 0 && (
-          <div className="flex shrink-0 flex-col-reverse items-center gap-3 border-t px-4 py-3 sm:flex-row sm:justify-between lg:px-6">
-            <p className="text-sm text-muted-foreground">
-              Mostrando {(currentPage - 1) * PAGE_SIZE + 1}-
-              {Math.min(currentPage * PAGE_SIZE, totalItems)} de {totalItems}{" "}
-
-            </p>
-            <Pagination className="mx-0 w-auto">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    text="Anterior"
-                    aria-disabled={currentPage === 1}
-                    className={
-                      currentPage === 1
-                        ? "pointer-events-none opacity-50"
-                        : undefined
-                    }
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setPage((p) => Math.max(1, p - 1))
-                    }}
-                  />
-                </PaginationItem>
-                {getPaginationRange(currentPage, totalPages).map(
-                  (item, index) =>
-                    item === "ellipsis" ? (
-                      <PaginationItem key={`ellipsis-${index}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    ) : (
-                      <PaginationItem key={item}>
-                        <PaginationLink
-                          href="#"
-                          isActive={item === currentPage}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            setPage(item)
-                          }}
-                        >
-                          {item}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ),
-                )}
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    text="Siguiente"
-                    aria-disabled={currentPage === totalPages}
-                    className={
-                      currentPage === totalPages
-                        ? "pointer-events-none opacity-50"
-                        : undefined
-                    }
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setPage((p) => Math.min(totalPages, p + 1))
-                    }}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <DataPagination page={currentPage} totalPages={totalPages} totalItems={totalItems} pageSize={PAGE_SIZE} onPageChange={setPage} />
         )}
       </SidebarShellContent>
 
