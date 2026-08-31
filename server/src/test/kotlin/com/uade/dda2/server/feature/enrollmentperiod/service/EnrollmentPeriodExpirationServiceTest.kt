@@ -73,8 +73,8 @@ class EnrollmentPeriodExpirationServiceTest {
 
         verify(logService, times(3)).record(
             user = isNull(),
-            action = eq(LogAction.UPDATE),
-            entityType = eq(LogEntityType.ENROLLMENT_PERIOD),
+            action = eq(LogAction.UPDATE) ?: LogAction.UPDATE,
+            entityType = eq(LogEntityType.ENROLLMENT_PERIOD) ?: LogEntityType.ENROLLMENT_PERIOD,
             entityId = anyString(),
             oldValues = anyString(),
             newValues = anyString(),

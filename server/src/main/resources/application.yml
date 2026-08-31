@@ -56,8 +56,9 @@ app:
   security:
     jwt:
       issuer: ${JWT_ISSUER:example-issuer}
-      secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-32chars}
+      secret: ${JWT_SECRET}
       expiration-seconds: ${JWT_EXPIRATION_SECONDS:28800}
+      role-selection-expiration-seconds: ${JWT_ROLE_SELECTION_EXPIRATION_SECONDS:300}
   cors:
     allowed-origins:
       - ${CORS_ALLOWED_ORIGIN_1:http://localhost:3000}

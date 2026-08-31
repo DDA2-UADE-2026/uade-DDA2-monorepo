@@ -28,7 +28,7 @@ class UserController(
 ) {
     @PreAuthorize("hasAuthority('users:view')")
     @GetMapping
-    @Operation(summary = "Listar usuarios", description = "Devuelve todos los usuarios con sus roles y permisos efectivos.")
+    @Operation(summary = "Listar usuarios", description = "Devuelve todos los usuarios con sus roles y permisos separados por rol.")
     fun findAll(): List<UserManagementResponse> =
         userManagementService.findAll()
 

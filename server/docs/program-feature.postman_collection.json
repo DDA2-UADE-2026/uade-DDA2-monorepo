@@ -2,34 +2,17 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección para probar los endpoints ciudadanos y administrativos de programas, ediciones, requisitos, beneficios e incompatibilidades. El script de colección inicializa la variable global baseUrl en http://localhost:8080 si todavía no existe. La request de login guarda automáticamente el JWT en la variable global token. Los IDs creados se mantienen como variables de colección para encadenar las requests.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles y programas. Configurar username/password y selectedRole cuando el login tenga múltiples roles; targetRole es opcional para cambiar de rol. El JWT operativo se guarda como accessToken de colección; no se usa el antiguo token global. Los JWT anteriores siguen vigentes hasta vencer. Ciudadanos está preparado solo en el modelo: no hay endpoints externos ni aprovisionamiento. No contiene seeds ni migraciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
   "item": [
     {
-      "name": "Autenticación",
+      "name": "Autenticación y rol activo",
+      "description": "JWT stateless, sin sesiones ni revocación. Ciudadanos queda preparado en el modelo pero no hay login, vinculación, aprovisionamiento ni sincronización externos implementados. Los roles y sus permisos deben configurarse por separado.",
       "item": [
         {
-          "name": "Login y guardar token global",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('Login exitoso', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.expect(response.token).to.be.a('string').and.not.empty;",
-                  "    pm.globals.set('token', response.token);",
-                  "}"
-                ]
-              }
-            }
-          ],
+          "name": "Login local",
           "request": {
             "auth": {
               "type": "noauth"
@@ -60,7 +43,635 @@
                 "login"
               ]
             },
-            "description": "Configurar username y password como variables de colección. Un login exitoso actualiza pm.globals.token."
+            "description": "Configurar username/password. Un rol entrega accessToken; varios entregan selectionToken sin acceso operativo. Cada intento limpia los tokens de la colección. No crea ni asigna roles."
+          },
+          "response": [
+            {
+              "name": "Varios roles: selección pendiente",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Configurar username/password. Un rol entrega accessToken; varios entregan selectionToken sin acceso operativo. Cada intento limpia los tokens de la colección. No crea ni asigna roles."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"token\": null,\n  \"expiresIn\": null,\n  \"user\": {\n    \"id\": 42,\n    \"username\": \"usuario.prueba\",\n    \"name\": \"Usuario de prueba\",\n    \"email\": \"prueba@example.com\",\n    \"roles\": [\n      \"AUDITOR\",\n      \"CIUDADANO\"\n    ],\n    \"activeRole\": null,\n    \"permissions\": []\n  },\n  \"requiresRoleSelection\": true,\n  \"selectionToken\": \"<JWT_ROLE_SELECTION>\",\n  \"selectionExpiresIn\": 300\n}"
+            },
+            {
+              "name": "Un solo rol: JWT operativo",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Configurar username/password. Un rol entrega accessToken; varios entregan selectionToken sin acceso operativo. Cada intento limpia los tokens de la colección. No crea ni asigna roles."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"token\": \"<JWT_ACCESS>\",\n  \"expiresIn\": 28800,\n  \"user\": {\n    \"id\": 42,\n    \"username\": \"usuario.prueba\",\n    \"name\": \"Usuario de prueba\",\n    \"email\": \"prueba@example.com\",\n    \"roles\": [\n      \"CIUDADANO\"\n    ],\n    \"activeRole\": \"CIUDADANO\",\n    \"permissions\": []\n  },\n  \"requiresRoleSelection\": false,\n  \"selectionToken\": null,\n  \"selectionExpiresIn\": null\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const name of ['accessToken', 'selectionToken', 'activeRole', 'activePermissions', 'availableRoles']) {",
+                  "    pm.collectionVariables.set(name, '');",
+                  "    pm.variables.set(name, '');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login exitoso', function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
+                  "    if (response.requiresRoleSelection) {",
+                  "        pm.test('Selección pendiente sin permisos operativos', function () {",
+                  "            pm.expect(response.token).to.equal(null);",
+                  "            pm.expect(response.user.activeRole).to.equal(null);",
+                  "            pm.expect(Object.prototype.hasOwnProperty.call(response, 'permissions')).to.equal(false);",
+                  "            pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
+                  "            pm.expect(response.user.permissions).to.deep.equal([]);",
+                  "            pm.expect(response.selectionToken).to.be.a('string').and.not.empty;",
+                  "            pm.expect(response.selectionExpiresIn).to.be.above(0);",
+                  "        });",
+                  "        pm.collectionVariables.set('selectionToken', response.selectionToken);",
+                  "    } else {",
+                  "",
+                  "pm.test('JWT operativo con un único rol activo', function () {",
+                  "    pm.expect(response.requiresRoleSelection).to.equal(false);",
+                  "    pm.expect(response.token).to.be.a('string').and.not.empty;",
+                  "    pm.expect(response.selectionToken).to.equal(null);",
+                  "    pm.expect(response.user.activeRole).to.be.a('string').and.not.empty;",
+                  "    pm.expect(response.user.roles).to.include(response.user.activeRole);",
+                  "    pm.expect(Object.prototype.hasOwnProperty.call(response, 'permissions')).to.equal(false);",
+                  "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
+                  "});",
+                  "pm.collectionVariables.set('accessToken', response.token);",
+                  "pm.collectionVariables.set('activeRole', response.user.activeRole);",
+                  "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
+                  "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
+                  "pm.collectionVariables.set('selectionToken', '');",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Comprobar que selectionToken no accede al catálogo",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{selectionToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/programs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "programs"
+              ]
+            },
+            "description": "Debe devolver 401 incluso en una ruta que solo exige autenticación. Se omite si el login no necesitó seleccionar rol."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('selectionToken')) pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Token de selección rechazado como bearer', function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Seleccionar rol después del login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionToken\": \"{{selectionToken}}\",\n  \"role\": \"{{selectedRole}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/select-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "select-role"
+              ]
+            },
+            "description": "Configurar selectedRole con un nombre de availableRoles. Envía selectionToken en el body, sin bearer. Se omite si el login ya entregó un JWT operativo."
+          },
+          "response": [
+            {
+              "name": "JWT operativo del rol elegido",
+              "originalRequest": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"selectionToken\": \"{{selectionToken}}\",\n  \"role\": \"{{selectedRole}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/select-role",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "select-role"
+                  ]
+                },
+                "description": "Configurar selectedRole con un nombre de availableRoles. Envía selectionToken en el body, sin bearer. Se omite si el login ya entregó un JWT operativo."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"token\": \"<JWT_ACCESS>\",\n  \"expiresIn\": 28800,\n  \"user\": {\n    \"id\": 42,\n    \"username\": \"usuario.prueba\",\n    \"name\": \"Usuario de prueba\",\n    \"email\": \"prueba@example.com\",\n    \"roles\": [\n      \"AUDITOR\",\n      \"CIUDADANO\"\n    ],\n    \"activeRole\": \"CIUDADANO\",\n    \"permissions\": []\n  },\n  \"requiresRoleSelection\": false,\n  \"selectionToken\": null,\n  \"selectionExpiresIn\": null\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('selectionToken')) {",
+                  "    if (pm.collectionVariables.get('accessToken')) pm.execution.skipRequest();",
+                  "    else throw new Error('Ejecutar primero Login local.');",
+                  "} else {",
+                  "    if (!pm.variables.get('selectedRole')) throw new Error('Configurar selectedRole con un rol de availableRoles.');",
+                  "    pm.collectionVariables.set('accessToken', '');",
+                  "    pm.variables.set('accessToken', '');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Operación exitosa', function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "",
+                  "pm.test('JWT operativo con un único rol activo', function () {",
+                  "    pm.expect(response.requiresRoleSelection).to.equal(false);",
+                  "    pm.expect(response.token).to.be.a('string').and.not.empty;",
+                  "    pm.expect(response.selectionToken).to.equal(null);",
+                  "    pm.expect(response.user.activeRole).to.be.a('string').and.not.empty;",
+                  "    pm.expect(response.user.roles).to.include(response.user.activeRole);",
+                  "    pm.expect(Object.prototype.hasOwnProperty.call(response, 'permissions')).to.equal(false);",
+                  "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
+                  "});",
+                  "pm.collectionVariables.set('accessToken', response.token);",
+                  "pm.collectionVariables.set('activeRole', response.user.activeRole);",
+                  "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
+                  "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
+                  "pm.collectionVariables.set('selectionToken', '');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar mi perfil y contexto JWT",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Los datos y roles asignados se consultan en la base. activeRole y permissions corresponden al JWT enviado, no a la suma de roles."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Perfil del rol activo', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.user.activeRole).to.equal(pm.collectionVariables.get('activeRole'));",
+                  "    pm.expect(response.user.permissions).to.deep.equal(JSON.parse(pm.collectionVariables.get('activePermissions')));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cambiar rol activo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"{{targetRole}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/switch-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "switch-role"
+              ]
+            },
+            "description": "Configurar targetRole. Requiere accessToken y un rol actualmente asignado. Guarda el nuevo JWT; el anterior conserva su validez hasta vencer. Se omite en Runner si targetRole está vacío."
+          },
+          "response": [
+            {
+              "name": "Nuevo JWT: el anterior no se revoca",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"role\": \"{{targetRole}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/switch-role",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "switch-role"
+                  ]
+                },
+                "description": "Configurar targetRole. Requiere accessToken y un rol actualmente asignado. Guarda el nuevo JWT; el anterior conserva su validez hasta vencer. Se omite en Runner si targetRole está vacío."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"token\": \"<JWT_ACCESS>\",\n  \"expiresIn\": 28800,\n  \"user\": {\n    \"id\": 42,\n    \"username\": \"usuario.prueba\",\n    \"name\": \"Usuario de prueba\",\n    \"email\": \"prueba@example.com\",\n    \"roles\": [\n      \"AUDITOR\",\n      \"CIUDADANO\"\n    ],\n    \"activeRole\": \"CIUDADANO\",\n    \"permissions\": []\n  },\n  \"requiresRoleSelection\": false,\n  \"selectionToken\": null,\n  \"selectionExpiresIn\": null\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('targetRole')) pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Operación exitosa', function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "",
+                  "pm.test('JWT operativo con un único rol activo', function () {",
+                  "    pm.expect(response.requiresRoleSelection).to.equal(false);",
+                  "    pm.expect(response.token).to.be.a('string').and.not.empty;",
+                  "    pm.expect(response.selectionToken).to.equal(null);",
+                  "    pm.expect(response.user.activeRole).to.be.a('string').and.not.empty;",
+                  "    pm.expect(response.user.roles).to.include(response.user.activeRole);",
+                  "    pm.expect(Object.prototype.hasOwnProperty.call(response, 'permissions')).to.equal(false);",
+                  "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
+                  "});",
+                  "pm.collectionVariables.set('accessToken', response.token);",
+                  "pm.collectionVariables.set('activeRole', response.user.activeRole);",
+                  "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
+                  "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
+                  "pm.collectionVariables.set('selectionToken', '');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar JWT operativo como token de selección",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"selectionToken\": \"{{accessToken}}\",\n  \"role\": \"{{activeRole}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/select-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "select-role"
+              ]
+            },
+            "description": "Un accessToken no puede usarse como selectionToken. No modifica las variables de autenticación."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Propósito de token inválido', function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar cambio de rol sin JWT",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"CIUDADANO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/switch-role",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "switch-role"
+              ]
+            },
+            "description": "La selección de rol en el body no es prueba de autenticación."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Autenticación requerida', function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Consulta de usuarios y roles",
+      "item": [
+        {
+          "name": "Listar usuarios y permisos por rol",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Requiere users:view. Devuelve permissionsByRole, hasLocalCredentials y externalCitizenId de solo lectura. No expone passwordHash ni permite vincular identidades."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar roles y sus permisos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            },
+            "description": "Requiere roles:view. No crea automáticamente CIUDADANO ni asigna permisos."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar permisos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "permissions"
+              ]
+            },
+            "description": "Requiere permissions:view. Usar un rol activo con el permiso correspondiente."
           },
           "response": []
         }
@@ -617,11 +1228,27 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods?page=0&size=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods"
+              ],
               "query": [
-                {"key": "page", "value": "0"},
-                {"key": "size", "value": "20"}
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
               ]
             }
           },
@@ -634,8 +1261,19 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods",
+                "{{enrollmentPeriodId}}"
+              ]
             }
           },
           "response": []
@@ -658,16 +1296,35 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"openDate\": \"2026-09-10\",\n  \"closeDate\": \"2026-10-10\",\n  \"notes\": \"Período creado desde Postman\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods"
+              ]
             },
             "description": "El período se crea en estado SCHEDULED. Las fechas deben estar dentro de la edición y no pueden solaparse con otro período."
           },
@@ -677,16 +1334,36 @@
           "name": "Actualizar período de inscripción",
           "request": {
             "method": "PUT",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"openDate\": \"2026-09-10\",\n  \"closeDate\": \"2026-10-15\",\n  \"notes\": \"Período actualizado desde Postman\"\n}",
-              "options": {"raw": {"language": "json"}}
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods",
+                "{{enrollmentPeriodId}}"
+              ]
             },
             "description": "No permite editar un período cerrado ni modificar su estado directamente."
           },
@@ -699,8 +1376,20 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/open",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "open"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods",
+                "{{enrollmentPeriodId}}",
+                "open"
+              ]
             },
             "description": "Requiere una edición ACTIVE, que la fecha actual esté dentro del período y que no exista otro período OPEN para la edición."
           },
@@ -713,8 +1402,20 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/suspend",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "suspend"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods",
+                "{{enrollmentPeriodId}}",
+                "suspend"
+              ]
             }
           },
           "response": []
@@ -726,8 +1427,20 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/reopen",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "reopen"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods",
+                "{{enrollmentPeriodId}}",
+                "reopen"
+              ]
             },
             "description": "Solo permite reabrir un período suspendido que todavía no haya vencido y si no existe otro período OPEN para la edición."
           },
@@ -740,8 +1453,20 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/admin/programs/{{programId}}/editions/{{editionId}}/enrollment-periods/{{enrollmentPeriodId}}/close",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "programs", "{{programId}}", "editions", "{{editionId}}", "enrollment-periods", "{{enrollmentPeriodId}}", "close"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "programs",
+                "{{programId}}",
+                "editions",
+                "{{editionId}}",
+                "enrollment-periods",
+                "{{enrollmentPeriodId}}",
+                "close"
+              ]
             },
             "description": "CLOSED es terminal y no permite nuevas modificaciones."
           },
@@ -1063,7 +1788,7 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{token}}",
+        "value": "{{accessToken}}",
         "type": "string"
       }
     ]
@@ -1077,7 +1802,10 @@
         "exec": [
           "const defaultBaseUrl = 'http://localhost:8080';",
           "const configuredBaseUrl = pm.globals.get('baseUrl') || defaultBaseUrl;",
-          "pm.globals.set('baseUrl', configuredBaseUrl.replace(/\\/+$/, ''));"
+          "pm.globals.set('baseUrl', configuredBaseUrl.replace(/\\/+$/, ''));",
+          "for (const name of ['accessToken', 'selectionToken', 'activeRole']) {",
+          "    pm.variables.set(name, pm.collectionVariables.get(name) || '');",
+          "}"
         ]
       }
     },
@@ -1097,11 +1825,11 @@
   "variable": [
     {
       "key": "username",
-      "value": "admin"
+      "value": ""
     },
     {
       "key": "password",
-      "value": "admin"
+      "value": ""
     },
     {
       "key": "firstProgramId",
@@ -1130,6 +1858,41 @@
     {
       "key": "programId",
       "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "selectionToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "selectedRole",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "targetRole",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "activeRole",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "availableRoles",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "activePermissions",
+      "value": "",
+      "type": "string"
     }
   ]
 }
