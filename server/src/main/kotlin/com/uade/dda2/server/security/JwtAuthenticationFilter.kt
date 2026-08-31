@@ -28,18 +28,8 @@ class JwtAuthenticationFilter(
             return
         }
 
-        try {
-            val principal = jwtService.parse(token)
-
-            val authorities = (principal.permissions + principal.roles.map { "ROLE_$it" })
-                .distinct()
-                .map(::SimpleGrantedAuthority)
-
-            val authentication = UsernamePasswordAuthenticationToken(principal, null, authorities)
-            authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
-            SecurityContextHolder.getContext().authentication = authentication
-
-            filterChain.doFilter(request, response)
+        val principal = try {
+            jwtService.parse(token)
         } catch (exception: JwtException) {
             SecurityContextHolder.clearContext()
             securityErrorResponseWriter.write(
@@ -49,6 +39,7 @@ class JwtAuthenticationFilter(
                 code = "AUTH_INVALID_TOKEN",
                 message = "Unauthenticated.",
             )
+            return
         } catch (exception: IllegalArgumentException) {
             SecurityContextHolder.clearContext()
             securityErrorResponseWriter.write(
@@ -58,7 +49,18 @@ class JwtAuthenticationFilter(
                 code = "AUTH_INVALID_TOKEN",
                 message = "Unauthenticated.",
             )
+            return
         }
+
+        val authorities = (principal.permissions + "ROLE_${principal.activeRole}")
+            .distinct()
+            .map(::SimpleGrantedAuthority)
+        val authentication = UsernamePasswordAuthenticationToken(principal, null, authorities)
+        authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+        SecurityContextHolder.getContext().authentication = authentication
+
+        // Exceptions in controllers must not be misreported as malformed JWTs.
+        filterChain.doFilter(request, response)
     }
 
     private fun bearerToken(request: HttpServletRequest): String? {
@@ -66,6 +68,6 @@ class JwtAuthenticationFilter(
         if (!authorization.startsWith("Bearer ", ignoreCase = true)) {
             return null
         }
-        return authorization.substringAfter("Bearer ").trim().takeIf(String::isNotBlank)
+        return authorization.substring(7).trim().takeIf(String::isNotBlank)
     }
 }

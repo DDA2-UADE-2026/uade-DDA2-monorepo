@@ -1,6 +1,6 @@
 Project social_development_api {
   database_type: 'PostgreSQL'
-  Note: 'Modelo derivado de las entidades JPA actuales de la API.'
+  Note: 'Modelo JPA del backend. User es la única identidad interna. Ciudadanos queda preparado como integración futura, sin FK a su base. El rol activo vive en el JWT, no en una tabla de sesiones.'
 }
 
 Enum log_action {
@@ -66,14 +66,36 @@ Table role_permissions {
 
 Table users {
   id bigint [pk, increment]
-  username varchar(80) [not null, unique]
-  password_hash varchar(100) [not null]
+  username varchar(80) [unique, note: 'Opcional para una futura cuenta externa. Username y password_hash deben estar ambos presentes o ambos ausentes.']
+  password_hash varchar(100) [note: 'Hash BCrypt. Nunca se genera una contraseña ficticia para una identidad externa.']
+  external_citizen_id varchar(255) [unique, note: 'Identificador externo opcional, independiente de la snapshot. No es una FK. Reservado para una futura vinculación con doble autenticación; no editable desde el ABM.']
   name varchar(150) [not null]
   email varchar(180) [not null]
   active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
   created_at timestamptz [not null]
   updated_at timestamptz
+
+  checks {
+    `(username is null and password_hash is null) or (username is not null and password_hash is not null)` [name: 'ck_users_local_credentials']
+  }
+
+  Note: 'No se crean roles ni asignaciones automáticas. Cada JWT operativo contiene un solo active_role y únicamente sus permisos. Un usuario sin roles no puede obtener un JWT operativo.'
 }
+
+Table citizen_snapshot {
+  user_id bigint [pk, not null]
+  full_name varchar(150) [note: 'Nombre completo. Los datos personales pueden estar ausentes en una copia parcial.']
+  dni varchar(50) [note: 'Texto para conservar formato y ceros iniciales. No es prueba de identidad ni una clave de vinculación.']
+  address varchar(500)
+  phone varchar(50)
+  email varchar(180)
+  created_at timestamptz [not null, note: 'Instante local de creación de la copia, asignado por la aplicación.']
+  updated_at timestamptz [not null, note: 'Instante local de última actualización de la copia, actualizado por JPA. Inicialmente coincide con created_at.']
+
+  Note: 'User 1 -> 0..1 CitizenSnapshot. Copia local opcional, sin endpoints ni sincronización implementados todavía. El vínculo externo reside en users.external_citizen_id. Ninguna entidad de negocio referencia esta snapshot.'
+}
+
+Ref: users.id - citizen_snapshot.user_id [delete: cascade]
 
 Table user_roles {
   user_id bigint [not null, ref: > users.id]

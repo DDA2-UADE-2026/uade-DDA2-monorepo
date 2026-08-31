@@ -7,10 +7,9 @@ import jakarta.validation.constraints.Size
 
 @Schema(description = "Datos requeridos para actualizar un usuario.")
 data class UpdateUserRequest(
-    @field:Schema(description = "Nombre único utilizado para iniciar sesión.", example = "maria.gomez")
-    @field:NotBlank(message = "El nombre de usuario es obligatorio.")
+    @field:Schema(description = "Username local. Omitir o null conserva el actual; para agregar acceso local a un usuario sin credenciales se requiere también password.", example = "maria.gomez", nullable = true)
     @field:Size(min = 1, max = 80, message = "El nombre de usuario no puede superar los 80 caracteres.")
-    val username: String = "",
+    val username: String? = null,
 
     @field:Schema(description = "Nueva contraseña; si se omite, se conserva la actual.", example = "NuevaClave123!", accessMode = Schema.AccessMode.WRITE_ONLY, nullable = true)
     @field:Size(min = 8, max = 72, message = "La contraseña debe tener entre 8 y 72 caracteres.")

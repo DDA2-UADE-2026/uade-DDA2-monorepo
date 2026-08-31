@@ -6,8 +6,9 @@ import java.time.ZoneId
 @ConfigurationProperties("app.security.jwt")
 data class JwtProperties(
     var issuer: String = "social-development-api",
-    var secret: String = "change-me-change-me-change-me-change-me-32chars",
+    var secret: String = "",
     var expirationSeconds: Long = 28_800,
+    var roleSelectionExpirationSeconds: Long = 300,
 )
 
 @ConfigurationProperties("app.cors")

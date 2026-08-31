@@ -63,6 +63,10 @@ class OpenApiConfig {
                         operation.responses.addApiResponse("401", errorResponse("No autenticado."))
                         operation.responses.addApiResponse("403", errorResponse("No posee permisos para realizar la operación."))
                     }
+                    if (path == "/auth/login" || path == "/auth/select-role") {
+                        operation.responses.addApiResponse("401", errorResponse("Credenciales o token de selección inválidos."))
+                        operation.responses.addApiResponse("403", errorResponse("Usuario sin roles o rol no asignado."))
+                    }
                     if (operation.requestBody != null || operation.parameters.orEmpty().isNotEmpty()) {
                         operation.responses.addApiResponse("400", errorResponse("La solicitud es inválida."))
                     }
@@ -89,6 +93,7 @@ class OpenApiConfig {
 
     private val publicPaths = setOf(
         "/auth/login",
+        "/auth/select-role",
         "/actuator/health",
     )
 
