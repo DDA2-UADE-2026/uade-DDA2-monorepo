@@ -263,7 +263,7 @@ function CreateUserDialog({
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="min-w-0">
         <DialogHeader>
           <DialogTitle>Nuevo usuario</DialogTitle>
           <DialogDescription>
@@ -281,14 +281,38 @@ function CreateUserDialog({
         )}
         <form
           id="create-user-form"
-          className="max-h-[70vh] overflow-y-auto px-1"
+          className="-mt-4 max-h-[70vh] w-full min-w-0 overflow-x-hidden overflow-y-auto px-1"
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
             form.handleSubmit()
           }}
         >
-          <FieldGroup>
+          <form.Subscribe
+            selector={(state) =>
+              state.values.name || state.values.username || state.values.email
+            }
+            children={(avatarLabel) => (
+              <div className="my-4 flex w-full max-w-xs min-w-0 items-center gap-3 mx-auto bg-foreground/5 overflow-hidden rounded-l-4xl rounded-r-2xl border input-border pr-2">
+                <UserAvatar
+                  addBlob
+                  user={{ name: avatarLabel || "Nuevo usuario" }}
+                  className="size-14"
+                  fallbackClassName="text-base"
+                  blobProps="opacity-100! blur-2xl"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {avatarLabel || "Nuevo usuario"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Vista previa del avatar
+                  </p>
+                </div>
+              </div>
+            )}
+          />
+          <FieldGroup className="min-w-0">
             <form.Field
               name="name"
               children={(field) => {

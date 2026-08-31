@@ -33,12 +33,10 @@ import {
 } from "@/components/ui/dialog"
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldTitle,
 } from "@/components/ui/field"
 import {
   InputGroup,
@@ -163,16 +161,19 @@ function RouteComponent() {
                             Sin permisos asignados
                           </span>
                         ) : (
-                          <div className="flex flex-wrap gap-1">
+                          <ul className="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3 xl:grid-cols-4">
                             {(role.permissions ?? []).map((permission) => (
-                              <span
+                              <li
                                 key={permission}
-                                className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                                className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground"
                               >
-                                {permission}
-                              </span>
+                                <span className="size-1 shrink-0 bg-muted-foreground/70" />
+                                <span className="truncate font-mono" title={permission}>
+                                  {permission}
+                                </span>
+                              </li>
                             ))}
-                          </div>
+                          </ul>
                         )}
                       </TableCell>
                       <TableCell className="align-top">
@@ -258,7 +259,7 @@ function RoleFormDialog({
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{isEditing ? "Editar rol" : "Nuevo rol"}</DialogTitle>
           <DialogDescription>
@@ -334,7 +335,7 @@ function RoleFormDialog({
                       No hay permisos configurados.
                     </p>
                   ) : (
-                    <div className="flex max-h-72 flex-col gap-1 overflow-y-auto">
+                    <div className="grid max-h-72 grid-cols-2 gap-x-4 gap-y-2 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-4">
                       {permissions.data.map((permission) => {
                         const permissionName = permission.name ?? ""
                         const checked =
@@ -344,26 +345,29 @@ function RoleFormDialog({
                           <FieldLabel
                             key={permission.id ?? permissionName}
                             htmlFor={`permission-${permission.id}`}
+                            className="min-w-0 w-full cursor-pointer items-center gap-2"
                           >
-                            <Field orientation="horizontal">
-                              <FieldContent>
-                                <FieldTitle>{permissionName}</FieldTitle>
-                              </FieldContent>
-                              <Switch
-                                id={`permission-${permission.id}`}
-                                checked={checked}
-                                onCheckedChange={(nextChecked) => {
-                                  const current = field.state.value ?? []
-                                  field.handleChange(
-                                    nextChecked
-                                      ? [...current, permissionName]
-                                      : current.filter(
-                                          (p) => p !== permissionName,
-                                        ),
-                                  )
-                                }}
-                              />
-                            </Field>
+                            <Switch
+                              id={`permission-${permission.id}`}
+                              size="sm"
+                              checked={checked}
+                              onCheckedChange={(nextChecked) => {
+                                const current = field.state.value ?? []
+                                field.handleChange(
+                                  nextChecked
+                                    ? [...current, permissionName]
+                                    : current.filter(
+                                        (p) => p !== permissionName,
+                                      ),
+                                )
+                              }}
+                            />
+                            <span
+                              className="min-w-0 truncate font-mono text-xs"
+                              title={permissionName}
+                            >
+                              {permissionName}
+                            </span>
                           </FieldLabel>
                         )
                       })}

@@ -9,14 +9,16 @@ import {
   type AvatarUser,
 } from "@/lib/avatar"
 import { getUserInitials } from "@/lib/user-display"
+import { cn } from "@/lib/utils"
 
 type UserAvatarProps = Omit<React.ComponentProps<typeof Avatar>, "children"> & {
   user: AvatarUser
   fallbackClassName?: string
   addBlob?: boolean
+  blobProps?: string
 }
 
-function UserAvatar({ user, fallbackClassName, addBlob, ...props }: UserAvatarProps) {
+function UserAvatar({ user, fallbackClassName, addBlob, blobProps, ...props }: UserAvatarProps) {
   const stored = useSyncExternalStore(
     subscribeCurrentUserAvatar,
     readCurrentUserAvatar,
@@ -36,7 +38,10 @@ function UserAvatar({ user, fallbackClassName, addBlob, ...props }: UserAvatarPr
           <img
             src={avatarSrc}
             alt={label}
-            className="absolute inset-0 h-full w-full rounded-full object-cover blur-md opacity-60 z-0"
+            className={cn(
+              "absolute inset-0 h-full w-full rounded-full object-cover blur-md opacity-60 z-0",
+              blobProps,
+            )}
             aria-hidden="true"
           />
         </Avatar>
