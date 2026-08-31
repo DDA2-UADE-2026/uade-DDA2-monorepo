@@ -208,3 +208,13 @@ tasks.register<Test>("generateOpenApiDocs") {
 	}
 	outputs.dir(layout.buildDirectory.dir("openapi"))
 }
+
+tasks.register<Test>("testApplicationsPostgres") {
+	group = "verification"
+	description = "Prueba solicitudes contra un PostgreSQL desechable en 127.0.0.1:55439/application_test (crea y borra ese esquema)."
+	testClassesDirs = sourceSets.test.get().output.classesDirs
+	classpath = sourceSets.test.get().runtimeClasspath
+	filter { includeTestsMatching("com.uade.dda2.server.feature.application.ApplicationFlowTest") }
+	systemProperty("application.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/application_test")
+	systemProperty("application.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
+}

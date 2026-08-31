@@ -26,12 +26,15 @@ VALUES ('permissions:view'),
        ('enrollment-periods:management:view'),
        ('enrollment-periods:management:create'),
        ('enrollment-periods:management:edit'),
-       ('enrollment-periods:management:change-status')
+       ('enrollment-periods:management:change-status'),
+       ('applications:own:create'),
+       ('applications:own:view')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name)
 VALUES ('ADMIN'),
-       ('VIEWER')
+       ('VIEWER'),
+       ('CIUDADANO')
 ON CONFLICT (name) DO NOTHING;
 
 -- ADMIN conserva acceso a todos los permisos registrados, como en el original.
@@ -40,6 +43,14 @@ SELECT r.id, p.id
 FROM roles r
 CROSS JOIN permissions p
 WHERE r.name = 'ADMIN'
+ON CONFLICT DO NOTHING;
+
+-- Capacidades ciudadanas, sin permisos de gestión administrativa.
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r
+JOIN permissions p ON p.name IN ('applications:own:create', 'applications:own:view')
+WHERE r.name = 'CIUDADANO'
 ON CONFLICT DO NOTHING;
 
 -- VIEWER queda sin permisos administrativos en una base nueva.
@@ -89,12 +100,22 @@ CROSS JOIN roles r
 WHERE u.username = 'viewer' AND r.name = 'VIEWER'
 ON CONFLICT DO NOTHING;
 
+-- Las cuentas de ejemplo pueden seleccionar CIUDADANO para presentar y consultar
+-- solicitudes propias, sin heredar permisos del otro rol activo.
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+CROSS JOIN roles r
+WHERE u.username IN ('admin', 'viewer') AND r.name = 'CIUDADANO'
+ON CONFLICT DO NOTHING;
+
 -- No se insertan citizen_snapshot ni identidades externas: son opcionales
 -- y la integración con Ciudadanos todavía no está implementada.
--- El rol CIUDADANO y sus permisos quedan pendientes de configuración manual.
+-- ADMIN se conserva como superusuario técnico (incluye los permisos own).
+-- Los roles administrativos normales no deben heredar estos permisos: para
+-- actuar como solicitante, el usuario debe seleccionar su rol CIUDADANO.
 -- No existe una columna active_role ni una tabla de sesiones: el rol activo
--- se incluye en el JWT. Estas cuentas tienen un solo rol en una base nueva.
--- Para probar la selección de rol, asignar explícitamente un segundo rol
--- al usuario mediante el ABM; el siguiente login pedirá seleccionarlo.
+-- se incluye en el JWT.
+-- Estas cuentas tienen dos roles en una base nueva: el login requiere selección.
 
 COMMIT;

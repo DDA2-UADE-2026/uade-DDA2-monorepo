@@ -5,6 +5,7 @@ enum class LogEntityType(val tableName: String) {
     ROLE("roles"),
     USER("users"),
     ENROLLMENT_PERIOD("enrollment_period"),
+    APPLICATION("application"),
     ;
 
     companion object {
