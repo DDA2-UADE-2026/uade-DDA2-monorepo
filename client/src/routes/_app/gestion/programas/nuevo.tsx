@@ -10,9 +10,12 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Textarea } from "@/components/ui/textarea"
 import { create2Mutation, listQueryKey } from "@/generated/@tanstack/react-query.gen"
+import type { CreateProgramRequest } from "@/generated/types.gen"
 import { zCreateProgramRequest } from "@/generated/zod.gen"
 
-const createProgramSchema = zCreateProgramRequest.required()
+const createProgramSchema = zCreateProgramRequest.extend({
+  name: zCreateProgramRequest.shape.name.trim().min(1, "Ingresá el nombre del programa."),
+})
 
 export const Route = createFileRoute("/_app/gestion/programas/nuevo")({
   component: RouteComponent,
@@ -29,10 +32,10 @@ function RouteComponent() {
     },
   })
   const form = useForm({
-    defaultValues: { name: "", objective: "" },
+    defaultValues: { name: "" } as CreateProgramRequest,
     validators: { onChange: createProgramSchema },
     onSubmit: ({ value }) => createProgram.mutate({
-      body: { ...value, objective: value.objective || undefined },
+      body: value,
     }),
   })
 
@@ -53,7 +56,7 @@ function RouteComponent() {
             {createProgram.isError && (
               <Alert variant="destructive" className="mb-6"><IconAlertTriangle /><AlertTitle>No se pudo crear el programa</AlertTitle><AlertDescription>Revisá los datos e intentá de nuevo.</AlertDescription></Alert>
             )}
-            <form id="create-program-form" onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
+            <form id="create-program-form" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
               <FieldGroup>
                 <form.Field name="name" children={(field) => {
                   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -67,7 +70,7 @@ function RouteComponent() {
                   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
                   return <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Objetivo</FieldLabel>
-                    <div className="relative"><IconTarget className="absolute left-3 top-3 size-4 text-muted-foreground" /><Textarea id={field.name} name={field.name} value={field.state.value} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value)} aria-invalid={isInvalid} placeholder="Describí el propósito del programa" className="min-h-32 pl-9" /></div>
+                    <div className="relative"><IconTarget className="absolute left-3 top-3 size-4 text-muted-foreground" /><Textarea id={field.name} name={field.name} value={field.state.value ?? ""} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value || undefined)} aria-invalid={isInvalid} placeholder="Describí el propósito del programa" className="min-h-32 pl-9" /></div>
                     {isInvalid && <FieldError errors={field.state.meta.errors} />}
                   </Field>
                 }} />
