@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { Link, useRouterState } from "@tanstack/react-router"
-import type { ReactNode } from "react"
+import type { ComponentProps, ReactNode } from "react"
 
+import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import { cn } from "@/lib/utils"
 
 export function RouteTabs({ items }: { items: { label: string; to: string }[] }) {
@@ -22,11 +23,26 @@ export function LoadingOrError({ pending, error, retry }: { pending: boolean; er
 }
 
 export const inputClass = "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
-export const selectClass = inputClass
 export const textareaClass = "flex min-h-28 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
 
-export function FormField({ label, children }: { label: string; children: ReactNode }) {
-  return <label className="grid gap-1.5 text-sm font-medium">{label}{children}</label>
+export function FormField({
+  label,
+  children,
+  htmlFor,
+  invalid = false,
+  errors,
+}: {
+  label: string
+  children: ReactNode
+  htmlFor?: string
+  invalid?: boolean
+  errors?: ComponentProps<typeof FieldError>["errors"]
+}) {
+  return <Field className="gap-1.5" data-invalid={invalid}>
+    <FieldLabel htmlFor={htmlFor}>{label}</FieldLabel>
+    {children}
+    {invalid && <FieldError errors={errors} />}
+  </Field>
 }
 
 export const statusLabels = { DRAFT: "Borrador", ACTIVE: "Activa", SUSPENDED: "Suspendida", CLOSED: "Cerrada" } as const
