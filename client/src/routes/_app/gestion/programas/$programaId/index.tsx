@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
+import { DeleteConfirmationButton } from "@/components/programs/DeleteConfirmationButton"
 import { FormField, LoadingOrError, RoutePanel, inputClass, textareaClass } from "@/components/programs/ProgramRouteUi"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -30,7 +31,7 @@ function RouteComponent() {
       {(update.isError || remove.isError) && <Alert variant="destructive"><AlertDescription>No se pudo completar la operación.</AlertDescription></Alert>}
       <FormField label="Nombre"><input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} maxLength={200} required /></FormField>
       <FormField label="Objetivo"><textarea className={textareaClass} value={objective} onChange={(e) => setObjective(e.target.value)} /></FormField>
-      <div className="flex justify-between gap-2"><Button type="button" variant="destructive" disabled={remove.isPending} onClick={() => { if (confirm("¿Eliminar este programa?")) remove.mutate({ path: { id: programaId } }) }}>Eliminar</Button><Button type="submit" disabled={update.isPending}>{update.isPending ? "Guardando…" : "Guardar cambios"}</Button></div>
+      <div className="flex justify-between gap-2"><DeleteConfirmationButton description="Se eliminará este programa." disabled={remove.isPending} onConfirm={() => remove.mutate({ path: { id: programaId } })} /><Button type="submit" disabled={update.isPending}>{update.isPending ? "Guardando…" : "Guardar cambios"}</Button></div>
     </form>}
   </RoutePanel>
 }

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 import { ProgramDatePicker } from "@/components/programs/ProgramDatePicker"
+import { DeleteConfirmationButton } from "@/components/programs/DeleteConfirmationButton"
 import { FormField, LoadingOrError, RoutePanel, inputClass, parseLocalDate, statusLabels } from "@/components/programs/ProgramRouteUi"
 import { Button } from "@/components/ui/button"
 import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list1QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
@@ -37,6 +38,6 @@ function RouteComponent() {
     <FormField label="Capacidad máxima"><input className={inputClass} type="number" min={1} value={form.maxCapacity} onChange={(e) => setForm({ ...form, maxCapacity: e.target.value })} /></FormField>
     <p className="text-sm text-muted-foreground">Inscriptos actuales: {query.data.currentEnrollment ?? 0}</p>
     {(update.isError || activate.isError || suspend.isError || close.isError || remove.isError) && <p className="text-sm text-destructive">No se pudo completar la operación.</p>}
-    <div className="flex justify-between"><Button type="button" variant="destructive" disabled={busy} onClick={() => { if (confirm("¿Eliminar esta convocatoria?")) remove.mutate({ path: { id: edicionId } }) }}>Eliminar</Button><Button type="submit" disabled={busy}>Guardar cambios</Button></div>
+    <div className="flex justify-between"><DeleteConfirmationButton description="Se eliminará esta convocatoria." disabled={busy} onConfirm={() => remove.mutate({ path: { id: edicionId } })} /><Button type="submit" disabled={busy}>Guardar cambios</Button></div>
   </form>}</RoutePanel>
 }
