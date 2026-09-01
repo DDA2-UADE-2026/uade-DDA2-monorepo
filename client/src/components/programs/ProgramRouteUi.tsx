@@ -7,8 +7,17 @@ import { cn } from "@/lib/utils"
 
 export function RouteTabs({ items }: { items: { label: string; to: string }[] }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const currentPath = pathname.replace(/\/+$/, "") || "/"
+  const activePath = items
+    .map((item) => item.to.replace(/\/+$/, "") || "/")
+    .filter((itemPath) => currentPath === itemPath || currentPath.startsWith(`${itemPath}/`))
+    .sort((left, right) => right.length - left.length)[0]
+
   return <nav className="flex gap-6 border-b px-4 lg:px-6">
-    {items.map((item) => <Link key={item.to} to={item.to} className={cn("border-b-2 border-transparent px-1 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground", pathname === item.to && "border-primary text-foreground")}>{item.label}</Link>)}
+    {items.map((item) => {
+      const itemPath = item.to.replace(/\/+$/, "") || "/"
+      return <Link key={item.to} to={item.to} className={cn("border-b-2 border-transparent px-1 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground", itemPath === activePath && "border-primary text-foreground")}>{item.label}</Link>
+    })}
   </nav>
 }
 
