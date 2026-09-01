@@ -43,7 +43,7 @@ function RouteComponent() {
   return <RoutePanel><form className="mb-6 grid gap-3 rounded-lg border p-4" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}><h3 className="font-semibold">Agregar beneficio</h3><div className="grid gap-3 sm:grid-cols-2">
     <form.Field name="benefitType" children={(field) => {
       const invalid = field.state.meta.isTouched && !field.state.meta.isValid
-      return <FormField label="Tipo" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><Select name={field.name} value={field.state.value} onValueChange={(nextType) => field.handleChange(nextType as typeof field.state.value)}><SelectTrigger id={field.name} className="w-full" onBlur={field.handleBlur} aria-invalid={invalid}><SelectValue /></SelectTrigger><SelectContent>{Object.entries(benefitLabels).map(([key, label]) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectContent></Select></FormField>
+      return <FormField label="Tipo" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><Select name={field.name} value={field.state.value} onValueChange={(nextType) => field.handleChange(nextType as typeof field.state.value)}><SelectTrigger id={field.name} className="w-full" onBlur={field.handleBlur} aria-invalid={invalid}><SelectValue>{benefitLabels[field.state.value]}</SelectValue></SelectTrigger><SelectContent>{Object.entries(benefitLabels).map(([key, label]) => <SelectItem key={key} value={key}>{label}</SelectItem>)}</SelectContent></Select></FormField>
     }} />
     <form.Field name="amount" children={(field) => {
       const invalid = field.state.meta.isTouched && !field.state.meta.isValid
