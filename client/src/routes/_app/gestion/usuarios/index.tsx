@@ -16,13 +16,13 @@ import { useState } from "react"
 import * as z from "zod"
 
 import {
-  OutletNavContent,
   OutletNavRightButton,
   OutletNavSidebarTrigger,
   OutletNavSticky,
   SidebarShell,
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { DataPagination } from "@/components/DataPagination"
 import { UserAvatar } from "@/components/UserAvatar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -103,7 +103,7 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavContent>Usuarios</OutletNavContent>
+        <OutletNavBreadcrumbs items={[{ label: "Usuarios" }]} />
         <OutletNavRightButton className="gap-1.5">
           <Button size="sm" onClick={() => setCreateOpen(true)}>
             <IconUserPlus />

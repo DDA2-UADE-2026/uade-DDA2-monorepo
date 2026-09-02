@@ -13,13 +13,13 @@ import * as z from "zod"
 
 import { DataPagination } from "@/components/DataPagination"
 import {
-  OutletNavContent,
   OutletNavRightButton,
   OutletNavSidebarTrigger,
   OutletNavSticky,
   SidebarShell,
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -94,7 +94,7 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavContent>Roles y permisos</OutletNavContent>
+        <OutletNavBreadcrumbs items={[{ label: "Roles y permisos" }]} />
         <OutletNavRightButton className="gap-1.5">
           <Button
             size="sm"

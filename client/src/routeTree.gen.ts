@@ -47,7 +47,6 @@ import { Route as AppGestionIntervencionesIndexRouteImport } from "./routes/_app
 import { Route as AppGestionIntervencionesPlanIdRouteImport } from "./routes/_app/gestion/intervenciones/$planId"
 import { Route as AppGestionProgramasIndexRouteImport } from "./routes/_app/gestion/programas/index"
 import { Route as AppGestionProgramasProgramaIdRouteRouteImport } from "./routes/_app/gestion/programas/$programaId/route"
-import { Route as AppGestionProgramasNuevoRouteImport } from "./routes/_app/gestion/programas/nuevo"
 import { Route as AppGestionTurnosIndexRouteImport } from "./routes/_app/gestion/turnos/index"
 import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestion/turnos/agenda"
 import { Route as AppGestionTurnosNuevoRouteImport } from "./routes/_app/gestion/turnos/nuevo"
@@ -80,6 +79,7 @@ import { Route as AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRouteI
 import { Route as AppGestionProgramasProgramaIdConvocatoriasNuevaRouteImport } from "./routes/_app/gestion/programas/$programaId/convocatorias/nueva"
 import { Route as AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRouteImport } from "./routes/_app/gestion/programas/$programaId/convocatorias/$edicionId/index"
 import { Route as AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRouteImport } from "./routes/_app/gestion/programas/$programaId/convocatorias/$edicionId/beneficios"
+import { Route as AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRouteImport } from "./routes/_app/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion"
 import { Route as AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRouteImport } from "./routes/_app/gestion/programas/$programaId/convocatorias/$edicionId/requisitos"
 
 const IndexRoute = IndexRouteImport.update({
@@ -284,12 +284,6 @@ const AppGestionProgramasProgramaIdRouteRoute =
     path: "/programas/$programaId",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
-const AppGestionProgramasNuevoRoute =
-  AppGestionProgramasNuevoRouteImport.update({
-    id: "/programas/nuevo",
-    path: "/programas/nuevo",
-    getParentRoute: () => AppGestionRouteRoute,
-  } as any)
 const AppGestionTurnosIndexRoute = AppGestionTurnosIndexRouteImport.update({
   id: "/turnos/",
   path: "/turnos/",
@@ -477,6 +471,15 @@ const AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute =
         AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRoute,
     } as any,
   )
+const AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute =
+  AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRouteImport.update(
+    {
+      id: "/periodos-inscripcion",
+      path: "/periodos-inscripcion",
+      getParentRoute: () =>
+        AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRoute,
+    } as any,
+  )
 const AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute =
   AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRouteImport.update(
     {
@@ -516,7 +519,6 @@ export interface FileRoutesByFullPath {
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
-  "/gestion/programas/nuevo": typeof AppGestionProgramasNuevoRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/gestion/usuarios/$usuarioId": typeof AppGestionUsuariosUsuarioIdRoute
@@ -555,6 +557,7 @@ export interface FileRoutesByFullPath {
   "/gestion/programas/$programaId/convocatorias/nueva": typeof AppGestionProgramasProgramaIdConvocatoriasNuevaRoute
   "/gestion/programas/$programaId/convocatorias/": typeof AppGestionProgramasProgramaIdConvocatoriasIndexRoute
   "/gestion/programas/$programaId/convocatorias/$edicionId/beneficios": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute
+  "/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute
   "/gestion/programas/$programaId/convocatorias/$edicionId/requisitos": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute
   "/gestion/programas/$programaId/convocatorias/$edicionId/": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRoute
 }
@@ -581,7 +584,6 @@ export interface FileRoutesByTo {
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
-  "/gestion/programas/nuevo": typeof AppGestionProgramasNuevoRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/gestion/usuarios/$usuarioId": typeof AppGestionUsuariosUsuarioIdRoute
@@ -619,6 +621,7 @@ export interface FileRoutesByTo {
   "/gestion/programas/$programaId/convocatorias/nueva": typeof AppGestionProgramasProgramaIdConvocatoriasNuevaRoute
   "/gestion/programas/$programaId/convocatorias": typeof AppGestionProgramasProgramaIdConvocatoriasIndexRoute
   "/gestion/programas/$programaId/convocatorias/$edicionId/beneficios": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute
+  "/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute
   "/gestion/programas/$programaId/convocatorias/$edicionId/requisitos": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute
   "/gestion/programas/$programaId/convocatorias/$edicionId": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRoute
 }
@@ -655,7 +658,6 @@ export interface FileRoutesById {
   "/_app/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/_app/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/_app/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
-  "/_app/gestion/programas/nuevo": typeof AppGestionProgramasNuevoRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/_app/gestion/usuarios/$usuarioId": typeof AppGestionUsuariosUsuarioIdRoute
@@ -694,6 +696,7 @@ export interface FileRoutesById {
   "/_app/gestion/programas/$programaId/convocatorias/nueva": typeof AppGestionProgramasProgramaIdConvocatoriasNuevaRoute
   "/_app/gestion/programas/$programaId/convocatorias/": typeof AppGestionProgramasProgramaIdConvocatoriasIndexRoute
   "/_app/gestion/programas/$programaId/convocatorias/$edicionId/beneficios": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute
+  "/_app/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute
   "/_app/gestion/programas/$programaId/convocatorias/$edicionId/requisitos": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute
   "/_app/gestion/programas/$programaId/convocatorias/$edicionId/": typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRoute
 }
@@ -728,7 +731,6 @@ export interface FileRouteTypes {
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
-    | "/gestion/programas/nuevo"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
     | "/gestion/usuarios/$usuarioId"
@@ -767,6 +769,7 @@ export interface FileRouteTypes {
     | "/gestion/programas/$programaId/convocatorias/nueva"
     | "/gestion/programas/$programaId/convocatorias/"
     | "/gestion/programas/$programaId/convocatorias/$edicionId/beneficios"
+    | "/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion"
     | "/gestion/programas/$programaId/convocatorias/$edicionId/requisitos"
     | "/gestion/programas/$programaId/convocatorias/$edicionId/"
   fileRoutesByTo: FileRoutesByTo
@@ -793,7 +796,6 @@ export interface FileRouteTypes {
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
-    | "/gestion/programas/nuevo"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
     | "/gestion/usuarios/$usuarioId"
@@ -831,6 +833,7 @@ export interface FileRouteTypes {
     | "/gestion/programas/$programaId/convocatorias/nueva"
     | "/gestion/programas/$programaId/convocatorias"
     | "/gestion/programas/$programaId/convocatorias/$edicionId/beneficios"
+    | "/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion"
     | "/gestion/programas/$programaId/convocatorias/$edicionId/requisitos"
     | "/gestion/programas/$programaId/convocatorias/$edicionId"
   id:
@@ -866,7 +869,6 @@ export interface FileRouteTypes {
     | "/_app/gestion/debug/documentacion-local"
     | "/_app/gestion/debug/estado-red"
     | "/_app/gestion/intervenciones/$planId"
-    | "/_app/gestion/programas/nuevo"
     | "/_app/gestion/turnos/agenda"
     | "/_app/gestion/turnos/nuevo"
     | "/_app/gestion/usuarios/$usuarioId"
@@ -905,6 +907,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/programas/$programaId/convocatorias/nueva"
     | "/_app/gestion/programas/$programaId/convocatorias/"
     | "/_app/gestion/programas/$programaId/convocatorias/$edicionId/beneficios"
+    | "/_app/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion"
     | "/_app/gestion/programas/$programaId/convocatorias/$edicionId/requisitos"
     | "/_app/gestion/programas/$programaId/convocatorias/$edicionId/"
   fileRoutesById: FileRoutesById
@@ -1186,13 +1189,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionProgramasProgramaIdRouteRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
-    "/_app/gestion/programas/nuevo": {
-      id: "/_app/gestion/programas/nuevo"
-      path: "/programas/nuevo"
-      fullPath: "/gestion/programas/nuevo"
-      preLoaderRoute: typeof AppGestionProgramasNuevoRouteImport
-      parentRoute: typeof AppGestionRouteRoute
-    }
     "/_app/gestion/turnos/": {
       id: "/_app/gestion/turnos/"
       path: "/turnos"
@@ -1417,6 +1413,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRouteImport
       parentRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRoute
     }
+    "/_app/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion": {
+      id: "/_app/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion"
+      path: "/periodos-inscripcion"
+      fullPath: "/gestion/programas/$programaId/convocatorias/$edicionId/periodos-inscripcion"
+      preLoaderRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRouteImport
+      parentRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRoute
+    }
     "/_app/gestion/programas/$programaId/convocatorias/$edicionId/requisitos": {
       id: "/_app/gestion/programas/$programaId/convocatorias/$edicionId/requisitos"
       path: "/requisitos"
@@ -1486,6 +1489,7 @@ const AppGestionCentrosCentroIdRouteRouteWithChildren =
 
 interface AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRouteChildren {
   AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute
+  AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute
   AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute
   AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRoute
 }
@@ -1494,6 +1498,8 @@ const AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRouteChildren: App
   {
     AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute:
       AppGestionProgramasProgramaIdConvocatoriasEdicionIdBeneficiosRoute,
+    AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute:
+      AppGestionProgramasProgramaIdConvocatoriasEdicionIdPeriodosInscripcionRoute,
     AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute:
       AppGestionProgramasProgramaIdConvocatoriasEdicionIdRequisitosRoute,
     AppGestionProgramasProgramaIdConvocatoriasEdicionIdIndexRoute:
@@ -1547,7 +1553,6 @@ interface AppGestionRouteRouteChildren {
   AppGestionDebugDocumentacionLocalRoute: typeof AppGestionDebugDocumentacionLocalRoute
   AppGestionDebugEstadoRedRoute: typeof AppGestionDebugEstadoRedRoute
   AppGestionIntervencionesPlanIdRoute: typeof AppGestionIntervencionesPlanIdRoute
-  AppGestionProgramasNuevoRoute: typeof AppGestionProgramasNuevoRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
   AppGestionTurnosNuevoRoute: typeof AppGestionTurnosNuevoRoute
   AppGestionUsuariosUsuarioIdRoute: typeof AppGestionUsuariosUsuarioIdRoute
@@ -1584,7 +1589,6 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
     AppGestionDebugDocumentacionLocalRoute,
   AppGestionDebugEstadoRedRoute: AppGestionDebugEstadoRedRoute,
   AppGestionIntervencionesPlanIdRoute: AppGestionIntervencionesPlanIdRoute,
-  AppGestionProgramasNuevoRoute: AppGestionProgramasNuevoRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,
   AppGestionTurnosNuevoRoute: AppGestionTurnosNuevoRoute,
   AppGestionUsuariosUsuarioIdRoute: AppGestionUsuariosUsuarioIdRoute,

@@ -13,10 +13,10 @@ export function RouteTabs({ items }: { items: { label: string; to: string }[] })
     .filter((itemPath) => currentPath === itemPath || currentPath.startsWith(`${itemPath}/`))
     .sort((left, right) => right.length - left.length)[0]
 
-  return <nav className="flex gap-6 border-b px-4 lg:px-6">
+  return <nav className="flex gap-6 overflow-x-auto border-b px-4 lg:px-6">
     {items.map((item) => {
       const itemPath = item.to.replace(/\/+$/, "") || "/"
-      return <Link key={item.to} to={item.to} className={cn("border-b-2 border-transparent px-1 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground", itemPath === activePath && "border-primary text-foreground")}>{item.label}</Link>
+      return <Link key={item.to} to={item.to} className={cn("shrink-0 whitespace-nowrap border-b-2 border-transparent px-1 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground", itemPath === activePath && "border-primary text-foreground")}>{item.label}</Link>
     })}
   </nav>
 }

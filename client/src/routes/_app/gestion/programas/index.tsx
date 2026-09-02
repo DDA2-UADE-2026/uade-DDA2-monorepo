@@ -1,17 +1,38 @@
-import { IconPlus, IconRefresh } from "@tabler/icons-react"
-import { useQuery } from "@tanstack/react-query"
+import { IconAlertTriangle, IconPlus, IconRefresh, IconTarget, IconWriting } from "@tabler/icons-react"
+import { useForm } from "@tanstack/react-form"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 import { z } from "zod"
 
 import { DataPagination } from "@/components/DataPagination"
-import { OutletNavContent, OutletNavRightButton, OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
+import { OutletNavRightButton, OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { listOptions } from "@/generated/@tanstack/react-query.gen"
+import { Textarea } from "@/components/ui/textarea"
+import { create2Mutation, listOptions, listQueryKey } from "@/generated/@tanstack/react-query.gen"
+import type { CreateProgramRequest } from "@/generated/types.gen"
+import { zCreateProgramRequest } from "@/generated/zod.gen"
 
 const PAGE_SIZE = 10
 const searchSchema = z.object({
   page: z.coerce.number().int().positive().catch(1).default(1),
+})
+const createProgramSchema = zCreateProgramRequest.extend({
+  name: zCreateProgramRequest.shape.name.trim().min(1, "Ingresá el nombre del programa."),
 })
 
 export const Route = createFileRoute("/_app/gestion/programas/")({
@@ -22,6 +43,7 @@ export const Route = createFileRoute("/_app/gestion/programas/")({
 function RouteComponent() {
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
+  const [createOpen, setCreateOpen] = useState(false)
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } = useQuery(
     listOptions({ query: { page: page - 1, size: PAGE_SIZE } }),
   )
@@ -35,9 +57,9 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavContent>Programas</OutletNavContent>
+        <OutletNavBreadcrumbs items={[{ label: "Programas" }]} />
         <OutletNavRightButton className="gap-1.5">
-          <Button size="sm" render={<Link to="/gestion/programas/nuevo" />}>
+          <Button size="sm" onClick={() => setCreateOpen(true)}>
             <IconPlus />
             Nuevo programa
           </Button>
@@ -87,6 +109,129 @@ function RouteComponent() {
           <DataPagination page={currentPage} totalPages={totalPages} totalItems={totalItems} pageSize={PAGE_SIZE} onPageChange={setPage} />
         )}
       </SidebarShellContent>
+      {createOpen && (
+        <CreateProgramDialog onOpenChange={(open) => !open && setCreateOpen(false)} />
+      )}
     </SidebarShell>
+  )
+}
+
+function CreateProgramDialog({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const createProgram = useMutation({
+    ...create2Mutation(),
+    onSuccess: (program) => {
+      queryClient.invalidateQueries({ queryKey: listQueryKey() })
+      onOpenChange(false)
+      if (program.id) {
+        navigate({
+          to: "/gestion/programas/$programaId",
+          params: { programaId: program.id },
+        })
+      }
+    },
+  })
+  const form = useForm({
+    defaultValues: { name: "" } as CreateProgramRequest,
+    validators: { onChange: createProgramSchema },
+    onSubmit: ({ value }) => createProgram.mutate({ body: value }),
+  })
+
+  return (
+    <Dialog open onOpenChange={(open) => { if (!createProgram.isPending) onOpenChange(open) }}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Nuevo programa</DialogTitle>
+          <DialogDescription>
+            Definí el nombre y el objetivo del nuevo programa social.
+          </DialogDescription>
+        </DialogHeader>
+
+        {createProgram.isError && (
+          <Alert variant="destructive">
+            <IconAlertTriangle />
+            <AlertTitle>No se pudo crear el programa</AlertTitle>
+            <AlertDescription>
+              {createProgram.error.message ?? "Revisá los datos e intentá nuevamente."}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <form
+          id="create-program-form"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <FieldGroup>
+            <form.Field name="name" children={(field) => {
+              const invalid = field.state.meta.isTouched && !field.state.meta.isValid
+              return (
+                <Field data-invalid={invalid}>
+                  <FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
+                  <InputGroup>
+                    <InputGroupAddon><IconWriting /></InputGroupAddon>
+                    <InputGroupInput
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      aria-invalid={invalid}
+                      placeholder="Becas de formación laboral"
+                      maxLength={200}
+                      autoFocus
+                    />
+                  </InputGroup>
+                  {invalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              )
+            }} />
+
+            <form.Field name="objective" children={(field) => {
+              const invalid = field.state.meta.isTouched && !field.state.meta.isValid
+              return (
+                <Field data-invalid={invalid}>
+                  <FieldLabel htmlFor={field.name}>Objetivo</FieldLabel>
+                  <div className="relative">
+                    <IconTarget className="absolute top-3 left-3 size-4 text-muted-foreground" />
+                    <Textarea
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value ?? ""}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => field.handleChange(event.target.value || undefined)}
+                      aria-invalid={invalid}
+                      placeholder="Describí el propósito del programa"
+                      className="min-h-32 pl-9"
+                    />
+                  </div>
+                  {invalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              )
+            }} />
+          </FieldGroup>
+        </form>
+
+        <DialogFooter>
+          <DialogClose render={<Button type="button" variant="outline" disabled={createProgram.isPending} />}>
+            Cancelar
+          </DialogClose>
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]} children={([canSubmit, isSubmitting]) => (
+            <Button
+              type="submit"
+              form="create-program-form"
+              disabled={!canSubmit || isSubmitting || createProgram.isPending}
+            >
+              {createProgram.isPending ? "Creando…" : "Crear programa"}
+            </Button>
+          )} />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
