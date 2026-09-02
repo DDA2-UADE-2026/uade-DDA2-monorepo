@@ -3594,6 +3594,39 @@ export type FindAll4Responses = {
 
 export type FindAll4Response = FindAll4Responses[keyof FindAll4Responses];
 
+export type ListLogsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/logs';
+};
+
+export type ListLogsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListLogsError = ListLogsErrors[keyof ListLogsErrors];
+
+export type ListLogsResponses = {
+    /**
+     * OK
+     */
+    200: Array<LogResponse>;
+};
+
+export type ListLogsResponse = ListLogsResponses[keyof ListLogsResponses];
+
 export type ListLogsByUserData = {
     body?: never;
     path: {

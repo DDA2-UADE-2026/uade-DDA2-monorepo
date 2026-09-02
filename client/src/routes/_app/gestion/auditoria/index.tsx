@@ -1,8 +1,9 @@
-import { IconRefresh, IconSearch } from "@tabler/icons-react"
+import { IconRefresh, IconSearch, IconUserSearch } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState, type FormEvent } from "react"
 
+import { AuditDiffDialog } from "@/components/audit/AuditDiffDialog"
 import { DataPagination } from "@/components/DataPagination"
 import {
   OutletNavSidebarTrigger,
@@ -11,6 +12,8 @@ import {
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { UserSelectionDialog } from "@/components/users/UserSelectionDialog"
+import { UserAvatar } from "@/components/UserAvatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -33,15 +36,19 @@ import {
 import {
   listLogsByEntityOptions,
   listLogsByUserOptions,
+  listLogsOptions,
 } from "@/generated/@tanstack/react-query.gen"
-import type { LogResponse } from "@/generated/types.gen"
+import type {
+  LogResponse,
+  UserManagementResponse,
+} from "@/generated/types.gen"
 
 type EntityType = NonNullable<LogResponse["entityType"]>
 type Filter =
   | { mode: "entity"; entityType: EntityType; entityId: string }
   | { mode: "user"; userId: number }
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 50
 
 const filterModeLabels: Record<Filter["mode"], string> = {
   entity: "Entidad",
@@ -77,10 +84,12 @@ export const Route = createFileRoute("/_app/gestion/auditoria/")({
 })
 
 function RouteComponent() {
-  const [mode, setMode] = useState<Filter["mode"]>("entity")
+  const [mode, setMode] = useState<Filter["mode"]>("user")
   const [entityType, setEntityType] = useState<EntityType>("USER")
   const [entityId, setEntityId] = useState("")
-  const [userId, setUserId] = useState("")
+  const [selectedUser, setSelectedUser] =
+    useState<UserManagementResponse | null>(null)
+  const [userSelectionOpen, setUserSelectionOpen] = useState(false)
   const [filter, setFilter] = useState<Filter | null>(null)
   const [validationError, setValidationError] = useState<string | null>(null)
   const [page, setPage] = useState(1)
@@ -88,6 +97,10 @@ function RouteComponent() {
   const entityFilter = filter?.mode === "entity" ? filter : null
   const userFilter = filter?.mode === "user" ? filter : null
 
+  const allLogsQuery = useQuery({
+    ...listLogsOptions(),
+    enabled: filter === null,
+  })
   const entityQuery = useQuery({
     ...listLogsByEntityOptions({
       path: {
@@ -104,7 +117,8 @@ function RouteComponent() {
     enabled: userFilter !== null,
   })
 
-  const activeQuery = filter?.mode === "user" ? userQuery : entityQuery
+  const activeQuery =
+    filter === null ? allLogsQuery : filter.mode === "user" ? userQuery : entityQuery
   const logs = activeQuery.data ?? []
   const totalItems = logs.length
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -126,12 +140,11 @@ function RouteComponent() {
       }
       setFilter({ mode, entityType, entityId: normalizedEntityId })
     } else {
-      const normalizedUserId = Number(userId)
-      if (!Number.isSafeInteger(normalizedUserId) || normalizedUserId <= 0) {
-        setValidationError("Ingresá un ID de usuario válido.")
+      if (selectedUser?.id === undefined) {
+        setValidationError("Seleccioná un usuario.")
         return
       }
-      setFilter({ mode, userId: normalizedUserId })
+      setFilter({ mode, userId: selectedUser.id })
     }
 
     setPage(1)
@@ -139,6 +152,12 @@ function RouteComponent() {
 
   const changeMode = (nextMode: Filter["mode"]) => {
     setMode(nextMode)
+    setFilter(null)
+    setValidationError(null)
+    setPage(1)
+  }
+
+  const clearFilter = () => {
     setFilter(null)
     setValidationError(null)
     setPage(1)
@@ -160,7 +179,7 @@ function RouteComponent() {
               className="mb-5 flex flex-col gap-3 rounded-2xl border bg-muted/20 p-3 lg:flex-row lg:items-end"
               onSubmit={submitFilter}
             >
-              <div className="grid gap-1.5 lg:w-48">
+              <div className="grid gap-1.5">
                 <Label htmlFor="audit-filter-mode">Buscar por</Label>
                 <Select
                   value={mode}
@@ -171,7 +190,7 @@ function RouteComponent() {
                       {(value: Filter["mode"]) => filterModeLabels[value]}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className={"min-w-62"}>
                     {Object.entries(filterModeLabels).map(([value, label]) => (
                       <SelectItem key={value} value={value}>
                         {label}
@@ -183,7 +202,7 @@ function RouteComponent() {
 
               {mode === "entity" ? (
                 <>
-                  <div className="grid gap-1.5 lg:w-56">
+                  <div className="grid gap-1.5">
                     <Label htmlFor="audit-entity-type">Tipo de entidad</Label>
                     <Select
                       value={entityType}
@@ -194,7 +213,7 @@ function RouteComponent() {
                           {(value: EntityType) => entityLabels[value]}
                         </SelectValue>
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className={"min-w-54"}>
                         {Object.entries(entityLabels).map(([value, label]) => (
                           <SelectItem key={value} value={value}>
                             {label}
@@ -216,17 +235,30 @@ function RouteComponent() {
                 </>
               ) : (
                 <div className="grid min-w-0 flex-1 gap-1.5">
-                  <Label htmlFor="audit-user-id">ID de usuario</Label>
-                  <Input
-                    id="audit-user-id"
-                    type="number"
-                    min={1}
-                    step={1}
-                    value={userId}
-                    onChange={(event) => setUserId(event.target.value)}
-                    placeholder="Ingresá el ID del usuario"
+                  <Label htmlFor="audit-user-picker">Usuario</Label>
+                  <Button
+                    id="audit-user-picker"
+                    type="button"
+                    variant="outline"
+                    className="min-w-0 justify-start"
+                    onClick={() => setUserSelectionOpen(true)}
                     aria-invalid={validationError !== null}
-                  />
+                  >
+                    {selectedUser ? (
+                      <>
+                        <UserAvatar user={selectedUser} className="size-5" />
+                        <span className="truncate">
+                          {selectedUser.name || selectedUser.username}
+                          {selectedUser.username && ` (@${selectedUser.username})`}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <IconUserSearch />
+                        Seleccionar usuario
+                      </>
+                    )}
+                  </Button>
                 </div>
               )}
 
@@ -234,6 +266,17 @@ function RouteComponent() {
                 <IconSearch />
                 Buscar
               </Button>
+
+              {filter && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="lg:self-end"
+                  onClick={clearFilter}
+                >
+                  Ver todos los registros
+                </Button>
+              )}
             </form>
 
             {validationError && (
@@ -242,11 +285,7 @@ function RouteComponent() {
               </p>
             )}
 
-            {!filter ? (
-              <p className="text-sm text-muted-foreground">
-                Elegí un criterio para consultar los cambios registrados.
-              </p>
-            ) : activeQuery.isPending ? (
+            {activeQuery.isPending ? (
               <p className="text-sm text-muted-foreground">
                 Cargando cambios…
               </p>
@@ -263,7 +302,9 @@ function RouteComponent() {
               </div>
             ) : totalItems === 0 ? (
               <p className="text-sm text-muted-foreground">
-                No hay cambios registrados para este criterio.
+                {filter
+                  ? "No hay cambios registrados para este criterio."
+                  : "No hay cambios registrados."}
               </p>
             ) : (
               <>
@@ -298,6 +339,7 @@ function RouteComponent() {
                         <TableHead>Entidad</TableHead>
                         <TableHead>ID de entidad</TableHead>
                         <TableHead>Actor</TableHead>
+                        <TableHead>Diff</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -333,6 +375,14 @@ function RouteComponent() {
                           <TableCell>
                             <ActorCell log={log} />
                           </TableCell>
+                          <TableCell>
+                            {log.entityId &&
+                            (log.oldValues || log.newValues) ? (
+                              <AuditDiffDialog log={log} />
+                            ) : (
+                              "—"
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -355,6 +405,18 @@ function RouteComponent() {
             />
           )}
       </SidebarShellContent>
+
+      <UserSelectionDialog
+        open={userSelectionOpen}
+        onOpenChange={setUserSelectionOpen}
+        selectedUserId={selectedUser?.id}
+        onSelect={(user) => {
+          setSelectedUser(user)
+          setValidationError(null)
+        }}
+        title="Seleccionar actor"
+        description="Elegí el usuario cuyos cambios querés consultar."
+      />
     </SidebarShell>
   )
 }
