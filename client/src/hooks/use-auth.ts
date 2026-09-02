@@ -11,10 +11,6 @@ export function useLogin() {
   return useMutation({
     ...loginMutation(),
     onSuccess: (data) => {
-      console.log("[auth] login response:", data)
-      console.log("[auth] roles:", data.user?.roles)
-      console.log("[auth] permissions:", data.permissions)
-
       if (data.token) {
         setStoredAuthToken(data.token)
         client.setConfig({ headers: { Authorization: `Bearer ${data.token}` } })

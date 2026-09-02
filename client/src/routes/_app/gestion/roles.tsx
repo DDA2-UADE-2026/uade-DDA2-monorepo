@@ -279,6 +279,7 @@ function RoleFormDialog({
         )}
         <form
           id="role-form"
+          noValidate
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()

@@ -282,6 +282,7 @@ function CreateUserDialog({
         <form
           id="create-user-form"
           className="-mt-4 max-h-[70vh] w-full min-w-0 overflow-x-hidden overflow-y-auto px-1"
+          noValidate
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
