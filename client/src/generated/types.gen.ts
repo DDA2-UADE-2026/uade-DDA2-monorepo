@@ -665,6 +665,62 @@ export type PermissionResponse = {
 };
 
 /**
+ * Usuario que originó el evento auditado.
+ */
+export type LogActorResponse = {
+    /**
+     * Identificador del usuario.
+     */
+    readonly id?: number;
+    /**
+     * Nombre de usuario local.
+     */
+    readonly username?: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    readonly name?: string;
+};
+
+/**
+ * Registro inmutable de un evento de auditoría.
+ */
+export type LogResponse = {
+    /**
+     * Identificador del registro.
+     */
+    readonly id?: number;
+    /**
+     * Usuario que originó el evento. Es nulo para procesos automáticos o si el usuario fue eliminado.
+     */
+    readonly actor?: LogActorResponse;
+    /**
+     * Acción auditada.
+     */
+    readonly action?: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN';
+    /**
+     * Tipo de entidad afectada.
+     */
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD';
+    /**
+     * Identificador de la entidad afectada.
+     */
+    readonly entityId?: string;
+    /**
+     * Estado previo de la entidad.
+     */
+    readonly oldValues?: string;
+    /**
+     * Estado posterior de la entidad.
+     */
+    readonly newValues?: string;
+    /**
+     * Fecha y hora UTC en que se registró el evento.
+     */
+    readonly createdAt?: string;
+};
+
+/**
  * Perfil del usuario autenticado.
  */
 export type MeResponse = {
@@ -3537,6 +3593,102 @@ export type FindAll4Responses = {
 };
 
 export type FindAll4Response = FindAll4Responses[keyof FindAll4Responses];
+
+export type ListLogsByUserData = {
+    body?: never;
+    path: {
+        /**
+         * ID del usuario que originó los eventos.
+         */
+        userId: number;
+    };
+    query?: never;
+    url: '/logs/users/{userId}';
+};
+
+export type ListLogsByUserErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListLogsByUserError = ListLogsByUserErrors[keyof ListLogsByUserErrors];
+
+export type ListLogsByUserResponses = {
+    /**
+     * OK
+     */
+    200: Array<LogResponse>;
+};
+
+export type ListLogsByUserResponse = ListLogsByUserResponses[keyof ListLogsByUserResponses];
+
+export type ListLogsByEntityData = {
+    body?: never;
+    path: {
+        /**
+         * Tipo de entidad auditada.
+         */
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD';
+        /**
+         * Identificador de la entidad auditada.
+         */
+        entityId: string;
+    };
+    query?: never;
+    url: '/logs/entities/{entityType}/{entityId}';
+};
+
+export type ListLogsByEntityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListLogsByEntityError = ListLogsByEntityErrors[keyof ListLogsByEntityErrors];
+
+export type ListLogsByEntityResponses = {
+    /**
+     * OK
+     */
+    200: Array<LogResponse>;
+};
+
+export type ListLogsByEntityResponse = ListLogsByEntityResponses[keyof ListLogsByEntityResponses];
 
 export type MeData = {
     body?: never;

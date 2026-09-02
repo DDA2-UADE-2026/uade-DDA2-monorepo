@@ -338,6 +338,39 @@ export const zPermissionResponse = z.object({
 });
 
 /**
+ * Usuario que originó el evento auditado.
+ */
+export const zLogActorResponse = z.object({
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    username: z.string().readonly().optional(),
+    name: z.string().readonly().optional()
+});
+
+/**
+ * Registro inmutable de un evento de auditoría.
+ */
+export const zLogResponse = z.object({
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    actor: zLogActorResponse.readonly().optional(),
+    action: z.enum([
+        'CREATE',
+        'UPDATE',
+        'DELETE',
+        'LOGIN'
+    ]).readonly().optional(),
+    entityType: z.enum([
+        'PERMISSION',
+        'ROLE',
+        'USER',
+        'ENROLLMENT_PERIOD'
+    ]).readonly().optional(),
+    entityId: z.string().readonly().optional(),
+    oldValues: z.string().readonly().optional(),
+    newValues: z.string().readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional()
+});
+
+/**
  * Perfil del usuario autenticado.
  */
 export const zMeResponse = z.object({
@@ -1065,6 +1098,30 @@ export const zActivateResponse = zProgramEditionResponse;
  * OK
  */
 export const zFindAll4Response = z.array(zPermissionResponse);
+
+export const zListLogsByUserPath = z.object({
+    userId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+});
+
+/**
+ * OK
+ */
+export const zListLogsByUserResponse = z.array(zLogResponse);
+
+export const zListLogsByEntityPath = z.object({
+    entityType: z.enum([
+        'PERMISSION',
+        'ROLE',
+        'USER',
+        'ENROLLMENT_PERIOD'
+    ]),
+    entityId: z.string().min(1)
+});
+
+/**
+ * OK
+ */
+export const zListLogsByEntityResponse = z.array(zLogResponse);
 
 /**
  * OK
