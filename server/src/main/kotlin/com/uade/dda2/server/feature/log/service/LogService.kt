@@ -43,6 +43,12 @@ class LogService(
         )
 
     @Transactional(readOnly = true)
+    fun findAll(): List<LogResponse> =
+        logRepository
+            .findAllByOrderByCreatedAtDesc()
+            .map(logMapper::toResponse)
+
+    @Transactional(readOnly = true)
     fun findByEntity(
         entityType: LogEntityType,
         entityId: String,
