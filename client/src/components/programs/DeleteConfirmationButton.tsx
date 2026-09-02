@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 type DeleteConfirmationButtonProps = {
   description: string
   disabled?: boolean
-  onConfirm: () => void
+  onConfirm: () => Promise<unknown>
   size?: "default" | "sm"
 }
 
@@ -26,11 +26,29 @@ export function DeleteConfirmationButton({
   size = "default",
 }: DeleteConfirmationButtonProps) {
   const [open, setOpen] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
+
+  const handleConfirm = async () => {
+    setIsConfirming(true)
+    try {
+      await onConfirm()
+      setOpen(false)
+    } catch {
+      // The mutation owns error feedback. Keep the confirmation open for retry.
+    } finally {
+      setIsConfirming(false)
+    }
+  }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!isConfirming) setOpen(nextOpen)
+      }}
+    >
       <AlertDialogTrigger
-        disabled={disabled}
+        disabled={disabled || isConfirming}
         render={<Button type="button" size={size} variant={size === "sm" ? "ghost" : "destructive"} />}
       >
         Eliminar
@@ -41,16 +59,14 @@ export function DeleteConfirmationButton({
           <AlertDialogDescription>{description} Esta acción no se puede deshacer.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel disabled={isConfirming}>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             type="button"
             variant="destructive"
-            onClick={() => {
-              setOpen(false)
-              onConfirm()
-            }}
+            disabled={isConfirming}
+            onClick={handleConfirm}
           >
-            Eliminar
+            {isConfirming ? "Eliminando…" : "Eliminar"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

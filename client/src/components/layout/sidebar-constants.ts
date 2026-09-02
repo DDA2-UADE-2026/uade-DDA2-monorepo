@@ -56,7 +56,6 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     title: "Programas",
     url: "/gestion/programas",
     icon: IconHeartHandshake,
-    items: [{ title: "Nuevo programa", url: "/gestion/programas/nuevo" }],
   },
   { title: "Centros", url: "/gestion/centros", icon: IconBuilding },
   {

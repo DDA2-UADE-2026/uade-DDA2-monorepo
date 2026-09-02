@@ -5,6 +5,7 @@ import {
   IconId,
   IconLock,
   IconMail,
+  IconPencil,
   IconRefresh,
   IconUser,
   IconUserPlus,
@@ -16,13 +17,13 @@ import { useState } from "react"
 import * as z from "zod"
 
 import {
-  OutletNavContent,
   OutletNavRightButton,
   OutletNavSidebarTrigger,
   OutletNavSticky,
   SidebarShell,
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { DataPagination } from "@/components/DataPagination"
 import { UserAvatar } from "@/components/UserAvatar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -72,13 +73,18 @@ import {
   findAll1Options,
   findAllOptions,
   findAllQueryKey,
+  updateMutation,
 } from "@/generated/@tanstack/react-query.gen"
-import { zCreateUserRequestWritable } from "@/generated/zod.gen"
+import type { UserManagementResponse } from "@/generated/types.gen"
+import { zCreateUserRequestWritable, zUpdateUserRequestWritable } from "@/generated/zod.gen"
 
 // `active` y `roles` son opcionales en el DTO generado, pero el form siempre los completa.
 const zCreateUserForm = zCreateUserRequestWritable.extend({
   active: z.boolean(),
   roles: z.array(z.string()),
+})
+const zUserRolesForm = z.object({
+  roles: zUpdateUserRequestWritable.shape.roles.unwrap(),
 })
 
 export const Route = createFileRoute("/_app/gestion/usuarios/")({
@@ -92,6 +98,7 @@ function RouteComponent() {
     useQuery(findAllOptions())
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
+  const [rolesUser, setRolesUser] = useState<UserManagementResponse | null>(null)
 
   const totalItems = data?.length ?? 0
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -103,7 +110,7 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavContent>Usuarios</OutletNavContent>
+        <OutletNavBreadcrumbs items={[{ label: "Usuarios" }]} />
         <OutletNavRightButton className="gap-1.5">
           <Button size="sm" onClick={() => setCreateOpen(true)}>
             <IconUserPlus />
@@ -159,6 +166,9 @@ function RouteComponent() {
                     <TableHead>Roles</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead>Creado</TableHead>
+                    <TableHead className="w-px">
+                      <span className="sr-only">Acciones</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -207,6 +217,19 @@ function RouteComponent() {
                             )
                           : "—"}
                       </TableCell>
+                      <TableCell>
+                        {user.id && (
+                          <Button
+                            type="button"
+                            size="icon-sm"
+                            variant="ghost"
+                            aria-label={`Editar roles de ${user.name ?? user.username ?? "usuario"}`}
+                            onClick={() => setRolesUser(user)}
+                          >
+                            <IconPencil />
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -223,7 +246,167 @@ function RouteComponent() {
       {createOpen && (
         <CreateUserDialog onOpenChange={(open) => !open && setCreateOpen(false)} />
       )}
+      {rolesUser && (
+        <UserRolesDialog
+          user={rolesUser}
+          onOpenChange={(open) => {
+            if (!open) setRolesUser(null)
+          }}
+        />
+      )}
     </SidebarShell>
+  )
+}
+
+function UserRolesDialog({
+  user,
+  onOpenChange,
+}: {
+  user: UserManagementResponse
+  onOpenChange: (open: boolean) => void
+}) {
+  const queryClient = useQueryClient()
+  const roles = useQuery(findAll1Options())
+  const isProtectedAdmin = user.username?.trim().toLowerCase() === "admin" &&
+    user.roles?.includes("ADMIN")
+  const updateUser = useMutation({
+    ...updateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
+      onOpenChange(false)
+    },
+  })
+  const form = useForm({
+    defaultValues: {
+      roles: user.roles ?? ([] as string[]),
+    },
+    validators: { onChange: zUserRolesForm },
+    onSubmit: ({ value }) => {
+      if (!user.id) return
+      updateUser.mutate({
+        path: { id: user.id },
+        body: {
+          name: user.name ?? "",
+          email: user.email ?? "",
+          active: user.active ?? true,
+          roles: value.roles,
+        },
+      })
+    },
+  })
+
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!updateUser.isPending) onOpenChange(open)
+      }}
+    >
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Asignar roles</DialogTitle>
+          <DialogDescription>
+            Seleccioná los roles que conservará {user.name ?? user.username ?? "el usuario"}.
+          </DialogDescription>
+        </DialogHeader>
+
+        {updateUser.isError && (
+          <Alert variant="destructive">
+            <IconAlertTriangle />
+            <AlertTitle>No se pudieron actualizar los roles</AlertTitle>
+            <AlertDescription>
+              {updateUser.error.message ?? "Revisá la selección e intentá nuevamente."}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <form
+          id="user-roles-form"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
+            name="roles"
+            children={(field) => {
+              const invalid = field.state.meta.isTouched && !field.state.meta.isValid
+              return (
+                <Field data-invalid={invalid}>
+                  <FieldLabel htmlFor={field.name}>Roles asignados</FieldLabel>
+                  {roles.isPending ? (
+                    <p className="text-sm text-muted-foreground">Cargando roles…</p>
+                  ) : roles.isError ? (
+                    <p className="text-sm text-destructive">No se pudieron cargar los roles.</p>
+                  ) : roles.data.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No hay roles configurados.</p>
+                  ) : (
+                    <Select
+                      multiple
+                      value={field.state.value}
+                      onValueChange={(value) => {
+                        const nextRoles = isProtectedAdmin && !value.includes("ADMIN")
+                          ? [...value, "ADMIN"]
+                          : value
+                        field.handleChange(nextRoles)
+                      }}
+                    >
+                      <SelectTrigger id={field.name} className="w-full">
+                        <SelectValue placeholder="Seleccioná uno o más roles">
+                          {(value: string[]) => value.length === 0
+                            ? "Sin roles asignados"
+                            : value.join(", ")}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {roles.data.map((role) => {
+                          const roleName = role.name ?? ""
+                          return (
+                            <SelectItem
+                              key={role.id ?? roleName}
+                              value={roleName}
+                              disabled={isProtectedAdmin && roleName === "ADMIN"}
+                            >
+                              {roleName}
+                            </SelectItem>
+                          )
+                        })}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {isProtectedAdmin && (
+                    <FieldDescription>
+                      El rol ADMIN está protegido. Podés agregar otros roles, pero no quitarle el acceso administrativo.
+                    </FieldDescription>
+                  )}
+                  {invalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              )
+            }}
+          />
+        </form>
+
+        <DialogFooter>
+          <DialogClose render={<Button type="button" variant="outline" disabled={updateUser.isPending} />}>
+            Cancelar
+          </DialogClose>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <Button
+                type="submit"
+                form="user-roles-form"
+                disabled={!canSubmit || isSubmitting || updateUser.isPending || roles.isPending || roles.isError}
+              >
+                {updateUser.isPending ? "Guardando…" : "Guardar roles"}
+              </Button>
+            )}
+          />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
