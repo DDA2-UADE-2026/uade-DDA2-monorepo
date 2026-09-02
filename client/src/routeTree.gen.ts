@@ -51,7 +51,6 @@ import { Route as AppGestionTurnosIndexRouteImport } from "./routes/_app/gestion
 import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestion/turnos/agenda"
 import { Route as AppGestionTurnosNuevoRouteImport } from "./routes/_app/gestion/turnos/nuevo"
 import { Route as AppGestionUsuariosIndexRouteImport } from "./routes/_app/gestion/usuarios/index"
-import { Route as AppGestionUsuariosUsuarioIdRouteImport } from "./routes/_app/gestion/usuarios/$usuarioId"
 import { Route as AppGestionVisitasIndexRouteImport } from "./routes/_app/gestion/visitas/index"
 import { Route as AppPortalBeneficiosIndexRouteImport } from "./routes/_app/portal/beneficios/index"
 import { Route as AppPortalCampaniasIndexRouteImport } from "./routes/_app/portal/campanias/index"
@@ -304,12 +303,6 @@ const AppGestionUsuariosIndexRoute = AppGestionUsuariosIndexRouteImport.update({
   path: "/usuarios/",
   getParentRoute: () => AppGestionRouteRoute,
 } as any)
-const AppGestionUsuariosUsuarioIdRoute =
-  AppGestionUsuariosUsuarioIdRouteImport.update({
-    id: "/usuarios/$usuarioId",
-    path: "/usuarios/$usuarioId",
-    getParentRoute: () => AppGestionRouteRoute,
-  } as any)
 const AppGestionVisitasIndexRoute = AppGestionVisitasIndexRouteImport.update({
   id: "/visitas/",
   path: "/visitas/",
@@ -521,7 +514,6 @@ export interface FileRoutesByFullPath {
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
-  "/gestion/usuarios/$usuarioId": typeof AppGestionUsuariosUsuarioIdRoute
   "/portal/campanias/$actividadId": typeof AppPortalCampaniasActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
@@ -586,7 +578,6 @@ export interface FileRoutesByTo {
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
-  "/gestion/usuarios/$usuarioId": typeof AppGestionUsuariosUsuarioIdRoute
   "/portal/campanias/$actividadId": typeof AppPortalCampaniasActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
@@ -660,7 +651,6 @@ export interface FileRoutesById {
   "/_app/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
-  "/_app/gestion/usuarios/$usuarioId": typeof AppGestionUsuariosUsuarioIdRoute
   "/_app/portal/campanias/$actividadId": typeof AppPortalCampaniasActividadIdRoute
   "/_app/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/_app/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
@@ -733,7 +723,6 @@ export interface FileRouteTypes {
     | "/gestion/intervenciones/$planId"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
-    | "/gestion/usuarios/$usuarioId"
     | "/portal/campanias/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
@@ -798,7 +787,6 @@ export interface FileRouteTypes {
     | "/gestion/intervenciones/$planId"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
-    | "/gestion/usuarios/$usuarioId"
     | "/portal/campanias/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
@@ -871,7 +859,6 @@ export interface FileRouteTypes {
     | "/_app/gestion/intervenciones/$planId"
     | "/_app/gestion/turnos/agenda"
     | "/_app/gestion/turnos/nuevo"
-    | "/_app/gestion/usuarios/$usuarioId"
     | "/_app/portal/campanias/$actividadId"
     | "/_app/portal/programas/$programaId"
     | "/_app/portal/solicitudes/nueva"
@@ -1217,13 +1204,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionUsuariosIndexRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
-    "/_app/gestion/usuarios/$usuarioId": {
-      id: "/_app/gestion/usuarios/$usuarioId"
-      path: "/usuarios/$usuarioId"
-      fullPath: "/gestion/usuarios/$usuarioId"
-      preLoaderRoute: typeof AppGestionUsuariosUsuarioIdRouteImport
-      parentRoute: typeof AppGestionRouteRoute
-    }
     "/_app/gestion/visitas/": {
       id: "/_app/gestion/visitas/"
       path: "/visitas"
@@ -1555,7 +1535,6 @@ interface AppGestionRouteRouteChildren {
   AppGestionIntervencionesPlanIdRoute: typeof AppGestionIntervencionesPlanIdRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
   AppGestionTurnosNuevoRoute: typeof AppGestionTurnosNuevoRoute
-  AppGestionUsuariosUsuarioIdRoute: typeof AppGestionUsuariosUsuarioIdRoute
   AppGestionBeneficiosIndexRoute: typeof AppGestionBeneficiosIndexRoute
   AppGestionCampaniasIndexRoute: typeof AppGestionCampaniasIndexRoute
   AppGestionCasosIndexRoute: typeof AppGestionCasosIndexRoute
@@ -1591,7 +1570,6 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionIntervencionesPlanIdRoute: AppGestionIntervencionesPlanIdRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,
   AppGestionTurnosNuevoRoute: AppGestionTurnosNuevoRoute,
-  AppGestionUsuariosUsuarioIdRoute: AppGestionUsuariosUsuarioIdRoute,
   AppGestionBeneficiosIndexRoute: AppGestionBeneficiosIndexRoute,
   AppGestionCampaniasIndexRoute: AppGestionCampaniasIndexRoute,
   AppGestionCasosIndexRoute: AppGestionCasosIndexRoute,
