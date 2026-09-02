@@ -18,10 +18,20 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/logs")
 @Validated
-@Tag(name = "Logs de auditoría", description = "Consulta de eventos auditados por entidad o por usuario.")
+@Tag(name = "Logs de auditoría", description = "Consulta general de eventos auditados, por entidad o por usuario.")
 class LogController(
     private val logService: LogService,
 ) {
+    @PreAuthorize("hasAuthority('logs:view')")
+    @GetMapping
+    @Operation(
+        operationId = "listLogs",
+        summary = "Consultar todos los logs",
+        description = "Devuelve todos los eventos de auditoría, ordenados desde el más reciente.",
+    )
+    fun findAll(): List<LogResponse> =
+        logService.findAll()
+
     @PreAuthorize("hasAuthority('logs:view')")
     @GetMapping("/entities/{entityType}/{entityId}")
     @Operation(
