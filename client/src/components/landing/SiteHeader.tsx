@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { UserAvatar } from "@/components/UserAvatar"
 import { Button } from "@/components/ui/button"
 import { useMe } from "@/hooks/use-auth"
-import AppLogoIconThemed from "../branding/AppLogoIconThemed"
+import AppLogoIconThemed from "@/components/branding/AppLogoIconThemed"
 
 function SiteHeader() {
   const { data, isLoading } = useMe()
