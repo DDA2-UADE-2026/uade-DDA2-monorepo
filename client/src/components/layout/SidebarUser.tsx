@@ -29,6 +29,8 @@ function SidebarUser() {
 
   const displayName = data?.user?.name || data?.user?.username || "Usuario"
   const email = data?.user?.email ?? ""
+  const activeRole = data?.user?.activeRole
+  const canSwitchRole = (data?.user?.roles?.length ?? 0) > 1
 
   const handleLogout = () => {
     logout()
@@ -46,10 +48,10 @@ function SidebarUser() {
             />
           }
         >
-          <UserAvatar size="sm" addBlob user={data?.user ?? { name: displayName, email }} />
+          <UserAvatar size="sm" addBlob blobProps="opacity-100! blur-lg size-8" user={data?.user ?? { name: displayName, email }} />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{displayName}</span>
-            <span className="truncate text-xs text-sidebar-foreground/70">{email}</span>
+            <span className="truncate text-xs text-sidebar-foreground/70">{activeRole ?? email}</span>
           </div>
           <IconDotsVertical className="ml-auto size-4" />
         </DropdownMenuTrigger>
@@ -75,10 +77,12 @@ function SidebarUser() {
             <IconUserCircle />
             Mi perfil
           </DropdownMenuItem>
-          <DropdownMenuItem className="rounded-lg" render={<Link to="/seleccionar-rol" />}>
-            <IconArrowsExchange />
-            Cambiar de rol
-          </DropdownMenuItem>
+          {canSwitchRole && (
+            <DropdownMenuItem className="rounded-lg" render={<Link to="/seleccionar-rol" />}>
+              <IconArrowsExchange />
+              Cambiar de rol
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSub >
             <DropdownMenuSubTrigger className="rounded-lg">
               <IconPalette />

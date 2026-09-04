@@ -8,7 +8,13 @@ import { ThemeProvider } from '@/providers/theme-provider'
 import { TooltipProvider } from "@/components/ui/tooltip"
 import './index.css'
 
-z.config(es())
+z.config({
+  ...es(),
+  customError: (issue) =>
+    issue.input === undefined || issue.input === ""
+      ? "Este campo es obligatorio."
+      : undefined,
+})
 
 const queryClient = new QueryClient()
 

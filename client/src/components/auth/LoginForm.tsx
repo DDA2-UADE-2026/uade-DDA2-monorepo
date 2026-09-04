@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { getRoleHome } from "@/lib/auth-route-guards"
+import { getPendingRoleSelection } from "@/lib/role-selection"
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -42,7 +44,18 @@ function LoginForm() {
     onSubmit: ({ value }) => {
       login.mutate(
         { body: value },
-        { onSuccess: () => navigate({ to: "/seleccionar-rol" }) }
+        {
+          onSuccess: (data) => {
+            if (data.token && data.user?.activeRole) {
+              navigate({ to: getRoleHome(data.user.activeRole), replace: true })
+              return
+            }
+
+            if (getPendingRoleSelection()) {
+              navigate({ to: "/seleccionar-rol", replace: true })
+            }
+          },
+        },
       )
     },
   })
@@ -86,11 +99,14 @@ function LoginForm() {
         <Alert variant="destructive" className="mb-4">
           <IconAlertTriangle />
           <AlertTitle>No pudimos iniciar sesión</AlertTitle>
-          <AlertDescription>Revisá tu usuario y contraseña e intentá de nuevo.</AlertDescription>
+          <AlertDescription>
+            {login.error.message ?? "Revisá tu usuario y contraseña e intentá de nuevo."}
+          </AlertDescription>
         </Alert>
       )}
       <form
         id="login-form"
+        noValidate
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()

@@ -2,6 +2,7 @@ interface AvatarOptions {
   size?: number;
   fontSize?: number;
   textColor?: string;
+  seed?: string;
 }
 
 export interface AvatarUser {
@@ -19,7 +20,7 @@ interface StoredAvatar {
 
 const CURRENT_USER_AVATAR_KEY = "current-user-avatar"
 const CURRENT_USER_AVATAR_EVENT = "current-user-avatar-change"
-const AVATAR_STYLE_VERSION = 2
+const AVATAR_STYLE_VERSION = 3
 
 let cachedStoredAvatarValue: string | null | undefined
 let cachedStoredAvatar: StoredAvatar | null = null
@@ -40,22 +41,62 @@ function getInitials(text: string): string {
   return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 }
 
-function textToColorDefs(text: string): [ColorDef, ColorDef, ColorDef] {
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = text.charCodeAt(i) + ((hash << 5) - hash);
-    hash |= 0;
+function hashText(text: string): number {
+  let hash = 0x811c9dc5;
+  const normalized = text.trim().toLowerCase();
+
+  for (let i = 0; i < normalized.length; i++) {
+    hash ^= normalized.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
   }
-  const hue1 = Math.abs(hash % 360);
+
+  // Avalanche the bits so similar names do not produce neighboring colors.
+  hash += hash << 13;
+  hash ^= hash >>> 7;
+  hash += hash << 3;
+  hash ^= hash >>> 17;
+  hash += hash << 5;
+  return hash >>> 0;
+}
+
+function createSeededRandom(seed: number): () => number {
+  let state = seed;
+  return () => {
+    state += 0x6d2b79f5;
+    let value = state;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function textToColorDefs(text: string): [ColorDef, ColorDef, ColorDef] {
+  const random = createSeededRandom(hashText(text));
+  const baseHue = Math.floor(random() * 360);
+  const accentHue = (baseHue + 70 + Math.floor(random() * 71)) % 360;
+  const contrastHue = (baseHue + 200 + Math.floor(random() * 81)) % 360;
+
   return [
-    { h: hue1, s: 60, l: 45 },
-    { h: (hue1 + 60) % 360, s: 70, l: 55 },
-    { h: (hue1 + 200) % 360, s: 65, l: 50 },
+    {
+      h: baseHue,
+      s: 62 + Math.floor(random() * 24),
+      l: 36 + Math.floor(random() * 13),
+    },
+    {
+      h: accentHue,
+      s: 68 + Math.floor(random() * 23),
+      l: 46 + Math.floor(random() * 13),
+    },
+    {
+      h: contrastHue,
+      s: 64 + Math.floor(random() * 27),
+      l: 43 + Math.floor(random() * 14),
+    },
   ];
 }
 
 function generateAvatar(text: string, options: AvatarOptions = {}): string {
-  const { size = 128, fontSize, textColor = "#ffffff" } = options;
+  const { size = 128, fontSize, textColor = "#ffffff", seed = text } = options;
 
   const canvas = document.createElement("canvas");
   canvas.width = size;
@@ -63,7 +104,8 @@ function generateAvatar(text: string, options: AvatarOptions = {}): string {
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Could not get 2D context");
 
-  const colors = textToColorDefs(text);
+  const colors = textToColorDefs(seed);
+  const layoutRandom = createSeededRandom(hashText(`${seed}\0layout`));
 
   // Fondo base
   ctx.fillStyle = hsla(colors[0], 1);
@@ -71,9 +113,24 @@ function generateAvatar(text: string, options: AvatarOptions = {}): string {
 
   // Blobs con radialGradient
   const blobs: Array<{ x: number; y: number; r: number; color: ColorDef }> = [
-    { x: size * 0.2, y: size * 0.3, r: size * 0.6, color: colors[1] },
-    { x: size * 0.8, y: size * 0.7, r: size * 0.5, color: colors[2] },
-    { x: size * 0.5, y: size * 0.9, r: size * 0.4, color: colors[0] },
+    {
+      x: size * (0.15 + layoutRandom() * 0.7),
+      y: size * (0.15 + layoutRandom() * 0.7),
+      r: size * (0.5 + layoutRandom() * 0.2),
+      color: colors[1],
+    },
+    {
+      x: size * (0.15 + layoutRandom() * 0.7),
+      y: size * (0.15 + layoutRandom() * 0.7),
+      r: size * (0.45 + layoutRandom() * 0.2),
+      color: colors[2],
+    },
+    {
+      x: size * (0.15 + layoutRandom() * 0.7),
+      y: size * (0.15 + layoutRandom() * 0.7),
+      r: size * (0.35 + layoutRandom() * 0.2),
+      color: colors[0],
+    },
   ];
 
   for (const blob of blobs) {
@@ -94,7 +151,7 @@ function generateAvatar(text: string, options: AvatarOptions = {}): string {
   ctx.font = `700 ${resolvedFontSize}px system-ui, sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(initials, size / 2, size / 2);
+  ctx.fillText(initials, (size / 2), (size / 2)+4);
 
   return canvas.toDataURL("image/png");
 }
@@ -141,10 +198,11 @@ export function readCurrentUserAvatar(): StoredAvatar | null {
 }
 
 export function saveCurrentUserAvatar(user: AvatarUser): void {
+  const identity = getAvatarUserIdentity(user)
   const stored: StoredAvatar = {
     version: AVATAR_STYLE_VERSION,
-    identity: getAvatarUserIdentity(user),
-    src: getAvatar(getAvatarUserLabel(user)),
+    identity,
+    src: getAvatar(getAvatarUserLabel(user), { seed: identity }),
   }
   localStorage.setItem(CURRENT_USER_AVATAR_KEY, JSON.stringify(stored))
   window.dispatchEvent(new Event(CURRENT_USER_AVATAR_EVENT))
@@ -156,9 +214,10 @@ export function clearCurrentUserAvatar(): void {
 }
 
 export function getAvatarForUser(user: AvatarUser, stored = readCurrentUserAvatar()): string {
-  return stored?.identity === getAvatarUserIdentity(user)
+  const identity = getAvatarUserIdentity(user)
+  return stored?.identity === identity
     ? stored.src
-    : getAvatar(getAvatarUserLabel(user))
+    : getAvatar(getAvatarUserLabel(user), { seed: identity })
 }
 
 export function subscribeCurrentUserAvatar(callback: () => void): () => void {

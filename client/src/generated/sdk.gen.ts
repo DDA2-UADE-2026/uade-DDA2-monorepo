@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseErrors, CloseResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, CreateData, CreateErrors, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, DeleteData, DeleteErrors, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, ListData, ListErrors, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, SuspendData, SuspendErrors, SuspendResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, UpdateData, UpdateErrors, UpdateResponses } from './types.gen';
+import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, DeleteData, DeleteErrors, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -85,6 +85,32 @@ export const findById1 = <ThrowOnError extends boolean = false>(options: Options
 export const update1 = <ThrowOnError extends boolean = false>(options: Options<Update1Data, ThrowOnError>): RequestResult<Update1Responses, Update1Errors, ThrowOnError> => (options.client ?? client).put<Update1Responses, Update1Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/roles/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Consultar un período de inscripción
+ *
+ * Devuelve el detalle del período y valida su pertenencia al programa y la edición indicados.
+ */
+export const getEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<GetEnrollmentPeriodData, ThrowOnError>): RequestResult<GetEnrollmentPeriodResponses, GetEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).get<GetEnrollmentPeriodResponses, GetEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}',
+    ...options
+});
+
+/**
+ * Actualizar un período de inscripción
+ *
+ * Actualiza fechas y observaciones sin permitir modificar directamente el estado.
+ */
+export const updateEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<UpdateEnrollmentPeriodData, ThrowOnError>): RequestResult<UpdateEnrollmentPeriodResponses, UpdateEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).put<UpdateEnrollmentPeriodResponses, UpdateEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -243,7 +269,7 @@ export const update5 = <ThrowOnError extends boolean = false>(options: Options<U
 /**
  * Listar usuarios
  *
- * Devuelve todos los usuarios con sus roles y permisos efectivos.
+ * Devuelve todos los usuarios con sus roles y permisos separados por rol.
  */
 export const findAll = <ThrowOnError extends boolean = false>(options?: Options<FindAllData, ThrowOnError>): RequestResult<FindAllResponses, FindAllErrors, ThrowOnError> => (options?.client ?? client).get<FindAllResponses, FindAllErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
@@ -293,9 +319,38 @@ export const create1 = <ThrowOnError extends boolean = false>(options: Options<C
 });
 
 /**
+ * Cambiar rol activo
+ *
+ * Requiere JWT operativo y valida el usuario activo y el rol actual en la base. Emite un nuevo JWT; el anterior sigue válido hasta vencer.
+ */
+export const switchRole = <ThrowOnError extends boolean = false>(options: Options<SwitchRoleData, ThrowOnError>): RequestResult<SwitchRoleResponses, SwitchRoleErrors, ThrowOnError> => (options.client ?? client).post<SwitchRoleResponses, SwitchRoleErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/switch-role',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Seleccionar rol después del login
+ *
+ * Valida el JWT temporal del body y la asignación actual del rol. Emite un JWT operativo con solo los permisos de ese rol. No enviar bearer.
+ */
+export const selectRole = <ThrowOnError extends boolean = false>(options: Options<SelectRoleData, ThrowOnError>): RequestResult<SelectRoleResponses, SelectRoleErrors, ThrowOnError> => (options.client ?? client).post<SelectRoleResponses, SelectRoleErrors, ThrowOnError>({
+    url: '/auth/select-role',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Iniciar sesión
  *
- * Valida las credenciales y devuelve un token JWT junto con los datos del usuario.
+ * Un rol: emite un JWT operativo. Varios roles: devuelve selectionToken sin permisos operativos; continuar con /auth/select-role. Sin roles: 403.
  */
 export const login = <ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>): RequestResult<LoginResponses, LoginErrors, ThrowOnError> => (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
     url: '/auth/login',
@@ -351,6 +406,76 @@ export const delete6 = <ThrowOnError extends boolean = false>(options: Options<D
 export const create3 = <ThrowOnError extends boolean = false>(options: Options<Create3Data, ThrowOnError>): RequestResult<Create3Responses, Create3Errors, ThrowOnError> => (options.client ?? client).post<Create3Responses, Create3Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}',
+    ...options
+});
+
+/**
+ * Listar períodos de inscripción
+ *
+ * Devuelve una página de períodos pertenecientes a la edición indicada.
+ */
+export const listEnrollmentPeriods = <ThrowOnError extends boolean = false>(options: Options<ListEnrollmentPeriodsData, ThrowOnError>): RequestResult<ListEnrollmentPeriodsResponses, ListEnrollmentPeriodsErrors, ThrowOnError> => (options.client ?? client).get<ListEnrollmentPeriodsResponses, ListEnrollmentPeriodsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods',
+    ...options
+});
+
+/**
+ * Crear un período de inscripción
+ *
+ * Crea un período programado, contenido en las fechas de la edición y sin superponerse con otros períodos.
+ */
+export const createEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<CreateEnrollmentPeriodData, ThrowOnError>): RequestResult<CreateEnrollmentPeriodResponses, CreateEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<CreateEnrollmentPeriodResponses, CreateEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Suspender un período de inscripción
+ *
+ * Suspende un período abierto e impide recibir nuevas solicitudes.
+ */
+export const suspendEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<SuspendEnrollmentPeriodData, ThrowOnError>): RequestResult<SuspendEnrollmentPeriodResponses, SuspendEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<SuspendEnrollmentPeriodResponses, SuspendEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/suspend',
+    ...options
+});
+
+/**
+ * Reabrir un período de inscripción
+ *
+ * Reabre un período suspendido si aún se encuentra dentro de sus fechas, la edición continúa activa y no existe otro período abierto para la edición.
+ */
+export const reopenEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<ReopenEnrollmentPeriodData, ThrowOnError>): RequestResult<ReopenEnrollmentPeriodResponses, ReopenEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<ReopenEnrollmentPeriodResponses, ReopenEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/reopen',
+    ...options
+});
+
+/**
+ * Abrir un período de inscripción
+ *
+ * Abre un período programado cuando la edición está activa, la fecha actual se encuentra dentro del rango y no existe otro período abierto para la edición.
+ */
+export const openEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<OpenEnrollmentPeriodData, ThrowOnError>): RequestResult<OpenEnrollmentPeriodResponses, OpenEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<OpenEnrollmentPeriodResponses, OpenEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/open',
+    ...options
+});
+
+/**
+ * Cerrar un período de inscripción
+ *
+ * Cierra de forma terminal un período abierto o suspendido.
+ */
+export const closeEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<CloseEnrollmentPeriodData, ThrowOnError>): RequestResult<CloseEnrollmentPeriodResponses, CloseEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<CloseEnrollmentPeriodResponses, CloseEnrollmentPeriodErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/close',
     ...options
 });
 
@@ -477,13 +602,68 @@ export const findAll4 = <ThrowOnError extends boolean = false>(options?: Options
 });
 
 /**
+ * Consultar todos los logs
+ *
+ * Devuelve todos los eventos de auditoría, ordenados desde el más reciente.
+ */
+export const listLogs = <ThrowOnError extends boolean = false>(options?: Options<ListLogsData, ThrowOnError>): RequestResult<ListLogsResponses, ListLogsErrors, ThrowOnError> => (options?.client ?? client).get<ListLogsResponses, ListLogsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/logs',
+    ...options
+});
+
+/**
+ * Consultar logs de un usuario
+ *
+ * Devuelve los eventos originados por un usuario, ordenados desde el más reciente.
+ */
+export const listLogsByUser = <ThrowOnError extends boolean = false>(options: Options<ListLogsByUserData, ThrowOnError>): RequestResult<ListLogsByUserResponses, ListLogsByUserErrors, ThrowOnError> => (options.client ?? client).get<ListLogsByUserResponses, ListLogsByUserErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/logs/users/{userId}',
+    ...options
+});
+
+/**
+ * Consultar logs de una entidad
+ *
+ * Devuelve el historial de auditoría de una entidad, ordenado desde el evento más reciente.
+ */
+export const listLogsByEntity = <ThrowOnError extends boolean = false>(options: Options<ListLogsByEntityData, ThrowOnError>): RequestResult<ListLogsByEntityResponses, ListLogsByEntityErrors, ThrowOnError> => (options.client ?? client).get<ListLogsByEntityResponses, ListLogsByEntityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/logs/entities/{entityType}/{entityId}',
+    ...options
+});
+
+/**
  * Consultar mi perfil
  *
- * Devuelve la identidad y los permisos del usuario autenticado.
+ * Devuelve datos y roles asignados actuales; el rol activo y sus permisos corresponden al JWT utilizado, sin combinar otros roles.
  */
 export const me = <ThrowOnError extends boolean = false>(options?: Options<MeData, ThrowOnError>): RequestResult<MeResponses, MeErrors, ThrowOnError> => (options?.client ?? client).get<MeResponses, MeErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/auth/me',
+    ...options
+});
+
+/**
+ * Listar programas disponibles
+ *
+ * Devuelve los programas que poseen al menos una edición activa vigente o futura.
+ */
+export const listAvailablePrograms = <ThrowOnError extends boolean = false>(options?: Options<ListAvailableProgramsData, ThrowOnError>): RequestResult<ListAvailableProgramsResponses, ListAvailableProgramsErrors, ThrowOnError> => (options?.client ?? client).get<ListAvailableProgramsResponses, ListAvailableProgramsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/programs',
+    ...options
+});
+
+/**
+ * Consultar un programa disponible
+ *
+ * Devuelve el programa con sus ediciones activas no finalizadas, beneficios, requisitos e incompatibilidades.
+ */
+export const getAvailableProgram = <ThrowOnError extends boolean = false>(options: Options<GetAvailableProgramData, ThrowOnError>): RequestResult<GetAvailableProgramResponses, GetAvailableProgramErrors, ThrowOnError> => (options.client ?? client).get<GetAvailableProgramResponses, GetAvailableProgramErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/programs/{id}',
     ...options
 });
 

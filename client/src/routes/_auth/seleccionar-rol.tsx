@@ -1,13 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { RoleSwitcher } from "@/components/auth/RoleSwitcher"
-import { requireAuthenticatedUser } from "@/lib/auth-route-guards"
+import { requireRoleChoice } from "@/lib/auth-route-guards"
 
 export const Route = createFileRoute("/_auth/seleccionar-rol")({
-  beforeLoad: ({ context }) => requireAuthenticatedUser(context.queryClient),
+  beforeLoad: async ({ context }) => ({
+    roleChoice: await requireRoleChoice(context.queryClient),
+  }),
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <RoleSwitcher />
+  const { roleChoice } = Route.useRouteContext()
+  return <RoleSwitcher roleChoice={roleChoice} />
 }

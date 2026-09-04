@@ -5,6 +5,7 @@ import {
   IconId,
   IconLock,
   IconMail,
+  IconPencil,
   IconRefresh,
   IconUser,
   IconUserPlus,
@@ -16,13 +17,14 @@ import { useState } from "react"
 import * as z from "zod"
 
 import {
-  OutletNavContent,
   OutletNavRightButton,
   OutletNavSidebarTrigger,
   OutletNavSticky,
   SidebarShell,
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { DataPagination } from "@/components/DataPagination"
 import { UserAvatar } from "@/components/UserAvatar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -51,15 +53,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -80,13 +73,18 @@ import {
   findAll1Options,
   findAllOptions,
   findAllQueryKey,
+  updateMutation,
 } from "@/generated/@tanstack/react-query.gen"
-import { zCreateUserRequestWritable } from "@/generated/zod.gen"
+import type { UserManagementResponse } from "@/generated/types.gen"
+import { zCreateUserRequestWritable, zUpdateUserRequestWritable } from "@/generated/zod.gen"
 
 // `active` y `roles` son opcionales en el DTO generado, pero el form siempre los completa.
 const zCreateUserForm = zCreateUserRequestWritable.extend({
   active: z.boolean(),
   roles: z.array(z.string()),
+})
+const zUserRolesForm = z.object({
+  roles: zUpdateUserRequestWritable.shape.roles.unwrap(),
 })
 
 export const Route = createFileRoute("/_app/gestion/usuarios/")({
@@ -95,30 +93,12 @@ export const Route = createFileRoute("/_app/gestion/usuarios/")({
 
 const PAGE_SIZE = 10
 
-function getPaginationRange(
-  current: number,
-  total: number,
-): (number | "ellipsis")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
-
-  const pages: (number | "ellipsis")[] = [1]
-  if (current > 3) pages.push("ellipsis")
-
-  const start = Math.max(2, current - 1)
-  const end = Math.min(total - 1, current + 1)
-  for (let page = start; page <= end; page++) pages.push(page)
-
-  if (current < total - 2) pages.push("ellipsis")
-  pages.push(total)
-
-  return pages
-}
-
 function RouteComponent() {
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } =
     useQuery(findAllOptions())
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
+  const [rolesUser, setRolesUser] = useState<UserManagementResponse | null>(null)
 
   const totalItems = data?.length ?? 0
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -130,7 +110,7 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavContent>Usuarios</OutletNavContent>
+        <OutletNavBreadcrumbs items={[{ label: "Usuarios" }]} />
         <OutletNavRightButton className="gap-1.5">
           <Button size="sm" onClick={() => setCreateOpen(true)}>
             <IconUserPlus />
@@ -186,6 +166,9 @@ function RouteComponent() {
                     <TableHead>Roles</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead>Creado</TableHead>
+                    <TableHead className="w-px">
+                      <span className="sr-only">Acciones</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -234,6 +217,19 @@ function RouteComponent() {
                             )
                           : "—"}
                       </TableCell>
+                      <TableCell>
+                        {user.id && (
+                          <Button
+                            type="button"
+                            size="icon-sm"
+                            variant="ghost"
+                            aria-label={`Editar roles de ${user.name ?? user.username ?? "usuario"}`}
+                            onClick={() => setRolesUser(user)}
+                          >
+                            <IconPencil />
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -243,77 +239,174 @@ function RouteComponent() {
         </div>
 
         {!isPending && !isError && totalItems > 0 && (
-          <div className="flex shrink-0 flex-col-reverse items-center gap-3 border-t px-4 py-3 sm:flex-row sm:justify-between lg:px-6">
-            <p className="text-sm text-muted-foreground">
-              Mostrando {(currentPage - 1) * PAGE_SIZE + 1}-
-              {Math.min(currentPage * PAGE_SIZE, totalItems)} de {totalItems}{" "}
-
-            </p>
-            <Pagination className="mx-0 w-auto">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    text="Anterior"
-                    aria-disabled={currentPage === 1}
-                    className={
-                      currentPage === 1
-                        ? "pointer-events-none opacity-50"
-                        : undefined
-                    }
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setPage((p) => Math.max(1, p - 1))
-                    }}
-                  />
-                </PaginationItem>
-                {getPaginationRange(currentPage, totalPages).map(
-                  (item, index) =>
-                    item === "ellipsis" ? (
-                      <PaginationItem key={`ellipsis-${index}`}>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                    ) : (
-                      <PaginationItem key={item}>
-                        <PaginationLink
-                          href="#"
-                          isActive={item === currentPage}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            setPage(item)
-                          }}
-                        >
-                          {item}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ),
-                )}
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    text="Siguiente"
-                    aria-disabled={currentPage === totalPages}
-                    className={
-                      currentPage === totalPages
-                        ? "pointer-events-none opacity-50"
-                        : undefined
-                    }
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setPage((p) => Math.min(totalPages, p + 1))
-                    }}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <DataPagination page={currentPage} totalPages={totalPages} totalItems={totalItems} pageSize={PAGE_SIZE} onPageChange={setPage} />
         )}
       </SidebarShellContent>
 
       {createOpen && (
         <CreateUserDialog onOpenChange={(open) => !open && setCreateOpen(false)} />
       )}
+      {rolesUser && (
+        <UserRolesDialog
+          user={rolesUser}
+          onOpenChange={(open) => {
+            if (!open) setRolesUser(null)
+          }}
+        />
+      )}
     </SidebarShell>
+  )
+}
+
+function UserRolesDialog({
+  user,
+  onOpenChange,
+}: {
+  user: UserManagementResponse
+  onOpenChange: (open: boolean) => void
+}) {
+  const queryClient = useQueryClient()
+  const roles = useQuery(findAll1Options())
+  const isProtectedAdmin = user.username?.trim().toLowerCase() === "admin" &&
+    user.roles?.includes("ADMIN")
+  const updateUser = useMutation({
+    ...updateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
+      onOpenChange(false)
+    },
+  })
+  const form = useForm({
+    defaultValues: {
+      roles: user.roles ?? ([] as string[]),
+    },
+    validators: { onChange: zUserRolesForm },
+    onSubmit: ({ value }) => {
+      if (!user.id) return
+      updateUser.mutate({
+        path: { id: user.id },
+        body: {
+          name: user.name ?? "",
+          email: user.email ?? "",
+          active: user.active ?? true,
+          roles: value.roles,
+        },
+      })
+    },
+  })
+
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!updateUser.isPending) onOpenChange(open)
+      }}
+    >
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Asignar roles</DialogTitle>
+          <DialogDescription>
+            Seleccioná los roles que conservará {user.name ?? user.username ?? "el usuario"}.
+          </DialogDescription>
+        </DialogHeader>
+
+        {updateUser.isError && (
+          <Alert variant="destructive">
+            <IconAlertTriangle />
+            <AlertTitle>No se pudieron actualizar los roles</AlertTitle>
+            <AlertDescription>
+              {updateUser.error.message ?? "Revisá la selección e intentá nuevamente."}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <form
+          id="user-roles-form"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
+            name="roles"
+            children={(field) => {
+              const invalid = field.state.meta.isTouched && !field.state.meta.isValid
+              return (
+                <Field data-invalid={invalid}>
+                  <FieldLabel htmlFor={field.name}>Roles asignados</FieldLabel>
+                  {roles.isPending ? (
+                    <p className="text-sm text-muted-foreground">Cargando roles…</p>
+                  ) : roles.isError ? (
+                    <p className="text-sm text-destructive">No se pudieron cargar los roles.</p>
+                  ) : roles.data.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No hay roles configurados.</p>
+                  ) : (
+                    <Select
+                      multiple
+                      value={field.state.value}
+                      onValueChange={(value) => {
+                        const nextRoles = isProtectedAdmin && !value.includes("ADMIN")
+                          ? [...value, "ADMIN"]
+                          : value
+                        field.handleChange(nextRoles)
+                      }}
+                    >
+                      <SelectTrigger id={field.name} className="w-full">
+                        <SelectValue placeholder="Seleccioná uno o más roles">
+                          {(value: string[]) => value.length === 0
+                            ? "Sin roles asignados"
+                            : value.join(", ")}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {roles.data.map((role) => {
+                          const roleName = role.name ?? ""
+                          return (
+                            <SelectItem
+                              key={role.id ?? roleName}
+                              value={roleName}
+                              disabled={isProtectedAdmin && roleName === "ADMIN"}
+                            >
+                              {roleName}
+                            </SelectItem>
+                          )
+                        })}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  {isProtectedAdmin && (
+                    <FieldDescription>
+                      El rol ADMIN está protegido. Podés agregar otros roles, pero no quitarle el acceso administrativo.
+                    </FieldDescription>
+                  )}
+                  {invalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              )
+            }}
+          />
+        </form>
+
+        <DialogFooter>
+          <DialogClose render={<Button type="button" variant="outline" disabled={updateUser.isPending} />}>
+            Cancelar
+          </DialogClose>
+          <form.Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+            children={([canSubmit, isSubmitting]) => (
+              <Button
+                type="submit"
+                form="user-roles-form"
+                disabled={!canSubmit || isSubmitting || updateUser.isPending || roles.isPending || roles.isError}
+              >
+                {updateUser.isPending ? "Guardando…" : "Guardar roles"}
+              </Button>
+            )}
+          />
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -353,7 +446,7 @@ function CreateUserDialog({
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="min-w-0">
         <DialogHeader>
           <DialogTitle>Nuevo usuario</DialogTitle>
           <DialogDescription>
@@ -371,14 +464,39 @@ function CreateUserDialog({
         )}
         <form
           id="create-user-form"
-          className="max-h-[70vh] overflow-y-auto px-1"
+          className="-mt-4 max-h-[70vh] w-full min-w-0 overflow-x-hidden overflow-y-auto px-1"
+          noValidate
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
             form.handleSubmit()
           }}
         >
-          <FieldGroup>
+          <form.Subscribe
+            selector={(state) =>
+              state.values.name || state.values.username || state.values.email
+            }
+            children={(avatarLabel) => (
+              <div className="my-4 flex w-full max-w-xs min-w-0 items-center gap-3 mx-auto bg-foreground/5 overflow-hidden rounded-l-4xl rounded-r-2xl border input-border pr-2">
+                <UserAvatar
+                  addBlob
+                  user={{ name: avatarLabel || "Nuevo usuario" }}
+                  className="size-14"
+                  fallbackClassName="text-base"
+                  blobProps="opacity-100! blur-2xl"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {avatarLabel || "Nuevo usuario"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Vista previa del avatar
+                  </p>
+                </div>
+              </div>
+            )}
+          />
+          <FieldGroup className="min-w-0">
             <form.Field
               name="name"
               children={(field) => {

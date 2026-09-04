@@ -13,11 +13,13 @@ export function ProgramDatePicker({
   onChange,
   placeholder = "Seleccionar fecha",
   disabled,
+  readOnly = false,
 }: {
   value: string
   onChange: (value: string) => void
   placeholder?: string
   disabled?: React.ComponentProps<typeof Calendar>["disabled"]
+  readOnly?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const date = parseLocalDate(value)
@@ -29,6 +31,7 @@ export function ProgramDatePicker({
           <Button
             type="button"
             variant="outline"
+            disabled={readOnly}
             data-empty={!date}
             className="w-full justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
           />
@@ -44,6 +47,7 @@ export function ProgramDatePicker({
           selected={date}
           disabled={disabled}
           onSelect={(selected) => {
+            if (readOnly) return
             onChange(formatLocalDate(selected))
             if (selected) setOpen(false)
           }}

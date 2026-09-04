@@ -6,7 +6,7 @@ import { FormDevtoolsPanel } from "@tanstack/react-form-devtools"
 import type { QueryClient } from '@tanstack/react-query'
 import { AppLoadingBar } from '@/components/AppLoadingBar'
 import { RouteErrorPage } from '@/components/errors/RouteErrorPage'
-import { Toaster } from 'sonner'
+import { Toaster } from '@/components/ui/sonner'
 import { Fragment, Suspense, lazy } from 'react'
 const AppCommandShortcut = lazy(() => import('@/components/AppCommandShortcut'))
 
