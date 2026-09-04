@@ -1,9 +1,12 @@
 package com.uade.dda2.server.feature.application.error
 
 import com.uade.dda2.server.error.ConflictException
+import com.uade.dda2.server.error.ForbiddenException
 import com.uade.dda2.server.error.NotFoundException
 
 object ApplicationErrors {
+    fun applicantNotFound() = NotFoundException("APPLICATION_USER_NOT_FOUND", "Usuario solicitante no encontrado.")
+    fun assistedSelfNotAllowed() = ForbiddenException("APPLICATION_ASSISTED_SELF_NOT_ALLOWED", "Para solicitar a nombre propio se debe utilizar la presentación propia con un rol habilitado.")
     fun notFound() = NotFoundException("APPLICATION_NOT_FOUND", "Solicitud no encontrada.")
     fun periodNotFound() = NotFoundException("APPLICATION_ENROLLMENT_PERIOD_NOT_FOUND", "Convocatoria no encontrada.")
     fun periodNotOpen() = ConflictException("APPLICATION_ENROLLMENT_PERIOD_NOT_OPEN", "La convocatoria no está abierta.")

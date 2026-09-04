@@ -13,5 +13,5 @@ interface ApplicationRepository : JpaRepository<Application, UUID> {
     fun findByUserIdAndIdempotencyKey(userId: Long, idempotencyKey: String): Application?
     fun existsByUserIdAndEnrollmentPeriodId(userId: Long, enrollmentPeriodId: UUID): Boolean
     fun existsByUserIdAndProgramEditionIdAndStatusNotIn(userId: Long, programEditionId: UUID, statuses: Collection<ApplicationStatus>): Boolean
-    fun existsByUserIdOrAssignedWorkerId(userId: Long, assignedWorkerId: Long): Boolean
+    fun existsByUserIdOrAssignedWorkerIdOrRegisteredById(userId: Long, assignedWorkerId: Long, registeredById: Long): Boolean
 }

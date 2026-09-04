@@ -123,7 +123,7 @@ class UserManagementService(
 
         val user = findUser(id)
 
-        if (applicationRepository.existsByUserIdOrAssignedWorkerId(id, id)) {
+        if (applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id)) {
             throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes.")
         }
 

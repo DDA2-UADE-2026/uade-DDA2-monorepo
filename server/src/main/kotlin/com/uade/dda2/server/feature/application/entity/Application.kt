@@ -17,6 +17,7 @@ import java.util.UUID
     Index(name = "ix_application_period", columnList = "enrollment_period_id"),
     Index(name = "ix_application_edition", columnList = "program_edition_id"),
     Index(name = "ix_application_worker", columnList = "assigned_worker_user_id"),
+    Index(name = "ix_application_registered_by", columnList = "registered_by_user_id"),
 ], check = [CheckConstraint(name = "ck_application_idempotency", constraint =
     "(idempotency_key is null and request_hash is null) or (idempotency_key is not null and request_hash is not null)")])
 class Application(
@@ -30,6 +31,10 @@ class Application(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     var user: User,
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "registered_by_user_id", nullable = false, updatable = false)
+    var registeredBy: User,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "program_edition_id", nullable = false, updatable = false)

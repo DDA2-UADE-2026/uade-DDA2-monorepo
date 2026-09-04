@@ -6,11 +6,11 @@
 
 Una solicitud registra que una persona se presentó a una convocatoria de una edición de un programa social. Es su constancia de presentación, con un número propio, una fecha y un estado.
 
-La solicitud pertenece a la persona que ingresó y la presentó. No pertenece al rol con el que ingresó: cambiar de rol no crea otra persona ni permite eludir las reglas sobre solicitudes repetidas.
+La solicitud pertenece a la persona solicitante, aunque un administrativo la registre en su nombre. No pertenece a un rol: cambiar de rol o recurrir a la asistencia municipal no crea otra persona ni permite eludir las reglas sobre solicitudes repetidas.
 
 **Presentar no equivale a recibir el beneficio.** La solicitud tampoco representa una incorporación efectiva ni una reserva de cupo.
 
-Actualmente se puede presentar una solicitud y consultar su listado y detalle propios. La evaluación, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
+Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida y consultar el listado y detalle propios. La evaluación, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
 
 ## Quién puede presentar y consultar
 
@@ -18,7 +18,7 @@ La persona debe haber ingresado al sistema, tener su cuenta activa y operar con 
 
 Si una persona tiene también funciones municipales, debe elegir el rol adecuado. Tener un rol ciudadano entre sus roles asignados no habilita automáticamente todas sus acciones mientras está operando con otro rol.
 
-La presentación siempre se hace a nombre de quien ingresó. No se puede elegir otra persona como solicitante. Las consultas de este flujo también son propias: conocer el número o la referencia de una solicitud ajena no habilita a verla.
+En la presentación propia no se puede elegir otra persona como solicitante. En la presentación asistida, un administrativo autorizado puede seleccionar otra persona ya existente en el sistema, sin restricción de jurisdicción. Las consultas siguen siendo propias: conocer la referencia de una solicitud ajena o haberla registrado no habilita a verla después.
 
 No es obligatorio tener una cuenta vinculada con el servicio externo de Ciudadanos para usar esta funcionalidad. La integración futura con ese servicio no cambia quién es el titular de una solicitud dentro del sistema.
 
@@ -34,11 +34,24 @@ No es obligatorio tener una cuenta vinculada con el servicio externo de Ciudadan
 
 La presentación actual no exige completar una evaluación social, cargar documentos ni seleccionar un trabajador municipal. Esas tareas pertenecen a etapas posteriores. Los requisitos del programa se pueden consultar, pero su cumplimiento todavía no se verifica automáticamente al presentar.
 
+## Recorrido de una presentación asistida
+
+1. El administrativo ingresa con su cuenta activa y opera con un rol autorizado para registrar solicitudes asistidas.
+2. Identifica a la persona solicitante, que debe existir en el sistema. Este flujo no crea ni sincroniza ciudadanos y no exige que la persona tenga una cuenta vinculada con el servicio externo.
+3. Selecciona la convocatoria abierta y vigente de una edición activa.
+4. Confirma la presentación. Se revisan las solicitudes anteriores del titular, tanto propias como asistidas, con las mismas reglas de duplicados.
+5. El sistema registra la solicitud a nombre del titular y guarda por separado quién la registró. La persona que la registra no queda asignada automáticamente como trabajadora responsable de la solicitud.
+6. El administrativo recibe la confirmación. El titular puede encontrarla en su listado propio cuando ingresa con autorización para consultar.
+
+La autorización se comprueba sobre el administrativo que realiza la operación; el ciudadano asistido no necesita estar conectado ni aportar sus credenciales. No se limita la asistencia a una jurisdicción.
+
+Si el administrativo quiere solicitar para sí mismo, utiliza la presentación propia con un rol habilitado para esa acción. El permiso de asistencia no reemplaza al permiso de presentación propia.
+
 ## Condiciones para que se acepte
 
 | Condición | Explicación |
 | --- | --- |
-| Persona identificada y autorizada | Su cuenta está activa y el rol con el que opera permite presentar solicitudes propias. |
+| Persona que registra identificada y autorizada | Su cuenta está activa y el rol con el que opera permite presentar solicitudes propias o asistidas, según el flujo. En la asistencia, el titular elegido debe existir. |
 | Convocatoria existente | Debe haberse elegido una convocatoria del sistema. |
 | Convocatoria abierta | Una programada, suspendida o cerrada no recibe nuevas presentaciones. |
 | Fecha vigente | Hoy debe estar entre el primer y el último día de la convocatoria, incluyendo ambos. |
@@ -112,9 +125,11 @@ Reconocer un reintento requiere que se conserve la referencia del mismo envío. 
 
 Recuperar la confirmación de una presentación ya registrada sigue siendo posible aunque la convocatoria se haya cerrado después. Eso no equivale a aceptar una solicitud nueva fuera de plazo. La persona debe seguir identificada y autorizada.
 
+Los reintentos se reconocen por titular, también entre presentaciones propias y asistidas. Si otro administrativo autorizado recupera el mismo envío, se conserva a quien hizo el registro original; no se reemplaza por quien lo reintentó.
+
 ## Consultar las solicitudes propias
 
-La persona puede abrir su listado de solicitudes. Se muestran por número descendente, primero las de numeración más alta, y puede recorrerlas por páginas.
+La persona puede abrir su listado de solicitudes, incluidas las que un administrativo registró en su nombre. Se muestran por número descendente, primero las de numeración más alta, y puede recorrerlas por páginas.
 
 Al elegir una, consulta su número, estado, fechas y la edición y convocatoria a las que pertenece. Una solicitud no desaparece del historial porque la convocatoria se cierre o la edición deje de ofrecerse en el catálogo.
 
@@ -169,6 +184,6 @@ El sistema no coloca automáticamente en lista de espera ni rechaza una solicitu
 
 ## Qué se conserva como constancia
 
-Cada presentación confirmada deja constancia de quién la realizó, qué número recibió, a qué convocatoria y edición corresponde, y cuándo quedó presentada. Un reintento reconocido no crea una segunda constancia de presentación.
+Cada presentación confirmada deja constancia del titular, de quién la registró, del número recibido, de la convocatoria y edición y de cuándo quedó presentada. En una solicitud propia el titular y quien registra son la misma persona; en una asistida quedan separados. Un reintento reconocido no crea una segunda constancia ni cambia al registrante original.
 
 Las pausas y cierres de recepción no borran esas solicitudes. Los cambios que afecten su evaluación o resultado deberán realizarse mediante los flujos posteriores que correspondan.

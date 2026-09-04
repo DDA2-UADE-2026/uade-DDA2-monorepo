@@ -10,7 +10,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | --- | --- |
 | [Program — Programas y ediciones](program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, cupos y estados. |
 | [EnrollmentPeriod — Convocatorias](enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
-| [Application — Solicitudes](application.md) | Cómo una persona presenta y consulta su solicitud, qué confirmación recibe y cuándo puede volver a solicitar. |
+| [Application — Solicitudes](application.md) | Cómo una persona presenta y consulta su solicitud, cómo la registra un administrativo en su nombre, qué confirmación recibe y cuándo puede volver a solicitar. |
 
 El orden recomendado es programa, convocatoria y solicitud. Primero se prepara la oferta, luego se habilita su recepción y finalmente las personas se presentan.
 
@@ -30,6 +30,8 @@ El beneficio es la ayuda ofrecida por una edición, por ejemplo asistencia alime
 ## Quién participa
 
 **Personal municipal autorizado.** Crea y mantiene los programas, configura sus ediciones y administra las convocatorias. Las acciones que puede realizar dependen de las autorizaciones de su rol.
+
+**Administrativo autorizado para asistencia.** Puede registrar una solicitud para otra persona ya existente en el sistema, sin restricción de jurisdicción. Quedan identificados tanto el titular como quien realizó el registro. Esto no le da acceso al listado de solicitudes ajenas.
 
 **Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado para solicitar, presenta y consulta sus propias solicitudes. No presenta solicitudes a nombre de otra persona.
 

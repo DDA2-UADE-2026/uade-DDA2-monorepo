@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.application.service
 
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationRequest
+import com.uade.dda2.server.feature.application.dto.request.CreateAssistedApplicationRequest
 import com.uade.dda2.server.feature.application.dto.response.ApplicationListResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.entity.Application
@@ -12,6 +13,7 @@ import com.uade.dda2.server.feature.application.mapper.toResponse
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.validator.ApplicationValidator
 import com.uade.dda2.server.feature.auth.repository.UserRepository
+import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.enrollmentperiod.repository.EnrollmentPeriodRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
@@ -49,9 +51,25 @@ class ApplicationService(
         val principal = currentUser.principal()
         // Serialize submissions for this user, including different keys and different periods.
         val user = validator.validateUser(users.findByIdForUpdate(principal.id), principal, "applications:own:create")
+        return submitFor(request, idempotencyKey, user, user)
+    }
+
+    @Transactional
+    fun submitAssisted(request: CreateAssistedApplicationRequest, idempotencyKey: String?): ApplicationSubmission {
+        validator.validateIdempotencyKey(idempotencyKey)
+        val principal = currentUser.principal()
+        val actor = validator.validateUser(users.findByIdWithRoles(principal.id), principal, "applications:management:create")
+        if (request.userId == principal.id) throw ApplicationErrors.assistedSelfNotAllowed()
+        // Both entry points serialize on the applicant, never on the administrative actor.
+        val applicant = users.findByIdForUpdate(request.userId) ?: throw ApplicationErrors.applicantNotFound()
+        return submitFor(CreateApplicationRequest(request.enrollmentPeriodId), idempotencyKey, applicant, actor)
+    }
+
+    private fun submitFor(request: CreateApplicationRequest, idempotencyKey: String?, user: User, actor: User): ApplicationSubmission {
+        val userId = requireNotNull(user.id)
         val requestHash = hashRequest(request)
         if (idempotencyKey != null) {
-            applications.findByUserIdAndIdempotencyKey(principal.id, idempotencyKey)?.let { existing ->
+            applications.findByUserIdAndIdempotencyKey(userId, idempotencyKey)?.let { existing ->
                 if (existing.requestHash != requestHash || existing.enrollmentPeriod.id != request.enrollmentPeriodId) {
                     throw ApplicationErrors.idempotencyConflict()
                 }
@@ -67,19 +85,19 @@ class ApplicationService(
         // PostgreSQL timestamps store microseconds; keep first and replay responses identical.
         val now = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
         validator.validatePeriod(period, now.toLocalDate())
-        if (applications.existsByUserIdAndEnrollmentPeriodId(principal.id, request.enrollmentPeriodId)) {
+        if (applications.existsByUserIdAndEnrollmentPeriodId(userId, request.enrollmentPeriodId)) {
             throw ApplicationErrors.duplicatePeriod()
         }
-        if (applications.existsByUserIdAndProgramEditionIdAndStatusNotIn(principal.id, editionId, ApplicationStatus.ALLOWS_NEW_PERIOD)) {
+        if (applications.existsByUserIdAndProgramEditionIdAndStatusNotIn(userId, editionId, ApplicationStatus.ALLOWS_NEW_PERIOD)) {
             throw ApplicationErrors.blockingApplication()
         }
 
         val application = applications.saveAndFlush(Application(
-            user = user, programEdition = period.programEdition, enrollmentPeriod = period,
+            user = user, registeredBy = actor, programEdition = period.programEdition, enrollmentPeriod = period,
             submittedAt = now, idempotencyKey = idempotencyKey,
             requestHash = requestHash.takeIf { idempotencyKey != null },
         ))
-        logs.record(user = user, action = LogAction.CREATE, entityType = LogEntityType.APPLICATION,
+        logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.APPLICATION,
             entityId = requireNotNull(application.id).toString(),
             newValues = json.writeValueAsString(application.toAuditSnapshot()))
         return ApplicationSubmission(application.toResponse(), replayed = false)

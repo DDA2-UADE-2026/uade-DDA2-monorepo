@@ -28,7 +28,8 @@ VALUES ('permissions:view'),
        ('enrollment-periods:management:edit'),
        ('enrollment-periods:management:change-status'),
        ('applications:own:create'),
-       ('applications:own:view')
+       ('applications:own:view'),
+       ('applications:management:create')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name)

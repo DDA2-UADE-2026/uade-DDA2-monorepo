@@ -1,20 +1,21 @@
 # Solicitudes de beneficios
 
-El backend implementa presentación, listado y detalle propios mediante JWT con rol activo. La solicitud pertenece a `users.id`, obtenido exclusivamente del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan documentación, evaluación, visitas, transiciones de estado, asignaciones ni integración con Ciudadanos.
+El backend implementa presentación propia y asistida, más listado y detalle propios, mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan documentación, evaluación, visitas, transiciones de estado, asignaciones ni integración con Ciudadanos.
 
 ## Contrato HTTP
 
 | Método y ruta | Permiso del rol activo | Resultado |
 | --- | --- | --- |
 | `POST /api/applications` | `applications:own:create` | `201 Created` al presentar; `200 OK` al recuperar una presentación mediante idempotencia |
+| `POST /api/admin/applications` | `applications:management:create` | Presentación asistida para otro usuario existente; `201` nueva, `200` reintento |
 | `GET /api/applications?page=0&size=20` | `applications:own:view` | Página de solicitudes propias, por número descendente |
 | `GET /api/applications/{id}` | `applications:own:view` | Detalle propio; una solicitud ajena devuelve `404`, igual que una inexistente |
 
-Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El usuario debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. Como en el resto del modelo JWT, un cambio de permisos no revoca automáticamente tokens anteriores; se renuevan iniciando sesión o cambiando de rol.
+Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El actor autenticado debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. Como en el resto del modelo JWT, un cambio de permisos no revoca automáticamente tokens anteriores; se renuevan iniciando sesión o cambiando de rol.
 
 La consulta no recibe un identificador de usuario: siempre filtra por el solicitante autenticado. `page` empieza en cero y `size` admite valores entre 1 y 100.
 
-El POST acepta únicamente este cuerpo; cualquier campo adicional se rechaza con `400`:
+El POST propio acepta únicamente este cuerpo; cualquier campo adicional se rechaza con `400`:
 
 ```json
 {
@@ -22,7 +23,18 @@ El POST acepta únicamente este cuerpo; cualquier campo adicional se rechaza con
 }
 ```
 
-Respuesta de presentación:
+El POST asistido acepta únicamente `userId` y `enrollmentPeriodId`:
+
+```json
+{
+  "userId": 42,
+  "enrollmentPeriodId": "e14a6f34-b991-476d-8f13-0c6fbe301c51"
+}
+```
+
+Se comprueba la existencia del titular en `users`, sin filtros de jurisdicción, roles, credenciales o vinculación externa. No se necesita el JWT del titular. La autorización para esta operación corresponde al administrativo. Enviar `registeredByUserId`, `registeredBy`, `registradoPor`, `citizenId` o cualquier otro campo adicional devuelve `400`. Para presentar para sí mismo, el actor debe utilizar el POST propio con su permiso correspondiente; la ruta asistida lo rechaza con `403`.
+
+Respuesta de presentación propia:
 
 ```http
 HTTP/1.1 201 Created
@@ -34,6 +46,8 @@ Idempotency-Replayed: false
 {
   "id": "2aa19e54-6f3f-4eef-99b1-8e1af9d8db26",
   "applicationNumber": 15432,
+  "userId": 42,
+  "registeredByUserId": 42,
   "programEditionId": "2199c5bd-3329-4172-9b28-89d3bbf236f6",
   "enrollmentPeriodId": "e14a6f34-b991-476d-8f13-0c6fbe301c51",
   "status": "SUBMITTED",
@@ -45,6 +59,10 @@ Idempotency-Replayed: false
 
 El listado utiliza `content`, `page`, `size`, `totalElements` y `totalPages`. El detalle y los elementos del listado tienen el mismo contrato que la respuesta del POST. No exponen el hash, la clave de idempotencia ni datos personales del solicitante.
 
+La respuesta asistida tiene el mismo cuerpo, con `userId` del titular y `registeredByUserId` del administrativo que registró originalmente la solicitud. Devuelve `Idempotency-Replayed`; no informa `Location`, ya que no se implementa una consulta administrativa de solicitudes. Registrar para otra persona no concede acceso a su detalle propio. El titular sí recibe la solicitud asistida en su listado y detalle propios.
+
+El campo `status` todavía devuelve el estado interno: la correspondencia completa con los estados públicos simplificados está pendiente de definición, en particular para los cierres sin resultado explícito. No se modifican los estados almacenados ni sus reglas.
+
 ## Reglas de presentación
 
 - La convocatoria existe, está `OPEN` y cumple `openDate <= hoy <= closeDate`.
@@ -55,12 +73,14 @@ El listado utiliza `content`, `page`, `size`, `totalElements` y `totalPages`. El
 - El cupo agotado no impide presentar ni se incrementa `currentEnrollment`.
 - Se guarda `SUBMITTED` con las fechas asignadas por el servidor. El horario utiliza `ENROLLMENT_PERIOD_TIME_ZONE` (por defecto `America/Argentina/Buenos_Aires`), compartido con la configuración del cierre automático de convocatorias.
 - `originTicketId`, resolución y trabajador asignado quedan nulos. Las relaciones con personas utilizan siempre `User`.
+- `registeredBy` es obligatorio e inmutable: en la presentación propia coincide con el titular; en la asistida referencia al administrativo autenticado. No reemplaza a `assignedWorker`.
+- Ambas presentaciones comparten las reglas anteriores, sin cambiar duplicados, cupo, incompatibilidades ni documentación.
 
 ## Idempotencia y concurrencia
 
 `Idempotency-Key` es opcional. Admite entre 1 y 128 caracteres ASCII visibles sin espacios y distingue mayúsculas. Se conserva durante la vida de la solicitud, sin vencimiento automático. La clave es un identificador técnico de petición, no una sesión.
 
-La combinación `(user_id, idempotency_key)` es única. Se guarda un SHA-256 del texto canónico `application:v1:<UUID de la convocatoria>`; el orden o formato del JSON no altera su significado.
+La combinación `(user_id, idempotency_key)` es única. `user_id` siempre corresponde al titular, incluso en asistencia. Se guarda un SHA-256 del texto canónico `application:v1:<UUID de la convocatoria>`; el orden o formato del JSON no altera su significado. El titular forma parte de la clave de búsqueda; cambiar de titular utiliza otra clave independiente, aunque el administrativo sea el mismo.
 
 | Petición | Resultado |
 | --- | --- |
@@ -72,9 +92,11 @@ La combinación `(user_id, idempotency_key)` es única. Se guarda un SHA-256 del
 
 Un reintento válido recupera la solicitud antes de volver a validar la convocatoria: también funciona después de su cierre. Se mantienen las comprobaciones de usuario y autorización. Devuelve los datos actuales de la misma solicitud; no una copia congelada del primer JSON.
 
+La clave se comparte entre los dos flujos. Un reintento autorizado para el mismo titular, clave y convocatoria devuelve la original, aunque lo haga otro administrativo o el titular desde el flujo propio. Siempre conserva `registeredByUserId` y la auditoría original. El actor nunca forma parte del hash ni reemplaza al titular para comprobar duplicados.
+
 Cada presentación bloquea la fila del solicitante hasta que termina la transacción. Esto serializa sus peticiones, incluso para convocatorias diferentes. Después se bloquean edición y convocatoria, en ese orden, compatible con sus operaciones administrativas. La base respalda además las restricciones únicas de usuario/convocatoria y usuario/clave.
 
-Presentación y log `CREATE` de tipo `application` se confirman en una única transacción. Si falla la auditoría o la persistencia, no se devuelve confirmación y se revierte la solicitud. Las claves y hashes no se incluyen en el log.
+Presentación y log `CREATE` de tipo `application` se confirman en una única transacción. Si falla la auditoría o la persistencia, no se devuelve confirmación y se revierte la solicitud. El actor del log es quien registra; el snapshot incluye `userId` y `registeredByUserId` por separado. Las claves y hashes no se incluyen en el log.
 
 ## Numeración y esquema
 
@@ -84,15 +106,19 @@ La secuencia garantiza unicidad y crecimiento de los valores asignados. Los núm
 
 Al recrear la base de pruebas, iniciar el backend con la configuración habitual de generación del esquema y luego ejecutar manualmente `docs/init.sql`. No es necesario crear la secuencia a mano. El esquema documentado está en `docs/api-entities.dbml`.
 
-Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante o trabajador vinculado; las FK protegen también las referencias a ediciones y convocatorias.
+Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante, registrante o trabajador vinculado; las FK protegen también las referencias a ediciones y convocatorias. El nuevo campo `registered_by_user_id` se crea con Hibernate al recrear el esquema; no se agrega una migración ni se completa información histórica automáticamente.
 
 ## Permisos y pruebas manuales
 
 El init incluye `CIUDADANO` con `applications:own:create` y `applications:own:view`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción anterior de superusuario técnico con todos los permisos.
 
+El init incorpora `applications:management:create` para presentación asistida y lo incluye en `ADMIN`. No lo concede a `CIUDADANO` ni crea nuevos roles: se debe asignar explícitamente a los roles administrativos que correspondan mediante la gestión existente. Después de cambiar permisos, renovar el JWT para que los contenga.
+
 Las cuentas de ejemplo `admin` y `viewer` también reciben `CIUDADANO` al ejecutar el init. En una base nueva, ambas deben seleccionar rol después del login. La gestión de roles del ABM conserva la asignación explícita existente; no se cambió para agregar roles automáticamente.
 
 La colección `docs/program-feature.postman_collection.json` incorpora la carpeta **Solicitudes propias**. Configurar un JWT con los permisos correspondientes y `enrollmentPeriodId`; ejecutar presentación, reintento, listado y detalle. La presentación guarda `applicationId`, `applicationNumber` y `applicationIdempotencyKey`. Borrar la clave antes de iniciar una presentación diferente, y conservarla para reintentar la anterior. Las peticiones negativas indican sus precondiciones.
+
+La carpeta **Solicitudes asistidas** usa `assistedAccessToken` con permiso administrativo, `assistedApplicantUserId` y `enrollmentPeriodId`. Conserva `assistedApplicationId`, `assistedApplicationNumber`, `assistedRegisteredByUserId` y `assistedIdempotencyKey` para comprobar reintentos. Para comprobar el detalle propio del titular, configurar `assistedApplicantAccessToken`. No reutilizar la clave para otra convocatoria del mismo titular.
 
 CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los orígenes ya configurados. No se modificó el frontend.
 
@@ -104,7 +130,9 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 | 400 | `APPLICATION_INVALID_IDEMPOTENCY_KEY` | Formato de clave inválido |
 | 401 | `AUTH_UNAUTHENTICATED` / `AUTH_INVALID_TOKEN` | Falta de autenticación, token inválido o usuario inexistente/inactivo |
 | 403 | `AUTH_FORBIDDEN` | Rol activo sin permiso o ya no asignado |
+| 403 | `APPLICATION_ASSISTED_SELF_NOT_ALLOWED` | Se intentó usar la asistencia para uno mismo, en lugar de la presentación propia |
 | 404 | `APPLICATION_NOT_FOUND` | Solicitud inexistente o ajena |
+| 404 | `APPLICATION_USER_NOT_FOUND` | El titular indicado en la presentación asistida no existe |
 | 404 | `APPLICATION_ENROLLMENT_PERIOD_NOT_FOUND` | Convocatoria inexistente |
 | 409 | `APPLICATION_ENROLLMENT_PERIOD_NOT_OPEN` | Convocatoria no abierta |
 | 409 | `APPLICATION_OUTSIDE_ENROLLMENT_PERIOD` | Fecha fuera de la convocatoria |
@@ -116,9 +144,9 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 
 ## Verificación automatizada
 
-`ApplicationFlowTest` utiliza HTTP con JWT reales y persistencia real en una base aislada. Cubre permisos y propiedad, validación de fechas/estados, cupo, paginación, campos internos rechazados, unicidad, reintentos concurrentes, convocatorias concurrentes, números globales concurrentes, restricciones de base y rollback de auditoría.
+`ApplicationFlowTest` utiliza HTTP con JWT reales y persistencia real en una base aislada. Cubre permisos y propiedad, validación de fechas/estados, cupo, paginación, campos internos rechazados, unicidad, reintentos concurrentes, convocatorias concurrentes, números globales concurrentes, restricciones de base y rollback de auditoría. Incluye asistencia, identidades separadas, concurrencia entre flujos y administrativos, protección del registrante en las bajas de usuarios y conservación del actor original durante reintentos.
 
-Verificación de esta entrega: 77 pruebas exitosas en H2 (41 de solicitudes), OpenAPI generado, 57 peticiones de Postman contrastadas con sus rutas y métodos, y DBML compilado para PostgreSQL. No se ejecutó la suite en PostgreSQL: Docker Desktop no pudo iniciar su motor por un error local al acceder a un socket de su servicio de telemetría. No se modificó ni se ejecutó SQL sobre la base de la aplicación.
+Verificación de la actualización del 4 de septiembre de 2026: 91 pruebas exitosas en H2 (55 de solicitudes), OpenAPI generado y contrato asistido validado, 65 peticiones de Postman contrastadas con sus rutas y métodos, y DBML compilado para PostgreSQL. No se ejecutó la suite en PostgreSQL ni se modificó o ejecutó SQL sobre la base de la aplicación. La equivalencia de estados públicos sigue pendiente de definición y no forma parte de estas pruebas.
 
 ```powershell
 .\gradlew.bat test generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'

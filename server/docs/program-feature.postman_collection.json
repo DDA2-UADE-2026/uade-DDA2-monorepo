@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas y solicitudes propias. Configurar username/password y selectedRole cuando el login tenga múltiples roles; targetRole es opcional para cambiar de rol. El JWT operativo se guarda como accessToken de colección; no se usa el antiguo token global. Los JWT anteriores siguen vigentes hasta vencer. Ciudadanos está preparado solo en el modelo: no hay endpoints externos ni aprovisionamiento. No contiene seeds ni migraciones.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas y solicitudes propias y asistidas. Configurar username/password y selectedRole cuando el login tenga múltiples roles; targetRole es opcional para cambiar de rol. El JWT operativo se guarda como accessToken de colección; no se usa el antiguo token global. Los JWT anteriores siguen vigentes hasta vencer. Ciudadanos está preparado solo en el modelo: no hay endpoints externos ni aprovisionamiento. No contiene seeds ni migraciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -1847,7 +1847,7 @@
                   "   pm.expect(body.status).to.equal('SUBMITTED');",
                   "   pm.expect(body.applicationNumber).to.be.above(0);",
                   "   pm.expect(body.submittedAt).to.be.a('string').and.not.empty;",
-                  "   pm.expect(body).not.to.have.property('userId');",
+                  "   pm.expect(body.registeredByUserId).to.equal(body.userId);",
                   "   pm.expect(pm.response.headers.get('Location')).to.equal('/api/applications/' + body.id);",
                   " });",
                   "}"
@@ -1901,7 +1901,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\"\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42\n}"
             }
           ]
         },
@@ -2015,7 +2015,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\"\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42\n}"
             }
           ]
         },
@@ -2293,7 +2293,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"content\": [\n    {\n      \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n      \"applicationNumber\": 15432,\n      \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n      \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n      \"status\": \"SUBMITTED\",\n      \"submittedAt\": \"2026-08-31T13:30:00\",\n      \"createdAt\": \"2026-08-31T13:30:00\",\n      \"updatedAt\": \"2026-08-31T13:30:00\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n      \"applicationNumber\": 15432,\n      \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n      \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n      \"status\": \"SUBMITTED\",\n      \"submittedAt\": \"2026-08-31T13:30:00\",\n      \"createdAt\": \"2026-08-31T13:30:00\",\n      \"updatedAt\": \"2026-08-31T13:30:00\",\n      \"userId\": 42,\n      \"registeredByUserId\": 42\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
             }
           ]
         },
@@ -2356,7 +2356,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\"\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42\n}"
             }
           ]
         },
@@ -2619,6 +2619,993 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Solicitudes asistidas",
+      "description": "Requiere applications:management:create en el rol activo de assistedAccessToken. El init se lo asigna a ADMIN, no a CIUDADANO. Configurar assistedApplicantUserId con el ID interno de otro usuario existente, sin restricción de jurisdicción ni necesidad de identidad externa. El backend toma al registrante del JWT. Se mantienen las reglas actuales de convocatorias, duplicados y cupo. Idempotencia compartida por titular con el flujo propio. No se agrega consulta administrativa. Los estados aún son internos, pendiente la definición de su equivalencia pública.",
+      "item": [
+        {
+          "name": "Registrar solicitud asistida",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{assistedIdempotencyKey}}"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "Usar un titular existente distinto del administrativo y una convocatoria OPEN vigente de edición ACTIVE, sin solicitud previa bloqueante. Borrar assistedIdempotencyKey antes de una nueva presentación; conservarla para reintentos.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"assistedAccessToken\",\"assistedApplicantUserId\",\"enrollmentPeriodId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta petición.'); pm.execution.skipRequest(); }",
+                  "}",
+                  "let key = pm.collectionVariables.get('assistedIdempotencyKey');",
+                  "if (!key) { key = pm.variables.replaceIn('{{$guid}}'); pm.collectionVariables.set('assistedIdempotencyKey', key); }",
+                  "pm.variables.set('assistedIdempotencyKey', key);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) {",
+                  " const result = pm.response.json();",
+                  " pm.collectionVariables.set('assistedApplicationId', result.id);",
+                  " pm.collectionVariables.set('assistedApplicationNumber', String(result.applicationNumber));",
+                  " pm.collectionVariables.set('assistedRegisteredByUserId', String(result.registeredByUserId));",
+                  " pm.test('Titular y registrante separados', () => {",
+                  "  pm.expect(String(result.userId)).to.equal(String(pm.variables.get('assistedApplicantUserId')));",
+                  "  pm.expect(result.registeredByUserId).not.to.equal(result.userId);",
+                  "  pm.expect(result.status).to.equal('SUBMITTED');",
+                  "  pm.expect(pm.response.headers.get('Idempotency-Replayed')).to.equal('false');",
+                  " });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{assistedIdempotencyKey}}"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "Usar un titular existente distinto del administrativo y una convocatoria OPEN vigente de edición ACTIVE, sin solicitud previa bloqueante. Borrar assistedIdempotencyKey antes de una nueva presentación; conservarla para reintentos.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Idempotency-Replayed",
+                  "value": "false"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reintentar solicitud asistida",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{assistedIdempotencyKey}}"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "Ejecutar después del registro con el mismo titular, convocatoria y clave. Se conserva al registrante original, incluso si se utiliza otro administrativo autorizado; también funciona después del cierre de la convocatoria.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"assistedAccessToken\",\"assistedApplicantUserId\",\"enrollmentPeriodId\",\"assistedIdempotencyKey\",\"assistedApplicationId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta petición.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) pm.test('Original sin modificar registrante', () => {",
+                  " const result = pm.response.json();",
+                  " pm.expect(result.id).to.equal(pm.collectionVariables.get('assistedApplicationId'));",
+                  " pm.expect(String(result.applicationNumber)).to.equal(pm.collectionVariables.get('assistedApplicationNumber'));",
+                  " pm.expect(String(result.registeredByUserId)).to.equal(pm.collectionVariables.get('assistedRegisteredByUserId'));",
+                  " pm.expect(pm.response.headers.get('Idempotency-Replayed')).to.equal('true');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{assistedIdempotencyKey}}"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "Ejecutar después del registro con el mismo titular, convocatoria y clave. Se conserva al registrante original, incluso si se utiliza otro administrativo autorizado; también funciona después del cierre de la convocatoria.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Idempotency-Replayed",
+                  "value": "true"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reutilizar clave asistida con otra convocatoria (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{assistedIdempotencyKey}}"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "Requiere registro previo con la clave y el titular indicados; otherEnrollmentPeriodId debe diferir de la convocatoria original.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{otherEnrollmentPeriodId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"assistedIdempotencyKey\",\"otherEnrollmentPeriodId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta petición.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', () => pm.response.to.have.status(409));",
+                  "if (pm.response.code === 409) pm.test('Código funcional', () => pm.expect(pm.response.json().code).to.equal('APPLICATION_IDEMPOTENCY_CONFLICT'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Error esperado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{assistedIdempotencyKey}}"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "Requiere registro previo con la clave y el titular indicados; otherEnrollmentPeriodId debe diferir de la convocatoria original.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{otherEnrollmentPeriodId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Requiere registro previo con la clave y el titular indicados; otherEnrollmentPeriodId debe diferir de la convocatoria original.\",\n  \"code\": \"APPLICATION_IDEMPOTENCY_CONFLICT\",\n  \"status\": 409,\n  \"path\": \"/api/admin/applications\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Duplicar solicitud del titular sin clave (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "Después de presentar para ese titular en esa convocatoria, sin Idempotency-Key; la convocatoria debe continuar OPEN y vigente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', () => pm.response.to.have.status(409));",
+                  "if (pm.response.code === 409) pm.test('Código funcional', () => pm.expect(pm.response.json().code).to.equal('APPLICATION_ALREADY_EXISTS_FOR_PERIOD'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Error esperado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "Después de presentar para ese titular en esa convocatoria, sin Idempotency-Key; la convocatoria debe continuar OPEN y vigente.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Después de presentar para ese titular en esa convocatoria, sin Idempotency-Key; la convocatoria debe continuar OPEN y vigente.\",\n  \"code\": \"APPLICATION_ALREADY_EXISTS_FOR_PERIOD\",\n  \"status\": 409,\n  \"path\": \"/api/admin/applications\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Titular inexistente (404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "Configurar nonexistentApplicantUserId con un ID interno positivo que no exista en users.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{nonexistentApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"nonexistentApplicantUserId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta petición.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+                  "if (pm.response.code === 404) pm.test('Código funcional', () => pm.expect(pm.response.json().code).to.equal('APPLICATION_USER_NOT_FOUND'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Error esperado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "Configurar nonexistentApplicantUserId con un ID interno positivo que no exista en users.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{nonexistentApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Configurar nonexistentApplicantUserId con un ID interno positivo que no exista en users.\",\n  \"code\": \"APPLICATION_USER_NOT_FOUND\",\n  \"status\": 404,\n  \"path\": \"/api/admin/applications\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Rechazar registrante enviado en el cuerpo (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "El administrativo no puede elegir ni suplantar al registrante: registeredByUserId se obtiene exclusivamente del JWT.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\",\n  \"registeredByUserId\": 999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+                  "if (pm.response.code === 400) pm.test('Código funcional', () => pm.expect(pm.response.json().code).to.equal('INVALID_REQUEST_BODY'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Error esperado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "El administrativo no puede elegir ni suplantar al registrante: registeredByUserId se obtiene exclusivamente del JWT.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\",\n  \"registeredByUserId\": 999\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"El administrativo no puede elegir ni suplantar al registrante: registeredByUserId se obtiene exclusivamente del JWT.\",\n  \"code\": \"INVALID_REQUEST_BODY\",\n  \"status\": 400,\n  \"path\": \"/api/admin/applications\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Rechazar asistencia con rol ciudadano (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedApplicantAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications"
+              ]
+            },
+            "description": "Configurar assistedApplicantAccessToken con un JWT cuyo rol activo tenga permisos propios pero no applications:management:create.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"assistedApplicantAccessToken\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta petición.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', () => pm.response.to.have.status(403));",
+                  "if (pm.response.code === 403) pm.test('Código funcional', () => pm.expect(pm.response.json().code).to.equal('AUTH_FORBIDDEN'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Error esperado",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedApplicantAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications"
+                  ]
+                },
+                "description": "Configurar assistedApplicantAccessToken con un JWT cuyo rol activo tenga permisos propios pero no applications:management:create.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": {{assistedApplicantUserId}},\n  \"enrollmentPeriodId\": \"{{enrollmentPeriodId}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Configurar assistedApplicantAccessToken con un JWT cuyo rol activo tenga permisos propios pero no applications:management:create.\",\n  \"code\": \"AUTH_FORBIDDEN\",\n  \"status\": 403,\n  \"path\": \"/api/admin/applications\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Titular consulta la solicitud asistida",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{assistedApplicantAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{assistedApplicationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{assistedApplicationId}}"
+              ]
+            },
+            "description": "Usar assistedApplicantAccessToken del titular con applications:own:view. Registrar una solicitud no concede acceso a consultas ajenas."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"assistedApplicantAccessToken\",\"assistedApplicationId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta petición.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) pm.test('Pertenece al titular', () => {",
+                  " pm.expect(pm.response.json().id).to.equal(pm.collectionVariables.get('assistedApplicationId'));",
+                  " pm.expect(String(pm.response.json().userId)).to.equal(String(pm.variables.get('assistedApplicantUserId')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{assistedApplicantAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{assistedApplicationId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{assistedApplicationId}}"
+                  ]
+                },
+                "description": "Usar assistedApplicantAccessToken del titular con applications:own:view. Registrar una solicitud no concede acceso a consultas ajenas."
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7\n}"
+            }
+          ]
+        }
+      ]
     }
   ],
   "auth": {
@@ -2759,6 +3746,46 @@
     },
     {
       "key": "nonCitizenAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedApplicantUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedApplicantAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedApplicationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedApplicationNumber",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedRegisteredByUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "assistedIdempotencyKey",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "nonexistentApplicantUserId",
       "value": "",
       "type": "string"
     }
