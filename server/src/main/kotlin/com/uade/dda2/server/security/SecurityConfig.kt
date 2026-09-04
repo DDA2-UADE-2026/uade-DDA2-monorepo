@@ -71,8 +71,8 @@ class SecurityConfig(
         val configuration = CorsConfiguration().apply {
             allowedOrigins = corsProperties.nonBlankOrigins
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-            allowedHeaders = listOf("Authorization", "Content-Type")
-            exposedHeaders = listOf("Authorization")
+            allowedHeaders = listOf("Authorization", "Content-Type", "Idempotency-Key")
+            exposedHeaders = listOf("Authorization", "Location", "Idempotency-Replayed")
             allowCredentials = false
         }
 

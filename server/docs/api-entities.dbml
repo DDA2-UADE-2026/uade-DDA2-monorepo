@@ -15,6 +15,20 @@ Enum log_entity_type {
   roles
   users
   enrollment_period
+  application
+}
+
+Enum application_status {
+  DRAFT
+  SUBMITTED
+  IN_VALIDATION
+  PENDING_DOCUMENTATION
+  IN_EVALUATION
+  IN_VISIT
+  APPROVED
+  REJECTED
+  WAITLISTED
+  CLOSED
 }
 
 Enum enrollment_period_status {
@@ -204,4 +218,40 @@ Table program_incompatibility {
   }
 
   Note: 'La aplicación almacena los UUID en orden canónico para representar cada incompatibilidad una sola vez.'
+}
+
+Table application {
+  id uuid [pk]
+  application_number bigint [not null, unique, note: 'Generado por application_number_seq, creada por Hibernate. Global, desde 1, incremento 1, sin reinicio anual. Puede haber saltos; no es el UUID ni MAX+1.']
+  user_id bigint [not null, ref: > users.id, note: 'Titular inmutable. En presentación propia viene del JWT; en asistida de userId validado contra users. Nunca es el identificador externo de Ciudadanos.']
+  registered_by_user_id bigint [not null, ref: > users.id, note: 'Registrado por: actor obtenido del JWT, inmutable. Coincide con user_id en solicitudes propias; en asistidas es el administrativo. No es el trabajador asignado.']
+  program_edition_id uuid [not null, ref: > program_edition.id, note: 'Derivada de enrollment_period.program_edition_id; inmutable.']
+  enrollment_period_id uuid [not null, ref: > enrollment_period.id]
+  status application_status [not null, note: 'varchar(30). Las altas finalizan en SUBMITTED. Las transiciones pertenecen a futuras historias.']
+  origin_ticket_id varchar(255)
+  resolution_reason varchar(1000)
+  assigned_worker_user_id bigint [ref: > users.id]
+  submitted_at timestamp [note: 'Asignado por servidor al presentar. Horario de ENROLLMENT_PERIOD_TIME_ZONE, Argentina por defecto.']
+  resolved_at timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  idempotency_key varchar(128) [note: 'Opcional, ASCII visible sin espacios. Comparación exacta, por usuario; persiste durante la vida de la solicitud. No representa una sesión.']
+  request_hash varchar(64) [note: 'SHA-256 del payload canónico versionado; solo se almacena cuando hay Idempotency-Key.']
+
+  indexes {
+    (user_id, enrollment_period_id) [unique, name: 'uk_application_user_period']
+    (user_id, idempotency_key) [unique, name: 'uk_application_user_idempotency']
+    (user_id, application_number) [name: 'ix_application_user_number']
+    (user_id, program_edition_id, status) [name: 'ix_application_user_edition_status']
+    enrollment_period_id [name: 'ix_application_period']
+    program_edition_id [name: 'ix_application_edition']
+    assigned_worker_user_id [name: 'ix_application_worker']
+    registered_by_user_id [name: 'ix_application_registered_by']
+  }
+
+  checks {
+    `(idempotency_key is null and request_hash is null) or (idempotency_key is not null and request_hash is not null)` [name: 'ck_application_idempotency']
+  }
+
+  Note: 'Presentación y auditoría en la misma transacción. El actor debe estar activo y autorizado por su rol activo. La presentación asistida permite elegir otro titular existente sin restricción de jurisdicción. Se exige período OPEN vigente y edición ACTIVE. No exige cupo ni aumenta current_enrollment. Una nueva convocatoria de la misma edición solo admite anteriores REJECTED/CLOSED; ambos flujos se serializan por titular para evitar carreras y comparten idempotencia por titular. Las consultas siempre filtran por el titular autenticado. No se elimina en cascada al eliminar personas, ediciones o convocatorias.'
 }

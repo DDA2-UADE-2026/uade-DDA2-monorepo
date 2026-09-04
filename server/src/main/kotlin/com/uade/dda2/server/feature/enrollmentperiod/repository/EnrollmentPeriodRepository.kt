@@ -14,6 +14,9 @@ import java.util.UUID
 
 interface EnrollmentPeriodRepository : JpaRepository<EnrollmentPeriod, UUID> {
 
+    @Query("select ep.programEdition.id from EnrollmentPeriod ep where ep.id = :id")
+    fun findProgramEditionIdById(id: UUID): UUID?
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
         """

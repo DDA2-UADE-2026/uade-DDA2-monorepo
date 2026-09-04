@@ -9,6 +9,7 @@ import com.uade.dda2.server.feature.auth.dto.request.UpdateUserRequest
 import com.uade.dda2.server.feature.auth.dto.response.UserManagementResponse
 import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.repository.LogRepository
@@ -33,6 +34,7 @@ class UserManagementService(
     private val jsonMapper: JsonMapper,
     private val programRepository: ProgramRepository,
     private val programEditionRepository: ProgramEditionRepository,
+    private val applicationRepository: ApplicationRepository,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): List<UserManagementResponse> =
@@ -120,6 +122,10 @@ class UserManagementService(
         }
 
         val user = findUser(id)
+
+        if (applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id)) {
+            throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes.")
+        }
 
         if (
             programRepository.existsByCreatedById(id) ||

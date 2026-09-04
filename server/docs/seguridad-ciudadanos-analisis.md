@@ -27,7 +27,7 @@ Se corrigieron también la aceptación inconsistente del prefijo `bearer` en min
 | `POST /auth/switch-role` | JWT operativo como bearer; `role` en el body | Emite un JWT nuevo usando los permisos actuales del rol elegido. No invalida el anterior. |
 | `GET /auth/me` | JWT operativo como bearer | Perfil actual, roles asignados actuales y contexto de autorización del JWT enviado. |
 
-Los nombres de rol se toman de `user.roles`, sin elegir uno por defecto cuando hay varios. La selección se valida en el servidor. Los roles vacíos o desconocidos no habilitan acceso. No se crea ni se asigna automáticamente `CIUDADANO`.
+Los nombres de rol se toman de `user.roles`, sin elegir uno por defecto cuando hay varios. La selección se valida en el servidor. Los roles vacíos o desconocidos no habilitan acceso. El login y el ABM no crean ni asignan automáticamente `CIUDADANO`; el init manual de solicitudes sí crea ese rol y lo asigna a las cuentas de ejemplo.
 
 Ejemplo de login pendiente de selección:
 
@@ -83,6 +83,8 @@ No guardar sesiones permite este flujo, con estas limitaciones explícitas:
 - Cerrar sesión en el cliente no invalida una copia del token.
 - Retirar roles o permisos, cambiar una contraseña o desactivar al usuario no revoca globalmente los JWT emitidos. Las rutas de negocio siguen tomando sus autoridades del JWT hasta vencer.
 - `/auth/me`, la selección y el cambio de rol sí consultan al usuario y rechazan cuentas inactivas. La selección y el cambio de rol también verifican las asignaciones actuales. `/auth/me` conserva los permisos del JWT, aunque los roles listados desde la base hayan cambiado.
+- Las rutas `/api/applications` comprueban que el usuario esté activo y conserve el rol activo asignado, y siempre filtran por su identidad interna. Sus permisos son `applications:own:create` y `applications:own:view`; el init los asigna a `CIUDADANO` y conserva a `ADMIN` como superusuario técnico.
+- `POST /api/admin/applications` requiere `applications:management:create` en el rol activo. Valida al actor autenticado y permite indicar un titular existente mediante `userId`, sin restricción de jurisdicción ni integración con Ciudadanos. Guarda `registeredByUserId` desde el JWT y audita al administrativo; no admite elegir el registrante ni habilita consultas ajenas. El nuevo permiso no se asigna a `CIUDADANO`. Ver `solicitudes-beneficios.md` para el contrato completo.
 - El token temporal puede reutilizarse dentro de su vencimiento; no se promete uso único sin guardar estado. Cada uso vuelve a verificar el usuario y el rol en la base.
 
 Estas limitaciones deben considerarse al elegir tiempos de vida. La revocación de JWT requiere un mecanismo adicional; no se agregó uno por decisión de alcance. Véase [OWASP JSON Web Token Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_Cheat_Sheet.html).
