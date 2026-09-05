@@ -11,11 +11,13 @@ import com.uade.dda2.server.feature.program.error.ProgramErrors
 import com.uade.dda2.server.feature.program.mapper.toAvailableDetailResponse
 import com.uade.dda2.server.feature.program.mapper.toAvailableListItemResponse
 import com.uade.dda2.server.feature.program.mapper.toAvailableResponse
+import com.uade.dda2.server.feature.program.mapper.toAvailableDocumentRequirementResponse
 import com.uade.dda2.server.feature.program.repository.ProgramBenefitRepository
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
 import com.uade.dda2.server.feature.program.repository.ProgramIncompatibilityRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRequirementRepository
+import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +30,7 @@ class AvailableProgramService(
     private val programEditionRepository: ProgramEditionRepository,
     private val programBenefitRepository: ProgramBenefitRepository,
     private val programRequirementRepository: ProgramRequirementRepository,
+    private val programDocumentRequirementRepository: ProgramDocumentRequirementRepository,
     private val programIncompatibilityRepository: ProgramIncompatibilityRepository,
     private val enrollmentPeriodRepository: EnrollmentPeriodRepository,
 ) {
@@ -102,12 +105,17 @@ class AvailableProgramService(
                 closeDate = today,
             )
             .groupBy { requireNotNull(it.programEdition.id) }
+        val documentRequirementsByEdition = programDocumentRequirementRepository
+            .findAllByProgramEditionIdIn(editionIds)
+            .sortedWith(compareBy({ it.name }, { it.code }))
+            .groupBy { requireNotNull(it.programEdition.id) }
 
         val editionResponses = editions.map { edition ->
             val editionId = requireNotNull(edition.id)
             edition.toAvailableResponse(
                 benefits = benefitsByEdition[editionId].orEmpty().map { it.toAvailableResponse() },
                 requirements = requirementsByEdition[editionId].orEmpty().map { it.toAvailableResponse() },
+                documentRequirements = documentRequirementsByEdition[editionId].orEmpty().map { it.toAvailableDocumentRequirementResponse() },
                 enrollmentPeriods = enrollmentPeriodsByEdition[editionId].orEmpty().map { it.toAvailableResponse() },
             )
         }

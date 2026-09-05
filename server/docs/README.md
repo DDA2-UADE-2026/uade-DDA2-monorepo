@@ -8,9 +8,9 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 
 | Lectura | Qué vas a entender |
 | --- | --- |
-| [Program — Programas y ediciones](program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, cupos y estados. |
+| [Program — Programas y ediciones](program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
 | [EnrollmentPeriod — Convocatorias](enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
-| [Application — Solicitudes](application.md) | Cómo una persona presenta y consulta su solicitud, cómo la registra un administrativo en su nombre, qué confirmación recibe y cuándo puede volver a solicitar. |
+| [Application — Solicitudes](application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cuándo puede volver a solicitar. |
 
 El orden recomendado es programa, convocatoria y solicitud. Primero se prepara la oferta, luego se habilita su recepción y finalmente las personas se presentan.
 
@@ -31,9 +31,9 @@ El beneficio es la ayuda ofrecida por una edición, por ejemplo asistencia alime
 
 **Personal municipal autorizado.** Crea y mantiene los programas, configura sus ediciones y administra las convocatorias. Las acciones que puede realizar dependen de las autorizaciones de su rol.
 
-**Administrativo autorizado para asistencia.** Puede registrar una solicitud para otra persona ya existente en el sistema, sin restricción de jurisdicción. Quedan identificados tanto el titular como quien realizó el registro. Esto no le da acceso al listado de solicitudes ajenas.
+**Administrativo autorizado para asistencia.** Puede registrar una solicitud para otra persona ya existente en el sistema, sin restricción de jurisdicción. Quedan identificados tanto el titular como quien realizó el registro. El acceso posterior a documentos ajenos requiere permisos administrativos documentales separados.
 
-**Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado para solicitar, presenta y consulta sus propias solicitudes. No presenta solicitudes a nombre de otra persona.
+**Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado, presenta y consulta sus propias solicitudes y entrega sus documentos protegidos. No presenta solicitudes a nombre de otra persona.
 
 Una misma persona puede tener funciones municipales y ciudadanas. Debe operar con el rol adecuado para la tarea que desea realizar; tener varios roles no mezcla sus atribuciones.
 
@@ -43,16 +43,16 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 
 1. El personal municipal crea el programa y describe su objetivo.
 2. Crea una edición con fechas y cupo máximo. La edición comienza en borrador.
-3. Configura los beneficios y requisitos que correspondan. También puede registrar incompatibilidades entre programas.
+3. Configura los beneficios, requisitos generales y documentos solicitados. También puede registrar incompatibilidades entre programas.
 4. Activa la edición.
 5. Crea una convocatoria dentro de las fechas de esa edición. Inicialmente queda programada.
 6. Cuando llega el período previsto, abre la convocatoria de manera explícita.
 7. La persona interesada ingresa, consulta el programa y elige una convocatoria abierta y vigente.
 8. Presenta su solicitud. El sistema comprueba las condiciones y las solicitudes previas de esa persona.
 9. Si la presentación es válida, recibe un número único, una fecha y el estado **Presentada**.
-10. La persona puede consultar después el listado y el detalle de sus solicitudes.
+10. La persona consulta sus solicitudes, entrega documentos faltantes y reemplaza los observados. El personal documental autorizado puede revisarlos.
 
-La implementación actual termina en la presentación y consulta. La evaluación, aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
+La implementación actual incluye presentación, consulta y revisión de documentos. La evaluación general, aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
 
 ## Tres decisiones diferentes
 

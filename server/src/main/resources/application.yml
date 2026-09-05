@@ -19,7 +19,7 @@ spring:
       max-file-size:
         ${MULTIPART_MAX_FILE_SIZE:10MB}
       max-request-size:
-        ${MULTIPART_MAX_REQUEST_SIZE:10MB}
+        ${MULTIPART_MAX_REQUEST_SIZE:11MB}
   jpa:
     open-in-view: false
     show-sql: ${JPA_SHOW_SQL:false}

@@ -16,6 +16,7 @@ Enum log_entity_type {
   users
   enrollment_period
   application
+  application_document
 }
 
 Enum application_status {
@@ -29,6 +30,12 @@ Enum application_status {
   REJECTED
   WAITLISTED
   CLOSED
+}
+
+Enum application_document_status {
+  PENDING
+  VALID
+  OBSERVED
 }
 
 Enum enrollment_period_status {
@@ -209,6 +216,22 @@ Table program_requirement {
   description varchar(500)
 }
 
+Table program_document_requirement {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  code varchar(50) [not null, note: 'Código dinámico normalizado a mayúsculas.']
+  name varchar(150) [not null]
+  description varchar(500)
+  is_required boolean [not null]
+
+  indexes {
+    program_edition_id [name: 'ix_program_document_requirement_edition']
+    (program_edition_id, code) [unique, name: 'uk_program_document_requirement_edition_code']
+  }
+
+  Note: 'Catálogo de documentos de una edición. La aplicación bloquea altas, cambios y bajas desde que existe la primera solicitud de la edición.'
+}
+
 Table program_incompatibility {
   program_id uuid [not null, ref: > program.id]
   incompatible_with_program_id uuid [not null, ref: > program.id]
@@ -254,4 +277,46 @@ Table application {
   }
 
   Note: 'Presentación y auditoría en la misma transacción. El actor debe estar activo y autorizado por su rol activo. La presentación asistida permite elegir otro titular existente sin restricción de jurisdicción. Se exige período OPEN vigente y edición ACTIVE. No exige cupo ni aumenta current_enrollment. Una nueva convocatoria de la misma edición solo admite anteriores REJECTED/CLOSED; ambos flujos se serializan por titular para evitar carreras y comparten idempotencia por titular. Las consultas siempre filtran por el titular autenticado. No se elimina en cascada al eliminar personas, ediciones o convocatorias.'
+}
+
+Table document {
+  id uuid [pk]
+  original_name varchar(255) [not null]
+  content_type varchar(100) [not null, note: 'application/pdf, image/jpeg o image/png, validado contra extensión y firma binaria.']
+  size_bytes bigint [not null, note: 'Máximo admitido por la aplicación: 10 MB.']
+  content bytea [not null, note: 'Contenido protegido. Nunca se incluye en listados, respuestas JSON ni auditoría.']
+  uploaded_by_user_id bigint [not null, ref: > users.id]
+  created_at timestamp [not null]
+
+  indexes {
+    uploaded_by_user_id [name: 'ix_document_uploaded_by']
+  }
+
+  Note: 'Almacenamiento privado de archivos de solicitudes. No posee un CRUD general ni una URL pública.'
+}
+
+Table application_document {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id]
+  requirement_id uuid [not null, ref: > program_document_requirement.id]
+  document_id uuid [not null, ref: > document.id]
+  status application_document_status [not null, note: 'Persistido como varchar(20). Toda carga o reemplazo queda PENDING.']
+  observation varchar(1000)
+  uploaded_at timestamp [not null]
+  reviewed_by_user_id bigint [ref: > users.id]
+  reviewed_at timestamp
+
+  indexes {
+    (application_id, requirement_id) [unique, name: 'uk_application_document_application_requirement']
+    document_id [unique, name: 'uk_application_document_document']
+    application_id [name: 'ix_application_document_application']
+    requirement_id [name: 'ix_application_document_requirement']
+    reviewed_by_user_id [name: 'ix_application_document_reviewer']
+  }
+
+  checks {
+    `(status = 'PENDING' and observation is null and reviewed_by_user_id is null and reviewed_at is null) or (status = 'VALID' and observation is null and reviewed_by_user_id is not null and reviewed_at is not null) or (status = 'OBSERVED' and observation is not null and reviewed_by_user_id is not null and reviewed_at is not null)` [name: 'ck_application_document_review']
+  }
+
+  Note: 'Una sola entrega vigente por solicitud y requisito. Reemplazar conserva esta fila, cambia el Document y reinicia la revisión. El backend exige que el requisito pertenezca a la misma edición de la solicitud y serializa las mutaciones por solicitud.'
 }

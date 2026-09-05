@@ -80,6 +80,16 @@ Los requisitos se pueden agregar, modificar y quitar mientras la edición no est
 
 **Al presentar una solicitud, el sistema todavía no verifica si la persona cumple estos requisitos.** Hoy se configuran y se muestran como parte de la oferta. La comprobación de elegibilidad corresponde a una etapa posterior.
 
+## Documentos solicitados por la edición
+
+Los documentos solicitados forman un catálogo distinto de los requisitos generales anteriores. Cada entrada tiene un código propio dentro de la edición, un nombre, una explicación opcional y puede ser obligatoria u opcional. Por ejemplo, una edición puede pedir el frente del DNI como obligatorio y una constancia adicional como opcional.
+
+El código identifica de manera estable el tipo de documento y no puede repetirse en una misma edición. Dos ediciones pueden usar el mismo código porque cada una conserva su propio catálogo.
+
+El catálogo puede prepararse mientras todavía no exista ninguna solicitud de la edición. Desde la primera solicitud queda bloqueado: ya no se pueden agregar, modificar ni quitar documentos pedidos. Esta regla conserva las mismas condiciones para todas las personas que ya se presentaron. Cerrar o suspender la edición no vuelve a habilitar cambios si ya existen solicitudes.
+
+Definir un documento como obligatorio no impide presentar la solicitud sin el archivo. Después de la presentación, la solicitud informa cuáles obligatorios faltan o fueron observados y permite que la persona los entregue. El flujo completo se explica en [Application — Solicitudes](application.md).
+
 ## Incompatibilidades entre programas
 
 El personal municipal puede registrar que dos programas son incompatibles. La relación se establece entre programas completos, no entre dos ediciones específicas.
@@ -97,7 +107,7 @@ Actualmente estas incompatibilidades se informan en el detalle del programa, per
 
 | Estado | Qué significa | Qué permite |
 | --- | --- | --- |
-| Borrador (DRAFT) | La edición está en preparación. Es el estado inicial. | Configurar sus datos, beneficios, requisitos y convocatorias. No habilita presentaciones. |
+| Borrador (DRAFT) | La edición está en preparación. Es el estado inicial. | Configurar sus datos, beneficios, requisitos, documentos y convocatorias. No habilita presentaciones. |
 | Activa (ACTIVE) | La edición está habilitada. | Recibir solicitudes si además hay una convocatoria abierta y vigente. Sus datos y configuración aún pueden editarse. |
 | Suspendida (SUSPENDED) | La edición está pausada. | Mantener y ajustar su configuración, pero no recibir nuevas solicitudes. |
 | Cerrada (CLOSED) | Se finalizó esa edición. | Conservar su información para consulta administrativa. No se reactiva, modifica ni elimina. |
@@ -130,7 +140,7 @@ Se pueden modificar el nombre, las fechas y el cupo mientras la edición no est�
 - Tampoco puede quedar por debajo de la cantidad de personas ya incorporadas.
 - No existe en este flujo una acción para mover la edición a otro programa.
 
-Una edición solo puede eliminarse si no está cerrada, no tiene beneficios, requisitos ni convocatorias y no tiene personas incorporadas. Una edición con solicitudes tampoco es eliminable: esas solicitudes están asociadas a convocatorias de esa edición.
+Una edición solo puede eliminarse si no está cerrada, no tiene beneficios, requisitos, documentos solicitados ni convocatorias y no tiene personas incorporadas. Una edición con solicitudes tampoco es eliminable: esas solicitudes están asociadas a convocatorias de esa edición.
 
 Cerrar y eliminar son acciones distintas. El cierre conserva la edición y su historia; la eliminación solo se permite cuando no hay información relacionada que deba preservarse.
 
@@ -146,7 +156,7 @@ Para dejar de recibir presentaciones, el personal municipal debe suspender o cer
 
 Un programa aparece si tiene al menos una edición **activa cuya fecha final sea hoy o posterior**. Puede mostrarse una edición cuyo inicio todavía sea futuro. También puede mostrarse un programa sin ninguna convocatoria abierta en ese momento.
 
-En el detalle se muestran las ediciones que cumplen esa condición, con sus beneficios, requisitos, cupo máximo, incorporaciones actuales y lugares disponibles. Los lugares disponibles nunca se muestran como una cantidad negativa. Las incompatibilidades se informan a nivel del programa.
+En el detalle se muestran las ediciones que cumplen esa condición, con sus beneficios, requisitos generales, documentos solicitados, cupo máximo, incorporaciones actuales y lugares disponibles. Los lugares disponibles nunca se muestran como una cantidad negativa. Las incompatibilidades se informan a nivel del programa.
 
 Las convocatorias que se ofrecen para presentar solicitudes deben estar abiertas y dentro de su rango de fechas. Una edición en borrador, suspendida o cerrada no se ofrece como edición disponible para solicitar.
 
@@ -156,7 +166,7 @@ Una edición activa cuya fecha final ya pasó deja de aparecer en la oferta disp
 
 1. Crear el programa y explicar su objetivo.
 2. Crear una edición con fechas y cupo.
-3. Revisar beneficios, requisitos e incompatibilidades que se quieran informar.
+3. Revisar beneficios, requisitos, documentos solicitados e incompatibilidades que se quieran informar.
 4. Activar la edición cuando la oferta esté preparada.
 5. Crear y abrir una convocatoria siguiendo la [guía de convocatorias](enrollmentperiod.md).
 6. Si es necesario pausar toda la edición, suspender primero la convocatoria abierta y luego la edición.

@@ -30,7 +30,11 @@ VALUES ('permissions:view'),
        ('enrollment-periods:management:change-status'),
        ('applications:own:create'),
        ('applications:own:view'),
-       ('applications:management:create')
+       ('applications:own:documents:view'),
+       ('applications:own:documents:manage'),
+       ('applications:management:create'),
+       ('applications:management:documents:view'),
+       ('applications:management:documents:review')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name)
@@ -51,7 +55,12 @@ ON CONFLICT DO NOTHING;
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
-JOIN permissions p ON p.name IN ('applications:own:create', 'applications:own:view')
+JOIN permissions p ON p.name IN (
+    'applications:own:create',
+    'applications:own:view',
+    'applications:own:documents:view',
+    'applications:own:documents:manage'
+)
 WHERE r.name = 'CIUDADANO'
 ON CONFLICT DO NOTHING;
 

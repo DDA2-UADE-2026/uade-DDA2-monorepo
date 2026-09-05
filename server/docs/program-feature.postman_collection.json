@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas y solicitudes propias y asistidas. Configurar username/password y selectedRole cuando el login tenga múltiples roles; targetRole es opcional para cambiar de rol. El JWT operativo se guarda como accessToken de colección; no se usa el antiguo token global. Los JWT anteriores siguen vigentes hasta vencer. Ciudadanos está preparado solo en el modelo: no hay endpoints externos ni aprovisionamiento. No contiene seeds ni migraciones.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, solicitudes propias y asistidas, catálogo documental y documentos protegidos de solicitudes. Los archivos son privados y se envían como multipart; configurar applicationDocumentFile con un PDF, JPEG o PNG de hasta 10 MB. Ciudadanos sigue preparado solo en el modelo y no contiene seeds ni migraciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -1629,6 +1629,325 @@
       ]
     },
     {
+      "name": "Requisitos documentales",
+      "description": "Catálogo de archivos solicitados por edición. Requiere permisos programs:management:* y queda bloqueado desde la primera solicitud de la edición.",
+      "item": [
+        {
+          "name": "Listar requisitos documentales",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/document-requirements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "document-requirements"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n    \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n    \"code\": \"DNI_FRONT\",\n    \"name\": \"Frente del DNI\",\n    \"description\": \"Imagen legible del frente del documento.\",\n    \"required\": true\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Obtener requisito documental",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/document-requirements/{{documentRequirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "document-requirements",
+                "{{documentRequirementId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"code\": \"DNI_FRONT\",\n  \"name\": \"Frente del DNI\",\n  \"description\": \"Imagen legible del frente del documento.\",\n  \"required\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Crear requisito documental",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DNI_FRONT\",\n  \"name\": \"Frente del DNI\",\n  \"description\": \"Imagen legible del frente del documento.\",\n  \"required\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/document-requirements",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "document-requirements"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set('documentRequirementId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"code\": \"DNI_FRONT\",\n  \"name\": \"Frente del DNI\",\n  \"description\": \"Imagen legible del frente del documento.\",\n  \"required\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Actualizar requisito documental",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DNI_FRONT\",\n  \"name\": \"Frente del DNI actualizado\",\n  \"description\": \"Archivo obligatorio.\",\n  \"required\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/document-requirements/{{documentRequirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "document-requirements",
+                "{{documentRequirementId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"code\": \"DNI_FRONT\",\n  \"name\": \"Frente del DNI actualizado\",\n  \"description\": \"Archivo obligatorio.\",\n  \"required\": true\n}"
+            }
+          ]
+        },
+        {
+          "name": "Eliminar requisito documental",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/program-editions/{{editionId}}/document-requirements/{{documentRequirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "program-editions",
+                "{{editionId}}",
+                "document-requirements",
+                "{{documentRequirementId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Beneficios",
       "item": [
         {
@@ -1901,7 +2220,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42,\n  \"pendingDocuments\": []\n}"
             }
           ]
         },
@@ -2015,7 +2334,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42,\n  \"pendingDocuments\": []\n}"
             }
           ]
         },
@@ -2293,7 +2612,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"content\": [\n    {\n      \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n      \"applicationNumber\": 15432,\n      \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n      \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n      \"status\": \"SUBMITTED\",\n      \"submittedAt\": \"2026-08-31T13:30:00\",\n      \"createdAt\": \"2026-08-31T13:30:00\",\n      \"updatedAt\": \"2026-08-31T13:30:00\",\n      \"userId\": 42,\n      \"registeredByUserId\": 42\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n      \"applicationNumber\": 15432,\n      \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n      \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n      \"status\": \"SUBMITTED\",\n      \"submittedAt\": \"2026-08-31T13:30:00\",\n      \"createdAt\": \"2026-08-31T13:30:00\",\n      \"updatedAt\": \"2026-08-31T13:30:00\",\n      \"userId\": 42,\n      \"registeredByUserId\": 42,\n      \"pendingDocuments\": []\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
             }
           ]
         },
@@ -2356,7 +2675,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 42,\n  \"pendingDocuments\": []\n}"
             }
           ]
         },
@@ -2621,6 +2940,396 @@
       ]
     },
     {
+      "name": "Documentos de solicitudes propias",
+      "description": "Usar un JWT con rol ciudadano. La carga es multipart y exige PDF, JPEG o PNG de hasta 10 MB.",
+      "item": [
+        {
+          "name": "Listar documentos de mi solicitud",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "documents"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"96172376-2255-450f-b318-b0707d10f31d\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"requirementId\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n    \"requirementCode\": \"DNI_FRONT\",\n    \"requirementName\": \"Frente del DNI\",\n    \"required\": true,\n    \"documentId\": \"ef6532cd-c7ea-41a1-8076-42cec87abe5a\",\n    \"originalName\": \"dni-frente.pdf\",\n    \"contentType\": \"application/pdf\",\n    \"sizeBytes\": 245812,\n    \"status\": \"PENDING\",\n    \"observation\": null,\n    \"uploadedAt\": \"2026-09-05T15:30:00\",\n    \"reviewedByUserId\": null,\n    \"reviewedAt\": null,\n    \"contentUrl\": \"/api/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/documents/96172376-2255-450f-b318-b0707d10f31d/content\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Cargar o reemplazar documento",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "{{applicationDocumentFile}}"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/documents/{{documentRequirementId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "documents",
+                "{{documentRequirementId}}"
+              ]
+            },
+            "description": "Elegir un archivo local válido. Devuelve 201 en la primera carga y 200 al reemplazar."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 o 201', () => pm.expect([200, 201]).to.include(pm.response.code));",
+                  "if ([200, 201].includes(pm.response.code)) { const body = pm.response.json(); pm.collectionVariables.set('applicationDocumentId', body.id); pm.collectionVariables.set('documentId', body.documentId); }"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Primera carga",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"96172376-2255-450f-b318-b0707d10f31d\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"requirementId\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n  \"requirementCode\": \"DNI_FRONT\",\n  \"requirementName\": \"Frente del DNI\",\n  \"required\": true,\n  \"documentId\": \"ef6532cd-c7ea-41a1-8076-42cec87abe5a\",\n  \"originalName\": \"dni-frente.pdf\",\n  \"contentType\": \"application/pdf\",\n  \"sizeBytes\": 245812,\n  \"status\": \"PENDING\",\n  \"observation\": null,\n  \"uploadedAt\": \"2026-09-05T15:30:00\",\n  \"reviewedByUserId\": null,\n  \"reviewedAt\": null,\n  \"contentUrl\": \"/api/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/documents/96172376-2255-450f-b318-b0707d10f31d/content\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Obtener contenido de documento propio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/documents/{{applicationDocumentId}}/content",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "documents",
+                "{{applicationDocumentId}}",
+                "content"
+              ]
+            },
+            "description": "Respuesta binaria inline, protegida por JWT, con el MIME original y Cache-Control privado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Disposición inline', () => pm.expect(pm.response.headers.get('Content-Disposition')).to.include('inline'));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Eliminar documento entregado",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/documents/{{applicationDocumentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "documents",
+                "{{applicationDocumentId}}"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Revisión documental administrativa",
+      "description": "Usar un JWT administrativo con permisos documentales. Esta entrega no permite cargar archivos en nombre del ciudadano.",
+      "item": [
+        {
+          "name": "Listar documentos de una solicitud",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "documents"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"id\": \"96172376-2255-450f-b318-b0707d10f31d\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"requirementId\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n    \"requirementCode\": \"DNI_FRONT\",\n    \"requirementName\": \"Frente del DNI\",\n    \"required\": true,\n    \"documentId\": \"ef6532cd-c7ea-41a1-8076-42cec87abe5a\",\n    \"originalName\": \"dni-frente.pdf\",\n    \"contentType\": \"application/pdf\",\n    \"sizeBytes\": 245812,\n    \"status\": \"PENDING\",\n    \"observation\": null,\n    \"uploadedAt\": \"2026-09-05T15:30:00\",\n    \"reviewedByUserId\": null,\n    \"reviewedAt\": null,\n    \"contentUrl\": \"/api/admin/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/documents/96172376-2255-450f-b318-b0707d10f31d/content\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Obtener contenido para revisión",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/documents/{{applicationDocumentId}}/content",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "documents",
+                "{{applicationDocumentId}}",
+                "content"
+              ]
+            },
+            "description": "Respuesta binaria inline y protegida."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Observar documento pendiente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"OBSERVED\",\n  \"observation\": \"La imagen no es legible.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/documents/{{applicationDocumentId}}/review",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "applications",
+                "{{applicationId}}",
+                "documents",
+                "{{applicationDocumentId}}",
+                "review"
+              ]
+            },
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) pm.test('Quedó observado', () => pm.expect(pm.response.json().status).to.equal('OBSERVED'));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/example",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "example"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"96172376-2255-450f-b318-b0707d10f31d\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"requirementId\": \"14c850cb-2871-4dc1-b7bc-8ff66ee69380\",\n  \"requirementCode\": \"DNI_FRONT\",\n  \"requirementName\": \"Frente del DNI\",\n  \"required\": true,\n  \"documentId\": \"ef6532cd-c7ea-41a1-8076-42cec87abe5a\",\n  \"originalName\": \"dni-frente.pdf\",\n  \"contentType\": \"application/pdf\",\n  \"sizeBytes\": 245812,\n  \"status\": \"OBSERVED\",\n  \"observation\": \"La imagen no es legible.\",\n  \"uploadedAt\": \"2026-09-05T15:30:00\",\n  \"reviewedByUserId\": 7,\n  \"reviewedAt\": \"2026-09-05T16:00:00\",\n  \"contentUrl\": \"/api/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/documents/96172376-2255-450f-b318-b0707d10f31d/content\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Solicitudes asistidas",
       "description": "Requiere applications:management:create en el rol activo de assistedAccessToken. El init se lo asigna a ADMIN, no a CIUDADANO. Configurar assistedApplicantUserId con el ID interno de otro usuario existente, sin restricción de jurisdicción ni necesidad de identidad externa. El backend toma al registrante del JWT. Se mantienen las reglas actuales de convocatorias, duplicados y cupo. Idempotencia compartida por titular con el flujo propio. No se agrega consulta administrativa. Los estados aún son internos, pendiente la definición de su equivalencia pública.",
       "item": [
@@ -2768,7 +3477,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7,\n  \"pendingDocuments\": []\n}"
             }
           ]
         },
@@ -2908,7 +3617,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7,\n  \"pendingDocuments\": []\n}"
             }
           ]
         },
@@ -3601,7 +4310,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7\n}"
+              "body": "{\n  \"id\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationNumber\": 15432,\n  \"programEditionId\": \"2199c5bd-3329-4172-9b28-89d3bbf236f6\",\n  \"enrollmentPeriodId\": \"e14a6f34-b991-476d-8f13-0c6fbe301c51\",\n  \"status\": \"SUBMITTED\",\n  \"submittedAt\": \"2026-08-31T13:30:00\",\n  \"createdAt\": \"2026-08-31T13:30:00\",\n  \"updatedAt\": \"2026-08-31T13:30:00\",\n  \"userId\": 42,\n  \"registeredByUserId\": 7,\n  \"pendingDocuments\": []\n}"
             }
           ]
         }
@@ -3786,6 +4495,26 @@
     },
     {
       "key": "nonexistentApplicantUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documentRequirementId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicationDocumentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicationDocumentFile",
       "value": "",
       "type": "string"
     }
