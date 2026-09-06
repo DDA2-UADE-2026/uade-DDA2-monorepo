@@ -1,9 +1,447 @@
-import { createFileRoute } from "@tanstack/react-router"
+import {
+  IconAlertCircle,
+  IconArrowLeft,
+  IconArrowUpRight,
+  IconBan,
+  IconCalendarEvent,
+  IconChecklist,
+  IconClock,
+  IconGift,
+  IconHeartHandshake,
+  IconUsers,
+} from "@tabler/icons-react"
+import { useQuery } from "@tanstack/react-query"
+import { Link, createFileRoute } from "@tanstack/react-router"
+
+import {
+  OutletNavRightButton,
+  OutletNavSidebarTrigger,
+  OutletNavSticky,
+  SidebarShell,
+  SidebarShellContent,
+} from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item"
+import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
+import { getAvailableProgramOptions } from "@/generated/@tanstack/react-query.gen"
+import type {
+  AvailableProgramBenefitResponse,
+  AvailableProgramEditionResponse,
+  AvailableProgramRequirementResponse,
+} from "@/generated/types.gen"
+
+type BenefitType = NonNullable<AvailableProgramBenefitResponse["type"]>
+type RequirementType = NonNullable<AvailableProgramRequirementResponse["type"]>
+type EditionStatus = NonNullable<AvailableProgramEditionResponse["status"]>
+
+const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
+const PROGRAM_DESCRIPTION =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Conocé las oportunidades y el acompañamiento que ofrece este programa."
+
+const benefitLabels: Record<BenefitType, string> = {
+  TAX_EXEMPTION: "Exención impositiva",
+  HOUSING_SUBSIDY: "Subsidio habitacional",
+  FOOD_ASSISTANCE: "Asistencia alimentaria",
+  UTILITY_SUBSIDY: "Subsidio de servicios",
+}
+
+const requirementLabels: Record<RequirementType, string> = {
+  MIN_AGE: "Edad mínima",
+  MAX_INCOME: "Ingreso máximo",
+  RESIDENCY_YEARS: "Años de residencia",
+  HAS_CHILDREN: "Tiene hijos",
+}
+
+const editionStatusLabels: Record<EditionStatus, string> = {
+  DRAFT: "Borrador",
+  ACTIVE: "Activa",
+  SUSPENDED: "Suspendida",
+  CLOSED: "Cerrada",
+}
 
 export const Route = createFileRoute("/_app/portal/programas/$programaId")({
   component: RouteComponent,
 })
 
+function formatProgramDate(value?: string): string {
+  if (!value) return "A confirmar"
+
+  const [year, month, day] = value.split("-").map(Number)
+  return new Intl.DateTimeFormat("es-AR", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(year, month - 1, day))
+}
+
+function formatAmount(value?: number): string | undefined {
+  if (value === undefined) return undefined
+
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+  }).format(value)
+}
+
 function RouteComponent() {
-  return <div>Hello "/_app/portal/programas/$programaId"!</div>
+  const { programaId } = Route.useParams()
+  const query = useQuery(
+    getAvailableProgramOptions({ path: { id: programaId } }),
+  )
+  const program = query.data
+
+  return (
+    <SidebarShell>
+      <OutletNavSticky>
+        <OutletNavSidebarTrigger withSeparator />
+        <OutletNavBreadcrumbs
+          items={[
+            { label: "Programas", to: "/portal/programas" },
+            { label: program?.name ?? "Detalle" },
+          ]}
+        />
+        <OutletNavRightButton>
+          <Button
+            variant="ghost"
+            size="sm"
+            render={<Link to="/portal/programas" search={{ page: 1 }} />}
+          >
+            <IconArrowLeft />
+            <span className="hidden sm:inline">Volver</span>
+          </Button>
+        </OutletNavRightButton>
+      </OutletNavSticky>
+
+      <SidebarShellContent>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-4 lg:p-6">
+            {query.isPending ? (
+              <ProgramDetailSkeleton />
+            ) : query.isError ? (
+              <Alert variant="destructive">
+                <IconAlertCircle />
+                <AlertTitle>No pudimos cargar el programa</AlertTitle>
+                <AlertDescription>
+                  El programa puede no estar disponible o pudo ocurrir un problema al consultarlo.
+                </AlertDescription>
+                <AlertAction>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={query.isFetching}
+                    onClick={() => query.refetch()}
+                  >
+                    Reintentar
+                  </Button>
+                </AlertAction>
+              </Alert>
+            ) : program ? (
+              <>
+                <Card className="gap-0 overflow-hidden py-0 lg:grid lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)]">
+                  <img
+                    src={PROGRAM_IMAGE}
+                    alt=""
+                    className="aspect-[1.91/1] size-full max-h-96 object-cover lg:aspect-auto lg:min-h-80"
+                  />
+                  <div className="flex min-w-0 flex-col justify-center py-6">
+                    <CardHeader>
+                      <Badge variant="secondary">
+                        <IconHeartHandshake />
+                        Programa social
+                      </Badge>
+                      <CardTitle className="mt-2 text-2xl sm:text-3xl">
+                        {program.name || "Programa sin nombre"}
+                      </CardTitle>
+                      <CardDescription className="max-w-2xl text-sm leading-6">
+                        {PROGRAM_DESCRIPTION}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          Objetivo
+                        </p>
+                        <p className="mt-1 text-sm leading-6">
+                          {program.objective || "El objetivo de este programa se informará próximamente."}
+                        </p>
+                      </div>
+                      <Badge variant="outline">
+                        {(program.editions ?? []).length}{" "}
+                        {(program.editions ?? []).length === 1
+                          ? "convocatoria disponible"
+                          : "convocatorias disponibles"}
+                      </Badge>
+                    </CardContent>
+                  </div>
+                </Card>
+
+                <section className="space-y-4" aria-labelledby="available-editions-title">
+                  <div>
+                    <h2 id="available-editions-title" className="font-heading text-xl font-medium">
+                      Convocatorias disponibles
+                    </h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Revisá las fechas, los cupos y las condiciones de cada convocatoria.
+                    </p>
+                  </div>
+
+                  {(program.editions ?? []).length === 0 ? (
+                    <Card>
+                      <CardContent className="text-sm text-muted-foreground">
+                        No hay convocatorias disponibles en este momento.
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <div className="grid gap-5">
+                      {(program.editions ?? []).map((edition) => (
+                        <EditionCard key={edition.id ?? edition.name} edition={edition} />
+                      ))}
+                    </div>
+                  )}
+                </section>
+
+                {(program.incompatibilities ?? []).length > 0 && (
+                  <section aria-labelledby="incompatibilities-title">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle id="incompatibilities-title" className="flex items-center gap-2">
+                          <IconBan className="size-5 text-muted-foreground" />
+                          Programas incompatibles
+                        </CardTitle>
+                        <CardDescription>
+                          Este programa no puede combinarse con los siguientes programas.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex flex-wrap gap-2">
+                        {(program.incompatibilities ?? []).map((incompatibility) => (
+                          <Button
+                            key={incompatibility.id ?? incompatibility.name}
+                            variant="outline"
+                            size="sm"
+                            render={
+                              <Link
+                                to="/portal/programas/$programaId"
+                                params={{ programaId: incompatibility.id ?? "" }}
+                              />
+                            }
+                          >
+                            {incompatibility.name || "Programa sin nombre"}
+                            <IconArrowUpRight />
+                          </Button>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  </section>
+                )}
+              </>
+            ) : null}
+          </main>
+        </div>
+      </SidebarShellContent>
+    </SidebarShell>
+  )
+}
+
+function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) {
+  const currentEnrollment = edition.currentEnrollment ?? 0
+  const maxCapacity = edition.maxCapacity ?? 0
+  const availableCapacity = edition.availableCapacity ?? Math.max(0, maxCapacity - currentEnrollment)
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">{edition.name || "Convocatoria sin nombre"}</CardTitle>
+        <CardDescription>
+          Del {formatProgramDate(edition.startDate)} al {formatProgramDate(edition.endDate)}
+        </CardDescription>
+        <CardAction>
+          <Badge variant={edition.status === "ACTIVE" ? "default" : "secondary"}>
+            {edition.status ? editionStatusLabels[edition.status] : "Sin estado"}
+          </Badge>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent className="space-y-6">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <SummaryItem icon={<IconCalendarEvent />} label="Inicio" value={formatProgramDate(edition.startDate)} />
+          <SummaryItem icon={<IconCalendarEvent />} label="Finalización" value={formatProgramDate(edition.endDate)} />
+          <SummaryItem icon={<IconUsers />} label="Personas inscriptas" value={String(currentEnrollment)} />
+          <SummaryItem icon={<IconUsers />} label="Vacantes disponibles" value={String(availableCapacity)} />
+        </div>
+
+        <Separator />
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <EditionBenefits benefits={edition.benefits ?? []} />
+          <EditionRequirements requirements={edition.requirements ?? []} />
+        </div>
+
+        <Separator />
+
+        <div className="space-y-3">
+          <div>
+            <h3 className="font-heading font-medium">Períodos de inscripción</h3>
+            <p className="text-sm text-muted-foreground">
+              Fechas habilitadas actualmente para presentar una solicitud.
+            </p>
+          </div>
+          {(edition.enrollmentPeriods ?? []).length === 0 ? (
+            <p className="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
+              No hay un período de inscripción abierto para esta convocatoria.
+            </p>
+          ) : (
+            <ItemGroup className="grid gap-3 md:grid-cols-2">
+              {(edition.enrollmentPeriods ?? []).map((period) => (
+                <Item key={period.id} variant="outline">
+                  <ItemMedia variant="icon">
+                    <IconClock className="text-primary" />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>Inscripción abierta</ItemTitle>
+                    <ItemDescription>
+                      Del {formatProgramDate(period.openDate)} al {formatProgramDate(period.closeDate)}
+                    </ItemDescription>
+                  </ItemContent>
+                  <Badge variant="secondary">Abierta</Badge>
+                </Item>
+              ))}
+            </ItemGroup>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function SummaryItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  return (
+    <Item variant="muted">
+      <ItemMedia variant="icon" className="text-primary">
+        {icon}
+      </ItemMedia>
+      <ItemContent>
+        <ItemDescription>{label}</ItemDescription>
+        <ItemTitle>{value}</ItemTitle>
+      </ItemContent>
+    </Item>
+  )
+}
+
+function EditionBenefits({ benefits }: { benefits: AvailableProgramBenefitResponse[] }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="font-heading font-medium">Beneficios</h3>
+        <p className="text-sm text-muted-foreground">Qué ofrece esta convocatoria.</p>
+      </div>
+      {benefits.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No hay beneficios informados.</p>
+      ) : (
+        <ItemGroup>
+          {benefits.map((benefit) => {
+            const details = [benefit.description, formatAmount(benefit.amount)].filter(Boolean).join(" · ")
+
+            return (
+              <Item key={benefit.id} variant="outline">
+                <ItemMedia variant="icon">
+                  <IconGift className="text-primary" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{benefit.type ? benefitLabels[benefit.type] : "Beneficio"}</ItemTitle>
+                  <ItemDescription>{details || "Beneficio incluido en la convocatoria."}</ItemDescription>
+                </ItemContent>
+              </Item>
+            )
+          })}
+        </ItemGroup>
+      )}
+    </div>
+  )
+}
+
+function EditionRequirements({ requirements }: { requirements: AvailableProgramRequirementResponse[] }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="font-heading font-medium">Requisitos</h3>
+        <p className="text-sm text-muted-foreground">Condiciones necesarias para postularte.</p>
+      </div>
+      {requirements.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No hay requisitos informados.</p>
+      ) : (
+        <ItemGroup>
+          {requirements.map((requirement) => {
+            const details = [
+              requirement.value ? `Valor requerido: ${requirement.value}` : undefined,
+              requirement.description,
+            ].filter(Boolean).join(" · ")
+
+            return (
+              <Item key={requirement.id} variant="outline">
+                <ItemMedia variant="icon">
+                  <IconChecklist className="text-primary" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>
+                    {requirement.type ? requirementLabels[requirement.type] : "Requisito"}
+                  </ItemTitle>
+                  <ItemDescription>{details || "Requisito obligatorio."}</ItemDescription>
+                </ItemContent>
+              </Item>
+            )
+          })}
+        </ItemGroup>
+      )}
+    </div>
+  )
+}
+
+function ProgramDetailSkeleton() {
+  return (
+    <div className="space-y-8" aria-label="Cargando programa">
+      <Card className="gap-0 overflow-hidden py-0 lg:grid lg:grid-cols-2">
+        <Skeleton className="aspect-[1.91/1] w-full rounded-none lg:min-h-80" />
+        <div className="space-y-5 p-6">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-20 w-full" />
+        </div>
+      </Card>
+      <div className="space-y-4">
+        <Skeleton className="h-7 w-64" />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-4 w-1/2" />
+          </CardHeader>
+          <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="h-18 w-full" />
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
 }
