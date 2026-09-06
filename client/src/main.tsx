@@ -1,12 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider } from '@tanstack/react-router'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { z } from 'zod'
 import { es } from 'zod/locales'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { registerAuthInterceptor } from '@/lib/auth-interceptor'
+import { queryClient, router } from './router'
 import './index.css'
+
+registerAuthInterceptor()
 
 z.config({
   ...es(),
@@ -15,21 +19,6 @@ z.config({
       ? "Este campo es obligatorio."
       : undefined,
 })
-
-const queryClient = new QueryClient()
-
-// Importar el árbol de rutas generado
-import { routeTree } from './routeTree.gen'
-const router = createRouter({
-  routeTree,
-  context: { queryClient },
-})
-// Registrar el router en el módulo '@tanstack/react-router'
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
-}
 
 console.log("Current environment: ", import.meta.env.MODE)
 console.log("Using server URL: ", import.meta.env.VITE_SERVER_URL)
