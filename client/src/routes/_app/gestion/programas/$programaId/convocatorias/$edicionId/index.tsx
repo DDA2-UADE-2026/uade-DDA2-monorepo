@@ -19,7 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list1QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
+import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list2QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
 import { zUpdateProgramEditionRequest } from "@/generated/zod.gen"
 
 const updateEditionSchema = zUpdateProgramEditionRequest.required().extend({
@@ -38,7 +38,7 @@ function RouteComponent() {
   const client = useQueryClient()
   const [closeDialogOpen, setCloseDialogOpen] = useState(false)
   const query = useQuery(findById3Options({ path: { id: edicionId } }))
-  const refresh = () => { client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); client.invalidateQueries({ queryKey: list1QueryKey({ path: { programId: programaId } }) }) }
+  const refresh = () => { client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); client.invalidateQueries({ queryKey: list2QueryKey({ path: { programId: programaId } }) }) }
   const update = useMutation({ ...update3Mutation(), onSuccess: refresh, onError: showApiErrorToast })
   const activate = useMutation({ ...activateMutation(), onSuccess: refresh, onError: showApiErrorToast })
   const suspend = useMutation({ ...suspendMutation(), onSuccess: refresh, onError: showApiErrorToast })

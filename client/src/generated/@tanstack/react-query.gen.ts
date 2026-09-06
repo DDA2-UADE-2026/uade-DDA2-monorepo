@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, close, closeEnrollmentPeriod, create, create1, create2, create3, create4, create5, create6, createEnrollmentPeriod, delete_, delete1, delete2, delete3, delete4, delete5, delete6, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, getAvailableProgram, getEnrollmentPeriod, health, info, links, list, list1, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, reopenEnrollmentPeriod, selectRole, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, updateEnrollmentPeriod } from '../sdk.gen';
-import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, SelectRoleData, SelectRoleError, SelectRoleResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateResponse } from '../types.gen';
+import { activate, close, closeEnrollmentPeriod, create, create1, create2, create3, create4, create5, create6, createEnrollmentPeriod, delete_, delete1, delete2, delete3, delete4, delete5, delete6, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, getAvailableProgram, getEnrollmentPeriod, health, info, links, list, list1, list2, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, reopenEnrollmentPeriod, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, updateEnrollmentPeriod } from '../sdk.gen';
+import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -564,9 +564,9 @@ export const loginMutation = (options?: Partial<Options<LoginData>>): UseMutatio
 export const listQueryKey = (options?: Options<ListData>) => createQueryKey('list', options);
 
 /**
- * Listar programas
+ * Listar mis solicitudes
  *
- * Devuelve una página del catálogo de programas sociales.
+ * Solo solicitudes propias, ordenadas por número descendente. Requiere applications:own:view.
  */
 export const listOptions = (options?: Options<ListData>) => queryOptions<ListResponse, ListError, ListResponse, ReturnType<typeof listQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -613,9 +613,9 @@ const createInfiniteParams = <K extends Pick<QueryKey<Options>[0], 'body' | 'hea
 export const listInfiniteQueryKey = (options?: Options<ListData>): QueryKey<Options<ListData>> => createQueryKey('list', options, true);
 
 /**
- * Listar programas
+ * Listar mis solicitudes
  *
- * Devuelve una página del catálogo de programas sociales.
+ * Solo solicitudes propias, ordenadas por número descendente. Requiere applications:own:view.
  */
 export const listInfiniteOptions = (options?: Options<ListData>) => {
     const opts = infiniteQueryOptions<ListResponse, ListError, InfiniteData<ListResponse>, QueryKey<Options<ListData>>, number | Pick<QueryKey<Options<ListData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
@@ -638,6 +638,77 @@ export const listInfiniteOptions = (options?: Options<ListData>) => {
             return data;
         },
         queryKey: listInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Presentar una solicitud propia
+ *
+ * Requiere applications:own:create en el rol activo. La convocatoria debe estar OPEN y vigente y la edición ACTIVE. No consume ni requiere cupo disponible. Una sola solicitud por usuario y convocatoria; en otra convocatoria de la misma edición solo se permite si todas las anteriores están REJECTED o CLOSED. El cuerpo solo admite enrollmentPeriodId.
+ */
+export const submitMutation = (options?: Partial<Options<SubmitData>>): UseMutationOptions<SubmitResponse, SubmitError, Options<SubmitData>> => {
+    const mutationOptions: UseMutationOptions<SubmitResponse, SubmitError, Options<SubmitData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await submit({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const list1QueryKey = (options?: Options<List1Data>) => createQueryKey('list1', options);
+
+/**
+ * Listar programas
+ *
+ * Devuelve una página del catálogo de programas sociales.
+ */
+export const list1Options = (options?: Options<List1Data>) => queryOptions<List1Response, List1Error, List1Response, ReturnType<typeof list1QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list1({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list1QueryKey(options)
+});
+
+export const list1InfiniteQueryKey = (options?: Options<List1Data>): QueryKey<Options<List1Data>> => createQueryKey('list1', options, true);
+
+/**
+ * Listar programas
+ *
+ * Devuelve una página del catálogo de programas sociales.
+ */
+export const list1InfiniteOptions = (options?: Options<List1Data>) => {
+    const opts = infiniteQueryOptions<List1Response, List1Error, InfiniteData<List1Response>, QueryKey<Options<List1Data>>, number | Pick<QueryKey<Options<List1Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<List1Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await list1({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: list1InfiniteQueryKey(options)
     });
     return opts as Omit<typeof opts, 'initialData'>;
 };
@@ -924,16 +995,16 @@ export const create5Mutation = (options?: Partial<Options<Create5Data>>): UseMut
     return mutationOptions;
 };
 
-export const list1QueryKey = (options: Options<List1Data>) => createQueryKey('list1', options);
+export const list2QueryKey = (options: Options<List2Data>) => createQueryKey('list2', options);
 
 /**
  * Listar ediciones
  *
  * Devuelve una página de ediciones pertenecientes a un programa.
  */
-export const list1Options = (options: Options<List1Data>) => queryOptions<List1Response, List1Error, List1Response, ReturnType<typeof list1QueryKey>>({
+export const list2Options = (options: Options<List2Data>) => queryOptions<List2Response, List2Error, List2Response, ReturnType<typeof list2QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list1({
+        const { data } = await list2({
             ...options,
             ...queryKey[0],
             signal,
@@ -941,29 +1012,29 @@ export const list1Options = (options: Options<List1Data>) => queryOptions<List1R
         });
         return data;
     },
-    queryKey: list1QueryKey(options)
+    queryKey: list2QueryKey(options)
 });
 
-export const list1InfiniteQueryKey = (options: Options<List1Data>): QueryKey<Options<List1Data>> => createQueryKey('list1', options, true);
+export const list2InfiniteQueryKey = (options: Options<List2Data>): QueryKey<Options<List2Data>> => createQueryKey('list2', options, true);
 
 /**
  * Listar ediciones
  *
  * Devuelve una página de ediciones pertenecientes a un programa.
  */
-export const list1InfiniteOptions = (options: Options<List1Data>) => {
-    const opts = infiniteQueryOptions<List1Response, List1Error, InfiniteData<List1Response>, QueryKey<Options<List1Data>>, number | Pick<QueryKey<Options<List1Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const list2InfiniteOptions = (options: Options<List2Data>) => {
+    const opts = infiniteQueryOptions<List2Response, List2Error, InfiniteData<List2Response>, QueryKey<Options<List2Data>>, number | Pick<QueryKey<Options<List2Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
     // @ts-ignore
     {
         queryFn: async ({ pageParam, queryKey, signal }) => {
             // @ts-ignore
-            const page: Pick<QueryKey<Options<List1Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            const page: Pick<QueryKey<Options<List2Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
                 query: {
                     page: pageParam
                 }
             };
             const params = createInfiniteParams(queryKey, page);
-            const { data } = await list1({
+            const { data } = await list2({
                 ...options,
                 ...params,
                 signal,
@@ -971,7 +1042,7 @@ export const list1InfiniteOptions = (options: Options<List1Data>) => {
             });
             return data;
         },
-        queryKey: list1InfiniteQueryKey(options)
+        queryKey: list2InfiniteQueryKey(options)
     });
     return opts as Omit<typeof opts, 'initialData'>;
 };
@@ -985,6 +1056,25 @@ export const create6Mutation = (options?: Partial<Options<Create6Data>>): UseMut
     const mutationOptions: UseMutationOptions<Create6Response, Create6Error, Options<Create6Data>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await create6({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Registrar una solicitud asistida
+ *
+ * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. Registrar para otra persona no habilita a consultar sus solicitudes: no se agrega un detalle administrativo.
+ */
+export const submit1Mutation = (options?: Partial<Options<Submit1Data>>): UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> => {
+    const mutationOptions: UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await submit1({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1222,6 +1312,26 @@ export const getAvailableProgramOptions = (options: Options<GetAvailableProgramD
         return data;
     },
     queryKey: getAvailableProgramQueryKey(options)
+});
+
+export const getQueryKey = (options: Options<GetData>) => createQueryKey('get', options);
+
+/**
+ * Consultar una solicitud propia
+ *
+ * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
+ */
+export const getOptions = (options: Options<GetData>) => queryOptions<unknown, GetError, unknown, ReturnType<typeof getQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await get({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getQueryKey(options)
 });
 
 export const findAll5QueryKey = (options: Options<FindAll5Data>) => createQueryKey('findAll5', options);

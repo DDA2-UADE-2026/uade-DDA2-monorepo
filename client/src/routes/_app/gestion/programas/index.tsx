@@ -23,7 +23,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
-import { create2Mutation, listOptions, listQueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create2Mutation, list1Options, list1QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { CreateProgramRequest } from "@/generated/types.gen"
 import { zCreateProgramRequest } from "@/generated/zod.gen"
 
@@ -45,7 +45,7 @@ function RouteComponent() {
   const navigate = useNavigate({ from: Route.fullPath })
   const [createOpen, setCreateOpen] = useState(false)
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } = useQuery(
-    listOptions({ query: { page: page - 1, size: PAGE_SIZE } }),
+    list1Options({ query: { page: page - 1, size: PAGE_SIZE } }),
   )
   const programs = data?.content ?? []
   const totalItems = Number(data?.totalElements ?? 0)
@@ -122,7 +122,7 @@ function CreateProgramDialog({ onOpenChange }: { onOpenChange: (open: boolean) =
   const createProgram = useMutation({
     ...create2Mutation(),
     onSuccess: (program) => {
-      queryClient.invalidateQueries({ queryKey: listQueryKey() })
+      queryClient.invalidateQueries({ queryKey: list1QueryKey() })
       onOpenChange(false)
       if (program.id) {
         navigate({

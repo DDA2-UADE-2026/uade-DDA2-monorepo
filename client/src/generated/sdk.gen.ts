@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, DeleteData, DeleteErrors, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateResponses } from './types.gen';
+import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, DeleteData, DeleteErrors, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, SelectRoleData, SelectRoleErrors, SelectRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -362,11 +362,37 @@ export const login = <ThrowOnError extends boolean = false>(options: Options<Log
 });
 
 /**
+ * Listar mis solicitudes
+ *
+ * Solo solicitudes propias, ordenadas por número descendente. Requiere applications:own:view.
+ */
+export const list = <ThrowOnError extends boolean = false>(options?: Options<ListData, ThrowOnError>): RequestResult<ListResponses, ListErrors, ThrowOnError> => (options?.client ?? client).get<ListResponses, ListErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/applications',
+    ...options
+});
+
+/**
+ * Presentar una solicitud propia
+ *
+ * Requiere applications:own:create en el rol activo. La convocatoria debe estar OPEN y vigente y la edición ACTIVE. No consume ni requiere cupo disponible. Una sola solicitud por usuario y convocatoria; en otra convocatoria de la misma edición solo se permite si todas las anteriores están REJECTED o CLOSED. El cuerpo solo admite enrollmentPeriodId.
+ */
+export const submit = <ThrowOnError extends boolean = false>(options: Options<SubmitData, ThrowOnError>): RequestResult<SubmitResponses, SubmitErrors, ThrowOnError> => (options.client ?? client).post<SubmitResponses, SubmitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/applications',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Listar programas
  *
  * Devuelve una página del catálogo de programas sociales.
  */
-export const list = <ThrowOnError extends boolean = false>(options?: Options<ListData, ThrowOnError>): RequestResult<ListResponses, ListErrors, ThrowOnError> => (options?.client ?? client).get<ListResponses, ListErrors, ThrowOnError>({
+export const list1 = <ThrowOnError extends boolean = false>(options?: Options<List1Data, ThrowOnError>): RequestResult<List1Responses, List1Errors, ThrowOnError> => (options?.client ?? client).get<List1Responses, List1Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/programs',
     ...options
@@ -536,7 +562,7 @@ export const create5 = <ThrowOnError extends boolean = false>(options: Options<C
  *
  * Devuelve una página de ediciones pertenecientes a un programa.
  */
-export const list1 = <ThrowOnError extends boolean = false>(options: Options<List1Data, ThrowOnError>): RequestResult<List1Responses, List1Errors, ThrowOnError> => (options.client ?? client).get<List1Responses, List1Errors, ThrowOnError>({
+export const list2 = <ThrowOnError extends boolean = false>(options: Options<List2Data, ThrowOnError>): RequestResult<List2Responses, List2Errors, ThrowOnError> => (options.client ?? client).get<List2Responses, List2Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/program-editions/program/{programId}',
     ...options
@@ -550,6 +576,21 @@ export const list1 = <ThrowOnError extends boolean = false>(options: Options<Lis
 export const create6 = <ThrowOnError extends boolean = false>(options: Options<Create6Data, ThrowOnError>): RequestResult<Create6Responses, Create6Errors, ThrowOnError> => (options.client ?? client).post<Create6Responses, Create6Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/program-editions/program/{programId}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Registrar una solicitud asistida
+ *
+ * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. Registrar para otra persona no habilita a consultar sus solicitudes: no se agrega un detalle administrativo.
+ */
+export const submit1 = <ThrowOnError extends boolean = false>(options: Options<Submit1Data, ThrowOnError>): RequestResult<Submit1Responses, Submit1Errors, ThrowOnError> => (options.client ?? client).post<Submit1Responses, Submit1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/applications',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -664,6 +705,17 @@ export const listAvailablePrograms = <ThrowOnError extends boolean = false>(opti
 export const getAvailableProgram = <ThrowOnError extends boolean = false>(options: Options<GetAvailableProgramData, ThrowOnError>): RequestResult<GetAvailableProgramResponses, GetAvailableProgramErrors, ThrowOnError> => (options.client ?? client).get<GetAvailableProgramResponses, GetAvailableProgramErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/programs/{id}',
+    ...options
+});
+
+/**
+ * Consultar una solicitud propia
+ *
+ * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
+ */
+export const get = <ThrowOnError extends boolean = false>(options: Options<GetData, ThrowOnError>): RequestResult<unknown, GetErrors, ThrowOnError> => (options.client ?? client).get<unknown, GetErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/applications/{id}',
     ...options
 });
 
