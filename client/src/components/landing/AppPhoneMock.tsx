@@ -2,41 +2,16 @@ import {
   IconArrowUpRight,
   IconBell,
   IconCalendarEvent,
-  IconCheck,
   IconHeartHandshake,
   IconHome2,
-  IconHomeCheck,
   IconMessageCircle,
-  IconStethoscope,
   IconUser,
 } from "@tabler/icons-react"
+import { useQuery } from "@tanstack/react-query"
 
+import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.gen"
 import { useMe } from "@/hooks/use-auth"
 import { cn } from "@/lib/utils"
-
-const MOCK_CASOS = [
-  {
-    icon: IconHeartHandshake,
-    title: "Programa Primera Infancia",
-    subtitle: "Actualizado hoy",
-    status: "Aprobado",
-    statusClass: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-  },
-  {
-    icon: IconHomeCheck,
-    title: "Visita social domiciliaria",
-    subtitle: "Vie 21 ago · 10:00",
-    status: "Programada",
-    statusClass: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  },
-  {
-    icon: IconStethoscope,
-    title: "Turno salud comunitaria",
-    subtitle: "CeSAC N.º 12",
-    status: "Pendiente",
-    statusClass: "bg-muted text-muted-foreground",
-  },
-]
 
 const NAV_ICONS = [
   { icon: IconHome2, active: true },
@@ -45,11 +20,25 @@ const NAV_ICONS = [
   { icon: IconUser, active: false },
 ]
 
-/** Decorative phone-frame mock of the app's "Mis programas sociales" screen. */
+const MAX_VISIBLE_PROGRAMS = 3
+
+function formatProgramDate(value?: string) {
+  if (!value) return "Fecha a confirmar"
+
+  const [year, month, day] = value.split("-").map(Number)
+  return new Intl.DateTimeFormat("es-AR", { day: "numeric", month: "short" }).format(new Date(year, month - 1, day))
+}
+
+/** Phone-frame preview of the app's available programs screen. */
 function AppPhoneMock() {
   const { data } = useMe()
+  const programsQuery = useQuery(
+    listAvailableProgramsOptions({ query: { page: 0, size: MAX_VISIBLE_PROGRAMS } }),
+  )
   const user = data?.user
   const firstName = (user?.name || user?.username)?.split(" ")[0]
+  const programs = (programsQuery.data?.content ?? []).slice(0, MAX_VISIBLE_PROGRAMS)
+  const totalPrograms = programsQuery.data?.totalElements ?? programs.length
 
   return (
     <div
@@ -61,12 +50,12 @@ function AppPhoneMock() {
 
       <div className="absolute right-0 top-20 z-20 hidden w-48 rounded-2xl border border-white/40 bg-background/75 p-3.5 shadow-xl shadow-primary/10 backdrop-blur-xl sm:block dark:border-white/10">
         <div className="flex items-start gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm">
-            <IconCheck className="size-5" stroke={3} />
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+            <IconHeartHandshake className="size-5" />
           </span>
           <div>
-            <p className="text-xs font-semibold text-foreground">Solicitud aprobada</p>
-            <p className="mt-0.5 text-[10px] leading-4 text-muted-foreground">Tu beneficio ya está activo.</p>
+            <p className="text-xs font-semibold text-foreground">Nuevas oportunidades</p>
+            <p className="mt-0.5 text-[10px] leading-4 text-muted-foreground">Conocé los programas vigentes.</p>
           </div>
         </div>
       </div>
@@ -101,7 +90,7 @@ function AppPhoneMock() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px] font-medium text-primary">Hola, {firstName || "Sofía"}</p>
-                <p className="font-heading text-base font-semibold tracking-tight">Tu espacio social</p>
+                <p className="font-heading text-base font-semibold tracking-tight">Municipalidad UADE</p>
               </div>
               <span className="relative flex size-9 items-center justify-center rounded-full bg-card text-muted-foreground shadow-sm ring-1 ring-border">
                 <IconBell className="size-4" />
@@ -114,37 +103,70 @@ function AppPhoneMock() {
               <div className="absolute -bottom-9 right-12 size-20 rounded-full bg-white/5" />
               <div className="relative">
                 <div className="flex items-center justify-between">
-                  <p className="text-[10px] font-medium text-primary-foreground/70">TU ACTIVIDAD</p>
+                  <p className="text-[10px] font-medium text-primary-foreground/70">PARA VOS</p>
                   <IconArrowUpRight className="size-4 text-primary-foreground/70" />
                 </div>
-                <p className="mt-2 text-2xl font-semibold tracking-tight">3 gestiones</p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight">
+                  {programsQuery.isPending || programsQuery.isError
+                    ? "—"
+                    : `${totalPrograms} programa${totalPrograms === 1 ? "" : "s"}`}
+                </p>
                 <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-black/15">
-                  <div className="h-full w-3/4 rounded-full bg-white" />
+                  <div className="h-full w-full rounded-full bg-white" />
                 </div>
-                <p className="mt-2 text-[10px] text-primary-foreground/70">Todo está al día</p>
+                <p className="mt-2 text-[10px] text-primary-foreground/70">Vigentes y próximos a comenzar</p>
               </div>
             </div>
 
             <div className="mt-5 flex items-center justify-between">
-              <p className="text-xs font-semibold">Mis gestiones</p>
-              <p className="text-[10px] font-medium text-primary">Ver todas</p>
+              <p className="text-xs font-semibold">Programas disponibles</p>
+              {totalPrograms > MAX_VISIBLE_PROGRAMS && <p className="text-[10px] font-medium text-primary">Ver todos</p>}
             </div>
 
             <div className="mt-2.5 flex flex-col gap-2.5">
-              {MOCK_CASOS.map(({ icon: Icon, title, subtitle, status, statusClass }) => (
-                <div key={title} className="flex items-center gap-2.5 rounded-2xl bg-card/90 p-2.5 shadow-sm ring-1 ring-border/70">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                    <Icon className="size-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[11px] font-semibold">{title}</p>
-                    <p className="truncate text-[9px] text-muted-foreground">{subtitle}</p>
+              {programsQuery.isPending ? (
+                Array.from({ length: MAX_VISIBLE_PROGRAMS }).map((_, index) => (
+                  <div key={index} className="flex animate-pulse items-center gap-2.5 rounded-2xl bg-card/90 p-2.5 shadow-sm ring-1 ring-border/70">
+                    <span className="size-9 shrink-0 rounded-xl bg-muted" />
+                    <span className="flex flex-1 flex-col gap-1.5">
+                      <span className="h-2.5 w-3/4 rounded bg-muted" />
+                      <span className="h-2 w-1/2 rounded bg-muted" />
+                    </span>
                   </div>
-                  <span className={cn("shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-semibold", statusClass)}>
-                    {status}
-                  </span>
+                ))
+              ) : programsQuery.isError ? (
+                <div className="rounded-2xl bg-card/90 p-3 text-center shadow-sm ring-1 ring-border/70">
+                  <p className="text-[10px] font-medium">No pudimos cargar los programas.</p>
+                  <button type="button" className="mt-1 text-[9px] font-semibold text-primary" onClick={() => programsQuery.refetch()}>
+                    Reintentar
+                  </button>
                 </div>
-              ))}
+              ) : programs.length === 0 ? (
+                <div className="rounded-2xl bg-card/90 p-3 text-center shadow-sm ring-1 ring-border/70">
+                  <p className="text-[10px] text-muted-foreground">No hay programas disponibles por el momento.</p>
+                </div>
+              ) : (
+                programs.map((program) => {
+                  const editionCount = program.availableEditions ?? 0
+
+                  return (
+                    <div key={program.id ?? program.name} className="flex items-center gap-2.5 rounded-2xl bg-card/90 p-2.5 shadow-sm ring-1 ring-border/70">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <IconHeartHandshake className="size-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[11px] font-semibold">{program.name}</p>
+                        <p className="truncate text-[9px] text-muted-foreground">
+                          Próxima edición: {formatProgramDate(program.nextEditionStartDate)}
+                        </p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[8px] font-semibold text-emerald-700 dark:text-emerald-400">
+                        {editionCount} {editionCount === 1 ? "edición" : "ediciones"}
+                      </span>
+                    </div>
+                  )
+                })
+              )}
             </div>
 
             <div className="mt-auto grid grid-cols-4 gap-1 rounded-2xl bg-card/95 p-1.5 shadow-sm ring-1 ring-border/70">
