@@ -148,7 +148,7 @@ Presentación y log `CREATE` de tipo `application` se confirman en una única tr
 
 La secuencia garantiza unicidad y crecimiento de los valores asignados. Los números pueden tener saltos y las transacciones concurrentes pueden confirmarse en distinto orden. `SOL-000015432` es un formato de presentación, no el valor almacenado.
 
-Al recrear la base de pruebas, iniciar el backend con la configuración habitual de generación del esquema y luego ejecutar manualmente `docs/init.sql`. No es necesario crear la secuencia a mano. El esquema documentado está en `docs/api-entities.dbml`.
+Al recrear la base de pruebas, iniciar el backend con la configuración habitual de generación del esquema y luego ejecutar manualmente `docs/database/init.sql`. No es necesario crear la secuencia a mano. El esquema documentado está en `docs/database/api-entities.dbml`.
 
 Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante, registrante, trabajador, cargador o revisor vinculado; las FK protegen también las referencias a ediciones, convocatorias, requisitos y archivos. Las tablas nuevas se crean con Hibernate al recrear el esquema; no se agrega una migración ni se completa información histórica automáticamente.
 
@@ -160,7 +160,7 @@ El init incorpora `applications:management:create`, `applications:management:doc
 
 Las cuentas de ejemplo `admin` y `viewer` también reciben `CIUDADANO` al ejecutar el init. En una base nueva, ambas deben seleccionar rol después del login. La gestión de roles del ABM conserva la asignación explícita existente; no se cambió para agregar roles automáticamente.
 
-La colección `docs/program-feature.postman_collection.json` incorpora la carpeta **Solicitudes propias**. Configurar un JWT con los permisos correspondientes y `enrollmentPeriodId`; ejecutar presentación, reintento, listado y detalle. La presentación guarda `applicationId`, `applicationNumber` y `applicationIdempotencyKey`. Borrar la clave antes de iniciar una presentación diferente, y conservarla para reintentar la anterior. Las peticiones negativas indican sus precondiciones.
+La colección `docs/postman/program-feature.postman_collection.json` incorpora la carpeta **Solicitudes propias**. Configurar un JWT con los permisos correspondientes y `enrollmentPeriodId`; ejecutar presentación, reintento, listado y detalle. La presentación guarda `applicationId`, `applicationNumber` y `applicationIdempotencyKey`. Borrar la clave antes de iniciar una presentación diferente, y conservarla para reintentar la anterior. Las peticiones negativas indican sus precondiciones.
 
 La carpeta **Solicitudes asistidas** usa `assistedAccessToken` con permiso administrativo, `assistedApplicantUserId` y `enrollmentPeriodId`. Conserva `assistedApplicationId`, `assistedApplicationNumber`, `assistedRegisteredByUserId` y `assistedIdempotencyKey` para comprobar reintentos. Para comprobar el detalle propio del titular, configurar `assistedApplicantAccessToken`. No reutilizar la clave para otra convocatoria del mismo titular.
 

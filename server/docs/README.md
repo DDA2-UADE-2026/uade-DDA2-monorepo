@@ -8,9 +8,27 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 
 | Lectura | Qué vas a entender |
 | --- | --- |
-| [Program — Programas y ediciones](program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
-| [EnrollmentPeriod — Convocatorias](enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
-| [Application — Solicitudes](application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cuándo puede volver a solicitar. |
+| [Program — Programas y ediciones](functional/program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
+| [EnrollmentPeriod — Convocatorias](functional/enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
+| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cuándo puede volver a solicitar. |
+| [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
+
+## Organización de `/docs`
+
+| Carpeta | Contenido |
+| --- | --- |
+| [`functional/`](functional/) | Guías de negocio y recorridos de programas, convocatorias, solicitudes y documentos. |
+| [`technical/`](technical/) | Contratos, seguridad, decisiones técnicas y verificación del backend. |
+| [`database/`](database/) | Modelo DBML y datos iniciales para recrear el entorno de pruebas. |
+| [`postman/`](postman/) | Colección de Postman del backend. |
+
+Recursos principales:
+
+- [Contrato técnico de solicitudes y documentos](technical/solicitudes-beneficios.md)
+- [Análisis de seguridad y preparación para Ciudadanos](technical/seguridad-ciudadanos-analisis.md)
+- [Modelo de datos](database/api-entities.dbml)
+- [Datos iniciales](database/init.sql)
+- [Colección de Postman](postman/program-feature.postman_collection.json)
 
 El orden recomendado es programa, convocatoria y solicitud. Primero se prepara la oferta, luego se habilita su recepción y finalmente las personas se presentan.
 

@@ -1,6 +1,6 @@
 # Program — Programas y ediciones
 
-[Inicio de la guía](README.md) · [Convocatorias](enrollmentperiod.md) · [Solicitudes](application.md)
+[Inicio de la guía](../README.md) · [Convocatorias](enrollmentperiod.md) · [Solicitudes](application.md)
 
 ## Qué resuelve esta funcionalidad
 

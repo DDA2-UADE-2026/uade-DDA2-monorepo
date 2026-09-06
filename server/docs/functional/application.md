@@ -1,6 +1,6 @@
 # Application — Solicitudes de beneficios
 
-[Inicio de la guía](README.md) · [Programas y ediciones](program.md) · [Convocatorias](enrollmentperiod.md)
+[Inicio de la guía](../README.md) · [Flujo completo y archivos](application-flow.md) · [Programas y ediciones](program.md) · [Convocatorias](enrollmentperiod.md)
 
 ## Qué representa una solicitud
 
