@@ -42,6 +42,7 @@ import type {
   LogResponse,
   UserManagementResponse,
 } from "@/generated/types.gen"
+import { zListLogsByEntityPath } from "@/generated/zod.gen"
 
 type EntityType = NonNullable<LogResponse["entityType"]>
 type Filter =
@@ -62,12 +63,18 @@ const actionLabels: Record<NonNullable<LogResponse["action"]>, string> = {
   LOGIN: "Inicio de sesión",
 }
 
-const entityLabels: Record<EntityType, string> = {
+const entityLabels: Partial<Record<EntityType, string>> = {
   PERMISSION: "Permiso",
   ROLE: "Rol",
   USER: "Usuario",
   ENROLLMENT_PERIOD: "Período de inscripción",
   APPLICATION: "Solicitud",
+}
+const entityTypes: readonly EntityType[] =
+  zListLogsByEntityPath.shape.entityType.options
+
+function getEntityLabel(entityType: EntityType): string {
+  return entityLabels[entityType] ?? entityType
 }
 
 const actionStyles: Record<NonNullable<LogResponse["action"]>, string> = {
@@ -211,13 +218,13 @@ function RouteComponent() {
                     >
                       <SelectTrigger id="audit-entity-type" className="w-full">
                         <SelectValue>
-                          {(value: EntityType) => entityLabels[value]}
+                          {(value: EntityType) => getEntityLabel(value)}
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent className={"min-w-54"}>
-                        {Object.entries(entityLabels).map(([value, label]) => (
+                        {entityTypes.map((value) => (
                           <SelectItem key={value} value={value}>
-                            {label}
+                            {getEntityLabel(value)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -367,7 +374,7 @@ function RouteComponent() {
                           </TableCell>
                           <TableCell>
                             {log.entityType
-                              ? entityLabels[log.entityType]
+                              ? getEntityLabel(log.entityType)
                               : "—"}
                           </TableCell>
                           <TableCell className="font-mono text-xs text-muted-foreground">
