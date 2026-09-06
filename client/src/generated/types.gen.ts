@@ -539,6 +539,85 @@ export type LoginRequest = {
 };
 
 /**
+ * Presenta una solicitud propia. Solo admite enrollmentPeriodId; el usuario proviene del JWT.
+ */
+export type CreateApplicationRequest = {
+    /**
+     * Convocatoria abierta y vigente; determina automáticamente la edición.
+     */
+    enrollmentPeriodId: string;
+};
+
+/**
+ * Respuesta estándar de error de la API.
+ */
+export type ErrorResponse = {
+    /**
+     * Mensaje legible que explica el error.
+     */
+    message?: string;
+    /**
+     * Código estable y procesable del error.
+     */
+    code?: string;
+    /**
+     * Código de estado HTTP.
+     */
+    status?: number;
+    /**
+     * Instante UTC en el que ocurrió el error.
+     */
+    timestamp?: string;
+    /**
+     * Ruta de la solicitud que produjo el error.
+     */
+    path?: string;
+    /**
+     * Errores de validación asociados a campos, cuando corresponda.
+     */
+    fields?: Array<FieldErrorResponse>;
+};
+
+/**
+ * Detalle de un campo que no superó la validación.
+ */
+export type FieldErrorResponse = {
+    /**
+     * Nombre del campo inválido.
+     */
+    field?: string;
+    /**
+     * Motivo por el cual el valor fue rechazado.
+     */
+    message?: string;
+};
+
+/**
+ * Solicitud y referencias a su titular y registrante. No expone datos personales ni internos de idempotencia.
+ */
+export type ApplicationResponse = {
+    id?: string;
+    /**
+     * Número global único, generado por secuencia. Puede haber saltos.
+     */
+    applicationNumber?: number;
+    /**
+     * ID interno del usuario titular de la solicitud.
+     */
+    userId?: number;
+    /**
+     * ID interno de quien registró la solicitud, obtenido del JWT. En una presentación propia coincide con userId.
+     */
+    registeredByUserId?: number;
+    programEditionId?: string;
+    enrollmentPeriodId?: string;
+    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    submittedAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
  * Datos requeridos para crear un programa social.
  */
 export type CreateProgramRequest = {
@@ -651,6 +730,17 @@ export type CreateProgramEditionRequest = {
 };
 
 /**
+ * Presentación asistida para un usuario existente. Quien registra se obtiene exclusivamente del JWT.
+ */
+export type CreateAssistedApplicationRequest = {
+    /**
+     * ID interno del solicitante en users; no es un citizenId externo.
+     */
+    userId: number;
+    enrollmentPeriodId: string;
+};
+
+/**
  * Permiso disponible en el sistema.
  */
 export type PermissionResponse = {
@@ -701,7 +791,7 @@ export type LogResponse = {
     /**
      * Tipo de entidad afectada.
      */
-    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD';
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION';
     /**
      * Identificador de la entidad afectada.
      */
@@ -938,6 +1028,14 @@ export type AvailableProgramRequirementResponse = {
     readonly description?: string;
 };
 
+export type ApplicationListResponse = {
+    content?: Array<ApplicationResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
 /**
  * Resumen de un programa incluido en un listado.
  */
@@ -1157,50 +1255,6 @@ export type ProgramEditionOptionResponse = {
 export type Link = {
     href?: string;
     templated?: boolean;
-};
-
-/**
- * Respuesta estándar de error de la API.
- */
-export type ErrorResponse = {
-    /**
-     * Mensaje legible que explica el error.
-     */
-    message?: string;
-    /**
-     * Código estable y procesable del error.
-     */
-    code?: string;
-    /**
-     * Código de estado HTTP.
-     */
-    status?: number;
-    /**
-     * Instante UTC en el que ocurrió el error.
-     */
-    timestamp?: string;
-    /**
-     * Ruta de la solicitud que produjo el error.
-     */
-    path?: string;
-    /**
-     * Errores de validación asociados a campos, cuando corresponda.
-     */
-    fields?: Array<FieldErrorResponse>;
-};
-
-/**
- * Detalle de un campo que no superó la validación.
- */
-export type FieldErrorResponse = {
-    /**
-     * Nombre del campo inválido.
-     */
-    field?: string;
-    /**
-     * Motivo por el cual el valor fue rechazado.
-     */
-    message?: string;
 };
 
 /**
@@ -2578,16 +2632,10 @@ export type ListData = {
     body?: never;
     path?: never;
     query?: {
-        /**
-         * Número de página, comenzando en cero.
-         */
         page?: number;
-        /**
-         * Cantidad de elementos por página, entre 1 y 100.
-         */
         size?: number;
     };
-    url: '/api/admin/programs';
+    url: '/api/applications';
 };
 
 export type ListErrors = {
@@ -2615,10 +2663,111 @@ export type ListResponses = {
     /**
      * OK
      */
-    200: ProgramListResponse;
+    200: ApplicationListResponse;
 };
 
 export type ListResponse = ListResponses[keyof ListResponses];
+
+export type SubmitData = {
+    body: CreateApplicationRequest;
+    headers?: {
+        /**
+         * Opcional. 1–128 caracteres ASCII visibles sin espacios, sensible a mayúsculas. Se conserva por usuario durante la vida de la solicitud. Misma clave y convocatoria: replay; otra convocatoria: 409.
+         */
+        'Idempotency-Key'?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/applications';
+};
+
+export type SubmitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Convocatoria inexistente.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SubmitError = SubmitErrors[keyof SubmitErrors];
+
+export type SubmitResponses = {
+    /**
+     * Reintento: se devuelve la solicitud original sin crear otra ni repetir la auditoría.
+     */
+    200: ApplicationResponse;
+    /**
+     * Solicitud presentada con número único.
+     */
+    201: ApplicationResponse;
+};
+
+export type SubmitResponse = SubmitResponses[keyof SubmitResponses];
+
+export type List1Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/admin/programs';
+};
+
+export type List1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List1Error = List1Errors[keyof List1Errors];
+
+export type List1Responses = {
+    /**
+     * OK
+     */
+    200: ProgramListResponse;
+};
+
+export type List1Response = List1Responses[keyof List1Responses];
 
 export type Create2Data = {
     body: CreateProgramRequest;
@@ -3306,7 +3455,7 @@ export type Create5Responses = {
 
 export type Create5Response = Create5Responses[keyof Create5Responses];
 
-export type List1Data = {
+export type List2Data = {
     body?: never;
     path: {
         /**
@@ -3327,7 +3476,7 @@ export type List1Data = {
     url: '/api/admin/program-editions/program/{programId}';
 };
 
-export type List1Errors = {
+export type List2Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -3350,16 +3499,16 @@ export type List1Errors = {
     500: ErrorResponse;
 };
 
-export type List1Error = List1Errors[keyof List1Errors];
+export type List2Error = List2Errors[keyof List2Errors];
 
-export type List1Responses = {
+export type List2Responses = {
     /**
      * OK
      */
     200: ProgramEditionListResponse;
 };
 
-export type List1Response = List1Responses[keyof List1Responses];
+export type List2Response = List2Responses[keyof List2Responses];
 
 export type Create6Data = {
     body: CreateProgramEditionRequest;
@@ -3410,6 +3559,61 @@ export type Create6Responses = {
 };
 
 export type Create6Response = Create6Responses[keyof Create6Responses];
+
+export type Submit1Data = {
+    body: CreateAssistedApplicationRequest;
+    headers?: {
+        /**
+         * Opcional. 1–128 caracteres ASCII visibles sin espacios. Se asocia al titular userId, compartida con las presentaciones propias y asistidas. Misma clave y convocatoria devuelve la original; otra convocatoria para el mismo titular devuelve 409. Cambiar el administrativo no cambia al registrante original.
+         */
+        'Idempotency-Key'?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/admin/applications';
+};
+
+export type Submit1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Titular o convocatoria inexistentes.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Submit1Error = Submit1Errors[keyof Submit1Errors];
+
+export type Submit1Responses = {
+    /**
+     * Reintento: devuelve la solicitud existente y conserva al registrante original.
+     */
+    200: ApplicationResponse;
+    /**
+     * Solicitud registrada para el titular indicado.
+     */
+    201: ApplicationResponse;
+};
+
+export type Submit1Response = Submit1Responses[keyof Submit1Responses];
 
 export type SuspendData = {
     body?: never;
@@ -3679,7 +3883,7 @@ export type ListLogsByEntityData = {
         /**
          * Tipo de entidad auditada.
          */
-        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD';
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION';
         /**
          * Identificador de la entidad auditada.
          */
@@ -3847,6 +4051,40 @@ export type GetAvailableProgramResponses = {
 };
 
 export type GetAvailableProgramResponse = GetAvailableProgramResponses[keyof GetAvailableProgramResponses];
+
+export type GetData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/applications/{id}';
+};
+
+export type GetErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetError = GetErrors[keyof GetErrors];
 
 export type FindAll5Data = {
     body?: never;

@@ -67,6 +67,7 @@ const entityLabels: Record<EntityType, string> = {
   ROLE: "Rol",
   USER: "Usuario",
   ENROLLMENT_PERIOD: "Período de inscripción",
+  APPLICATION: "Solicitud",
 }
 
 const actionStyles: Record<NonNullable<LogResponse["action"]>, string> = {

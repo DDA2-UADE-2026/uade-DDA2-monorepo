@@ -6,7 +6,7 @@ import { LoadingOrError } from "@/components/programs/ProgramRouteUi"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { listOptions } from "@/generated/@tanstack/react-query.gen"
+import { list1Options } from "@/generated/@tanstack/react-query.gen"
 import type { ProgramListItemResponse } from "@/generated/types.gen"
 
 const PAGE_SIZE = 10
@@ -22,7 +22,7 @@ type ProgramPickerDialogProps = {
 export function ProgramPickerDialog({ onOpenChange, selectedIds, excludeIds, onToggle, pendingId }: ProgramPickerDialogProps) {
   const [page, setPage] = useState(1)
 
-  const query = useQuery(listOptions({ query: { page: page - 1, size: PAGE_SIZE } }))
+  const query = useQuery(list1Options({ query: { page: page - 1, size: PAGE_SIZE } }))
   const programs = (query.data?.content ?? []).filter((program) => program.id && !excludeIds?.has(program.id))
   const totalItems = Number(query.data?.totalElements ?? 0)
   const totalPages = Math.max(1, query.data?.totalPages ?? 1)

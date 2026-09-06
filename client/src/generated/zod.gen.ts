@@ -265,6 +265,60 @@ export const zLoginRequest = z.object({
 });
 
 /**
+ * Presenta una solicitud propia. Solo admite enrollmentPeriodId; el usuario proviene del JWT.
+ */
+export const zCreateApplicationRequest = z.object({
+    enrollmentPeriodId: z.uuid()
+});
+
+/**
+ * Detalle de un campo que no superó la validación.
+ */
+export const zFieldErrorResponse = z.object({
+    field: z.string().optional(),
+    message: z.string().optional()
+});
+
+/**
+ * Respuesta estándar de error de la API.
+ */
+export const zErrorResponse = z.object({
+    message: z.string().optional(),
+    code: z.string().optional(),
+    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    timestamp: z.iso.datetime().optional(),
+    path: z.string().optional(),
+    fields: z.array(zFieldErrorResponse).optional()
+});
+
+/**
+ * Solicitud y referencias a su titular y registrante. No expone datos personales ni internos de idempotencia.
+ */
+export const zApplicationResponse = z.object({
+    id: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    registeredByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programEditionId: z.uuid().optional(),
+    enrollmentPeriodId: z.uuid().optional(),
+    status: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    submittedAt: z.iso.datetime().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
  * Datos requeridos para crear un programa social.
  */
 export const zCreateProgramRequest = z.object({
@@ -330,6 +384,14 @@ export const zCreateProgramEditionRequest = z.object({
 });
 
 /**
+ * Presentación asistida para un usuario existente. Quien registra se obtiene exclusivamente del JWT.
+ */
+export const zCreateAssistedApplicationRequest = z.object({
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    enrollmentPeriodId: z.uuid()
+});
+
+/**
  * Permiso disponible en el sistema.
  */
 export const zPermissionResponse = z.object({
@@ -362,7 +424,8 @@ export const zLogResponse = z.object({
         'PERMISSION',
         'ROLE',
         'USER',
-        'ENROLLMENT_PERIOD'
+        'ENROLLMENT_PERIOD',
+        'APPLICATION'
     ]).readonly().optional(),
     entityId: z.string().readonly().optional(),
     oldValues: z.string().readonly().optional(),
@@ -480,6 +543,14 @@ export const zAvailableProgramDetailResponse = z.object({
     incompatibilities: z.array(zAvailableProgramIncompatibilityResponse).readonly().optional()
 });
 
+export const zApplicationListResponse = z.object({
+    content: z.array(zApplicationResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
 /**
  * Resumen de un programa incluido en un listado.
  */
@@ -583,26 +654,6 @@ export const zProgramEditionOptionResponse = z.object({
 export const zLink = z.object({
     href: z.string().optional(),
     templated: z.boolean().optional()
-});
-
-/**
- * Detalle de un campo que no superó la validación.
- */
-export const zFieldErrorResponse = z.object({
-    field: z.string().optional(),
-    message: z.string().optional()
-});
-
-/**
- * Respuesta estándar de error de la API.
- */
-export const zErrorResponse = z.object({
-    message: z.string().optional(),
-    code: z.string().optional(),
-    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-    timestamp: z.iso.datetime().optional(),
-    path: z.string().optional(),
-    fields: z.array(zFieldErrorResponse).optional()
 });
 
 /**
@@ -902,7 +953,28 @@ export const zListQuery = z.object({
 /**
  * OK
  */
-export const zListResponse = zProgramListResponse;
+export const zListResponse = zApplicationListResponse;
+
+export const zSubmitBody = zCreateApplicationRequest;
+
+export const zSubmitHeaders = z.object({
+    'Idempotency-Key': z.string().optional()
+});
+
+/**
+ * Reintento: se devuelve la solicitud original sin crear otra ni repetir la auditoría.
+ */
+export const zSubmitResponse = zApplicationResponse;
+
+export const zList1Query = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * OK
+ */
+export const zList1Response = zProgramListResponse;
 
 export const zCreate2Body = zCreateProgramRequest;
 
@@ -1042,11 +1114,11 @@ export const zCreate5Path = z.object({
  */
 export const zCreate5Response = zProgramBenefitResponse;
 
-export const zList1Path = z.object({
+export const zList2Path = z.object({
     programId: z.uuid()
 });
 
-export const zList1Query = z.object({
+export const zList2Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
     size: z.int().gte(1).lte(100).optional().default(20)
 });
@@ -1054,7 +1126,7 @@ export const zList1Query = z.object({
 /**
  * OK
  */
-export const zList1Response = zProgramEditionListResponse;
+export const zList2Response = zProgramEditionListResponse;
 
 export const zCreate6Body = zCreateProgramEditionRequest;
 
@@ -1066,6 +1138,17 @@ export const zCreate6Path = z.object({
  * Created
  */
 export const zCreate6Response = zProgramEditionResponse;
+
+export const zSubmit1Body = zCreateAssistedApplicationRequest;
+
+export const zSubmit1Headers = z.object({
+    'Idempotency-Key': z.string().optional()
+});
+
+/**
+ * Reintento: devuelve la solicitud existente y conserva al registrante original.
+ */
+export const zSubmit1Response = zApplicationResponse;
 
 export const zSuspendPath = z.object({
     id: z.uuid()
@@ -1118,7 +1201,8 @@ export const zListLogsByEntityPath = z.object({
         'PERMISSION',
         'ROLE',
         'USER',
-        'ENROLLMENT_PERIOD'
+        'ENROLLMENT_PERIOD',
+        'APPLICATION'
     ]),
     entityId: z.string().min(1)
 });
@@ -1151,6 +1235,10 @@ export const zGetAvailableProgramPath = z.object({
  * OK
  */
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
+
+export const zGetPath = z.object({
+    id: z.uuid()
+});
 
 export const zFindAll5Path = z.object({
     programId: z.uuid()

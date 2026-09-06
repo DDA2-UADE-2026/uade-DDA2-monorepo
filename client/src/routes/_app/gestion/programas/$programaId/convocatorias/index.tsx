@@ -4,7 +4,7 @@ import { z } from "zod"
 import { LoadingOrError, RoutePanel, statusLabels } from "@/components/programs/ProgramRouteUi"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { list1Options } from "@/generated/@tanstack/react-query.gen"
+import { list2Options } from "@/generated/@tanstack/react-query.gen"
 
 const searchSchema = z.object({ page: z.coerce.number().int().positive().catch(1).default(1) })
 
@@ -19,7 +19,7 @@ function RouteComponent() {
   const { programaId } = Route.useParams()
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
-  const query = useQuery(list1Options({ path: { programId: programaId }, query: { page: page - 1, size: 10 } }))
+  const query = useQuery(list2Options({ path: { programId: programaId }, query: { page: page - 1, size: 10 } }))
   const totalPages = Math.max(1, query.data?.totalPages ?? 1)
   return <RoutePanel>
     <div className="mb-5 flex justify-end"><Button render={<Link to="/gestion/programas/$programaId/convocatorias/nueva" params={{ programaId }} />}>Nueva convocatoria</Button></div>

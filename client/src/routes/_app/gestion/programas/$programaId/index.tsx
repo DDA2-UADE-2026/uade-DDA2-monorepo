@@ -6,7 +6,7 @@ import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
 import { DeleteConfirmationButton } from "@/components/programs/DeleteConfirmationButton"
 import { FormField, LoadingOrError, RoutePanel, inputClass, textareaClass } from "@/components/programs/ProgramRouteUi"
 import { Button } from "@/components/ui/button"
-import { delete2Mutation, findById2Options, findById2QueryKey, listQueryKey, update2Mutation } from "@/generated/@tanstack/react-query.gen"
+import { delete2Mutation, findById2Options, findById2QueryKey, list1QueryKey, update2Mutation } from "@/generated/@tanstack/react-query.gen"
 import type { UpdateProgramRequest } from "@/generated/types.gen"
 import { zUpdateProgramRequest } from "@/generated/zod.gen"
 
@@ -23,8 +23,8 @@ function RouteComponent() {
   const navigate = useNavigate()
   const client = useQueryClient()
   const query = useQuery(findById2Options({ path: { id: programaId } }))
-  const update = useMutation({ ...update2Mutation(), onSuccess: () => { client.invalidateQueries({ queryKey: findById2QueryKey({ path: { id: programaId } }) }); client.invalidateQueries({ queryKey: listQueryKey() }) }, onError: showApiErrorToast })
-  const remove = useMutation({ ...delete2Mutation(), onSuccess: () => { client.invalidateQueries({ queryKey: listQueryKey() }); navigate({ to: "/gestion/programas", search: { page: 1 } }) }, onError: showApiErrorToast })
+  const update = useMutation({ ...update2Mutation(), onSuccess: () => { client.invalidateQueries({ queryKey: findById2QueryKey({ path: { id: programaId } }) }); client.invalidateQueries({ queryKey: list1QueryKey() }) }, onError: showApiErrorToast })
+  const remove = useMutation({ ...delete2Mutation(), onSuccess: () => { client.invalidateQueries({ queryKey: list1QueryKey() }); navigate({ to: "/gestion/programas", search: { page: 1 } }) }, onError: showApiErrorToast })
   const form = useForm({
     defaultValues: { name: "" } as UpdateProgramRequest,
     validators: { onChange: updateProgramSchema },
