@@ -64,11 +64,8 @@ interface EnrollmentPeriodRepository : JpaRepository<EnrollmentPeriod, UUID> {
         @Param("currentDate") currentDate: LocalDate,
     ): List<EnrollmentPeriod>
 
-    fun findAllByProgramEditionIdInAndStatusAndOpenDateLessThanEqualAndCloseDateGreaterThanEqualOrderByOpenDateAsc(
+    fun findAllByProgramEditionIdInOrderByOpenDateAsc(
         programEditionIds: Collection<UUID>,
-        status: EnrollmentPeriodStatus,
-        openDate: LocalDate,
-        closeDate: LocalDate,
     ): List<EnrollmentPeriod>
 
     @Query(

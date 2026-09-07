@@ -68,6 +68,7 @@ fun EnrollmentPeriod.toAvailableResponse(): AvailableEnrollmentPeriodResponse =
         id = requireNotNull(id),
         openDate = openDate,
         closeDate = closeDate,
+        status = status,
     )
 
 fun ProgramBenefit.toAvailableResponse(): AvailableProgramBenefitResponse =

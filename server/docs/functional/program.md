@@ -31,6 +31,8 @@ Reglas del nombre:
 
 El nombre y el objetivo se pueden editar. El programa general no tiene estados de borrador, activo o cerrado: esos estados corresponden a sus ediciones.
 
+En el listado administrativo, el campo `active` resume esos estados: vale `true` cuando al menos una edición del programa tiene estado **Activa** y `false` en caso contrario.
+
 Un programa no se puede eliminar si tiene ediciones o incompatibilidades registradas. La eliminación no sirve para borrar de una sola vez toda su historia.
 
 ## Crear una edición
@@ -156,9 +158,9 @@ Para dejar de recibir presentaciones, el personal municipal debe suspender o cer
 
 Un programa aparece si tiene al menos una edición **activa cuya fecha final sea hoy o posterior**. Puede mostrarse una edición cuyo inicio todavía sea futuro. También puede mostrarse un programa sin ninguna convocatoria abierta en ese momento.
 
-En el detalle se muestran las ediciones que cumplen esa condición, con sus beneficios, requisitos generales, documentos solicitados, cupo máximo, incorporaciones actuales y lugares disponibles. Los lugares disponibles nunca se muestran como una cantidad negativa. Las incompatibilidades se informan a nivel del programa.
+En el detalle se muestran las ediciones que cumplen esa condición, con sus beneficios, requisitos generales, documentos solicitados, períodos de inscripción configurados, cupo máximo, incorporaciones actuales y lugares disponibles. Cada período incluye su estado para distinguir si está programado, abierto, suspendido o cerrado. Los lugares disponibles nunca se muestran como una cantidad negativa. Las incompatibilidades se informan a nivel del programa.
 
-Las convocatorias que se ofrecen para presentar solicitudes deben estar abiertas y dentro de su rango de fechas. Una edición en borrador, suspendida o cerrada no se ofrece como edición disponible para solicitar.
+Que un período aparezca en el detalle no significa que permita presentar una solicitud. Para hacerlo debe estar abierto y dentro de su rango de fechas. Una edición en borrador, suspendida o cerrada no se ofrece como edición disponible para solicitar.
 
 Una edición activa cuya fecha final ya pasó deja de aparecer en la oferta disponible, aunque su estado no haya cambiado todavía. Puede seguir consultándose administrativamente.
 

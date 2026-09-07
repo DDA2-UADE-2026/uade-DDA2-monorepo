@@ -49,7 +49,7 @@ class AvailableProgramController(
     @Operation(
         operationId = "getAvailableProgram",
         summary = "Consultar un programa disponible",
-        description = "Devuelve el programa con sus ediciones activas no finalizadas, beneficios, requisitos e incompatibilidades.",
+        description = "Devuelve el programa con sus ediciones activas no finalizadas, beneficios, requisitos, períodos de inscripción e incompatibilidades.",
     )
     fun get(
         @Parameter(description = "UUID del programa.", example = "550e8400-e29b-41d4-a716-446655440000")

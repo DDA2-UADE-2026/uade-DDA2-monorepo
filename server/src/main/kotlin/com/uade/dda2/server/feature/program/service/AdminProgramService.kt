@@ -7,12 +7,14 @@ import com.uade.dda2.server.feature.program.dto.admin.response.ProgramListRespon
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramOptionResponse
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
+import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
 import com.uade.dda2.server.feature.program.error.ProgramErrors
 import com.uade.dda2.server.feature.program.mapper.toEntity
 import com.uade.dda2.server.feature.program.mapper.toListResponse
 import com.uade.dda2.server.feature.program.mapper.toOptionResponse
 import com.uade.dda2.server.feature.program.mapper.toResponse
 import com.uade.dda2.server.feature.program.mapper.updateFrom
+import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
 import com.uade.dda2.server.feature.program.validator.AdminProgramValidator
 import org.springframework.dao.DataIntegrityViolationException
@@ -24,6 +26,7 @@ import java.util.*
 @Service
 class AdminProgramService(
     private val programRepository: ProgramRepository,
+    private val programEditionRepository: ProgramEditionRepository,
     private val adminProgramValidator: AdminProgramValidator,
     private val currentUserService: CurrentUserService,
 ) {
@@ -35,9 +38,18 @@ class AdminProgramService(
     ): ProgramListResponse {
         val pageable = PageRequest.of(page, size)
 
-        return programRepository
-            .findAllByOrderByNameAsc(pageable)
-            .toListResponse()
+        val programs = programRepository.findAllByOrderByNameAsc(pageable)
+        val programIds = programs.content.map { requireNotNull(it.id) }
+        val activeProgramIds = if (programIds.isEmpty()) {
+            emptySet()
+        } else {
+            programEditionRepository.findProgramIdsByStatus(
+                programIds = programIds,
+                status = ProgramEditionStatus.ACTIVE,
+            ).toSet()
+        }
+
+        return programs.toListResponse(activeProgramIds)
     }
 
     @Transactional(readOnly = true)

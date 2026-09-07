@@ -12,6 +12,8 @@ data class ProgramListItemResponse(
     val name: String,
     @field:Schema(description = "Objetivo del programa.", example = "Mejorar la empleabilidad de jóvenes.", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
     val objective: String?,
+    @field:Schema(description = "Indica si alguna convocatoria del programa está activa.", example = "true", accessMode = Schema.AccessMode.READ_ONLY)
+    val active: Boolean,
     @field:Schema(description = "Fecha y hora de creación.", example = "2026-02-01T10:00:00", format = "date-time", accessMode = Schema.AccessMode.READ_ONLY)
     val createdAt: LocalDateTime,
     @field:Schema(description = "Fecha y hora de la última actualización.", example = "2026-08-20T15:30:00", format = "date-time", accessMode = Schema.AccessMode.READ_ONLY)
