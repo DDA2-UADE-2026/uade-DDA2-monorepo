@@ -138,7 +138,7 @@ function RouteComponent() {
         <div>
           <h3 className="font-heading text-lg font-semibold">Períodos de inscripción</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Administrá las fechas en las que esta convocatoria recibe postulaciones.
+            Administrá las fechas en las que esta edición recibe postulaciones.
           </p>
         </div>
         <Button
@@ -153,7 +153,7 @@ function RouteComponent() {
       {editionClosed && (
         <Alert variant="destructive" className="mb-5">
           <IconAlertTriangle />
-          <AlertTitle>Convocatoria cerrada</AlertTitle>
+          <AlertTitle>Edición cerrada</AlertTitle>
           <AlertDescription>
             Podés consultar los períodos existentes, pero no crear períodos nuevos.
           </AlertDescription>
@@ -586,7 +586,7 @@ function ApiErrorAlert({ error, fallback }: { error: ErrorResponse; fallback: st
 
 function statusHelpText(status: PeriodStatus) {
   if (status === "SCHEDULED") {
-    return "Podés abrirlo cuando la convocatoria esté activa y la fecha actual se encuentre dentro del rango."
+    return "Podés abrirlo cuando la edición esté activa y la fecha actual se encuentre dentro del rango."
   }
   if (status === "OPEN") {
     return "Está recibiendo postulaciones. Podés suspenderlo temporalmente o cerrarlo de forma definitiva."

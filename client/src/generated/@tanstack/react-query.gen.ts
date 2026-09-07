@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, close, closeEnrollmentPeriod, create, create1, create2, create3, create4, create5, create6, createEnrollmentPeriod, delete_, delete1, delete2, delete3, delete4, delete5, delete6, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, getAvailableProgram, getEnrollmentPeriod, health, info, links, list, list1, list2, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, reopenEnrollmentPeriod, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, updateEnrollmentPeriod } from '../sdk.gen';
-import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateResponse } from '../types.gen';
+import { activate, close, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, createEnrollmentPeriod, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, getAvailableProgram, getEnrollmentPeriod, health, info, links, list, list1, list2, list3, list4, list5, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, updateEnrollmentPeriod } from '../sdk.gen';
+import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List5Data, List5Error, List5Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update6Data, Update6Error, Update6Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -145,6 +145,25 @@ export const update1Mutation = (options?: Partial<Options<Update1Data>>): UseMut
     const mutationOptions: UseMutationOptions<Update1Response, Update1Error, Options<Update1Data>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await update1({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cargar o reemplazar un documento
+ *
+ * Admite PDF, JPEG o PNG de hasta 10 MB. Reemplazar conserva la entrega y reinicia su revisión a PENDING.
+ */
+export const putMutation = (options?: Partial<Options<PutData>>): UseMutationOptions<PutResponse, PutError, Options<PutData>> => {
+    const mutationOptions: UseMutationOptions<PutResponse, PutError, Options<PutData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await put({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -369,14 +388,66 @@ export const update4Mutation = (options?: Partial<Options<Update4Data>>): UseMut
 };
 
 /**
- * Eliminar un beneficio
- *
- * Elimina el beneficio indicado de la edición.
+ * Eliminar un requisito documental
  */
 export const delete5Mutation = (options?: Partial<Options<Delete5Data>>): UseMutationOptions<Delete5Response, Delete5Error, Options<Delete5Data>> => {
     const mutationOptions: UseMutationOptions<Delete5Response, Delete5Error, Options<Delete5Data>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await delete5({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getQueryKey = (options: Options<GetData>) => createQueryKey('get', options);
+
+/**
+ * Consultar un requisito documental
+ */
+export const getOptions = (options: Options<GetData>) => queryOptions<GetResponse, GetError, GetResponse, ReturnType<typeof getQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await get({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getQueryKey(options)
+});
+
+/**
+ * Actualizar un requisito documental
+ */
+export const update5Mutation = (options?: Partial<Options<Update5Data>>): UseMutationOptions<unknown, Update5Error, Options<Update5Data>> => {
+    const mutationOptions: UseMutationOptions<unknown, Update5Error, Options<Update5Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await update5({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Eliminar un beneficio
+ *
+ * Elimina el beneficio indicado de la edición.
+ */
+export const delete6Mutation = (options?: Partial<Options<Delete6Data>>): UseMutationOptions<Delete6Response, Delete6Error, Options<Delete6Data>> => {
+    const mutationOptions: UseMutationOptions<Delete6Response, Delete6Error, Options<Delete6Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await delete6({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -412,10 +483,10 @@ export const findById5Options = (options: Options<FindById5Data>) => queryOption
  *
  * Actualiza los datos del beneficio indicado.
  */
-export const update5Mutation = (options?: Partial<Options<Update5Data>>): UseMutationOptions<Update5Response, Update5Error, Options<Update5Data>> => {
-    const mutationOptions: UseMutationOptions<Update5Response, Update5Error, Options<Update5Data>> = {
+export const update6Mutation = (options?: Partial<Options<Update6Data>>): UseMutationOptions<Update6Response, Update6Error, Options<Update6Data>> => {
+    const mutationOptions: UseMutationOptions<Update6Response, Update6Error, Options<Update6Data>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await update5({
+            const { data } = await update6({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -737,10 +808,10 @@ export const create2Mutation = (options?: Partial<Options<Create2Data>>): UseMut
  *
  * Elimina la relación de incompatibilidad entre los programas indicados.
  */
-export const delete6Mutation = (options?: Partial<Options<Delete6Data>>): UseMutationOptions<Delete6Response, Delete6Error, Options<Delete6Data>> => {
-    const mutationOptions: UseMutationOptions<Delete6Response, Delete6Error, Options<Delete6Data>> = {
+export const delete7Mutation = (options?: Partial<Options<Delete7Data>>): UseMutationOptions<Delete7Response, Delete7Error, Options<Delete7Data>> => {
+    const mutationOptions: UseMutationOptions<Delete7Response, Delete7Error, Options<Delete7Data>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await delete6({
+            const { data } = await delete7({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -956,6 +1027,41 @@ export const create4Mutation = (options?: Partial<Options<Create4Data>>): UseMut
     return mutationOptions;
 };
 
+export const list2QueryKey = (options: Options<List2Data>) => createQueryKey('list2', options);
+
+/**
+ * Listar requisitos documentales
+ */
+export const list2Options = (options: Options<List2Data>) => queryOptions<List2Response, List2Error, List2Response, ReturnType<typeof list2QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list2({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list2QueryKey(options)
+});
+
+/**
+ * Crear un requisito documental
+ */
+export const create5Mutation = (options?: Partial<Options<Create5Data>>): UseMutationOptions<Create5Response, Create5Error, Options<Create5Data>> => {
+    const mutationOptions: UseMutationOptions<Create5Response, Create5Error, Options<Create5Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await create5({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const findAll3QueryKey = (options: Options<FindAll3Data>) => createQueryKey('findAll3', options);
 
 /**
@@ -981,10 +1087,10 @@ export const findAll3Options = (options: Options<FindAll3Data>) => queryOptions<
  *
  * Agrega un beneficio a la edición indicada.
  */
-export const create5Mutation = (options?: Partial<Options<Create5Data>>): UseMutationOptions<Create5Response, Create5Error, Options<Create5Data>> => {
-    const mutationOptions: UseMutationOptions<Create5Response, Create5Error, Options<Create5Data>> = {
+export const create6Mutation = (options?: Partial<Options<Create6Data>>): UseMutationOptions<Create6Response, Create6Error, Options<Create6Data>> => {
+    const mutationOptions: UseMutationOptions<Create6Response, Create6Error, Options<Create6Data>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await create5({
+            const { data } = await create6({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -995,16 +1101,16 @@ export const create5Mutation = (options?: Partial<Options<Create5Data>>): UseMut
     return mutationOptions;
 };
 
-export const list2QueryKey = (options: Options<List2Data>) => createQueryKey('list2', options);
+export const list3QueryKey = (options: Options<List3Data>) => createQueryKey('list3', options);
 
 /**
  * Listar ediciones
  *
  * Devuelve una página de ediciones pertenecientes a un programa.
  */
-export const list2Options = (options: Options<List2Data>) => queryOptions<List2Response, List2Error, List2Response, ReturnType<typeof list2QueryKey>>({
+export const list3Options = (options: Options<List3Data>) => queryOptions<List3Response, List3Error, List3Response, ReturnType<typeof list3QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list2({
+        const { data } = await list3({
             ...options,
             ...queryKey[0],
             signal,
@@ -1012,29 +1118,29 @@ export const list2Options = (options: Options<List2Data>) => queryOptions<List2R
         });
         return data;
     },
-    queryKey: list2QueryKey(options)
+    queryKey: list3QueryKey(options)
 });
 
-export const list2InfiniteQueryKey = (options: Options<List2Data>): QueryKey<Options<List2Data>> => createQueryKey('list2', options, true);
+export const list3InfiniteQueryKey = (options: Options<List3Data>): QueryKey<Options<List3Data>> => createQueryKey('list3', options, true);
 
 /**
  * Listar ediciones
  *
  * Devuelve una página de ediciones pertenecientes a un programa.
  */
-export const list2InfiniteOptions = (options: Options<List2Data>) => {
-    const opts = infiniteQueryOptions<List2Response, List2Error, InfiniteData<List2Response>, QueryKey<Options<List2Data>>, number | Pick<QueryKey<Options<List2Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const list3InfiniteOptions = (options: Options<List3Data>) => {
+    const opts = infiniteQueryOptions<List3Response, List3Error, InfiniteData<List3Response>, QueryKey<Options<List3Data>>, number | Pick<QueryKey<Options<List3Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
     // @ts-ignore
     {
         queryFn: async ({ pageParam, queryKey, signal }) => {
             // @ts-ignore
-            const page: Pick<QueryKey<Options<List2Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            const page: Pick<QueryKey<Options<List3Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
                 query: {
                     page: pageParam
                 }
             };
             const params = createInfiniteParams(queryKey, page);
-            const { data } = await list2({
+            const { data } = await list3({
                 ...options,
                 ...params,
                 signal,
@@ -1042,7 +1148,7 @@ export const list2InfiniteOptions = (options: Options<List2Data>) => {
             });
             return data;
         },
-        queryKey: list2InfiniteQueryKey(options)
+        queryKey: list3InfiniteQueryKey(options)
     });
     return opts as Omit<typeof opts, 'initialData'>;
 };
@@ -1052,10 +1158,10 @@ export const list2InfiniteOptions = (options: Options<List2Data>) => {
  *
  * Crea una edición para el programa indicado.
  */
-export const create6Mutation = (options?: Partial<Options<Create6Data>>): UseMutationOptions<Create6Response, Create6Error, Options<Create6Data>> => {
-    const mutationOptions: UseMutationOptions<Create6Response, Create6Error, Options<Create6Data>> = {
+export const create7Mutation = (options?: Partial<Options<Create7Data>>): UseMutationOptions<Create7Response, Create7Error, Options<Create7Data>> => {
+    const mutationOptions: UseMutationOptions<Create7Response, Create7Error, Options<Create7Data>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await create6({
+            const { data } = await create7({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1132,6 +1238,25 @@ export const activateMutation = (options?: Partial<Options<ActivateData>>): UseM
     const mutationOptions: UseMutationOptions<ActivateResponse, ActivateError, Options<ActivateData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await activate({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Revisar un documento pendiente
+ *
+ * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
+ */
+export const reviewMutation = (options?: Partial<Options<ReviewData>>): UseMutationOptions<unknown, ReviewError, Options<ReviewData>> => {
+    const mutationOptions: UseMutationOptions<unknown, ReviewError, Options<ReviewData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await review({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1299,7 +1424,7 @@ export const getAvailableProgramQueryKey = (options: Options<GetAvailableProgram
 /**
  * Consultar un programa disponible
  *
- * Devuelve el programa con sus ediciones activas no finalizadas, beneficios, requisitos e incompatibilidades.
+ * Devuelve el programa con sus ediciones activas no finalizadas, beneficios, requisitos, períodos de inscripción e incompatibilidades.
  */
 export const getAvailableProgramOptions = (options: Options<GetAvailableProgramData>) => queryOptions<GetAvailableProgramResponse, GetAvailableProgramError, GetAvailableProgramResponse, ReturnType<typeof getAvailableProgramQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -1314,16 +1439,16 @@ export const getAvailableProgramOptions = (options: Options<GetAvailableProgramD
     queryKey: getAvailableProgramQueryKey(options)
 });
 
-export const getQueryKey = (options: Options<GetData>) => createQueryKey('get', options);
+export const get1QueryKey = (options: Options<Get1Data>) => createQueryKey('get1', options);
 
 /**
  * Consultar una solicitud propia
  *
  * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
  */
-export const getOptions = (options: Options<GetData>) => queryOptions<unknown, GetError, unknown, ReturnType<typeof getQueryKey>>({
+export const get1Options = (options: Options<Get1Data>) => queryOptions<unknown, Get1Error, unknown, ReturnType<typeof get1QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await get({
+        const { data } = await get1({
             ...options,
             ...queryKey[0],
             signal,
@@ -1331,7 +1456,45 @@ export const getOptions = (options: Options<GetData>) => queryOptions<unknown, G
         });
         return data;
     },
-    queryKey: getQueryKey(options)
+    queryKey: get1QueryKey(options)
+});
+
+export const list4QueryKey = (options: Options<List4Data>) => createQueryKey('list4', options);
+
+/**
+ * Listar los documentos entregados en una solicitud propia
+ */
+export const list4Options = (options: Options<List4Data>) => queryOptions<unknown, List4Error, unknown, ReturnType<typeof list4QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list4({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list4QueryKey(options)
+});
+
+export const contentQueryKey = (options: Options<ContentData>) => createQueryKey('content', options);
+
+/**
+ * Ver o descargar de forma protegida un documento propio
+ *
+ * Devuelve el contenido inline con caché privada deshabilitada.
+ */
+export const contentOptions = (options: Options<ContentData>) => queryOptions<ContentResponse, ContentError, ContentResponse, ReturnType<typeof contentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await content({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: contentQueryKey(options)
 });
 
 export const findAll5QueryKey = (options: Options<FindAll5Data>) => createQueryKey('findAll5', options);
@@ -1394,6 +1557,44 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
     queryKey: listProgramEditionOptionsQueryKey(options)
 });
 
+export const list5QueryKey = (options: Options<List5Data>) => createQueryKey('list5', options);
+
+/**
+ * Listar documentos de cualquier solicitud
+ */
+export const list5Options = (options: Options<List5Data>) => queryOptions<List5Response, List5Error, List5Response, ReturnType<typeof list5QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list5({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list5QueryKey(options)
+});
+
+export const content1QueryKey = (options: Options<Content1Data>) => createQueryKey('content1', options);
+
+/**
+ * Ver o descargar un documento de una solicitud
+ *
+ * Devuelve el contenido inline con caché privada deshabilitada.
+ */
+export const content1Options = (options: Options<Content1Data>) => queryOptions<Content1Response, Content1Error, Content1Response, ReturnType<typeof content1QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await content1({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: content1QueryKey(options)
+});
+
 export const linksQueryKey = (options?: Options<LinksData>) => createQueryKey('links', options);
 
 /**
@@ -1453,3 +1654,20 @@ export const healthOptions = (options?: Options<HealthData>) => queryOptions<Hea
     },
     queryKey: healthQueryKey(options)
 });
+
+/**
+ * Eliminar un documento entregado
+ */
+export const delete8Mutation = (options?: Partial<Options<Delete8Data>>): UseMutationOptions<Delete8Response, Delete8Error, Options<Delete8Data>> => {
+    const mutationOptions: UseMutationOptions<Delete8Response, Delete8Error, Options<Delete8Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await delete8({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

@@ -26,6 +26,7 @@ class ApplicationDocumentController(private val service: ApplicationDocumentServ
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("hasAuthority('applications:own:documents:view')")
     @Operation(summary = "Listar los documentos entregados en una solicitud propia")
+    @ApiResponse(responseCode = "200", description = "Documentos entregados en la solicitud propia.", useReturnTypeSchema = true)
     @ApiResponse(responseCode = "404", description = "Solicitud inexistente o ajena.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun list(@PathVariable applicationId: UUID): List<ApplicationDocumentResponse> = service.listOwn(applicationId)
 

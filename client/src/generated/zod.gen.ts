@@ -48,6 +48,52 @@ export const zRoleResponse = z.object({
 });
 
 /**
+ * Detalle de un campo que no superó la validación.
+ */
+export const zFieldErrorResponse = z.object({
+    field: z.string().optional(),
+    message: z.string().optional()
+});
+
+/**
+ * Respuesta estándar de error de la API.
+ */
+export const zErrorResponse = z.object({
+    message: z.string().optional(),
+    code: z.string().optional(),
+    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    timestamp: z.iso.datetime().optional(),
+    path: z.string().optional(),
+    fields: z.array(zFieldErrorResponse).optional()
+});
+
+/**
+ * Metadatos de un documento entregado; nunca contiene sus bytes.
+ */
+export const zApplicationDocumentResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    requirementId: z.uuid().optional(),
+    requirementCode: z.string().optional(),
+    requirementName: z.string().optional(),
+    required: z.boolean().optional(),
+    documentId: z.uuid().optional(),
+    originalName: z.string().optional(),
+    contentType: z.string().optional(),
+    sizeBytes: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    status: z.enum([
+        'PENDING',
+        'VALID',
+        'OBSERVED'
+    ]).optional(),
+    observation: z.string().optional(),
+    uploadedAt: z.iso.datetime().optional(),
+    reviewedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    reviewedAt: z.iso.datetime().optional(),
+    contentUrl: z.string().optional()
+});
+
+/**
  * Datos editables de un período de inscripción.
  */
 export const zUpdateEnrollmentPeriodRequest = z.object({
@@ -170,6 +216,16 @@ export const zProgramRequirementResponse = z.object({
 });
 
 /**
+ * Actualización de un documento solicitado por una edición.
+ */
+export const zUpdateProgramDocumentRequirementRequest = z.object({
+    code: z.string().min(0).max(50).regex(/^[A-Za-z][A-Za-z0-9_]*$/),
+    name: z.string().min(0).max(150),
+    description: z.string().min(0).max(500).optional(),
+    required: z.boolean().optional()
+});
+
+/**
  * Datos requeridos para actualizar un beneficio.
  */
 export const zUpdateProgramBenefitRequest = z.object({
@@ -271,24 +327,12 @@ export const zCreateApplicationRequest = z.object({
     enrollmentPeriodId: z.uuid()
 });
 
-/**
- * Detalle de un campo que no superó la validación.
- */
-export const zFieldErrorResponse = z.object({
-    field: z.string().optional(),
-    message: z.string().optional()
-});
-
-/**
- * Respuesta estándar de error de la API.
- */
-export const zErrorResponse = z.object({
-    message: z.string().optional(),
+export const zPendingApplicationDocumentResponse = z.object({
+    requirementId: z.uuid().optional(),
     code: z.string().optional(),
-    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-    timestamp: z.iso.datetime().optional(),
-    path: z.string().optional(),
-    fields: z.array(zFieldErrorResponse).optional()
+    name: z.string().optional(),
+    reason: z.enum(['MISSING', 'OBSERVED']).optional(),
+    observation: z.string().optional()
 });
 
 /**
@@ -315,7 +359,8 @@ export const zApplicationResponse = z.object({
     ]).optional(),
     submittedAt: z.iso.datetime().optional(),
     createdAt: z.iso.datetime().optional(),
-    updatedAt: z.iso.datetime().optional()
+    updatedAt: z.iso.datetime().optional(),
+    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional()
 });
 
 /**
@@ -360,6 +405,28 @@ export const zCreateProgramRequirementRequest = z.object({
 });
 
 /**
+ * Configuración de un documento solicitado por una edición.
+ */
+export const zCreateProgramDocumentRequirementRequest = z.object({
+    code: z.string().min(0).max(50).regex(/^[A-Za-z][A-Za-z0-9_]*$/),
+    name: z.string().min(0).max(150),
+    description: z.string().min(0).max(500).optional(),
+    required: z.boolean().optional()
+});
+
+/**
+ * Documento que una edición solicita a sus postulantes.
+ */
+export const zProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    programEditionId: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
+});
+
+/**
  * Datos requeridos para crear un beneficio.
  */
 export const zCreateProgramBenefitRequest = z.object({
@@ -389,6 +456,14 @@ export const zCreateProgramEditionRequest = z.object({
 export const zCreateAssistedApplicationRequest = z.object({
     userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     enrollmentPeriodId: z.uuid()
+});
+
+/**
+ * Resultado de la revisión administrativa de un documento pendiente.
+ */
+export const zReviewApplicationDocumentRequest = z.object({
+    status: z.enum(['VALID', 'OBSERVED']).optional(),
+    observation: z.string().min(0).max(1000).optional()
 });
 
 /**
@@ -425,7 +500,8 @@ export const zLogResponse = z.object({
         'ROLE',
         'USER',
         'ENROLLMENT_PERIOD',
-        'APPLICATION'
+        'APPLICATION',
+        'APPLICATION_DOCUMENT'
     ]).readonly().optional(),
     entityId: z.string().readonly().optional(),
     oldValues: z.string().readonly().optional(),
@@ -464,12 +540,18 @@ export const zAvailableProgramListResponse = z.object({
 });
 
 /**
- * Período en el que una edición se encuentra abierta para recibir solicitudes.
+ * Período de inscripción configurado para una edición.
  */
 export const zAvailableEnrollmentPeriodResponse = z.object({
     id: z.uuid().readonly().optional(),
     openDate: z.iso.date().readonly().optional(),
-    closeDate: z.iso.date().readonly().optional()
+    closeDate: z.iso.date().readonly().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'OPEN',
+        'SUSPENDED',
+        'CLOSED'
+    ]).readonly().optional()
 });
 
 /**
@@ -485,6 +567,17 @@ export const zAvailableProgramBenefitResponse = z.object({
     ]).readonly().optional(),
     description: z.string().readonly().optional(),
     amount: z.number().readonly().optional()
+});
+
+/**
+ * Documento solicitado por una edición disponible.
+ */
+export const zAvailableProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
 });
 
 /**
@@ -529,6 +622,7 @@ export const zAvailableProgramEditionResponse = z.object({
     ]).readonly().optional(),
     benefits: z.array(zAvailableProgramBenefitResponse).readonly().optional(),
     requirements: z.array(zAvailableProgramRequirementResponse).readonly().optional(),
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).readonly().optional(),
     enrollmentPeriods: z.array(zAvailableEnrollmentPeriodResponse).readonly().optional()
 });
 
@@ -558,6 +652,7 @@ export const zProgramListItemResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    active: z.boolean().readonly().optional(),
     createdAt: z.iso.datetime().readonly().optional(),
     updatedAt: z.iso.datetime().readonly().optional()
 });
@@ -696,6 +791,16 @@ export const zLoginRequestWritable = z.object({
     password: z.string().min(1)
 });
 
+/**
+ * Detalle de un programa disponible para ciudadanos.
+ */
+export const zAvailableProgramDetailResponseWritable = z.record(z.string(), z.unknown());
+
+/**
+ * Edición disponible de un programa, con sus beneficios y requisitos.
+ */
+export const zAvailableProgramEditionResponseWritable = z.record(z.string(), z.unknown());
+
 export const zDeletePath = z.object({
     id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
 });
@@ -753,6 +858,20 @@ export const zUpdate1Path = z.object({
  * OK
  */
 export const zUpdate1Response = zRoleResponse;
+
+export const zPutBody = z.object({
+    file: z.string()
+});
+
+export const zPutPath = z.object({
+    applicationId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * Entrega existente reemplazada.
+ */
+export const zPutResponse = zApplicationDocumentResponse;
 
 export const zGetEnrollmentPeriodPath = z.object({
     programId: z.uuid(),
@@ -870,13 +989,40 @@ export const zUpdate4Response = zProgramRequirementResponse;
 
 export const zDelete5Path = z.object({
     editionId: z.uuid(),
-    benefitId: z.uuid()
+    requirementId: z.uuid()
 });
 
 /**
  * No Content
  */
 export const zDelete5Response = z.void();
+
+export const zGetPath = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetResponse = zProgramDocumentRequirementResponse;
+
+export const zUpdate5Body = zUpdateProgramDocumentRequirementRequest;
+
+export const zUpdate5Path = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+export const zDelete6Path = z.object({
+    editionId: z.uuid(),
+    benefitId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete6Response = z.void();
 
 export const zFindById5Path = z.object({
     editionId: z.uuid(),
@@ -888,9 +1034,9 @@ export const zFindById5Path = z.object({
  */
 export const zFindById5Response = zProgramBenefitResponse;
 
-export const zUpdate5Body = zUpdateProgramBenefitRequest;
+export const zUpdate6Body = zUpdateProgramBenefitRequest;
 
-export const zUpdate5Path = z.object({
+export const zUpdate6Path = z.object({
     editionId: z.uuid(),
     benefitId: z.uuid()
 });
@@ -898,7 +1044,7 @@ export const zUpdate5Path = z.object({
 /**
  * OK
  */
-export const zUpdate5Response = zProgramBenefitResponse;
+export const zUpdate6Response = zProgramBenefitResponse;
 
 /**
  * OK
@@ -983,7 +1129,7 @@ export const zCreate2Body = zCreateProgramRequest;
  */
 export const zCreate2Response = zProgramResponse;
 
-export const zDelete6Path = z.object({
+export const zDelete7Path = z.object({
     programId: z.uuid(),
     incompatibleProgramId: z.uuid()
 });
@@ -991,7 +1137,7 @@ export const zDelete6Path = z.object({
 /**
  * No Content
  */
-export const zDelete6Response = z.void();
+export const zDelete7Response = z.void();
 
 export const zCreate3Path = z.object({
     programId: z.uuid(),
@@ -1094,6 +1240,26 @@ export const zCreate4Path = z.object({
  */
 export const zCreate4Response = zProgramRequirementResponse;
 
+export const zList2Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zList2Response = z.array(zProgramDocumentRequirementResponse);
+
+export const zCreate5Body = zCreateProgramDocumentRequirementRequest;
+
+export const zCreate5Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreate5Response = zProgramDocumentRequirementResponse;
+
 export const zFindAll3Path = z.object({
     editionId: z.uuid()
 });
@@ -1103,22 +1269,22 @@ export const zFindAll3Path = z.object({
  */
 export const zFindAll3Response = z.array(zProgramBenefitResponse);
 
-export const zCreate5Body = zCreateProgramBenefitRequest;
+export const zCreate6Body = zCreateProgramBenefitRequest;
 
-export const zCreate5Path = z.object({
+export const zCreate6Path = z.object({
     editionId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate5Response = zProgramBenefitResponse;
+export const zCreate6Response = zProgramBenefitResponse;
 
-export const zList2Path = z.object({
+export const zList3Path = z.object({
     programId: z.uuid()
 });
 
-export const zList2Query = z.object({
+export const zList3Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
     size: z.int().gte(1).lte(100).optional().default(20)
 });
@@ -1126,18 +1292,18 @@ export const zList2Query = z.object({
 /**
  * OK
  */
-export const zList2Response = zProgramEditionListResponse;
+export const zList3Response = zProgramEditionListResponse;
 
-export const zCreate6Body = zCreateProgramEditionRequest;
+export const zCreate7Body = zCreateProgramEditionRequest;
 
-export const zCreate6Path = z.object({
+export const zCreate7Path = z.object({
     programId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate6Response = zProgramEditionResponse;
+export const zCreate7Response = zProgramEditionResponse;
 
 export const zSubmit1Body = zCreateAssistedApplicationRequest;
 
@@ -1177,6 +1343,13 @@ export const zActivatePath = z.object({
  */
 export const zActivateResponse = zProgramEditionResponse;
 
+export const zReviewBody = zReviewApplicationDocumentRequest;
+
+export const zReviewPath = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
 /**
  * OK
  */
@@ -1202,7 +1375,8 @@ export const zListLogsByEntityPath = z.object({
         'ROLE',
         'USER',
         'ENROLLMENT_PERIOD',
-        'APPLICATION'
+        'APPLICATION',
+        'APPLICATION_DOCUMENT'
     ]),
     entityId: z.string().min(1)
 });
@@ -1236,9 +1410,23 @@ export const zGetAvailableProgramPath = z.object({
  */
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
 
-export const zGetPath = z.object({
+export const zGet1Path = z.object({
     id: z.uuid()
 });
+
+export const zList4Path = z.object({
+    applicationId: z.uuid()
+});
+
+export const zContentPath = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+/**
+ * Contenido del archivo.
+ */
+export const zContentResponse = z.string();
 
 export const zFindAll5Path = z.object({
     programId: z.uuid()
@@ -1263,6 +1451,25 @@ export const zListProgramEditionOptionsPath = z.object({
  */
 export const zListProgramEditionOptionsResponse = z.array(zProgramEditionOptionResponse);
 
+export const zList5Path = z.object({
+    applicationId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zList5Response = z.array(zApplicationDocumentResponse);
+
+export const zContent1Path = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+/**
+ * Contenido del archivo.
+ */
+export const zContent1Response = z.string();
+
 /**
  * OK
  */
@@ -1277,3 +1484,13 @@ export const zInfoResponse = z.record(z.string(), z.unknown());
  * OK
  */
 export const zHealthResponse = z.record(z.string(), z.unknown());
+
+export const zDelete8Path = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete8Response = z.void();
