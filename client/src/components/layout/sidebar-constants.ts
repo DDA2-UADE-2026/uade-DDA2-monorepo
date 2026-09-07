@@ -4,6 +4,7 @@ import {
   IconCalendarEvent,
   IconChartBar,
   IconClipboardHeart,
+  IconFileCheck,
   IconFileText,
   IconFolders,
   IconGift,
@@ -68,6 +69,7 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     ],
   },
   { title: "Campañas", url: "/gestion/campanias", icon: IconSpeakerphone },
+  { title: "Documentos", url: "/gestion/documentos", icon: IconFileCheck },
   { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
   { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },
 ]

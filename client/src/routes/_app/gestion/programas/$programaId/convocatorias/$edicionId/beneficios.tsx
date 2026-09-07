@@ -37,12 +37,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  create5Mutation,
-  delete5Mutation,
+  create6Mutation,
+  delete6Mutation,
   findAll3Options,
   findAll3QueryKey,
   findById3Options,
-  update5Mutation,
+  update6Mutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ErrorResponse, ProgramBenefitResponse } from "@/generated/types.gen"
 import {
@@ -91,7 +91,7 @@ function RouteComponent() {
   const refresh = () => queryClient.invalidateQueries({
     queryKey: findAll3QueryKey({ path: { editionId: edicionId } }),
   })
-  const remove = useMutation({ ...delete5Mutation(), onSuccess: refresh, onError: showApiErrorToast })
+  const remove = useMutation({ ...delete6Mutation(), onSuccess: refresh, onError: showApiErrorToast })
 
   const totalItems = benefits.data?.length ?? 0
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -109,7 +109,7 @@ function RouteComponent() {
         <div>
           <h3 className="font-heading text-lg font-semibold">Beneficios</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Configurá las prestaciones disponibles para esta convocatoria.
+            Configurá las prestaciones disponibles para esta edición.
           </p>
         </div>
         <Button
@@ -124,7 +124,7 @@ function RouteComponent() {
       {editionClosed && (
         <Alert variant="destructive" className="mb-5">
           <IconAlertTriangle />
-          <AlertTitle>Convocatoria cerrada</AlertTitle>
+          <AlertTitle>Edición cerrada</AlertTitle>
           <AlertDescription>
             Los beneficios quedan disponibles sólo para consulta.
           </AlertDescription>
@@ -169,7 +169,7 @@ function RouteComponent() {
             <IconGift className="mx-auto size-8 text-muted-foreground" />
             <CardTitle>Sin beneficios configurados</CardTitle>
             <CardDescription>
-              Agregá el primer beneficio para esta convocatoria.
+              Agregá el primer beneficio para esta edición.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -273,14 +273,14 @@ function BenefitDialog({
   })
 
   const create = useMutation({
-    ...create5Mutation(),
+    ...create6Mutation(),
     onSuccess: () => {
       refresh()
       onOpenChange(false)
     },
   })
   const update = useMutation({
-    ...update5Mutation(),
+    ...update6Mutation(),
     onSuccess: () => {
       refresh()
       onOpenChange(false)
@@ -324,7 +324,7 @@ function BenefitDialog({
           <DialogTitle>{isEditing ? "Editar beneficio" : "Nuevo beneficio"}</DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Modificá la prestación configurada para esta convocatoria."
+              ? "Modificá la prestación configurada para esta edición."
               : "Definí una nueva prestación para las personas beneficiarias."}
           </DialogDescription>
         </DialogHeader>

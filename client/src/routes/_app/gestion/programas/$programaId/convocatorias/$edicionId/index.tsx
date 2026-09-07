@@ -19,11 +19,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list2QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
+import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list3QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
 import { zUpdateProgramEditionRequest } from "@/generated/zod.gen"
 
 const updateEditionSchema = zUpdateProgramEditionRequest.required().extend({
-  name: zUpdateProgramEditionRequest.shape.name.trim().min(1, "Ingresá el nombre de la convocatoria."),
+  name: zUpdateProgramEditionRequest.shape.name.trim().min(1, "Ingresá el nombre de la edición."),
 })
 
 export const Route = createFileRoute(
@@ -38,7 +38,7 @@ function RouteComponent() {
   const client = useQueryClient()
   const [closeDialogOpen, setCloseDialogOpen] = useState(false)
   const query = useQuery(findById3Options({ path: { id: edicionId } }))
-  const refresh = () => { client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); client.invalidateQueries({ queryKey: list2QueryKey({ path: { programId: programaId } }) }) }
+  const refresh = () => { client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }) }
   const update = useMutation({ ...update3Mutation(), onSuccess: refresh, onError: showApiErrorToast })
   const activate = useMutation({ ...activateMutation(), onSuccess: refresh, onError: showApiErrorToast })
   const suspend = useMutation({ ...suspendMutation(), onSuccess: refresh, onError: showApiErrorToast })
@@ -92,9 +92,9 @@ function RouteComponent() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>¿Cerrar esta convocatoria?</AlertDialogTitle>
+                <AlertDialogTitle>¿Cerrar esta edición?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  La convocatoria quedará disponible sólo para consulta. Esta acción es definitiva y no se puede deshacer.
+                  La edición quedará disponible sólo para consulta. Esta acción es definitiva y no se puede deshacer.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -108,7 +108,7 @@ function RouteComponent() {
                     close.mutate({ path: { id: edicionId } })
                   }}
                 >
-                  {close.isPending ? "Cerrando…" : "Cerrar convocatoria"}
+                  {close.isPending ? "Cerrando…" : "Cerrar edición"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -116,7 +116,7 @@ function RouteComponent() {
         )}
       </div>
     </div>
-    {isClosed && <Alert variant="destructive"><AlertTitle>Convocatoria cerrada</AlertTitle><AlertDescription>Ya no se pueden guardar cambios ni eliminar esta convocatoria.</AlertDescription></Alert>}
+    {isClosed && <Alert variant="destructive"><AlertTitle>Edición cerrada</AlertTitle><AlertDescription>Ya no se pueden guardar cambios ni eliminar esta edición.</AlertDescription></Alert>}
     <form.Field name="name" children={(field) => {
       const invalid = field.state.meta.isTouched && !field.state.meta.isValid
       return <FormField label="Nombre" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} value={field.state.value} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value)} aria-invalid={invalid} /></FormField>
@@ -136,6 +136,6 @@ function RouteComponent() {
       return <FormField label="Capacidad máxima" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} type="number" value={field.state.value ?? ""} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value ? Number(event.target.value) : undefined)} aria-invalid={invalid} /></FormField>
     }} />
     <p className="text-sm text-muted-foreground">Inscriptos actuales: {query.data.currentEnrollment ?? 0}</p>
-    <div className="flex justify-between"><DeleteConfirmationButton description="Se eliminará esta convocatoria." disabled={busy || isClosed} onConfirm={() => { resetOperationErrors(); return remove.mutateAsync({ path: { id: edicionId } }) }} /><Button type="submit" disabled={busy || isClosed}>Guardar cambios</Button></div>
+    <div className="flex justify-between"><DeleteConfirmationButton description="Se eliminará esta edición." disabled={busy || isClosed} onConfirm={() => { resetOperationErrors(); return remove.mutateAsync({ path: { id: edicionId } }) }} /><Button type="submit" disabled={busy || isClosed}>Guardar cambios</Button></div>
   </form>}</RoutePanel>
 }

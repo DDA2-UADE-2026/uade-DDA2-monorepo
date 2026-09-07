@@ -6,6 +6,7 @@ import {
   IconCalendarEvent,
   IconChecklist,
   IconClock,
+  IconFileDescription,
   IconGift,
   IconHeartHandshake,
   IconUsers,
@@ -45,6 +46,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getAvailableProgramOptions } from "@/generated/@tanstack/react-query.gen"
 import type {
   AvailableProgramBenefitResponse,
+  AvailableProgramDocumentRequirementResponse,
   AvailableProgramEditionResponse,
   AvailableProgramRequirementResponse,
 } from "@/generated/types.gen"
@@ -187,8 +189,8 @@ function RouteComponent() {
                       <Badge variant="outline">
                         {(program.editions ?? []).length}{" "}
                         {(program.editions ?? []).length === 1
-                          ? "convocatoria disponible"
-                          : "convocatorias disponibles"}
+                          ? "edición disponible"
+                          : "ediciones disponibles"}
                       </Badge>
                     </CardContent>
                   </div>
@@ -197,17 +199,17 @@ function RouteComponent() {
                 <section className="space-y-4" aria-labelledby="available-editions-title">
                   <div>
                     <h2 id="available-editions-title" className="font-heading text-xl font-medium">
-                      Convocatorias disponibles
+                      Ediciones disponibles
                     </h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Revisá las fechas, los cupos y las condiciones de cada convocatoria.
+                      Revisá las fechas, los cupos y las condiciones de cada edición.
                     </p>
                   </div>
 
                   {(program.editions ?? []).length === 0 ? (
                     <Card>
                       <CardContent className="text-sm text-muted-foreground">
-                        No hay convocatorias disponibles en este momento.
+                        No hay ediciones disponibles en este momento.
                       </CardContent>
                     </Card>
                   ) : (
@@ -269,7 +271,7 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{edition.name || "Convocatoria sin nombre"}</CardTitle>
+        <CardTitle className="text-lg">{edition.name || "Edición sin nombre"}</CardTitle>
         <CardDescription>
           Del {formatProgramDate(edition.startDate)} al {formatProgramDate(edition.endDate)}
         </CardDescription>
@@ -297,6 +299,10 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
 
         <Separator />
 
+        <EditionDocumentRequirements requirements={edition.documentRequirements ?? []} />
+
+        <Separator />
+
         <div className="space-y-3">
           <div>
             <h3 className="font-heading font-medium">Períodos de inscripción</h3>
@@ -306,7 +312,7 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
           </div>
           {(edition.enrollmentPeriods ?? []).length === 0 ? (
             <p className="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
-              No hay un período de inscripción abierto para esta convocatoria.
+              No hay un período de inscripción abierto para esta edición.
             </p>
           ) : (
             <ItemGroup className="grid gap-3 md:grid-cols-2">
@@ -351,7 +357,7 @@ function EditionBenefits({ benefits }: { benefits: AvailableProgramBenefitRespon
     <div className="space-y-3">
       <div>
         <h3 className="font-heading font-medium">Beneficios</h3>
-        <p className="text-sm text-muted-foreground">Qué ofrece esta convocatoria.</p>
+        <p className="text-sm text-muted-foreground">Qué ofrece esta edición.</p>
       </div>
       {benefits.length === 0 ? (
         <p className="text-sm text-muted-foreground">No hay beneficios informados.</p>
@@ -367,7 +373,7 @@ function EditionBenefits({ benefits }: { benefits: AvailableProgramBenefitRespon
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>{benefit.type ? benefitLabels[benefit.type] : "Beneficio"}</ItemTitle>
-                  <ItemDescription>{details || "Beneficio incluido en la convocatoria."}</ItemDescription>
+                  <ItemDescription>{details || "Beneficio incluido en la edición."}</ItemDescription>
                 </ItemContent>
               </Item>
             )
@@ -409,6 +415,41 @@ function EditionRequirements({ requirements }: { requirements: AvailableProgramR
               </Item>
             )
           })}
+        </ItemGroup>
+      )}
+    </div>
+  )
+}
+
+function EditionDocumentRequirements({ requirements }: { requirements: AvailableProgramDocumentRequirementResponse[] }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="font-heading font-medium">Documentación requerida</h3>
+        <p className="text-sm text-muted-foreground">Documentos solicitados para esta edición.</p>
+      </div>
+      {requirements.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No hay documentos requeridos para esta edición.</p>
+      ) : (
+        <ItemGroup className="grid gap-3 md:grid-cols-2">
+          {requirements.map((requirement) => (
+            <Item key={requirement.id ?? requirement.code} variant="outline" role="listitem">
+              <ItemMedia variant="icon">
+                <IconFileDescription className="text-primary" />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{requirement.name || "Documento sin nombre"}</ItemTitle>
+                {requirement.description && (
+                  <ItemDescription className="line-clamp-none whitespace-pre-line">
+                    {requirement.description}
+                  </ItemDescription>
+                )}
+              </ItemContent>
+              <Badge variant={requirement.required ? "default" : "secondary"}>
+                {requirement.required ? "Obligatorio" : "Opcional"}
+              </Badge>
+            </Item>
+          ))}
         </ItemGroup>
       )}
     </div>
