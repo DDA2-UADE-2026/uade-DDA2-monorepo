@@ -10,6 +10,7 @@ import com.uade.dda2.server.feature.program.dto.admin.response.ProgramOptionResp
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import org.springframework.data.domain.Page
+import java.util.UUID
 
 fun CreateProgramRequest.toEntity(
     createdBy: User,
@@ -39,18 +40,26 @@ fun Program.toResponse(): ProgramResponse =
         updatedAt = updatedAt,
     )
 
-fun Program.toListItemResponse(): ProgramListItemResponse =
+fun Program.toListItemResponse(
+    active: Boolean,
+): ProgramListItemResponse =
     ProgramListItemResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        active = active,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
 
-fun Page<Program>.toListResponse(): ProgramListResponse =
+fun Page<Program>.toListResponse(
+    activeProgramIds: Set<UUID>,
+): ProgramListResponse =
     ProgramListResponse(
-        content = content.map { it.toListItemResponse() },
+        content = content.map { program ->
+            val programId = requireNotNull(program.id)
+            program.toListItemResponse(active = programId in activeProgramIds)
+        },
         page = number,
         size = size,
         totalElements = totalElements,

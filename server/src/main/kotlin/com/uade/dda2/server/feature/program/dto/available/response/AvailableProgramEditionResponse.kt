@@ -29,6 +29,6 @@ data class AvailableProgramEditionResponse(
     val requirements: List<AvailableProgramRequirementResponse>,
     @field:Schema(description = "Documentos solicitados por esta edición, obligatorios u opcionales.", accessMode = Schema.AccessMode.READ_ONLY)
     val documentRequirements: List<AvailableProgramDocumentRequirementResponse>,
-    @field:Schema(description = "Períodos actualmente abiertos para recibir solicitudes.", accessMode = Schema.AccessMode.READ_ONLY)
+    @field:Schema(description = "Períodos de inscripción configurados para esta edición.", accessMode = Schema.AccessMode.READ_ONLY)
     val enrollmentPeriods: List<AvailableEnrollmentPeriodResponse>,
 )

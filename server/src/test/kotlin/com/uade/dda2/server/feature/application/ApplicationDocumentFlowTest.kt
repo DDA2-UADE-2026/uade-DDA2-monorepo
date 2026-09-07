@@ -192,6 +192,60 @@ class ApplicationDocumentFlowTest {
     }
 
     @Test
+    fun `listados publican objetivo periodos configurados y actividad del programa`() {
+        val objective = "Objetivo ciudadano ${UUID.randomUUID()}"
+        val inactiveProgramId = tx {
+            programs.findById(f.programId).orElseThrow().objective = objective
+            val owner = users.getReferenceById(f.ownerId)
+            val edition = editions.getReferenceById(f.editionId)
+            val futurePeriod = periods.saveAndFlush(
+                EnrollmentPeriod(
+                    programEdition = edition,
+                    openDate = LocalDate.now().plusDays(11),
+                    closeDate = LocalDate.now().plusDays(15),
+                    status = EnrollmentPeriodStatus.SCHEDULED,
+                ),
+            )
+            assertNotNull(futurePeriod.id)
+            programs.saveAndFlush(
+                Program(
+                    name = "Programa inactivo ${UUID.randomUUID()}",
+                    objective = "Sin convocatorias activas",
+                    createdBy = owner,
+                ),
+            ).id!!
+        }
+
+        val publicList = expect(
+            mvc.perform(get("/api/programs?page=0&size=100").header("Authorization", auth(f.ownerToken))).andReturn(),
+            200,
+        )!!
+        val publicProgram = publicList.get("content").first { it.get("id").asString() == f.programId.toString() }
+        assertEquals(objective, publicProgram.get("objective").asString())
+
+        val publicDetail = expect(
+            mvc.perform(get("/api/programs/${f.programId}").header("Authorization", auth(f.ownerToken))).andReturn(),
+            200,
+        )!!
+        val edition = publicDetail.get("editions").first { it.get("id").asString() == f.editionId.toString() }
+        val enrollmentPeriods = edition.get("enrollmentPeriods")
+        val statuses = (0 until enrollmentPeriods.size())
+            .map { index -> enrollmentPeriods.get(index).get("status").asString() }
+            .toSet()
+        assertEquals(setOf("OPEN", "SCHEDULED"), statuses)
+
+        val adminList = expect(
+            mvc.perform(get("/api/admin/programs?page=0&size=100").header("Authorization", auth(f.adminToken))).andReturn(),
+            200,
+        )!!
+        val listedPrograms = adminList.get("content")
+        val activeProgram = listedPrograms.first { it.get("id").asString() == f.programId.toString() }
+        val inactiveProgram = listedPrograms.first { it.get("id").asString() == inactiveProgramId.toString() }
+        assertTrue(activeProgram.get("active").asBoolean())
+        assertFalse(inactiveProgram.get("active").asBoolean())
+    }
+
+    @Test
     fun `carga reemplaza elimina y descarga inline PDF JPEG y PNG sin archivos huerfanos`() {
         val variants = listOf(
             file("identidad.pdf", "application/pdf", pdf()),

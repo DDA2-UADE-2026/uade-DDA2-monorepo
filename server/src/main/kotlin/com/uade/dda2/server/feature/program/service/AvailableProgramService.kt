@@ -2,7 +2,6 @@ package com.uade.dda2.server.feature.program.service
 
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramDetailResponse
 import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramListResponse
-import com.uade.dda2.server.feature.enrollmentperiod.entity.EnrollmentPeriodStatus
 import com.uade.dda2.server.feature.enrollmentperiod.repository.EnrollmentPeriodRepository
 import com.uade.dda2.server.feature.program.entity.ProgramBenefit
 import com.uade.dda2.server.feature.program.entity.ProgramRequirement
@@ -98,11 +97,8 @@ class AvailableProgramService(
             .sortedWith(compareBy(ProgramRequirement::type, ProgramRequirement::description))
             .groupBy { requireNotNull(it.programEdition.id) }
         val enrollmentPeriodsByEdition = enrollmentPeriodRepository
-            .findAllByProgramEditionIdInAndStatusAndOpenDateLessThanEqualAndCloseDateGreaterThanEqualOrderByOpenDateAsc(
+            .findAllByProgramEditionIdInOrderByOpenDateAsc(
                 programEditionIds = editionIds,
-                status = EnrollmentPeriodStatus.OPEN,
-                openDate = today,
-                closeDate = today,
             )
             .groupBy { requireNotNull(it.programEdition.id) }
         val documentRequirementsByEdition = programDocumentRequirementRepository
