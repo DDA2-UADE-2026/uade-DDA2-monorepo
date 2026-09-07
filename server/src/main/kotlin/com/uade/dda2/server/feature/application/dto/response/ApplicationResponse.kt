@@ -20,6 +20,8 @@ data class ApplicationResponse(
     val submittedAt: LocalDateTime,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
+    @field:Schema(description = "Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.")
+    val pendingDocuments: List<PendingApplicationDocumentResponse>,
 )
 
 data class ApplicationListResponse(

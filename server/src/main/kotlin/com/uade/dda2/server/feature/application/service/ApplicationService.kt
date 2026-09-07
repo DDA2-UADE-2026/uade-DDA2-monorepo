@@ -44,6 +44,7 @@ class ApplicationService(
     private val logs: LogService,
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
+    private val pendingDocuments: ApplicationPendingDocumentService,
 ) {
     @Transactional
     fun submit(request: CreateApplicationRequest, idempotencyKey: String?): ApplicationSubmission {
@@ -73,7 +74,7 @@ class ApplicationService(
                 if (existing.requestHash != requestHash || existing.enrollmentPeriod.id != request.enrollmentPeriodId) {
                     throw ApplicationErrors.idempotencyConflict()
                 }
-                return ApplicationSubmission(existing.toResponse(), replayed = true)
+                return ApplicationSubmission(existing.toResponse(pendingDocuments.calculate(existing)), replayed = true)
             }
         }
 
@@ -100,20 +101,23 @@ class ApplicationService(
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.APPLICATION,
             entityId = requireNotNull(application.id).toString(),
             newValues = json.writeValueAsString(application.toAuditSnapshot()))
-        return ApplicationSubmission(application.toResponse(), replayed = false)
+        return ApplicationSubmission(application.toResponse(pendingDocuments.calculate(application)), replayed = false)
     }
 
     @Transactional(readOnly = true)
     fun list(page: Int, size: Int): ApplicationListResponse {
         val userId = authorizedUserId()
         val results = applications.findAllByUserId(userId, PageRequest.of(page, size, Sort.by("applicationNumber").descending()))
-        return ApplicationListResponse(results.content.map { it.toResponse() }, results.number, results.size,
+        val pendingByApplication = pendingDocuments.calculate(results.content)
+        return ApplicationListResponse(results.content.map { it.toResponse(pendingByApplication[requireNotNull(it.id)].orEmpty()) }, results.number, results.size,
             results.totalElements, results.totalPages)
     }
 
     @Transactional(readOnly = true)
     fun get(id: UUID): ApplicationResponse =
-        (applications.findByIdAndUserId(id, authorizedUserId()) ?: throw ApplicationErrors.notFound()).toResponse()
+        (applications.findByIdAndUserId(id, authorizedUserId()) ?: throw ApplicationErrors.notFound()).let {
+            it.toResponse(pendingDocuments.calculate(it))
+        }
 
     private fun authorizedUserId(): Long {
         val principal = currentUser.principal()

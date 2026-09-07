@@ -45,6 +45,7 @@ fun Program.toAvailableDetailResponse(
 fun ProgramEdition.toAvailableResponse(
     benefits: List<AvailableProgramBenefitResponse>,
     requirements: List<AvailableProgramRequirementResponse>,
+    documentRequirements: List<com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramDocumentRequirementResponse>,
     enrollmentPeriods: List<AvailableEnrollmentPeriodResponse>,
 ): AvailableProgramEditionResponse =
     AvailableProgramEditionResponse(
@@ -58,6 +59,7 @@ fun ProgramEdition.toAvailableResponse(
         status = status,
         benefits = benefits,
         requirements = requirements,
+        documentRequirements = documentRequirements,
         enrollmentPeriods = enrollmentPeriods,
     )
 

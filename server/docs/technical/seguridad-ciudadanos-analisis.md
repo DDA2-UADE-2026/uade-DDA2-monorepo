@@ -128,11 +128,11 @@ Configurar `JWT_SECRET` con un secreto aleatorio propio de al menos 32 bytes. El
 - `JWT_ROLE_SELECTION_EXPIRATION_SECONDS`: 300 por defecto.
 - Ambos tiempos deben ser positivos.
 
-En `program-feature.postman_collection.json`, completar `username` y `password`; para usuarios con varios roles, completar `selectedRole` con un nombre de `availableRoles`. `targetRole` es opcional para probar un cambio posterior.
+En `docs/postman/program-feature.postman_collection.json`, completar `username` y `password`; para usuarios con varios roles, completar `selectedRole` con un nombre de `availableRoles`. `targetRole` es opcional para probar un cambio posterior.
 
 La colección guarda `accessToken`, `selectionToken`, `activeRole` y permisos en variables de colección. Ya no usa el antiguo `pm.globals.token`. Cada intento de login limpia las credenciales anteriores. Las requests incluyen comprobación de rechazo del JWT temporal como bearer, selección, perfil, cambio y errores de autenticación. El cambio se omite en Runner si no se configuró `targetRole`; la selección se omite si el login ya entregó un token operativo.
 
-Los endpoints administrativos siguen necesitando sus permisos específicos. Los nombres de ejemplo no crean roles ni cuentas. `api-entities.dbml` refleja el modelo JPA, sin ejecutar SQL. La recreación de la base de pruebas queda a cargo del usuario.
+Los endpoints administrativos siguen necesitando sus permisos específicos. Los nombres de ejemplo no crean roles ni cuentas. `docs/database/api-entities.dbml` refleja el modelo JPA, sin ejecutar SQL. La recreación de la base de pruebas queda a cargo del usuario.
 
 El frontend no fue modificado. Su selector y consumo de respuestas deberán adaptarse después: el nuevo login multirrol no entrega un token operativo inmediato y las respuestas administrativas cambian a permisos por rol.
 

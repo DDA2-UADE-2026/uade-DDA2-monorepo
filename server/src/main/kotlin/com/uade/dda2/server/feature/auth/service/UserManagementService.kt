@@ -10,6 +10,8 @@ import com.uade.dda2.server.feature.auth.dto.response.UserManagementResponse
 import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
+import com.uade.dda2.server.feature.document.repository.DocumentRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.repository.LogRepository
@@ -35,6 +37,8 @@ class UserManagementService(
     private val programRepository: ProgramRepository,
     private val programEditionRepository: ProgramEditionRepository,
     private val applicationRepository: ApplicationRepository,
+    private val applicationDocumentRepository: ApplicationDocumentRepository,
+    private val documentRepository: DocumentRepository,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): List<UserManagementResponse> =
@@ -123,8 +127,12 @@ class UserManagementService(
 
         val user = findUser(id)
 
-        if (applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id)) {
-            throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes.")
+        if (
+            applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id) ||
+            applicationDocumentRepository.existsByReviewedById(id) ||
+            documentRepository.existsByUploadedById(id)
+        ) {
+            throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes o sus documentos.")
         }
 
         if (

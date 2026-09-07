@@ -1,6 +1,6 @@
 # EnrollmentPeriod — Convocatorias o períodos de inscripción
 
-[Inicio de la guía](README.md) · [Programas y ediciones](program.md) · [Solicitudes](application.md)
+[Inicio de la guía](../README.md) · [Programas y ediciones](program.md) · [Solicitudes](application.md)
 
 ## Qué resuelve esta funcionalidad
 

@@ -1,6 +1,6 @@
 # Application — Solicitudes de beneficios
 
-[Inicio de la guía](README.md) · [Programas y ediciones](program.md) · [Convocatorias](enrollmentperiod.md)
+[Inicio de la guía](../README.md) · [Flujo completo y archivos](application-flow.md) · [Programas y ediciones](program.md) · [Convocatorias](enrollmentperiod.md)
 
 ## Qué representa una solicitud
 
@@ -10,7 +10,7 @@ La solicitud pertenece a la persona solicitante, aunque un administrativo la reg
 
 **Presentar no equivale a recibir el beneficio.** La solicitud tampoco representa una incorporación efectiva ni una reserva de cupo.
 
-Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida y consultar el listado y detalle propios. La evaluación, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
+Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas. La evaluación general, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
 
 ## Quién puede presentar y consultar
 
@@ -18,21 +18,21 @@ La persona debe haber ingresado al sistema, tener su cuenta activa y operar con 
 
 Si una persona tiene también funciones municipales, debe elegir el rol adecuado. Tener un rol ciudadano entre sus roles asignados no habilita automáticamente todas sus acciones mientras está operando con otro rol.
 
-En la presentación propia no se puede elegir otra persona como solicitante. En la presentación asistida, un administrativo autorizado puede seleccionar otra persona ya existente en el sistema, sin restricción de jurisdicción. Las consultas siguen siendo propias: conocer la referencia de una solicitud ajena o haberla registrado no habilita a verla después.
+En la presentación propia no se puede elegir otra persona como solicitante. En la presentación asistida, un administrativo autorizado puede seleccionar otra persona ya existente en el sistema, sin restricción de jurisdicción. Las consultas ciudadanas siguen siendo propias. La revisión documental es un flujo administrativo separado que permite consultar los documentos de cualquier solicitud con autorización específica.
 
 No es obligatorio tener una cuenta vinculada con el servicio externo de Ciudadanos para usar esta funcionalidad. La integración futura con ese servicio no cambia quién es el titular de una solicitud dentro del sistema.
 
 ## Recorrido de una nueva presentación
 
 1. La persona ingresa al sistema y opera con un rol habilitado para presentar solicitudes.
-2. Consulta los programas disponibles y revisa las ediciones, los beneficios y los requisitos informados.
+2. Consulta los programas disponibles y revisa las ediciones, los beneficios, las condiciones y los documentos solicitados.
 3. Elige una convocatoria abierta y vigente de la edición que le interesa.
 4. Solicita presentar su postulación en esa convocatoria. La edición correspondiente se determina a partir de esa elección.
 5. El sistema verifica la cuenta, la autorización, la convocatoria, la edición y las solicitudes previas de la misma persona.
 6. Si todas las condiciones se cumplen, registra la solicitud como **Presentada** y asigna su número y fecha de presentación.
 7. La persona recibe esa confirmación y puede consultar posteriormente la solicitud desde su listado propio.
 
-La presentación actual no exige completar una evaluación social, cargar documentos ni seleccionar un trabajador municipal. Esas tareas pertenecen a etapas posteriores. Los requisitos del programa se pueden consultar, pero su cumplimiento todavía no se verifica automáticamente al presentar.
+La solicitud puede presentarse aunque sus documentos obligatorios todavía no se hayan cargado. La presentación tampoco exige completar una evaluación social ni seleccionar un trabajador municipal. Los requisitos generales del programa se informan, pero su cumplimiento todavía no se verifica automáticamente al presentar.
 
 ## Recorrido de una presentación asistida
 
@@ -46,6 +46,42 @@ La presentación actual no exige completar una evaluación social, cargar docume
 La autorización se comprueba sobre el administrativo que realiza la operación; el ciudadano asistido no necesita estar conectado ni aportar sus credenciales. No se limita la asistencia a una jurisdicción.
 
 Si el administrativo quiere solicitar para sí mismo, utiliza la presentación propia con un rol habilitado para esa acción. El permiso de asistencia no reemplaza al permiso de presentación propia.
+
+## Documentos de una solicitud
+
+Cada edición puede definir su propio catálogo de documentos. Un requisito documental posee un código, un nombre, una explicación y la indicación de si es obligatorio u opcional. El catálogo se muestra junto con el detalle de la edición para que la persona conozca qué se le pedirá antes de presentar.
+
+Una vez que existe la primera solicitud de una edición, ese catálogo queda fijo. No se pueden agregar, modificar ni quitar requisitos documentales, porque hacerlo cambiaría las condiciones con las que las personas ya se presentaron.
+
+### Recorrido de la persona solicitante
+
+1. Presenta la solicitud o encuentra en su listado una solicitud registrada mediante asistencia.
+2. Consulta los documentos pedidos por la edición y los pendientes informados en su solicitud.
+3. Carga el archivo correspondiente a cada requisito. Se admiten PDF, JPEG y PNG de hasta 10 MB.
+4. Si se equivocó o el archivo fue observado, reemplaza la entrega del mismo requisito. La entrega sigue siendo la misma, pero el archivo anterior deja de conservarse y la revisión vuelve a pendiente.
+5. Puede eliminar una entrega y volver a cargarla mientras la solicitud no esté aprobada, rechazada ni cerrada.
+
+Los documentos son privados. Solo la persona titular puede listar y obtener los de sus propias solicitudes. No existe una galería pública ni un acceso general por el identificador del archivo.
+
+### Revisión administrativa
+
+Toda carga nueva queda **Pendiente de revisión (PENDING)**. El personal autorizado puede ver y descargar los documentos de cualquier solicitud y decidir uno de estos resultados:
+
+| Resultado | Significado | Observación |
+| --- | --- | --- |
+| Válido (VALID) | La entrega fue aceptada para ese requisito. | No se registra observación. |
+| Observado (OBSERVED) | La entrega requiere una corrección o un nuevo archivo. | Es obligatoria y explica qué debe corregirse. |
+
+Solo una entrega pendiente puede revisarse. Para corregir una entrega ya válida u observada, la persona la reemplaza; el nuevo archivo vuelve a quedar pendiente y se borra la revisión anterior. La carga, el reemplazo, la eliminación y la revisión actualizan la fecha de última modificación de la solicitud, pero no cambian su estado general.
+
+### Qué se considera pendiente
+
+En el listado y el detalle de la solicitud se informan únicamente los documentos **obligatorios** que:
+
+- todavía no fueron entregados, con motivo **Faltante (MISSING)**; o
+- fueron observados, con motivo **Observado (OBSERVED)** y la explicación del revisor.
+
+Un documento obligatorio ya entregado y todavía pendiente de revisión no se muestra como faltante. Los documentos opcionales tampoco aparecen entre los pendientes, aunque la persona puede entregarlos.
 
 ## Condiciones para que se acepte
 
@@ -131,7 +167,7 @@ Los reintentos se reconocen por titular, también entre presentaciones propias y
 
 La persona puede abrir su listado de solicitudes, incluidas las que un administrativo registró en su nombre. Se muestran por número descendente, primero las de numeración más alta, y puede recorrerlas por páginas.
 
-Al elegir una, consulta su número, estado, fechas y la edición y convocatoria a las que pertenece. Una solicitud no desaparece del historial porque la convocatoria se cierre o la edición deje de ofrecerse en el catálogo.
+Al elegir una, consulta su número, estado, fechas, la edición y convocatoria a las que pertenece y los documentos obligatorios faltantes u observados. Una solicitud no desaparece del historial porque la convocatoria se cierre o la edición deje de ofrecerse en el catálogo.
 
 Este listado no muestra solicitudes de otras personas. No es una bandeja municipal de evaluación ni una búsqueda de todos los expedientes del sistema.
 
@@ -139,7 +175,7 @@ Este listado no muestra solicitudes de otras personas. No es una bandeja municip
 
 ### Qué transición existe hoy
 
-El único avance disponible al operar esta funcionalidad es **completar una nueva presentación y dejarla en Presentada**. No hay guardado previo en borrador, ni acciones para editar, cancelar, eliminar, evaluar o resolver una solicitud.
+El único cambio disponible sobre el estado general es **completar una nueva presentación y dejarla en Presentada**. No hay guardado previo en borrador, ni acciones para editar, cancelar, eliminar, evaluar o resolver una solicitud. La revisión de sus documentos utiliza estados propios y no mueve el estado general de la solicitud.
 
 Mientras no se implementen las etapas posteriores, una solicitud presentada mediante este flujo permanece presentada. Por eso, hoy una solicitud existente normalmente impedirá que esa persona solicite otra convocatoria de la misma edición.
 
@@ -185,5 +221,7 @@ El sistema no coloca automáticamente en lista de espera ni rechaza una solicitu
 ## Qué se conserva como constancia
 
 Cada presentación confirmada deja constancia del titular, de quién la registró, del número recibido, de la convocatoria y edición y de cuándo quedó presentada. En una solicitud propia el titular y quien registra son la misma persona; en una asistida quedan separados. Un reintento reconocido no crea una segunda constancia ni cambia al registrante original.
+
+Las cargas, reemplazos, eliminaciones y revisiones documentales también dejan una constancia de auditoría con sus referencias, estado, nombre, tipo y tamaño. El contenido binario del archivo nunca se copia al registro de auditoría.
 
 Las pausas y cierres de recepción no borran esas solicitudes. Los cambios que afecten su evaluación o resultado deberán realizarse mediante los flujos posteriores que correspondan.

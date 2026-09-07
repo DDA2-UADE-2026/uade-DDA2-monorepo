@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -84,6 +85,19 @@ class GlobalExceptionHandler {
                     message = "El cuerpo de la solicitud es inválido.",
                     code = "INVALID_REQUEST_BODY",
                     status = HttpStatus.BAD_REQUEST.value(),
+                    path = request.requestURI,
+                ),
+            )
+
+    @ExceptionHandler(MaxUploadSizeExceededException::class)
+    fun handleMaxUploadSize(request: HttpServletRequest): ResponseEntity<ErrorResponse> =
+        ResponseEntity
+            .status(HttpStatus.PAYLOAD_TOO_LARGE)
+            .body(
+                ErrorResponse(
+                    message = "El archivo no puede superar 10 MB.",
+                    code = "APPLICATION_DOCUMENT_FILE_TOO_LARGE",
+                    status = HttpStatus.PAYLOAD_TOO_LARGE.value(),
                     path = request.requestURI,
                 ),
             )
