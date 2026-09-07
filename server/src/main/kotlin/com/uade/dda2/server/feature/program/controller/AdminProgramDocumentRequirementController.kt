@@ -40,6 +40,7 @@ class AdminProgramDocumentRequirementController(private val service: AdminProgra
     @PutMapping("/{requirementId}")
     @PreAuthorize("hasAuthority('programs:management:edit')")
     @Operation(summary = "Actualizar un requisito documental")
+    @ApiResponse(responseCode = "200", description = "Requisito documental actualizado.", useReturnTypeSchema = true)
     @ApiResponse(responseCode = "409", description = "Código duplicado, edición cerrada o catálogo bloqueado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun update(@PathVariable editionId: UUID, @PathVariable requirementId: UUID, @Valid @RequestBody request: UpdateProgramDocumentRequirementRequest) =
         service.update(editionId, requirementId, request)
