@@ -6,7 +6,6 @@ import {
   IconClipboardHeart,
   IconFileCheck,
   IconFileText,
-  IconFolders,
   IconGift,
   IconHeartHandshake,
   IconHome2,
@@ -48,7 +47,14 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
 // Rutas todavía sin implementar como Route: anchors simples hasta que existan.
 export const OPERACION_NAV: readonly SidebarNavItem[] = [
   { title: "Inicio", url: "/gestion", icon: IconHome2 },
-  { title: "Casos", url: "/gestion/casos", icon: IconFolders },
+  { 
+    title: "Solicitudes",
+    url: "/gestion/solicitudes",
+    icon: IconFileText,
+    items: [
+      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida" },
+    ]
+  },
   { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
   { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift },
   { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart },
@@ -62,10 +68,6 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     title: "Turnos",
     url: "/gestion/turnos",
     icon: IconCalendarEvent,
-    items: [
-      { title: "Nuevo turno", url: "/gestion/turnos/nuevo" },
-      { title: "Mi agenda", url: "/gestion/turnos/agenda" },
-    ],
   },
   { title: "Campañas", url: "/gestion/campanias", icon: IconSpeakerphone },
   { title: "Documentos", url: "/gestion/documentos", icon: IconFileCheck },

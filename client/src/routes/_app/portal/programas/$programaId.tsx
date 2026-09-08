@@ -45,6 +45,7 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getAvailableProgramOptions } from "@/generated/@tanstack/react-query.gen"
 import { applicationPeriodUnavailableReason, enrollmentStatusLabels } from "@/lib/application-flow"
+import { programImageSource } from "@/lib/program-images"
 import type {
   AvailableProgramBenefitResponse,
   AvailableProgramDocumentRequirementResponse,
@@ -160,7 +161,7 @@ function RouteComponent() {
               <>
                 <Card className="gap-0 overflow-hidden py-0 lg:grid lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)]">
                   <img
-                    src={PROGRAM_IMAGE}
+                    src={programImageSource(program.imageUrl) ?? PROGRAM_IMAGE}
                     alt=""
                     className="aspect-[1.91/1] size-full max-h-96 object-cover lg:aspect-auto lg:min-h-80"
                   />

@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconPlus, IconRefresh, IconTarget, IconWriting } from "@tabler/icons-react"
+import { IconAlertTriangle, IconPhoto, IconPlus, IconRefresh, IconTarget, IconWriting } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { create2Mutation, list1Options, list1QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { CreateProgramRequest } from "@/generated/types.gen"
 import { zCreateProgramRequest } from "@/generated/zod.gen"
+import { programImageSource } from "@/lib/program-images"
 
 const PAGE_SIZE = 10
 const searchSchema = z.object({
@@ -88,10 +89,31 @@ function RouteComponent() {
               <p className="text-sm text-muted-foreground">No hay programas registrados.</p>
             ) : (
               <Table>
-                <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Objetivo</TableHead><TableHead>Estado</TableHead><TableHead>Creado</TableHead><TableHead>Actualizado</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead className="w-20">Portada</TableHead><TableHead>Nombre</TableHead><TableHead>Objetivo</TableHead><TableHead>Estado</TableHead><TableHead>Creado</TableHead><TableHead>Actualizado</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {programs.map((program) => (
                     <TableRow key={program.id}>
+                      <TableCell className="w-20">
+                        <Link
+                          to="/gestion/programas/$programaId"
+                          params={{ programaId: program.id ?? "" }}
+                          aria-label={`Ver ${program.name ?? "programa"}`}
+                          className="block w-16 overflow-hidden rounded-md border bg-muted"
+                        >
+                          {program.imageUrl ? (
+                            <img
+                              src={programImageSource(program.imageUrl)}
+                              alt=""
+                              className="aspect-[1.91/1] w-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span className="flex aspect-[1.91/1] items-center justify-center text-muted-foreground">
+                              <IconPhoto className="size-4" />
+                            </span>
+                          )}
+                        </Link>
+                      </TableCell>
                       <TableCell className="font-medium">
                         <Link to="/gestion/programas/$programaId" params={{ programaId: program.id ?? "" }} className="hover:underline">{program.name}</Link>
                       </TableCell>

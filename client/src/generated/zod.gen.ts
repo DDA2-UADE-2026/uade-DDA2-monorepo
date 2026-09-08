@@ -94,6 +94,20 @@ export const zApplicationDocumentResponse = z.object({
 });
 
 /**
+ * Metadatos de la imagen de portada de un programa; nunca contiene sus bytes.
+ */
+export const zProgramImageResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    programId: z.uuid().readonly().optional(),
+    originalName: z.string().readonly().optional(),
+    contentType: z.string().readonly().optional(),
+    sizeBytes: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    url: z.string().readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
+});
+
+/**
  * Datos editables de un período de inscripción.
  */
 export const zUpdateEnrollmentPeriodRequest = z.object({
@@ -147,6 +161,7 @@ export const zProgramResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     createdBy: zProgramCreatedByResponse.readonly().optional(),
     createdAt: z.iso.datetime().readonly().optional(),
     updatedAt: z.iso.datetime().readonly().optional()
@@ -538,6 +553,7 @@ export const zAvailableProgramListItemResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     availableEditions: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
     nextEditionStartDate: z.iso.date().readonly().optional(),
     nextEditionEndDate: z.iso.date().readonly().optional()
@@ -637,6 +653,7 @@ export const zAvailableProgramDetailResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     editions: z.array(zAvailableProgramEditionResponse).readonly().optional(),
     incompatibilities: z.array(zAvailableProgramIncompatibilityResponse).readonly().optional()
 });
@@ -656,6 +673,7 @@ export const zProgramListItemResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     active: z.boolean().readonly().optional(),
     createdAt: z.iso.datetime().readonly().optional(),
     updatedAt: z.iso.datetime().readonly().optional()
@@ -706,7 +724,8 @@ export const zEnrollmentPeriodListResponse = z.object({
  */
 export const zProgramOptionResponse = z.object({
     id: z.uuid().readonly().optional(),
-    name: z.string().readonly().optional()
+    name: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional()
 });
 
 /**
@@ -748,6 +767,41 @@ export const zProgramEditionListResponse = z.object({
 export const zProgramEditionOptionResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional()
+});
+
+/**
+ * Datos mínimos de una persona vinculada a una solicitud para uso administrativo.
+ */
+export const zApplicationUserSummaryResponse = z.object({
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    username: z.string().optional(),
+    name: z.string().optional(),
+    email: z.string().optional(),
+    active: z.boolean().optional()
+});
+
+/**
+ * Vista administrativa completa de una solicitud y las personas vinculadas.
+ */
+export const zAdminApplicationResponse = z.object({
+    application: zApplicationResponse.optional(),
+    applicant: zApplicationUserSummaryResponse.optional(),
+    registeredBy: zApplicationUserSummaryResponse.optional(),
+    assignedWorker: zApplicationUserSummaryResponse.optional(),
+    originTicketId: z.string().optional(),
+    resolutionReason: z.string().optional(),
+    resolvedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Página de solicitudes disponible para la gestión municipal.
+ */
+export const zAdminApplicationListResponse = z.object({
+    content: z.array(zAdminApplicationResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
 });
 
 export const zLink = z.object({
@@ -876,6 +930,41 @@ export const zPutPath = z.object({
  * Entrega existente reemplazada.
  */
 export const zPutResponse = zApplicationDocumentResponse;
+
+export const zDeleteProgramImagePath = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Imagen eliminada.
+ */
+export const zDeleteProgramImageResponse = z.void();
+
+export const zCreateProgramImageBody = z.object({
+    file: z.string()
+});
+
+export const zCreateProgramImagePath = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Imagen creada.
+ */
+export const zCreateProgramImageResponse = zProgramImageResponse;
+
+export const zUpdateProgramImageBody = z.object({
+    file: z.string()
+});
+
+export const zUpdateProgramImagePath = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Imagen reemplazada.
+ */
+export const zUpdateProgramImageResponse = zProgramImageResponse;
 
 export const zGetEnrollmentPeriodPath = z.object({
     programId: z.uuid(),
@@ -1314,6 +1403,29 @@ export const zCreate7Path = z.object({
  */
 export const zCreate7Response = zProgramEditionResponse;
 
+export const zListManagedApplicationsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    status: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    search: z.string().min(0).max(150).optional()
+});
+
+/**
+ * OK
+ */
+export const zListManagedApplicationsResponse = zAdminApplicationListResponse;
+
 export const zSubmit1Body = zCreateAssistedApplicationRequest;
 
 export const zSubmit1Headers = z.object({
@@ -1419,6 +1531,15 @@ export const zGetAvailableProgramPath = z.object({
  */
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
 
+export const zGetPublicImagePath = z.object({
+    imageId: z.uuid()
+});
+
+/**
+ * Contenido de la imagen.
+ */
+export const zGetPublicImageResponse = z.string();
+
 export const zGet1Path = z.object({
     id: z.uuid()
 });
@@ -1469,6 +1590,10 @@ export const zListProgramEditionOptionsPath = z.object({
  * OK
  */
 export const zListProgramEditionOptionsResponse = z.array(zProgramEditionOptionResponse);
+
+export const zGetManagedApplicationPath = z.object({
+    id: z.uuid()
+});
 
 export const zList5Path = z.object({
     applicationId: z.uuid()

@@ -123,7 +123,10 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavBreadcrumbs items={[{ label: "Documentos" }]} />
+        <OutletNavBreadcrumbs items={[
+          { label: "Solicitudes", to: "/gestion/solicitudes" },
+          { label: "Revisión documental" },
+        ]} />
       </OutletNavSticky>
 
       <SidebarShellContent>

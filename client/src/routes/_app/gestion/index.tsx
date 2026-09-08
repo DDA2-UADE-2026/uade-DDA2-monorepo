@@ -1,5 +1,5 @@
-import { IconClipboardText } from "@tabler/icons-react"
-import { createFileRoute } from "@tanstack/react-router"
+import { IconFileCheck, IconFilePlus } from "@tabler/icons-react"
+import { Link, createFileRoute } from "@tanstack/react-router"
 
 import {
   OutletNavSidebarTrigger,
@@ -15,13 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty"
+import { Button } from "@/components/ui/button"
 import { UserAvatar } from "@/components/UserAvatar"
 import { useMe } from "@/hooks/use-auth"
 
@@ -59,28 +53,25 @@ function RouteComponent() {
               </div>
             </header>
 
-            <section aria-labelledby="recent-applications-title">
+            <section aria-labelledby="application-management-title">
               <Card className="w-full">
                 <CardHeader className="border-b">
-                  <CardTitle id="recent-applications-title">
-                    Solicitudes recientes
+                  <CardTitle id="application-management-title">
+                    Gestión de solicitudes
                   </CardTitle>
                   <CardDescription>
-                    Las solicitudes más recientes aparecerán en esta sección.
+                    Registrá presentaciones asistidas y revisá la documentación entregada.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Empty className="min-h-64 border">
-                    <EmptyHeader>
-                      <EmptyMedia variant="icon">
-                        <IconClipboardText />
-                      </EmptyMedia>
-                      <EmptyTitle>No hay solicitudes recientes</EmptyTitle>
-                      <EmptyDescription>
-                        Todavía no hay solicitudes para mostrar.
-                      </EmptyDescription>
-                    </EmptyHeader>
-                  </Empty>
+                <CardContent className="flex flex-col gap-3 sm:flex-row">
+                  <Button render={<Link to="/gestion/solicitudes" />}>
+                    <IconFilePlus />
+                    Registrar solicitud asistida
+                  </Button>
+                  <Button variant="outline" render={<Link to="/gestion/documentos" search={{ solicitudId: "" }} />}>
+                    <IconFileCheck />
+                    Revisar documentos
+                  </Button>
                 </CardContent>
               </Card>
             </section>
