@@ -19,11 +19,11 @@ jobs:
           HEAD_BRANCH: ${{ github.head_ref }}
         run: |
           case "$BASE_BRANCH:$HEAD_BRANCH" in
-            main:develop|develop:feature/*|develop:hotfix/*|main:hotfix/*) 
+            main:develop|main:release/*|develop:feature/*|develop:hotfix/*|main:hotfix/*) 
               ;;
             *)
               echo "PR no permitido: $HEAD_BRANCH -> $BASE_BRANCH"
-              echo "Permitidos: develop -> main y feature/* -> develop y hotfix/* -> develop/main"
+              echo "Permitidos: develop -> main y feature/* -> develop y hotfix/* -> develop/main y release/* -> main"
               exit 1
               ;;
           esac
