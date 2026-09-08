@@ -10,7 +10,10 @@ class AuthValidator(
     private val passwordEncoder: PasswordEncoder,
 ) {
     fun validLoginUser(user: User?, rawPassword: String): User {
-        if (user == null || !user.active || !passwordEncoder.matches(rawPassword, user.passwordHash)) {
+        val passwordHash = user?.passwordHash
+        if (user == null || !user.active || user.username.isNullOrBlank() ||
+            passwordHash.isNullOrBlank() || !passwordEncoder.matches(rawPassword, passwordHash)
+        ) {
             throw invalidCredentials()
         }
 

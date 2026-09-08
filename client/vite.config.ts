@@ -1,10 +1,12 @@
-import { defineConfig, loadEnv, type PluginOption } from 'vite'
+import { defineConfig } from 'vitest/config'
+import { loadEnv, type PluginOption } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import tailwindcss from '@tailwindcss/vite'
 import { qrcode } from 'vite-plugin-qrcode';
 import { visualizer } from 'rollup-plugin-visualizer'
+import { devtools } from "@tanstack/devtools-vite"
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -12,6 +14,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
+      devtools(),
       tailwindcss(),
       tanstackRouter({
         target: 'react',
@@ -24,13 +27,17 @@ export default defineConfig(({ mode }) => {
       qrcode({
         filter: (url) => url.startsWith('http://192.168.0')
       }),
-      visualizer({
-        filename: 'dist/bundle-report.html',
-        template: 'treemap',
-        open: true,
-        gzipSize: true,
-        brotliSize: true,
-      }) as PluginOption,
+      ...(mode === 'visualizer'
+        ? [
+            visualizer({
+              filename: 'dist/bundle-report.html',
+              template: 'treemap',
+              open: true,
+              gzipSize: true,
+              brotliSize: true,
+            }) as PluginOption,
+          ]
+        : []),
     ],
     resolve: {
       alias: {
@@ -59,6 +66,10 @@ export default defineConfig(({ mode }) => {
             },
           }
         : undefined,
+    },
+    test: {
+      environment: 'jsdom',
+      setupFiles: './src/test/setup.ts',
     },
   }
 })

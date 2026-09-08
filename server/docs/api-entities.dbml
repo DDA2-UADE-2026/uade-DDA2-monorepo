@@ -1,0 +1,257 @@
+Project social_development_api {
+  database_type: 'PostgreSQL'
+  Note: 'Modelo JPA del backend. User es la única identidad interna. Ciudadanos queda preparado como integración futura, sin FK a su base. El rol activo vive en el JWT, no en una tabla de sesiones.'
+}
+
+Enum log_action {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+}
+
+Enum log_entity_type {
+  permissions
+  roles
+  users
+  enrollment_period
+  application
+}
+
+Enum application_status {
+  DRAFT
+  SUBMITTED
+  IN_VALIDATION
+  PENDING_DOCUMENTATION
+  IN_EVALUATION
+  IN_VISIT
+  APPROVED
+  REJECTED
+  WAITLISTED
+  CLOSED
+}
+
+Enum enrollment_period_status {
+  SCHEDULED
+  OPEN
+  SUSPENDED
+  CLOSED
+}
+
+Enum program_edition_status {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+Enum program_benefit_type {
+  TAX_EXEMPTION
+  HOUSING_SUBSIDY
+  FOOD_ASSISTANCE
+  UTILITY_SUBSIDY
+}
+
+Enum program_requirement_type {
+  MIN_AGE
+  MAX_INCOME
+  RESIDENCY_YEARS
+  HAS_CHILDREN
+}
+
+Table permissions {
+  id bigint [pk, increment]
+  name varchar(100) [not null, unique]
+}
+
+Table roles {
+  id bigint [pk, increment]
+  name varchar(50) [not null, unique]
+}
+
+Table role_permissions {
+  role_id bigint [not null, ref: > roles.id]
+  permission_id bigint [not null, ref: > permissions.id]
+
+  indexes {
+    (role_id, permission_id) [pk]
+  }
+}
+
+Table users {
+  id bigint [pk, increment]
+  username varchar(80) [unique, note: 'Opcional para una futura cuenta externa. Username y password_hash deben estar ambos presentes o ambos ausentes.']
+  password_hash varchar(100) [note: 'Hash BCrypt. Nunca se genera una contraseña ficticia para una identidad externa.']
+  external_citizen_id varchar(255) [unique, note: 'Identificador externo opcional, independiente de la snapshot. No es una FK. Reservado para una futura vinculación con doble autenticación; no editable desde el ABM.']
+  name varchar(150) [not null]
+  email varchar(180) [not null]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz
+
+  checks {
+    `(username is null and password_hash is null) or (username is not null and password_hash is not null)` [name: 'ck_users_local_credentials']
+  }
+
+  Note: 'No se crean roles ni asignaciones automáticas. Cada JWT operativo contiene un solo active_role y únicamente sus permisos. Un usuario sin roles no puede obtener un JWT operativo.'
+}
+
+Table citizen_snapshot {
+  user_id bigint [pk, not null]
+  full_name varchar(150) [note: 'Nombre completo. Los datos personales pueden estar ausentes en una copia parcial.']
+  dni varchar(50) [note: 'Texto para conservar formato y ceros iniciales. No es prueba de identidad ni una clave de vinculación.']
+  address varchar(500)
+  phone varchar(50)
+  email varchar(180)
+  created_at timestamptz [not null, note: 'Instante local de creación de la copia, asignado por la aplicación.']
+  updated_at timestamptz [not null, note: 'Instante local de última actualización de la copia, actualizado por JPA. Inicialmente coincide con created_at.']
+
+  Note: 'User 1 -> 0..1 CitizenSnapshot. Copia local opcional, sin endpoints ni sincronización implementados todavía. El vínculo externo reside en users.external_citizen_id. Ninguna entidad de negocio referencia esta snapshot.'
+}
+
+Ref: users.id - citizen_snapshot.user_id [delete: cascade]
+
+Table user_roles {
+  user_id bigint [not null, ref: > users.id]
+  role_id bigint [not null, ref: > roles.id]
+
+  indexes {
+    (user_id, role_id) [pk]
+  }
+}
+
+Table logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id, note: 'Nullable; la aplicación limpia la referencia antes de eliminar un usuario.']
+  action log_action [not null, note: 'Persistido como varchar(20).']
+  entity_type log_entity_type [not null, note: 'Persistido como varchar(100) mediante LogEntityTypeConverter.']
+  entity_id varchar(255) [not null]
+  old_values jsonb
+  new_values jsonb
+  created_at timestamptz [not null]
+
+  indexes {
+    (entity_type, entity_id) [name: 'ix_logs_entity']
+    user_id [name: 'ix_logs_user_id']
+    created_at [name: 'ix_logs_created_at']
+  }
+}
+
+Table program {
+  id uuid [pk]
+  name varchar(200) [not null]
+  normalized_name varchar(200) [not null, note: 'Nombre recortado y convertido a minúsculas por la aplicación.']
+  objective text
+  created_by bigint [not null, ref: > users.id]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    normalized_name [unique, name: 'uk_program_normalized_name']
+  }
+}
+
+Table program_edition {
+  id uuid [pk]
+  program_id uuid [not null, ref: > program.id]
+  name varchar(200) [not null]
+  normalized_name varchar(200) [not null, note: 'Nombre recortado y convertido a minúsculas por la aplicación.']
+  start_date date [not null]
+  end_date date [not null]
+  max_capacity integer [not null]
+  current_enrollment integer [not null, note: 'Valor inicial asignado por la aplicación: 0.']
+  status program_edition_status [not null, note: 'Persistido como varchar(30). Valor inicial asignado por la aplicación: DRAFT.']
+  created_by bigint [not null, ref: > users.id]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (program_id, normalized_name) [unique, name: 'uk_program_edition_program_normalized_name']
+  }
+}
+
+Table enrollment_period {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  open_date date [not null]
+  close_date date [not null]
+  status enrollment_period_status [not null, note: 'Persistido como varchar(20). Valor inicial asignado por la aplicación: SCHEDULED.']
+  notes varchar(1000)
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    (program_edition_id, open_date, close_date) [name: 'ix_enrollment_period_edition_dates']
+    (status, open_date, close_date) [name: 'ix_enrollment_period_status_dates']
+    (program_edition_id, status) [name: 'ix_enrollment_period_edition_status']
+  }
+
+  checks {
+    `open_date <= close_date` [name: 'ck_enrollment_period_date_range']
+  }
+
+  Note: 'Los rangos son inclusivos. La aplicación impide solapamientos y más de un período OPEN por edición. Un proceso diario cierra los períodos SCHEDULED, OPEN o SUSPENDED cuyo close_date ya pasó.'
+}
+
+Table program_benefit {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  benefit_type program_benefit_type [not null, note: 'Persistido como varchar(50).']
+  description varchar(500)
+  amount decimal(19,2)
+}
+
+Table program_requirement {
+  id uuid [pk]
+  program_edition_id uuid [not null, ref: > program_edition.id]
+  type program_requirement_type [not null, note: 'Persistido como varchar(50).']
+  value varchar(255) [not null]
+  description varchar(500)
+}
+
+Table program_incompatibility {
+  program_id uuid [not null, ref: > program.id]
+  incompatible_with_program_id uuid [not null, ref: > program.id]
+
+  indexes {
+    (program_id, incompatible_with_program_id) [pk]
+  }
+
+  Note: 'La aplicación almacena los UUID en orden canónico para representar cada incompatibilidad una sola vez.'
+}
+
+Table application {
+  id uuid [pk]
+  application_number bigint [not null, unique, note: 'Generado por application_number_seq, creada por Hibernate. Global, desde 1, incremento 1, sin reinicio anual. Puede haber saltos; no es el UUID ni MAX+1.']
+  user_id bigint [not null, ref: > users.id, note: 'Titular inmutable. En presentación propia viene del JWT; en asistida de userId validado contra users. Nunca es el identificador externo de Ciudadanos.']
+  registered_by_user_id bigint [not null, ref: > users.id, note: 'Registrado por: actor obtenido del JWT, inmutable. Coincide con user_id en solicitudes propias; en asistidas es el administrativo. No es el trabajador asignado.']
+  program_edition_id uuid [not null, ref: > program_edition.id, note: 'Derivada de enrollment_period.program_edition_id; inmutable.']
+  enrollment_period_id uuid [not null, ref: > enrollment_period.id]
+  status application_status [not null, note: 'varchar(30). Las altas finalizan en SUBMITTED. Las transiciones pertenecen a futuras historias.']
+  origin_ticket_id varchar(255)
+  resolution_reason varchar(1000)
+  assigned_worker_user_id bigint [ref: > users.id]
+  submitted_at timestamp [note: 'Asignado por servidor al presentar. Horario de ENROLLMENT_PERIOD_TIME_ZONE, Argentina por defecto.']
+  resolved_at timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  idempotency_key varchar(128) [note: 'Opcional, ASCII visible sin espacios. Comparación exacta, por usuario; persiste durante la vida de la solicitud. No representa una sesión.']
+  request_hash varchar(64) [note: 'SHA-256 del payload canónico versionado; solo se almacena cuando hay Idempotency-Key.']
+
+  indexes {
+    (user_id, enrollment_period_id) [unique, name: 'uk_application_user_period']
+    (user_id, idempotency_key) [unique, name: 'uk_application_user_idempotency']
+    (user_id, application_number) [name: 'ix_application_user_number']
+    (user_id, program_edition_id, status) [name: 'ix_application_user_edition_status']
+    enrollment_period_id [name: 'ix_application_period']
+    program_edition_id [name: 'ix_application_edition']
+    assigned_worker_user_id [name: 'ix_application_worker']
+    registered_by_user_id [name: 'ix_application_registered_by']
+  }
+
+  checks {
+    `(idempotency_key is null and request_hash is null) or (idempotency_key is not null and request_hash is not null)` [name: 'ck_application_idempotency']
+  }
+
+  Note: 'Presentación y auditoría en la misma transacción. El actor debe estar activo y autorizado por su rol activo. La presentación asistida permite elegir otro titular existente sin restricción de jurisdicción. Se exige período OPEN vigente y edición ACTIVE. No exige cupo ni aumenta current_enrollment. Una nueva convocatoria de la misma edición solo admite anteriores REJECTED/CLOSED; ambos flujos se serializan por titular para evitar carreras y comparten idempotencia por titular. Las consultas siempre filtran por el titular autenticado. No se elimina en cascada al eliminar personas, ediciones o convocatorias.'
+}

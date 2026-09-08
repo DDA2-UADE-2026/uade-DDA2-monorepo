@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication(
 	exclude = [
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 )
 @ConfigurationPropertiesScan
 @EnableMethodSecurity
+@EnableScheduling
 class ServerApplication
 
 fun main(args: Array<String>) {

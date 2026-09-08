@@ -9,12 +9,15 @@ import com.uade.dda2.server.feature.auth.dto.request.UpdateUserRequest
 import com.uade.dda2.server.feature.auth.dto.response.UserManagementResponse
 import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.repository.LogRepository
 import com.uade.dda2.server.feature.log.service.LogService
 import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.entity.User
+import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
+import com.uade.dda2.server.feature.program.repository.ProgramRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,6 +32,9 @@ class UserManagementService(
     private val logService: LogService,
     private val passwordEncoder: PasswordEncoder,
     private val jsonMapper: JsonMapper,
+    private val programRepository: ProgramRepository,
+    private val programEditionRepository: ProgramEditionRepository,
+    private val applicationRepository: ApplicationRepository,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): List<UserManagementResponse> =
@@ -70,16 +76,21 @@ class UserManagementService(
     @Transactional
     fun update(id: Long, request: UpdateUserRequest): UserManagementResponse {
         val user = findUser(id)
-        val username = normalizeUsername(request.username)
-        if (userRepository.existsByUsernameIgnoreCaseAndIdNot(username, id)) {
+        val username = request.username?.let(::normalizeUsername) ?: user.username
+        val passwordHash = request.password?.let { requireNotNull(passwordEncoder.encode(it)) } ?: user.passwordHash
+        if (username?.isBlank() == true || (username == null) != (passwordHash == null)) {
+            throw BadRequestException(
+                "USER_INCOMPLETE_LOCAL_CREDENTIALS",
+                "Para habilitar el acceso local se requieren username y password juntos.",
+            )
+        }
+        if (username != null && userRepository.existsByUsernameIgnoreCaseAndIdNot(username, id)) {
             throw usernameConflict(username)
         }
 
         val oldValues = json(userSnapshot(user))
         user.username = username
-        request.password?.let {
-            user.passwordHash = requireNotNull(passwordEncoder.encode(it))
-        }
+        user.passwordHash = passwordHash
         user.name = request.name.trim()
         user.email = request.email.trim()
         user.active = request.active
@@ -111,6 +122,21 @@ class UserManagementService(
         }
 
         val user = findUser(id)
+
+        if (applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id)) {
+            throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes.")
+        }
+
+        if (
+            programRepository.existsByCreatedById(id) ||
+            programEditionRepository.existsByCreatedById(id)
+        ) {
+            throw ConflictException(
+                code = "USER_HAS_PROGRAM_REFERENCES",
+                message = "The user cannot be deleted because it created programs or program editions.",
+            )
+        }
+
         val oldValues = json(userSnapshot(user))
 
         user.roles.clear()
@@ -176,7 +202,9 @@ class UserManagementService(
             email = user.email,
             active = user.active,
             roles = user.roles.map { it.name }.distinct().sorted(),
-            permissions = user.roles.flatMap { it.permissions }.map { it.name }.distinct().sorted(),
+            permissionsByRole = permissionsByRole(user),
+            hasLocalCredentials = user.username != null && user.passwordHash != null,
+            externalCitizenId = user.externalCitizenId,
             createdAt = user.createdAt,
             updatedAt = user.updatedAt,
         )
@@ -189,11 +217,16 @@ class UserManagementService(
             "email" to user.email,
             "active" to user.active,
             "roles" to user.roles.map { it.name }.distinct().sorted(),
-            "permissions" to user.roles.flatMap { it.permissions }.map { it.name }.distinct().sorted(),
+            "permissionsByRole" to permissionsByRole(user),
             "createdAt" to user.createdAt.toString(),
             "updatedAt" to user.updatedAt?.toString(),
         )
 
     private fun json(value: Any): String =
         requireNotNull(jsonMapper.writeValueAsString(value))
+
+    private fun permissionsByRole(user: User): Map<String, List<String>> =
+        user.roles.sortedBy { it.name }.associate { role ->
+            role.name to role.permissions.map { it.name }.distinct().sorted()
+        }
 }

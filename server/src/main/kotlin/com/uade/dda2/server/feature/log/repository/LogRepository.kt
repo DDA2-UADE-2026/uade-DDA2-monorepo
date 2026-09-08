@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface LogRepository : JpaRepository<Log, Long> {
+    fun findAllByOrderByCreatedAtDesc(): List<Log>
+
     fun findByEntityTypeAndEntityIdOrderByCreatedAtDesc(
         entityType: LogEntityType,
         entityId: String,

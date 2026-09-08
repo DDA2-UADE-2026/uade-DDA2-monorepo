@@ -26,34 +26,39 @@ export interface SidebarNavItem {
 function SidebarNavMenu({ items, pathname }: { items: readonly SidebarNavItem[]; pathname: string }) {
   return (
     <SidebarMenu>
-      {items.map((item) => (
-        <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton
-            isActive={pathname === item.url}
-            tooltip={item.title}
-            // TODO: drop the `as string` cast once this route exists as a real Route (see notes/routes.md).
-            render={<Link to={item.url as string} />}
-          >
-            <item.icon />
-            <span>{item.title}</span>
-          </SidebarMenuButton>
-          {item.items?.length ? (
-            <SidebarMenuSub>
-              {item.items.map((sub) => (
-                <SidebarMenuSubItem key={sub.title}>
-                  <SidebarMenuSubButton
-                    isActive={pathname === sub.url}
-                    // TODO: drop the `as string` cast once this route exists as a real Route (see notes/routes.md).
-                    render={<Link to={sub.url as string} />}
-                  >
-                    {sub.title}
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              ))}
-            </SidebarMenuSub>
-          ) : null}
-        </SidebarMenuItem>
-      ))}
+      {items.map((item) => {
+        const sectionRoot = item.url === "/gestion" || item.url === "/portal"
+        const isActive = pathname === item.url || (!sectionRoot && pathname.startsWith(`${item.url}/`))
+
+        return (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton
+              isActive={isActive}
+              tooltip={item.title}
+              // TODO: drop the `as string` cast once this route exists as a real Route (see notes/routes.md).
+              render={<Link to={item.url as string} />}
+            >
+              <item.icon />
+              <span>{item.title}</span>
+            </SidebarMenuButton>
+            {item.items?.length ? (
+              <SidebarMenuSub>
+                {item.items.map((sub) => (
+                  <SidebarMenuSubItem key={sub.title}>
+                    <SidebarMenuSubButton
+                      isActive={pathname === sub.url}
+                      // TODO: drop the `as string` cast once this route exists as a real Route (see notes/routes.md).
+                      render={<Link to={sub.url as string} />}
+                    >
+                      {sub.title}
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ))}
+              </SidebarMenuSub>
+            ) : null}
+          </SidebarMenuItem>
+        )
+      })}
     </SidebarMenu>
   )
 }

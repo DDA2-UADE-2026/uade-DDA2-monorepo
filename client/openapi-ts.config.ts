@@ -1,5 +1,13 @@
+import { loadEnv } from 'vite'
+
+const { DOCS_URL } = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '')
+
+if (!DOCS_URL) {
+  throw new Error('DOCS_URL is required in the environment')
+} 
+
 export default {
-  input: 'https://api-muni-uade-dev.fabriziob.com/api-docs',
+  input: DOCS_URL,
   output: 'src/generated',
   plugins: [
     {

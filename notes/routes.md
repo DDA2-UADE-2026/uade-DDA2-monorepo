@@ -107,13 +107,20 @@ src/routes/
         │   ├── index.tsx            →  /gestion/intervenciones        P11  planes de intervención
         │   └── $planId.tsx          →  /gestion/intervenciones/:id         objetivos y seguimientos
         ├── programas/
-        │   ├── index.tsx            →  /gestion/programas             P12  listado
-        │   ├── nuevo.tsx            →  /gestion/programas/nuevo            alta
+        │   ├── index.tsx                  →  /gestion/programas                    P12  listado
+        │   ├── nuevo.tsx                  →  /gestion/programas/nuevo                   alta
         │   └── $programaId/
-        │       ├── route.tsx              layout del programa: cabecera + pestañas
-        │       ├── index.tsx        →  .../:id                             edición
-        │       ├── requisitos.tsx   →  .../:id/requisitos                  requisitos e incompatibilidades
-        │       └── convocatorias.tsx →  .../:id/convocatorias         P12  abrir / suspender / cerrar
+        │       ├── route.tsx                    layout del programa: cabecera + pestañas (datos · convocatorias · incompatibilidades)
+        │       ├── index.tsx              →  .../:id                                    edición de datos del programa
+        │       ├── incompatibilidades.tsx →  .../:id/incompatibilidades                 programa ↔ programa
+        │       └── convocatorias/
+        │           ├── index.tsx          →  .../:id/convocatorias                 P12  listado de ediciones
+        │           ├── nueva.tsx          →  .../:id/convocatorias/nueva                alta de edición
+        │           └── $edicionId/
+        │               ├── route.tsx                layout de la edición: cabecera + pestañas (datos · requisitos · beneficios)
+        │               ├── index.tsx      →  .../:edicionId                        P12  datos + abrir / suspender / cerrar
+        │               ├── requisitos.tsx →  .../:edicionId/requisitos                  requisitos de la convocatoria
+        │               └── beneficios.tsx →  .../:edicionId/beneficios                  beneficios de la convocatoria
         ├── centros/
         │   ├── index.tsx            →  /gestion/centros               P13  listado
         │   └── $centroId/
@@ -138,7 +145,9 @@ src/routes/
 
 **Sobre los pathless.** Solo `_auth/` y `_app/` lo son. `portal/` y `gestion/` **sí aportan segmento** —de ahí `/portal` y `/gestion`— y eso es deliberado: si fueran pathless, las dos ramas colisionarían, porque `programas/` existe en ambas apuntando a componentes distintos.
 
-**Los `route.tsx` intermedios** (`casos/$solicitudId/`, `programas/$programaId/`, `centros/$centroId/`) sirven para dos cosas: cargar la entidad una sola vez en el loader del layout y compartirla con todas las pestañas, y renderizar la cabecera con el navegador de pestañas. `auditoria/route.tsx` existe solo para poner el guard de rol una vez en vez de repetirlo en tres archivos.
+**Los `route.tsx` intermedios** (`casos/$solicitudId/`, `programas/$programaId/`, `programas/$programaId/convocatorias/$edicionId/`, `centros/$centroId/`) sirven para dos cosas: cargar la entidad una sola vez en el loader del layout y compartirla con todas las pestañas, y renderizar la cabecera con el navegador de pestañas. `auditoria/route.tsx` existe solo para poner el guard de rol una vez en vez de repetirlo en tres archivos.
+
+**Por qué `convocatorias/` es una carpeta y no un archivo.** `ProgramRequirement` y `ProgramBenefit` cuelgan de `ProgramEdition` (`program_edition_id`), no de `Program` — un programa puede tener varias convocatorias (borrador, activa, cerradas) y cada una tiene sus propios requisitos y beneficios. Por eso `requisitos` y `beneficios` no pueden vivir como pestañas del programa: necesitan el `$edicionId` en la URL para saber de qué convocatoria se habla. `incompatibilidades`, en cambio, sí es programa↔programa (`ProgramIncompatibility`), así que queda como pestaña de `$programaId`.
 
 **Los IDs de ruta no cambian** respecto de la notación punteada: `createFileRoute('/_app/gestion/casos/')` sigue siendo el mismo, porque el ID se arma con la ruta de carpetas incluyendo los segmentos pathless. Solo cambia dónde vive el archivo.
 

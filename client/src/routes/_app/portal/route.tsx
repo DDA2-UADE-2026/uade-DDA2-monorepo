@@ -1,10 +1,15 @@
-import { CatchBoundary, Outlet, createFileRoute, useLocation } from "@tanstack/react-router"
+import { CatchBoundary, Outlet, createFileRoute, redirect, useLocation } from "@tanstack/react-router"
 
 import { PortalSidebar } from "@/components/layout/PortalSidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SectionErrorFallback } from "@/components/errors/SectionErrorFallback"
 
 export const Route = createFileRoute("/_app/portal")({
+  beforeLoad: ({ context }) => {
+    if (context.user.activeRole?.toUpperCase() !== "CIUDADANO") {
+      throw redirect({ to: "/gestion", replace: true })
+    }
+  },
   component: PortalLayout,
 })
 

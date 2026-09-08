@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ServerApplication",
+            "request": "launch",
+            "mainClass": "com.uade.dda2.server.ServerApplicationKt",
+            "projectName": "server",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": "-Duser.timezone=UTC"
+        },
+        {
+            "type": "java",
+            "name": "ServerApplication (docs profile)",
+            "request": "launch",
+            "mainClass": "com.uade.dda2.server.ServerApplicationKt",
+            "projectName": "server",
+            "envFile": "${workspaceFolder}/.env",
+            "args": "--spring.profiles.active=docs"
+        }
+    ]
+}

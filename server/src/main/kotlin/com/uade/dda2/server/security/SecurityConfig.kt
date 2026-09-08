@@ -41,7 +41,7 @@ class SecurityConfig(
                         response = response,
                         status = HttpStatus.UNAUTHORIZED,
                         code = "AUTH_UNAUTHENTICATED",
-                        message = "Unauthenticated.",
+                        message = "No autenticado.",
                     )
                 }
                 it.accessDeniedHandler { request, response, _ ->
@@ -50,12 +50,12 @@ class SecurityConfig(
                         response = response,
                         status = HttpStatus.FORBIDDEN,
                         code = "AUTH_FORBIDDEN",
-                        message = "The user does not have permission to perform this action.",
+                        message = "El usuario no posee permiso para realizar esta acción.",
                     )
                 }
             }
             .authorizeHttpRequests {
-                it.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/select-role").permitAll()
                 it.requestMatchers("/actuator/health", "/error").permitAll()
                 it.requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
                 it.anyRequest().authenticated()
@@ -71,8 +71,8 @@ class SecurityConfig(
         val configuration = CorsConfiguration().apply {
             allowedOrigins = corsProperties.nonBlankOrigins
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-            allowedHeaders = listOf("Authorization", "Content-Type")
-            exposedHeaders = listOf("Authorization")
+            allowedHeaders = listOf("Authorization", "Content-Type", "Idempotency-Key")
+            exposedHeaders = listOf("Authorization", "Location", "Idempotency-Replayed")
             allowCredentials = false
         }
 

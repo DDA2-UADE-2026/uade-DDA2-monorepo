@@ -49,15 +49,23 @@ springdoc:
   swagger-ui:
     enabled: true
     path: ${SWAGGER_UI_PATH:/swagger-ui}
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
 app:
   security:
     jwt:
       issuer: ${JWT_ISSUER:example-issuer}
-      secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-32chars}
+      secret: ${JWT_SECRET}
       expiration-seconds: ${JWT_EXPIRATION_SECONDS:28800}
+      role-selection-expiration-seconds: ${JWT_ROLE_SELECTION_EXPIRATION_SECONDS:300}
   cors:
     allowed-origins:
       - ${CORS_ALLOWED_ORIGIN_1:http://localhost:3000}
       - ${CORS_ALLOWED_ORIGIN_2:http://127.0.0.1:3000}
       - ${CORS_ALLOWED_ORIGIN_3:}
       - ${CORS_ALLOWED_ORIGIN_4:}
+  enrollment-period:
+    expiration:
+      cron: "${ENROLLMENT_PERIOD_EXPIRATION_CRON:0 5 0 * * *}"
+      zone-id: ${ENROLLMENT_PERIOD_TIME_ZONE:America/Argentina/Buenos_Aires}

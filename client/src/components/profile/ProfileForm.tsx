@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { IconAt, IconMail, IconShieldCheck, IconUser } from '@tabler/icons-react'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { UserAvatar } from '@/components/UserAvatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -16,7 +16,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import type { UserResponse } from '@/generated/types.gen'
 import { useMe } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils'
-import { getUserInitials } from '@/lib/user-display'
 
 export type ProfileDisplayType = 'portal' | 'gestion'
 
@@ -65,20 +64,26 @@ function UnavailableProfile() {
 
 function AccessList({ title, values, emptyLabel }: { title: string; values: string[]; emptyLabel: string }) {
   return (
-    <div>
+    <div className="min-w-0">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
-      <ul className="mt-2 flex flex-wrap gap-2" aria-label={title}>
+      <ul
+        className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-3 lg:grid-cols-4"
+        aria-label={title}
+      >
         {values.length ? (
           values.map((value) => (
             <li
               key={value}
-              className="rounded-lg border border-border bg-background px-2.5 py-1 font-mono text-[11px] text-foreground"
+              className="flex min-w-0 items-center gap-2 text-xs text-foreground"
             >
-              {value}
+              <span className="size-1 shrink-0 bg-muted-foreground/70" />
+              <span className="truncate font-mono" title={value}>
+                {value}
+              </span>
             </li>
           ))
         ) : (
-          <li className="text-sm text-muted-foreground">{emptyLabel}</li>
+          <li className="col-span-full text-sm text-muted-foreground">{emptyLabel}</li>
         )}
       </ul>
     </div>
@@ -102,9 +107,7 @@ function AuthenticatedProfile({
   return (
     <Card className={cn('relative w-full', displayType === 'gestion' ? 'sm:max-w-xl' : 'sm:max-w-md')}>
       <CardHeader className="flex flex-col items-center gap-4 text-center">
-        <Avatar className="size-16">
-          <AvatarFallback className="text-lg">{getUserInitials(displayName)}</AvatarFallback>
-        </Avatar>
+        <UserAvatar className="size-16" fallbackClassName="text-lg" user={user} />
         <div className="flex flex-col gap-1.5">
           <CardTitle className="text-xl">Mi perfil</CardTitle>
           <CardDescription>Información de tu cuenta.</CardDescription>
@@ -159,7 +162,7 @@ function AuthenticatedProfile({
         </FieldGroup>
 
         {displayType === 'gestion' && (
-          <div className="grid gap-4 rounded-2xl border border-border bg-muted/20 p-4 sm:grid-cols-2">
+          <div className="grid gap-5">
             <AccessList title="Roles" values={userRoles} emptyLabel="Sin roles asignados" />
             <AccessList title="Permisos" values={permissions} emptyLabel="Sin permisos asignados" />
           </div>

@@ -4,80 +4,1252 @@ export type ClientOptions = {
     baseUrl: 'http://api-muni-uade-dev.fabriziob.com' | (string & {});
 };
 
+/**
+ * Datos requeridos para actualizar un usuario.
+ */
 export type UpdateUserRequest = {
-    username: string;
-    password?: string;
+    /**
+     * Username local. Omitir o null conserva el actual; para agregar acceso local a un usuario sin credenciales se requiere también password.
+     */
+    username?: string;
+    /**
+     * Nombre completo del usuario.
+     */
     name: string;
+    /**
+     * Correo electrónico válido.
+     */
     email: string;
+    /**
+     * Indica si el usuario puede acceder al sistema.
+     */
     active?: boolean;
+    /**
+     * Lista completa de roles que conservará el usuario.
+     */
     roles?: Array<string>;
 };
 
+/**
+ * Detalle administrativo de un usuario.
+ */
 export type UserManagementResponse = {
-    id?: number;
-    username?: string;
-    name?: string;
-    email?: string;
-    active?: boolean;
-    roles?: Array<string>;
+    /**
+     * Identificador único del usuario.
+     */
+    readonly id?: number;
+    /**
+     * Username local, ausente en una futura cuenta exclusivamente externa.
+     */
+    readonly username?: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    readonly name?: string;
+    /**
+     * Correo electrónico del usuario.
+     */
+    readonly email?: string;
+    /**
+     * Indica si el usuario puede acceder al sistema.
+     */
+    readonly active?: boolean;
+    /**
+     * Roles asignados al usuario.
+     */
+    readonly roles?: Array<string>;
+    /**
+     * Permisos asignados, separados por rol. No representan permisos de un JWT operativo.
+     */
+    readonly permissionsByRole?: {
+        [key: string]: Array<string>;
+    };
+    /**
+     * Indica si el usuario tiene username y contraseña locales.
+     */
+    readonly hasLocalCredentials?: boolean;
+    /**
+     * Vínculo reservado para Ciudadanos. No se puede modificar mediante el ABM de usuarios.
+     */
+    readonly externalCitizenId?: string;
+    /**
+     * Instante UTC de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Instante UTC de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Datos requeridos para actualizar un rol.
+ */
+export type UpdateRoleRequest = {
+    /**
+     * Nuevo nombre único del rol.
+     */
+    name: string;
+    /**
+     * Lista completa de permisos que conservará el rol.
+     */
     permissions?: Array<string>;
+};
+
+/**
+ * Rol y permisos asociados.
+ */
+export type RoleResponse = {
+    /**
+     * Identificador único del rol.
+     */
+    readonly id?: number;
+    /**
+     * Nombre del rol.
+     */
+    readonly name?: string;
+    /**
+     * Permisos asignados al rol.
+     */
+    readonly permissions?: Array<string>;
+};
+
+/**
+ * Datos editables de un período de inscripción.
+ */
+export type UpdateEnrollmentPeriodRequest = {
+    /**
+     * Fecha inicial del período, inclusive.
+     */
+    openDate?: string;
+    /**
+     * Fecha final del período, inclusive.
+     */
+    closeDate?: string;
+    /**
+     * Observaciones administrativas opcionales.
+     */
+    notes?: string;
+};
+
+/**
+ * Detalle completo de un período de inscripción.
+ */
+export type EnrollmentPeriodResponse = {
+    /**
+     * UUID del período.
+     */
+    readonly id?: string;
+    /**
+     * UUID del programa.
+     */
+    readonly programId?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly programName?: string;
+    /**
+     * UUID de la edición.
+     */
+    readonly programEditionId?: string;
+    /**
+     * Nombre de la edición.
+     */
+    readonly programEditionName?: string;
+    /**
+     * Fecha inicial del período, inclusive.
+     */
+    readonly openDate?: string;
+    /**
+     * Fecha final del período, inclusive.
+     */
+    readonly closeDate?: string;
+    /**
+     * Estado actual del período.
+     */
+    readonly status?: 'SCHEDULED' | 'OPEN' | 'SUSPENDED' | 'CLOSED';
+    /**
+     * Observaciones administrativas.
+     */
+    readonly notes?: string;
+    /**
+     * Fecha y hora de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Fecha y hora de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Datos requeridos para actualizar un programa social.
+ */
+export type UpdateProgramRequest = {
+    /**
+     * Nombre actualizado del programa.
+     */
+    name: string;
+    /**
+     * Objetivo actualizado del programa.
+     */
+    objective?: string;
+};
+
+/**
+ * Referencia al usuario que creó el registro.
+ */
+export type ProgramCreatedByResponse = {
+    /**
+     * Identificador del usuario creador.
+     */
+    readonly id?: number;
+    /**
+     * Nombre del usuario creador.
+     */
+    readonly name?: string;
+};
+
+/**
+ * Detalle completo de un programa social.
+ */
+export type ProgramResponse = {
+    /**
+     * UUID del programa.
+     */
+    readonly id?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly name?: string;
+    /**
+     * Objetivo del programa.
+     */
+    readonly objective?: string;
+    /**
+     * Usuario que creó el programa.
+     */
+    readonly createdBy?: ProgramCreatedByResponse;
+    /**
+     * Fecha y hora de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Fecha y hora de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Datos requeridos para actualizar una edición de un programa.
+ */
+export type UpdateProgramEditionRequest = {
+    /**
+     * Nombre actualizado de la edición.
+     */
+    name: string;
+    /**
+     * Fecha de inicio de la edición.
+     */
+    startDate?: string;
+    /**
+     * Fecha de finalización de la edición.
+     */
+    endDate?: string;
+    /**
+     * Cantidad máxima de participantes admitidos.
+     */
+    maxCapacity?: number;
+};
+
+/**
+ * Detalle completo de una edición de programa.
+ */
+export type ProgramEditionResponse = {
+    /**
+     * UUID de la edición.
+     */
+    readonly id?: string;
+    /**
+     * UUID del programa al que pertenece.
+     */
+    readonly programId?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly programName?: string;
+    /**
+     * Nombre de la edición.
+     */
+    readonly name?: string;
+    /**
+     * Fecha de inicio.
+     */
+    readonly startDate?: string;
+    /**
+     * Fecha de finalización.
+     */
+    readonly endDate?: string;
+    /**
+     * Capacidad máxima de participantes.
+     */
+    readonly maxCapacity?: number;
+    /**
+     * Cantidad actual de participantes inscriptos.
+     */
+    readonly currentEnrollment?: number;
+    /**
+     * Estado actual de la edición.
+     */
+    readonly status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
+    /**
+     * Usuario que creó la edición.
+     */
+    readonly createdBy?: ProgramCreatedByResponse;
+    /**
+     * Fecha y hora de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Fecha y hora de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Datos requeridos para actualizar un requisito.
+ */
+export type UpdateProgramRequirementRequest = {
+    /**
+     * Tipo actualizado del requisito.
+     */
+    type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
+    /**
+     * Valor actualizado que debe cumplir el postulante.
+     */
+    value: string;
+    /**
+     * Explicación actualizada del requisito.
+     */
+    description?: string;
+};
+
+/**
+ * Requisito asociado a una edición de programa.
+ */
+export type ProgramRequirementResponse = {
+    /**
+     * UUID del requisito.
+     */
+    readonly id?: string;
+    /**
+     * UUID de la edición que exige el requisito.
+     */
+    readonly programEditionId?: string;
+    /**
+     * Tipo de requisito.
+     */
+    readonly type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
+    /**
+     * Valor que debe cumplir el postulante.
+     */
+    readonly value?: string;
+    /**
+     * Explicación complementaria del requisito.
+     */
+    readonly description?: string;
+};
+
+/**
+ * Datos requeridos para actualizar un beneficio.
+ */
+export type UpdateProgramBenefitRequest = {
+    /**
+     * Tipo actualizado del beneficio.
+     */
+    benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
+    /**
+     * Descripción actualizada del beneficio.
+     */
+    description?: string;
+    /**
+     * Monto actualizado del beneficio cuando corresponde.
+     */
+    amount?: number;
+};
+
+/**
+ * Beneficio asociado a una edición de programa.
+ */
+export type ProgramBenefitResponse = {
+    /**
+     * UUID del beneficio.
+     */
+    readonly id?: string;
+    /**
+     * UUID de la edición que ofrece el beneficio.
+     */
+    readonly programEditionId?: string;
+    /**
+     * Tipo de beneficio.
+     */
+    readonly benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
+    /**
+     * Descripción complementaria del beneficio.
+     */
+    readonly description?: string;
+    /**
+     * Monto del beneficio cuando corresponde.
+     */
+    readonly amount?: number;
+};
+
+/**
+ * Datos requeridos para crear un usuario.
+ */
+export type CreateUserRequest = {
+    /**
+     * Nombre único utilizado para iniciar sesión.
+     */
+    username: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    name: string;
+    /**
+     * Correo electrónico válido.
+     */
+    email: string;
+    /**
+     * Indica si el usuario puede acceder al sistema.
+     */
+    active?: boolean;
+    /**
+     * Nombres de los roles asignados.
+     */
+    roles?: Array<string>;
+};
+
+/**
+ * Datos requeridos para crear un rol.
+ */
+export type CreateRoleRequest = {
+    /**
+     * Nombre único del rol.
+     */
+    name: string;
+    /**
+     * Nombres de los permisos que se asignarán al rol.
+     */
+    permissions?: Array<string>;
+};
+
+/**
+ * Cambio de rol activo. Requiere un bearer JWT operativo y no revoca el token anterior.
+ */
+export type SwitchRoleRequest = {
+    /**
+     * Nombre exacto de un rol actualmente asignado al usuario.
+     */
+    role: string;
+};
+
+/**
+ * Resultado de autenticación: JWT operativo con un rol activo o JWT temporal para seleccionar rol.
+ */
+export type LoginResponse = {
+    /**
+     * JWT operativo. Null mientras se requiere seleccionar rol.
+     */
+    readonly token?: string;
+    /**
+     * Tiempo de validez del JWT operativo en segundos; null mientras se requiere selección.
+     */
+    readonly expiresIn?: number;
+    /**
+     * Datos del usuario autenticado.
+     */
+    readonly user?: UserResponse;
+    /**
+     * Indica que falta seleccionar uno de los roles asignados.
+     */
+    readonly requiresRoleSelection?: boolean;
+    /**
+     * JWT temporal utilizable únicamente en POST /auth/select-role.
+     */
+    readonly selectionToken?: string;
+    /**
+     * Validez del JWT de selección en segundos; null para tokens operativos.
+     */
+    readonly selectionExpiresIn?: number;
+};
+
+/**
+ * Datos públicos de un usuario autenticado.
+ */
+export type UserResponse = {
+    /**
+     * Identificador único del usuario.
+     */
+    readonly id?: number;
+    /**
+     * Username local; puede no existir para una futura identidad externa.
+     */
+    readonly username?: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    readonly name?: string;
+    /**
+     * Correo electrónico del usuario.
+     */
+    readonly email?: string;
+    /**
+     * Roles asignados al usuario.
+     */
+    readonly roles?: Array<string>;
+    /**
+     * Rol activo del JWT. Null mientras está pendiente la selección.
+     */
+    readonly activeRole?: string;
+    /**
+     * Permisos del rol activo incluidos en el JWT; no suma los demás roles.
+     */
+    readonly permissions?: Array<string>;
+};
+
+/**
+ * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
+ */
+export type SelectRoleRequest = {
+    /**
+     * Nombre exacto de uno de los roles devueltos por el login.
+     */
+    role: string;
+};
+
+/**
+ * Credenciales requeridas para iniciar sesión.
+ */
+export type LoginRequest = {
+    /**
+     * Nombre de usuario registrado.
+     */
+    username: string;
+};
+
+/**
+ * Presenta una solicitud propia. Solo admite enrollmentPeriodId; el usuario proviene del JWT.
+ */
+export type CreateApplicationRequest = {
+    /**
+     * Convocatoria abierta y vigente; determina automáticamente la edición.
+     */
+    enrollmentPeriodId: string;
+};
+
+/**
+ * Respuesta estándar de error de la API.
+ */
+export type ErrorResponse = {
+    /**
+     * Mensaje legible que explica el error.
+     */
+    message?: string;
+    /**
+     * Código estable y procesable del error.
+     */
+    code?: string;
+    /**
+     * Código de estado HTTP.
+     */
+    status?: number;
+    /**
+     * Instante UTC en el que ocurrió el error.
+     */
+    timestamp?: string;
+    /**
+     * Ruta de la solicitud que produjo el error.
+     */
+    path?: string;
+    /**
+     * Errores de validación asociados a campos, cuando corresponda.
+     */
+    fields?: Array<FieldErrorResponse>;
+};
+
+/**
+ * Detalle de un campo que no superó la validación.
+ */
+export type FieldErrorResponse = {
+    /**
+     * Nombre del campo inválido.
+     */
+    field?: string;
+    /**
+     * Motivo por el cual el valor fue rechazado.
+     */
+    message?: string;
+};
+
+/**
+ * Solicitud y referencias a su titular y registrante. No expone datos personales ni internos de idempotencia.
+ */
+export type ApplicationResponse = {
+    id?: string;
+    /**
+     * Número global único, generado por secuencia. Puede haber saltos.
+     */
+    applicationNumber?: number;
+    /**
+     * ID interno del usuario titular de la solicitud.
+     */
+    userId?: number;
+    /**
+     * ID interno de quien registró la solicitud, obtenido del JWT. En una presentación propia coincide con userId.
+     */
+    registeredByUserId?: number;
+    programEditionId?: string;
+    enrollmentPeriodId?: string;
+    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    submittedAt?: string;
     createdAt?: string;
     updatedAt?: string;
 };
 
-export type UpdateRoleRequest = {
+/**
+ * Datos requeridos para crear un programa social.
+ */
+export type CreateProgramRequest = {
+    /**
+     * Nombre del programa.
+     */
     name: string;
-    permissions?: Array<string>;
+    /**
+     * Objetivo que persigue el programa.
+     */
+    objective?: string;
 };
 
-export type RoleResponse = {
-    id?: number;
-    name?: string;
-    permissions?: Array<string>;
+/**
+ * Relación de incompatibilidad entre dos programas.
+ */
+export type ProgramIncompatibilityResponse = {
+    /**
+     * UUID del programa de origen.
+     */
+    readonly programId?: string;
+    /**
+     * Nombre del programa de origen.
+     */
+    readonly programName?: string;
+    /**
+     * UUID del programa incompatible.
+     */
+    readonly incompatibleWithProgramId?: string;
+    /**
+     * Nombre del programa incompatible.
+     */
+    readonly incompatibleWithProgramName?: string;
 };
 
-export type CreateUserRequest = {
-    username: string;
-    password: string;
+/**
+ * Datos requeridos para crear un período de inscripción.
+ */
+export type CreateEnrollmentPeriodRequest = {
+    /**
+     * Fecha inicial del período, inclusive.
+     */
+    openDate?: string;
+    /**
+     * Fecha final del período, inclusive.
+     */
+    closeDate?: string;
+    /**
+     * Observaciones administrativas opcionales.
+     */
+    notes?: string;
+};
+
+/**
+ * Datos requeridos para crear un requisito.
+ */
+export type CreateProgramRequirementRequest = {
+    /**
+     * Tipo de requisito exigido.
+     */
+    type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
+    /**
+     * Valor que debe cumplir el postulante.
+     */
+    value: string;
+    /**
+     * Explicación complementaria del requisito.
+     */
+    description?: string;
+};
+
+/**
+ * Datos requeridos para crear un beneficio.
+ */
+export type CreateProgramBenefitRequest = {
+    /**
+     * Tipo de beneficio otorgado.
+     */
+    benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
+    /**
+     * Descripción complementaria del beneficio.
+     */
+    description?: string;
+    /**
+     * Monto del beneficio cuando corresponde.
+     */
+    amount?: number;
+};
+
+/**
+ * Datos requeridos para crear una edición de un programa.
+ */
+export type CreateProgramEditionRequest = {
+    /**
+     * Nombre de la edición.
+     */
     name: string;
-    email: string;
-    active?: boolean;
-    roles?: Array<string>;
+    /**
+     * Fecha de inicio de la edición.
+     */
+    startDate?: string;
+    /**
+     * Fecha de finalización de la edición.
+     */
+    endDate?: string;
+    /**
+     * Cantidad máxima de participantes admitidos.
+     */
+    maxCapacity?: number;
 };
 
-export type CreateRoleRequest = {
-    name: string;
-    permissions?: Array<string>;
+/**
+ * Presentación asistida para un usuario existente. Quien registra se obtiene exclusivamente del JWT.
+ */
+export type CreateAssistedApplicationRequest = {
+    /**
+     * ID interno del solicitante en users; no es un citizenId externo.
+     */
+    userId: number;
+    enrollmentPeriodId: string;
 };
 
-export type LoginRequest = {
-    username: string;
-    password: string;
-};
-
-export type LoginResponse = {
-    token?: string;
-    expiresIn?: number;
-    user?: UserResponse;
-    permissions?: Array<string>;
-};
-
-export type UserResponse = {
-    id?: number;
-    username?: string;
-    name?: string;
-    email?: string;
-    roles?: Array<string>;
-    permissions?: Array<string>;
-};
-
+/**
+ * Permiso disponible en el sistema.
+ */
 export type PermissionResponse = {
-    id?: number;
-    name?: string;
+    /**
+     * Identificador único del permiso.
+     */
+    readonly id?: number;
+    /**
+     * Nombre técnico del permiso.
+     */
+    readonly name?: string;
 };
 
+/**
+ * Usuario que originó el evento auditado.
+ */
+export type LogActorResponse = {
+    /**
+     * Identificador del usuario.
+     */
+    readonly id?: number;
+    /**
+     * Nombre de usuario local.
+     */
+    readonly username?: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    readonly name?: string;
+};
+
+/**
+ * Registro inmutable de un evento de auditoría.
+ */
+export type LogResponse = {
+    /**
+     * Identificador del registro.
+     */
+    readonly id?: number;
+    /**
+     * Usuario que originó el evento. Es nulo para procesos automáticos o si el usuario fue eliminado.
+     */
+    readonly actor?: LogActorResponse;
+    /**
+     * Acción auditada.
+     */
+    readonly action?: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN';
+    /**
+     * Tipo de entidad afectada.
+     */
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION';
+    /**
+     * Identificador de la entidad afectada.
+     */
+    readonly entityId?: string;
+    /**
+     * Estado previo de la entidad.
+     */
+    readonly oldValues?: string;
+    /**
+     * Estado posterior de la entidad.
+     */
+    readonly newValues?: string;
+    /**
+     * Fecha y hora UTC en que se registró el evento.
+     */
+    readonly createdAt?: string;
+};
+
+/**
+ * Perfil del usuario autenticado.
+ */
 export type MeResponse = {
-    user?: UserResponse;
+    /**
+     * Datos del usuario autenticado.
+     */
+    readonly user?: UserResponse;
+};
+
+/**
+ * Resumen de un programa disponible para mostrar en un listado ciudadano.
+ */
+export type AvailableProgramListItemResponse = {
+    /**
+     * UUID del programa.
+     */
+    readonly id?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly name?: string;
+    /**
+     * Objetivo del programa.
+     */
+    readonly objective?: string;
+    /**
+     * Cantidad de ediciones disponibles.
+     */
+    readonly availableEditions?: number;
+    /**
+     * Fecha de inicio de la edición disponible más próxima.
+     */
+    readonly nextEditionStartDate?: string;
+    /**
+     * Fecha de finalización de la edición disponible más próxima.
+     */
+    readonly nextEditionEndDate?: string;
+};
+
+/**
+ * Página de programas disponibles para ciudadanos.
+ */
+export type AvailableProgramListResponse = {
+    /**
+     * Programas incluidos en la página actual.
+     */
+    readonly content?: Array<AvailableProgramListItemResponse>;
+    /**
+     * Número de página, comenzando en cero.
+     */
+    readonly page?: number;
+    /**
+     * Cantidad máxima de elementos por página.
+     */
+    readonly size?: number;
+    /**
+     * Cantidad total de programas disponibles.
+     */
+    readonly totalElements?: number;
+    /**
+     * Cantidad total de páginas.
+     */
+    readonly totalPages?: number;
+};
+
+/**
+ * Período en el que una edición se encuentra abierta para recibir solicitudes.
+ */
+export type AvailableEnrollmentPeriodResponse = {
+    /**
+     * UUID del período de inscripción.
+     */
+    readonly id?: string;
+    /**
+     * Fecha inicial del período, inclusive.
+     */
+    readonly openDate?: string;
+    /**
+     * Fecha final del período, inclusive.
+     */
+    readonly closeDate?: string;
+};
+
+/**
+ * Beneficio ofrecido por una edición disponible.
+ */
+export type AvailableProgramBenefitResponse = {
+    /**
+     * UUID del beneficio.
+     */
+    readonly id?: string;
+    /**
+     * Tipo de beneficio.
+     */
+    readonly type?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
+    /**
+     * Descripción complementaria del beneficio.
+     */
+    readonly description?: string;
+    /**
+     * Monto del beneficio cuando corresponde.
+     */
+    readonly amount?: number;
+};
+
+/**
+ * Detalle de un programa disponible para ciudadanos.
+ */
+export type AvailableProgramDetailResponse = {
+    /**
+     * UUID del programa.
+     */
+    readonly id?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly name?: string;
+    /**
+     * Objetivo del programa.
+     */
+    readonly objective?: string;
+    /**
+     * Ediciones vigentes o futuras disponibles para el ciudadano.
+     */
+    readonly editions?: Array<AvailableProgramEditionResponse>;
+    /**
+     * Programas incompatibles con el programa consultado.
+     */
+    readonly incompatibilities?: Array<AvailableProgramIncompatibilityResponse>;
+};
+
+/**
+ * Edición disponible de un programa, con sus beneficios y requisitos.
+ */
+export type AvailableProgramEditionResponse = {
+    /**
+     * UUID de la edición.
+     */
+    readonly id?: string;
+    /**
+     * Nombre de la edición.
+     */
+    readonly name?: string;
+    /**
+     * Fecha de inicio.
+     */
+    readonly startDate?: string;
+    /**
+     * Fecha de finalización.
+     */
+    readonly endDate?: string;
+    /**
+     * Capacidad máxima de participantes.
+     */
+    readonly maxCapacity?: number;
+    /**
+     * Cantidad actual de participantes inscriptos.
+     */
+    readonly currentEnrollment?: number;
+    /**
+     * Cantidad de vacantes disponibles.
+     */
+    readonly availableCapacity?: number;
+    /**
+     * Estado actual de la edición.
+     */
+    readonly status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
+    /**
+     * Beneficios ofrecidos por esta edición.
+     */
+    readonly benefits?: Array<AvailableProgramBenefitResponse>;
+    /**
+     * Requisitos exigidos por esta edición.
+     */
+    readonly requirements?: Array<AvailableProgramRequirementResponse>;
+    /**
+     * Períodos actualmente abiertos para recibir solicitudes.
+     */
+    readonly enrollmentPeriods?: Array<AvailableEnrollmentPeriodResponse>;
+};
+
+/**
+ * Programa incompatible con el programa consultado.
+ */
+export type AvailableProgramIncompatibilityResponse = {
+    /**
+     * UUID del programa incompatible.
+     */
+    readonly id?: string;
+    /**
+     * Nombre del programa incompatible.
+     */
+    readonly name?: string;
+};
+
+/**
+ * Requisito exigido por una edición disponible.
+ */
+export type AvailableProgramRequirementResponse = {
+    /**
+     * UUID del requisito.
+     */
+    readonly id?: string;
+    /**
+     * Tipo de requisito.
+     */
+    readonly type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
+    /**
+     * Valor que debe cumplir el ciudadano.
+     */
+    readonly value?: string;
+    /**
+     * Explicación complementaria del requisito.
+     */
+    readonly description?: string;
+};
+
+export type ApplicationListResponse = {
+    content?: Array<ApplicationResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Resumen de un programa incluido en un listado.
+ */
+export type ProgramListItemResponse = {
+    /**
+     * UUID del programa.
+     */
+    readonly id?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly name?: string;
+    /**
+     * Objetivo del programa.
+     */
+    readonly objective?: string;
+    /**
+     * Fecha y hora de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Fecha y hora de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Página de programas sociales.
+ */
+export type ProgramListResponse = {
+    /**
+     * Programas incluidos en la página actual.
+     */
+    readonly content?: Array<ProgramListItemResponse>;
+    /**
+     * Número de página, comenzando en cero.
+     */
+    readonly page?: number;
+    /**
+     * Cantidad máxima de elementos por página.
+     */
+    readonly size?: number;
+    /**
+     * Cantidad total de programas.
+     */
+    readonly totalElements?: number;
+    /**
+     * Cantidad total de páginas.
+     */
+    readonly totalPages?: number;
+};
+
+/**
+ * Resumen de un período de inscripción incluido en un listado.
+ */
+export type EnrollmentPeriodListItemResponse = {
+    /**
+     * UUID del período.
+     */
+    readonly id?: string;
+    /**
+     * Fecha inicial del período, inclusive.
+     */
+    readonly openDate?: string;
+    /**
+     * Fecha final del período, inclusive.
+     */
+    readonly closeDate?: string;
+    /**
+     * Estado actual del período.
+     */
+    readonly status?: 'SCHEDULED' | 'OPEN' | 'SUSPENDED' | 'CLOSED';
+    /**
+     * Observaciones administrativas.
+     */
+    readonly notes?: string;
+    /**
+     * Fecha y hora de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Fecha y hora de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Página de períodos de inscripción de una edición.
+ */
+export type EnrollmentPeriodListResponse = {
+    /**
+     * Períodos incluidos en la página actual.
+     */
+    readonly content?: Array<EnrollmentPeriodListItemResponse>;
+    /**
+     * Número de página, comenzando en cero.
+     */
+    readonly page?: number;
+    /**
+     * Cantidad máxima de elementos por página.
+     */
+    readonly size?: number;
+    /**
+     * Cantidad total de períodos.
+     */
+    readonly totalElements?: number;
+    /**
+     * Cantidad total de páginas.
+     */
+    readonly totalPages?: number;
+};
+
+/**
+ * Opción reducida de un programa para controles de selección.
+ */
+export type ProgramOptionResponse = {
+    /**
+     * UUID del programa.
+     */
+    readonly id?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly name?: string;
+};
+
+/**
+ * Resumen de una edición incluida en un listado.
+ */
+export type ProgramEditionListItemResponse = {
+    /**
+     * UUID de la edición.
+     */
+    readonly id?: string;
+    /**
+     * UUID del programa.
+     */
+    readonly programId?: string;
+    /**
+     * Nombre del programa.
+     */
+    readonly programName?: string;
+    /**
+     * Nombre de la edición.
+     */
+    readonly name?: string;
+    /**
+     * Fecha de inicio.
+     */
+    readonly startDate?: string;
+    /**
+     * Fecha de finalización.
+     */
+    readonly endDate?: string;
+    /**
+     * Capacidad máxima de participantes.
+     */
+    readonly maxCapacity?: number;
+    /**
+     * Cantidad actual de participantes inscriptos.
+     */
+    readonly currentEnrollment?: number;
+    /**
+     * Estado actual de la edición.
+     */
+    readonly status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
+    /**
+     * Fecha y hora de creación.
+     */
+    readonly createdAt?: string;
+    /**
+     * Fecha y hora de la última actualización.
+     */
+    readonly updatedAt?: string;
+};
+
+/**
+ * Página de ediciones de un programa.
+ */
+export type ProgramEditionListResponse = {
+    /**
+     * Ediciones incluidas en la página actual.
+     */
+    readonly content?: Array<ProgramEditionListItemResponse>;
+    /**
+     * Número de página, comenzando en cero.
+     */
+    readonly page?: number;
+    /**
+     * Cantidad máxima de elementos por página.
+     */
+    readonly size?: number;
+    /**
+     * Cantidad total de ediciones.
+     */
+    readonly totalElements?: number;
+    /**
+     * Cantidad total de páginas.
+     */
+    readonly totalPages?: number;
+};
+
+/**
+ * Opción reducida de una edición para controles de selección.
+ */
+export type ProgramEditionOptionResponse = {
+    /**
+     * UUID de la edición.
+     */
+    readonly id?: string;
+    /**
+     * Nombre de la edición.
+     */
+    readonly name?: string;
 };
 
 export type Link = {
@@ -85,14 +1257,134 @@ export type Link = {
     templated?: boolean;
 };
 
+/**
+ * Datos requeridos para actualizar un usuario.
+ */
+export type UpdateUserRequestWritable = {
+    /**
+     * Username local. Omitir o null conserva el actual; para agregar acceso local a un usuario sin credenciales se requiere también password.
+     */
+    username?: string;
+    /**
+     * Nueva contraseña; si se omite, se conserva la actual.
+     */
+    password?: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    name: string;
+    /**
+     * Correo electrónico válido.
+     */
+    email: string;
+    /**
+     * Indica si el usuario puede acceder al sistema.
+     */
+    active?: boolean;
+    /**
+     * Lista completa de roles que conservará el usuario.
+     */
+    roles?: Array<string>;
+};
+
+/**
+ * Datos requeridos para crear un usuario.
+ */
+export type CreateUserRequestWritable = {
+    /**
+     * Nombre único utilizado para iniciar sesión.
+     */
+    username: string;
+    /**
+     * Contraseña inicial, de 8 a 72 caracteres.
+     */
+    password: string;
+    /**
+     * Nombre completo del usuario.
+     */
+    name: string;
+    /**
+     * Correo electrónico válido.
+     */
+    email: string;
+    /**
+     * Indica si el usuario puede acceder al sistema.
+     */
+    active?: boolean;
+    /**
+     * Nombres de los roles asignados.
+     */
+    roles?: Array<string>;
+};
+
+/**
+ * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
+ */
+export type SelectRoleRequestWritable = {
+    /**
+     * JWT temporal recibido en selectionToken. Se envía en el body, no como bearer.
+     */
+    selectionToken: string;
+    /**
+     * Nombre exacto de uno de los roles devueltos por el login.
+     */
+    role: string;
+};
+
+/**
+ * Credenciales requeridas para iniciar sesión.
+ */
+export type LoginRequestWritable = {
+    /**
+     * Nombre de usuario registrado.
+     */
+    username: string;
+    /**
+     * Contraseña del usuario.
+     */
+    password: string;
+};
+
 export type DeleteData = {
     body?: never;
     path: {
+        /**
+         * ID del usuario.
+         */
         id: number;
     };
     query?: never;
     url: '/users/{id}';
 };
+
+export type DeleteErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeleteError = DeleteErrors[keyof DeleteErrors];
 
 export type DeleteResponses = {
     /**
@@ -106,11 +1398,39 @@ export type DeleteResponse = DeleteResponses[keyof DeleteResponses];
 export type FindByIdData = {
     body?: never;
     path: {
+        /**
+         * ID del usuario.
+         */
         id: number;
     };
     query?: never;
     url: '/users/{id}';
 };
+
+export type FindByIdErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindByIdError = FindByIdErrors[keyof FindByIdErrors];
 
 export type FindByIdResponses = {
     /**
@@ -122,13 +1442,45 @@ export type FindByIdResponses = {
 export type FindByIdResponse = FindByIdResponses[keyof FindByIdResponses];
 
 export type UpdateData = {
-    body: UpdateUserRequest;
+    body: UpdateUserRequestWritable;
     path: {
+        /**
+         * ID del usuario.
+         */
         id: number;
     };
     query?: never;
     url: '/users/{id}';
 };
+
+export type UpdateErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateError = UpdateErrors[keyof UpdateErrors];
 
 export type UpdateResponses = {
     /**
@@ -142,11 +1494,43 @@ export type UpdateResponse = UpdateResponses[keyof UpdateResponses];
 export type Delete1Data = {
     body?: never;
     path: {
+        /**
+         * ID del rol.
+         */
         id: number;
     };
     query?: never;
     url: '/roles/{id}';
 };
+
+export type Delete1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Delete1Error = Delete1Errors[keyof Delete1Errors];
 
 export type Delete1Responses = {
     /**
@@ -160,11 +1544,39 @@ export type Delete1Response = Delete1Responses[keyof Delete1Responses];
 export type FindById1Data = {
     body?: never;
     path: {
+        /**
+         * ID del rol.
+         */
         id: number;
     };
     query?: never;
     url: '/roles/{id}';
 };
+
+export type FindById1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindById1Error = FindById1Errors[keyof FindById1Errors];
 
 export type FindById1Responses = {
     /**
@@ -178,11 +1590,43 @@ export type FindById1Response = FindById1Responses[keyof FindById1Responses];
 export type Update1Data = {
     body: UpdateRoleRequest;
     path: {
+        /**
+         * ID del rol.
+         */
         id: number;
     };
     query?: never;
     url: '/roles/{id}';
 };
+
+export type Update1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update1Error = Update1Errors[keyof Update1Errors];
 
 export type Update1Responses = {
     /**
@@ -193,12 +1637,749 @@ export type Update1Responses = {
 
 export type Update1Response = Update1Responses[keyof Update1Responses];
 
+export type GetEnrollmentPeriodData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del período de inscripción.
+         */
+        enrollmentPeriodId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}';
+};
+
+export type GetEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetEnrollmentPeriodError = GetEnrollmentPeriodErrors[keyof GetEnrollmentPeriodErrors];
+
+export type GetEnrollmentPeriodResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodResponse;
+};
+
+export type GetEnrollmentPeriodResponse = GetEnrollmentPeriodResponses[keyof GetEnrollmentPeriodResponses];
+
+export type UpdateEnrollmentPeriodData = {
+    body: UpdateEnrollmentPeriodRequest;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del período de inscripción.
+         */
+        enrollmentPeriodId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}';
+};
+
+export type UpdateEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateEnrollmentPeriodError = UpdateEnrollmentPeriodErrors[keyof UpdateEnrollmentPeriodErrors];
+
+export type UpdateEnrollmentPeriodResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodResponse;
+};
+
+export type UpdateEnrollmentPeriodResponse = UpdateEnrollmentPeriodResponses[keyof UpdateEnrollmentPeriodResponses];
+
+export type Delete2Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{id}';
+};
+
+export type Delete2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Delete2Error = Delete2Errors[keyof Delete2Errors];
+
+export type Delete2Responses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type Delete2Response = Delete2Responses[keyof Delete2Responses];
+
+export type FindById2Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{id}';
+};
+
+export type FindById2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindById2Error = FindById2Errors[keyof FindById2Errors];
+
+export type FindById2Responses = {
+    /**
+     * OK
+     */
+    200: ProgramResponse;
+};
+
+export type FindById2Response = FindById2Responses[keyof FindById2Responses];
+
+export type Update2Data = {
+    body: UpdateProgramRequest;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{id}';
+};
+
+export type Update2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update2Error = Update2Errors[keyof Update2Errors];
+
+export type Update2Responses = {
+    /**
+     * OK
+     */
+    200: ProgramResponse;
+};
+
+export type Update2Response = Update2Responses[keyof Update2Responses];
+
+export type Delete3Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{id}';
+};
+
+export type Delete3Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Delete3Error = Delete3Errors[keyof Delete3Errors];
+
+export type Delete3Responses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type Delete3Response = Delete3Responses[keyof Delete3Responses];
+
+export type FindById3Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{id}';
+};
+
+export type FindById3Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindById3Error = FindById3Errors[keyof FindById3Errors];
+
+export type FindById3Responses = {
+    /**
+     * OK
+     */
+    200: ProgramEditionResponse;
+};
+
+export type FindById3Response = FindById3Responses[keyof FindById3Responses];
+
+export type Update3Data = {
+    body: UpdateProgramEditionRequest;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{id}';
+};
+
+export type Update3Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update3Error = Update3Errors[keyof Update3Errors];
+
+export type Update3Responses = {
+    /**
+     * OK
+     */
+    200: ProgramEditionResponse;
+};
+
+export type Update3Response = Update3Responses[keyof Update3Responses];
+
+export type Delete4Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del requisito.
+         */
+        requirementId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}';
+};
+
+export type Delete4Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Delete4Error = Delete4Errors[keyof Delete4Errors];
+
+export type Delete4Responses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type Delete4Response = Delete4Responses[keyof Delete4Responses];
+
+export type FindById4Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del requisito.
+         */
+        requirementId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}';
+};
+
+export type FindById4Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindById4Error = FindById4Errors[keyof FindById4Errors];
+
+export type FindById4Responses = {
+    /**
+     * OK
+     */
+    200: ProgramRequirementResponse;
+};
+
+export type FindById4Response = FindById4Responses[keyof FindById4Responses];
+
+export type Update4Data = {
+    body: UpdateProgramRequirementRequest;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del requisito.
+         */
+        requirementId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}';
+};
+
+export type Update4Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update4Error = Update4Errors[keyof Update4Errors];
+
+export type Update4Responses = {
+    /**
+     * OK
+     */
+    200: ProgramRequirementResponse;
+};
+
+export type Update4Response = Update4Responses[keyof Update4Responses];
+
+export type Delete5Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del beneficio.
+         */
+        benefitId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}';
+};
+
+export type Delete5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Delete5Error = Delete5Errors[keyof Delete5Errors];
+
+export type Delete5Responses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type Delete5Response = Delete5Responses[keyof Delete5Responses];
+
+export type FindById5Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del beneficio.
+         */
+        benefitId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}';
+};
+
+export type FindById5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindById5Error = FindById5Errors[keyof FindById5Errors];
+
+export type FindById5Responses = {
+    /**
+     * OK
+     */
+    200: ProgramBenefitResponse;
+};
+
+export type FindById5Response = FindById5Responses[keyof FindById5Responses];
+
+export type Update5Data = {
+    body: UpdateProgramBenefitRequest;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del beneficio.
+         */
+        benefitId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}';
+};
+
+export type Update5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update5Error = Update5Errors[keyof Update5Errors];
+
+export type Update5Responses = {
+    /**
+     * OK
+     */
+    200: ProgramBenefitResponse;
+};
+
+export type Update5Response = Update5Responses[keyof Update5Responses];
+
 export type FindAllData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/users';
 };
+
+export type FindAllErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindAllError = FindAllErrors[keyof FindAllErrors];
 
 export type FindAllResponses = {
     /**
@@ -210,11 +2391,36 @@ export type FindAllResponses = {
 export type FindAllResponse = FindAllResponses[keyof FindAllResponses];
 
 export type CreateData = {
-    body: CreateUserRequest;
+    body: CreateUserRequestWritable;
     path?: never;
     query?: never;
     url: '/users';
 };
+
+export type CreateErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateError = CreateErrors[keyof CreateErrors];
 
 export type CreateResponses = {
     /**
@@ -232,6 +2438,23 @@ export type FindAll1Data = {
     url: '/roles';
 };
 
+export type FindAll1Errors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindAll1Error = FindAll1Errors[keyof FindAll1Errors];
+
 export type FindAll1Responses = {
     /**
      * OK
@@ -248,6 +2471,31 @@ export type Create1Data = {
     url: '/roles';
 };
 
+export type Create1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create1Error = Create1Errors[keyof Create1Errors];
+
 export type Create1Responses = {
     /**
      * Created
@@ -257,12 +2505,119 @@ export type Create1Responses = {
 
 export type Create1Response = Create1Responses[keyof Create1Responses];
 
+export type SwitchRoleData = {
+    body: SwitchRoleRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/switch-role';
+};
+
+export type SwitchRoleErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SwitchRoleError = SwitchRoleErrors[keyof SwitchRoleErrors];
+
+export type SwitchRoleResponses = {
+    /**
+     * OK
+     */
+    200: LoginResponse;
+};
+
+export type SwitchRoleResponse = SwitchRoleResponses[keyof SwitchRoleResponses];
+
+export type SelectRoleData = {
+    body: SelectRoleRequestWritable;
+    path?: never;
+    query?: never;
+    url: '/auth/select-role';
+};
+
+export type SelectRoleErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * Credenciales o token de selección inválidos.
+     */
+    401: ErrorResponse;
+    /**
+     * Usuario sin roles o rol no asignado.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SelectRoleError = SelectRoleErrors[keyof SelectRoleErrors];
+
+export type SelectRoleResponses = {
+    /**
+     * OK
+     */
+    200: LoginResponse;
+};
+
+export type SelectRoleResponse = SelectRoleResponses[keyof SelectRoleResponses];
+
 export type LoginData = {
-    body: LoginRequest;
+    body: LoginRequestWritable;
     path?: never;
     query?: never;
     url: '/auth/login';
 };
+
+export type LoginErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * Credenciales o token de selección inválidos.
+     */
+    401: ErrorResponse;
+    /**
+     * Usuario sin roles o rol no asignado.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type LoginError = LoginErrors[keyof LoginErrors];
 
 export type LoginResponses = {
     /**
@@ -273,21 +2628,1304 @@ export type LoginResponses = {
 
 export type LoginResponse2 = LoginResponses[keyof LoginResponses];
 
+export type ListData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/api/applications';
+};
+
+export type ListErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListError = ListErrors[keyof ListErrors];
+
+export type ListResponses = {
+    /**
+     * OK
+     */
+    200: ApplicationListResponse;
+};
+
+export type ListResponse = ListResponses[keyof ListResponses];
+
+export type SubmitData = {
+    body: CreateApplicationRequest;
+    headers?: {
+        /**
+         * Opcional. 1–128 caracteres ASCII visibles sin espacios, sensible a mayúsculas. Se conserva por usuario durante la vida de la solicitud. Misma clave y convocatoria: replay; otra convocatoria: 409.
+         */
+        'Idempotency-Key'?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/applications';
+};
+
+export type SubmitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Convocatoria inexistente.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SubmitError = SubmitErrors[keyof SubmitErrors];
+
+export type SubmitResponses = {
+    /**
+     * Reintento: se devuelve la solicitud original sin crear otra ni repetir la auditoría.
+     */
+    200: ApplicationResponse;
+    /**
+     * Solicitud presentada con número único.
+     */
+    201: ApplicationResponse;
+};
+
+export type SubmitResponse = SubmitResponses[keyof SubmitResponses];
+
+export type List1Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/admin/programs';
+};
+
+export type List1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List1Error = List1Errors[keyof List1Errors];
+
+export type List1Responses = {
+    /**
+     * OK
+     */
+    200: ProgramListResponse;
+};
+
+export type List1Response = List1Responses[keyof List1Responses];
+
+export type Create2Data = {
+    body: CreateProgramRequest;
+    path?: never;
+    query?: never;
+    url: '/api/admin/programs';
+};
+
+export type Create2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create2Error = Create2Errors[keyof Create2Errors];
+
+export type Create2Responses = {
+    /**
+     * Created
+     */
+    201: ProgramResponse;
+};
+
+export type Create2Response = Create2Responses[keyof Create2Responses];
+
+export type Delete6Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa de origen.
+         */
+        programId: string;
+        /**
+         * UUID del programa incompatible.
+         */
+        incompatibleProgramId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}';
+};
+
+export type Delete6Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Delete6Error = Delete6Errors[keyof Delete6Errors];
+
+export type Delete6Responses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type Delete6Response = Delete6Responses[keyof Delete6Responses];
+
+export type Create3Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa de origen.
+         */
+        programId: string;
+        /**
+         * UUID del programa incompatible.
+         */
+        incompatibleProgramId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}';
+};
+
+export type Create3Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create3Error = Create3Errors[keyof Create3Errors];
+
+export type Create3Responses = {
+    /**
+     * Created
+     */
+    201: ProgramIncompatibilityResponse;
+};
+
+export type Create3Response = Create3Responses[keyof Create3Responses];
+
+export type ListEnrollmentPeriodsData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+    };
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods';
+};
+
+export type ListEnrollmentPeriodsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListEnrollmentPeriodsError = ListEnrollmentPeriodsErrors[keyof ListEnrollmentPeriodsErrors];
+
+export type ListEnrollmentPeriodsResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodListResponse;
+};
+
+export type ListEnrollmentPeriodsResponse = ListEnrollmentPeriodsResponses[keyof ListEnrollmentPeriodsResponses];
+
+export type CreateEnrollmentPeriodData = {
+    body: CreateEnrollmentPeriodRequest;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods';
+};
+
+export type CreateEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateEnrollmentPeriodError = CreateEnrollmentPeriodErrors[keyof CreateEnrollmentPeriodErrors];
+
+export type CreateEnrollmentPeriodResponses = {
+    /**
+     * Created
+     */
+    201: EnrollmentPeriodResponse;
+};
+
+export type CreateEnrollmentPeriodResponse = CreateEnrollmentPeriodResponses[keyof CreateEnrollmentPeriodResponses];
+
+export type SuspendEnrollmentPeriodData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del período de inscripción.
+         */
+        enrollmentPeriodId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/suspend';
+};
+
+export type SuspendEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SuspendEnrollmentPeriodError = SuspendEnrollmentPeriodErrors[keyof SuspendEnrollmentPeriodErrors];
+
+export type SuspendEnrollmentPeriodResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodResponse;
+};
+
+export type SuspendEnrollmentPeriodResponse = SuspendEnrollmentPeriodResponses[keyof SuspendEnrollmentPeriodResponses];
+
+export type ReopenEnrollmentPeriodData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del período de inscripción.
+         */
+        enrollmentPeriodId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/reopen';
+};
+
+export type ReopenEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ReopenEnrollmentPeriodError = ReopenEnrollmentPeriodErrors[keyof ReopenEnrollmentPeriodErrors];
+
+export type ReopenEnrollmentPeriodResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodResponse;
+};
+
+export type ReopenEnrollmentPeriodResponse = ReopenEnrollmentPeriodResponses[keyof ReopenEnrollmentPeriodResponses];
+
+export type OpenEnrollmentPeriodData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del período de inscripción.
+         */
+        enrollmentPeriodId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/open';
+};
+
+export type OpenEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type OpenEnrollmentPeriodError = OpenEnrollmentPeriodErrors[keyof OpenEnrollmentPeriodErrors];
+
+export type OpenEnrollmentPeriodResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodResponse;
+};
+
+export type OpenEnrollmentPeriodResponse = OpenEnrollmentPeriodResponses[keyof OpenEnrollmentPeriodResponses];
+
+export type CloseEnrollmentPeriodData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+        /**
+         * UUID del período de inscripción.
+         */
+        enrollmentPeriodId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/close';
+};
+
+export type CloseEnrollmentPeriodErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CloseEnrollmentPeriodError = CloseEnrollmentPeriodErrors[keyof CloseEnrollmentPeriodErrors];
+
+export type CloseEnrollmentPeriodResponses = {
+    /**
+     * OK
+     */
+    200: EnrollmentPeriodResponse;
+};
+
+export type CloseEnrollmentPeriodResponse = CloseEnrollmentPeriodResponses[keyof CloseEnrollmentPeriodResponses];
+
 export type FindAll2Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/requirements';
+};
+
+export type FindAll2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindAll2Error = FindAll2Errors[keyof FindAll2Errors];
+
+export type FindAll2Responses = {
+    /**
+     * OK
+     */
+    200: Array<ProgramRequirementResponse>;
+};
+
+export type FindAll2Response = FindAll2Responses[keyof FindAll2Responses];
+
+export type Create4Data = {
+    body: CreateProgramRequirementRequest;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/requirements';
+};
+
+export type Create4Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create4Error = Create4Errors[keyof Create4Errors];
+
+export type Create4Responses = {
+    /**
+     * Created
+     */
+    201: ProgramRequirementResponse;
+};
+
+export type Create4Response = Create4Responses[keyof Create4Responses];
+
+export type FindAll3Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/benefits';
+};
+
+export type FindAll3Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindAll3Error = FindAll3Errors[keyof FindAll3Errors];
+
+export type FindAll3Responses = {
+    /**
+     * OK
+     */
+    200: Array<ProgramBenefitResponse>;
+};
+
+export type FindAll3Response = FindAll3Responses[keyof FindAll3Responses];
+
+export type Create5Data = {
+    body: CreateProgramBenefitRequest;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        editionId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{editionId}/benefits';
+};
+
+export type Create5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create5Error = Create5Errors[keyof Create5Errors];
+
+export type Create5Responses = {
+    /**
+     * Created
+     */
+    201: ProgramBenefitResponse;
+};
+
+export type Create5Response = Create5Responses[keyof Create5Responses];
+
+export type List2Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+    };
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/admin/program-editions/program/{programId}';
+};
+
+export type List2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List2Error = List2Errors[keyof List2Errors];
+
+export type List2Responses = {
+    /**
+     * OK
+     */
+    200: ProgramEditionListResponse;
+};
+
+export type List2Response = List2Responses[keyof List2Responses];
+
+export type Create6Data = {
+    body: CreateProgramEditionRequest;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/program/{programId}';
+};
+
+export type Create6Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create6Error = Create6Errors[keyof Create6Errors];
+
+export type Create6Responses = {
+    /**
+     * Created
+     */
+    201: ProgramEditionResponse;
+};
+
+export type Create6Response = Create6Responses[keyof Create6Responses];
+
+export type Submit1Data = {
+    body: CreateAssistedApplicationRequest;
+    headers?: {
+        /**
+         * Opcional. 1–128 caracteres ASCII visibles sin espacios. Se asocia al titular userId, compartida con las presentaciones propias y asistidas. Misma clave y convocatoria devuelve la original; otra convocatoria para el mismo titular devuelve 409. Cambiar el administrativo no cambia al registrante original.
+         */
+        'Idempotency-Key'?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/admin/applications';
+};
+
+export type Submit1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Titular o convocatoria inexistentes.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Submit1Error = Submit1Errors[keyof Submit1Errors];
+
+export type Submit1Responses = {
+    /**
+     * Reintento: devuelve la solicitud existente y conserva al registrante original.
+     */
+    200: ApplicationResponse;
+    /**
+     * Solicitud registrada para el titular indicado.
+     */
+    201: ApplicationResponse;
+};
+
+export type Submit1Response = Submit1Responses[keyof Submit1Responses];
+
+export type SuspendData = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{id}/suspend';
+};
+
+export type SuspendErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SuspendError = SuspendErrors[keyof SuspendErrors];
+
+export type SuspendResponses = {
+    /**
+     * OK
+     */
+    200: ProgramEditionResponse;
+};
+
+export type SuspendResponse = SuspendResponses[keyof SuspendResponses];
+
+export type CloseData = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{id}/close';
+};
+
+export type CloseErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CloseError = CloseErrors[keyof CloseErrors];
+
+export type CloseResponses = {
+    /**
+     * OK
+     */
+    200: ProgramEditionResponse;
+};
+
+export type CloseResponse = CloseResponses[keyof CloseResponses];
+
+export type ActivateData = {
+    body?: never;
+    path: {
+        /**
+         * UUID de la edición.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/{id}/activate';
+};
+
+export type ActivateErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateError = ActivateErrors[keyof ActivateErrors];
+
+export type ActivateResponses = {
+    /**
+     * OK
+     */
+    200: ProgramEditionResponse;
+};
+
+export type ActivateResponse = ActivateResponses[keyof ActivateResponses];
+
+export type FindAll4Data = {
     body?: never;
     path?: never;
     query?: never;
     url: '/permissions';
 };
 
-export type FindAll2Responses = {
+export type FindAll4Errors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindAll4Error = FindAll4Errors[keyof FindAll4Errors];
+
+export type FindAll4Responses = {
     /**
      * OK
      */
     200: Array<PermissionResponse>;
 };
 
-export type FindAll2Response = FindAll2Responses[keyof FindAll2Responses];
+export type FindAll4Response = FindAll4Responses[keyof FindAll4Responses];
+
+export type ListLogsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/logs';
+};
+
+export type ListLogsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListLogsError = ListLogsErrors[keyof ListLogsErrors];
+
+export type ListLogsResponses = {
+    /**
+     * OK
+     */
+    200: Array<LogResponse>;
+};
+
+export type ListLogsResponse = ListLogsResponses[keyof ListLogsResponses];
+
+export type ListLogsByUserData = {
+    body?: never;
+    path: {
+        /**
+         * ID del usuario que originó los eventos.
+         */
+        userId: number;
+    };
+    query?: never;
+    url: '/logs/users/{userId}';
+};
+
+export type ListLogsByUserErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListLogsByUserError = ListLogsByUserErrors[keyof ListLogsByUserErrors];
+
+export type ListLogsByUserResponses = {
+    /**
+     * OK
+     */
+    200: Array<LogResponse>;
+};
+
+export type ListLogsByUserResponse = ListLogsByUserResponses[keyof ListLogsByUserResponses];
+
+export type ListLogsByEntityData = {
+    body?: never;
+    path: {
+        /**
+         * Tipo de entidad auditada.
+         */
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION';
+        /**
+         * Identificador de la entidad auditada.
+         */
+        entityId: string;
+    };
+    query?: never;
+    url: '/logs/entities/{entityType}/{entityId}';
+};
+
+export type ListLogsByEntityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListLogsByEntityError = ListLogsByEntityErrors[keyof ListLogsByEntityErrors];
+
+export type ListLogsByEntityResponses = {
+    /**
+     * OK
+     */
+    200: Array<LogResponse>;
+};
+
+export type ListLogsByEntityResponse = ListLogsByEntityResponses[keyof ListLogsByEntityResponses];
 
 export type MeData = {
     body?: never;
@@ -295,6 +3933,23 @@ export type MeData = {
     query?: never;
     url: '/auth/me';
 };
+
+export type MeErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type MeError = MeErrors[keyof MeErrors];
 
 export type MeResponses = {
     /**
@@ -305,12 +3960,280 @@ export type MeResponses = {
 
 export type MeResponse2 = MeResponses[keyof MeResponses];
 
+export type ListAvailableProgramsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/programs';
+};
+
+export type ListAvailableProgramsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAvailableProgramsError = ListAvailableProgramsErrors[keyof ListAvailableProgramsErrors];
+
+export type ListAvailableProgramsResponses = {
+    /**
+     * OK
+     */
+    200: AvailableProgramListResponse;
+};
+
+export type ListAvailableProgramsResponse = ListAvailableProgramsResponses[keyof ListAvailableProgramsResponses];
+
+export type GetAvailableProgramData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        id: string;
+    };
+    query?: never;
+    url: '/api/programs/{id}';
+};
+
+export type GetAvailableProgramErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetAvailableProgramError = GetAvailableProgramErrors[keyof GetAvailableProgramErrors];
+
+export type GetAvailableProgramResponses = {
+    /**
+     * OK
+     */
+    200: AvailableProgramDetailResponse;
+};
+
+export type GetAvailableProgramResponse = GetAvailableProgramResponses[keyof GetAvailableProgramResponses];
+
+export type GetData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/applications/{id}';
+};
+
+export type GetErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetError = GetErrors[keyof GetErrors];
+
+export type FindAll5Data = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+    };
+    query?: never;
+    url: '/api/admin/programs/{programId}/incompatibilities';
+};
+
+export type FindAll5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FindAll5Error = FindAll5Errors[keyof FindAll5Errors];
+
+export type FindAll5Responses = {
+    /**
+     * OK
+     */
+    200: Array<ProgramIncompatibilityResponse>;
+};
+
+export type FindAll5Response = FindAll5Responses[keyof FindAll5Responses];
+
+export type ListProgramOptionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/programs/options';
+};
+
+export type ListProgramOptionsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListProgramOptionsError = ListProgramOptionsErrors[keyof ListProgramOptionsErrors];
+
+export type ListProgramOptionsResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProgramOptionResponse>;
+};
+
+export type ListProgramOptionsResponse = ListProgramOptionsResponses[keyof ListProgramOptionsResponses];
+
+export type ListProgramEditionOptionsData = {
+    body?: never;
+    path: {
+        /**
+         * UUID del programa.
+         */
+        programId: string;
+    };
+    query?: never;
+    url: '/api/admin/program-editions/program/{programId}/options';
+};
+
+export type ListProgramEditionOptionsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListProgramEditionOptionsError = ListProgramEditionOptionsErrors[keyof ListProgramEditionOptionsErrors];
+
+export type ListProgramEditionOptionsResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProgramEditionOptionResponse>;
+};
+
+export type ListProgramEditionOptionsResponse = ListProgramEditionOptionsResponses[keyof ListProgramEditionOptionsResponses];
+
 export type LinksData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/actuator';
 };
+
+export type LinksErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type LinksError = LinksErrors[keyof LinksErrors];
 
 export type LinksResponses = {
     /**
@@ -332,6 +4255,23 @@ export type InfoData = {
     url: '/actuator/info';
 };
 
+export type InfoErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type InfoError = InfoErrors[keyof InfoErrors];
+
 export type InfoResponses = {
     /**
      * OK
@@ -349,6 +4289,15 @@ export type HealthData = {
     query?: never;
     url: '/actuator/health';
 };
+
+export type HealthErrors = {
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type HealthError = HealthErrors[keyof HealthErrors];
 
 export type HealthResponses = {
     /**
