@@ -226,6 +226,18 @@ export const zUpdateProgramDocumentRequirementRequest = z.object({
 });
 
 /**
+ * Documento que una edición solicita a sus postulantes.
+ */
+export const zProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    programEditionId: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
+});
+
+/**
  * Datos requeridos para actualizar un beneficio.
  */
 export const zUpdateProgramBenefitRequest = z.object({
@@ -327,6 +339,17 @@ export const zCreateApplicationRequest = z.object({
     enrollmentPeriodId: z.uuid()
 });
 
+/**
+ * Documento solicitado por una edición disponible.
+ */
+export const zAvailableProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
+});
+
 export const zPendingApplicationDocumentResponse = z.object({
     requirementId: z.uuid().optional(),
     code: z.string().optional(),
@@ -360,7 +383,11 @@ export const zApplicationResponse = z.object({
     submittedAt: z.iso.datetime().optional(),
     createdAt: z.iso.datetime().optional(),
     updatedAt: z.iso.datetime().optional(),
-    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional()
+    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionName: z.string().optional(),
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
 });
 
 /**
@@ -411,18 +438,6 @@ export const zCreateProgramDocumentRequirementRequest = z.object({
     code: z.string().min(0).max(50).regex(/^[A-Za-z][A-Za-z0-9_]*$/),
     name: z.string().min(0).max(150),
     description: z.string().min(0).max(500).optional(),
-    required: z.boolean().optional()
-});
-
-/**
- * Documento que una edición solicita a sus postulantes.
- */
-export const zProgramDocumentRequirementResponse = z.object({
-    id: z.uuid().optional(),
-    programEditionId: z.uuid().optional(),
-    code: z.string().optional(),
-    name: z.string().optional(),
-    description: z.string().optional(),
     required: z.boolean().optional()
 });
 
@@ -567,17 +582,6 @@ export const zAvailableProgramBenefitResponse = z.object({
     ]).readonly().optional(),
     description: z.string().readonly().optional(),
     amount: z.number().readonly().optional()
-});
-
-/**
- * Documento solicitado por una edición disponible.
- */
-export const zAvailableProgramDocumentRequirementResponse = z.object({
-    id: z.uuid().optional(),
-    code: z.string().optional(),
-    name: z.string().optional(),
-    description: z.string().optional(),
-    required: z.boolean().optional()
 });
 
 /**
@@ -1014,6 +1018,11 @@ export const zUpdate5Path = z.object({
     requirementId: z.uuid()
 });
 
+/**
+ * Requisito documental actualizado.
+ */
+export const zUpdate5Response = zProgramDocumentRequirementResponse;
+
 export const zDelete6Path = z.object({
     editionId: z.uuid(),
     benefitId: z.uuid()
@@ -1414,9 +1423,19 @@ export const zGet1Path = z.object({
     id: z.uuid()
 });
 
+/**
+ * Detalle de la solicitud propia.
+ */
+export const zGet1Response = zApplicationResponse;
+
 export const zList4Path = z.object({
     applicationId: z.uuid()
 });
+
+/**
+ * Documentos entregados en la solicitud propia.
+ */
+export const zList4Response = z.array(zApplicationDocumentResponse);
 
 export const zContentPath = z.object({
     applicationId: z.uuid(),

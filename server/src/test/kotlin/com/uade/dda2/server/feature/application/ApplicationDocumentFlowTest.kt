@@ -160,6 +160,21 @@ class ApplicationDocumentFlowTest {
     }
 
     @Test
+    fun `solicitud conserva nombres y catalogo completo aunque la edicion este cerrada`() {
+        tx { editions.findById(f.editionId).orElseThrow().status = ProgramEditionStatus.CLOSED }
+        val detail = expect(mvc.perform(get("/api/applications/${f.applicationId}")
+            .header("Authorization", auth(f.ownerToken))).andReturn(), 200)!!
+        assertEquals(f.programId.toString(), detail.get("programId").asString())
+        assertEquals("Edición documental", detail.get("programEditionName").asString())
+        assertTrue(detail.get("programName").asString().startsWith("Documentos "))
+        assertEquals(2, detail.get("documentRequirements").size())
+        assertTrue(detail.get("documentRequirements").any { it.get("id").asString() == f.optionalId.toString() })
+        val listing = expect(mvc.perform(get("/api/applications").header("Authorization", auth(f.ownerToken))).andReturn(), 200)!!
+        assertEquals(detail.get("documentRequirements"), listing.get("content").get(0).get("documentRequirements"))
+        assertEquals(detail.get("programName"), listing.get("content").get(0).get("programName"))
+    }
+
+    @Test
     fun `catalogo CRUD normaliza codigo se publica y se bloquea al existir solicitudes`() {
         val today = LocalDate.now()
         val unlocked = tx {

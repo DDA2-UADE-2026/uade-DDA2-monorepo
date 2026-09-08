@@ -44,6 +44,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getAvailableProgramOptions } from "@/generated/@tanstack/react-query.gen"
+import { applicationPeriodUnavailableReason, enrollmentStatusLabels } from "@/lib/application-flow"
 import type {
   AvailableProgramBenefitResponse,
   AvailableProgramDocumentRequirementResponse,
@@ -56,8 +57,7 @@ type RequirementType = NonNullable<AvailableProgramRequirementResponse["type"]>
 type EditionStatus = NonNullable<AvailableProgramEditionResponse["status"]>
 
 const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
-const PROGRAM_DESCRIPTION =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Conocé las oportunidades y el acompañamiento que ofrece este programa."
+const PROGRAM_DESCRIPTION_FALLBACK = "El objetivo de este programa se informará próximamente."
 
 const benefitLabels: Record<BenefitType, string> = {
   TAX_EXEMPTION: "Exención impositiva",
@@ -174,19 +174,11 @@ function RouteComponent() {
                         {program.name || "Programa sin nombre"}
                       </CardTitle>
                       <CardDescription className="max-w-2xl text-sm leading-6">
-                        {PROGRAM_DESCRIPTION}
+                        {program.objective || PROGRAM_DESCRIPTION_FALLBACK}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          Objetivo
-                        </p>
-                        <p className="mt-1 text-sm leading-6">
-                          {program.objective || "El objetivo de este programa se informará próximamente."}
-                        </p>
-                      </div>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="hidden">
                         {(program.editions ?? []).length}{" "}
                         {(program.editions ?? []).length === 1
                           ? "edición disponible"
@@ -215,7 +207,7 @@ function RouteComponent() {
                   ) : (
                     <div className="grid gap-5">
                       {(program.editions ?? []).map((edition) => (
-                        <EditionCard key={edition.id ?? edition.name} edition={edition} />
+                        <EditionCard key={edition.id ?? edition.name} edition={edition} programaId={programaId} />
                       ))}
                     </div>
                   )}
@@ -226,7 +218,7 @@ function RouteComponent() {
                     <Card>
                       <CardHeader>
                         <CardTitle id="incompatibilities-title" className="flex items-center gap-2">
-                          <IconBan className="size-5 text-muted-foreground" />
+                          <IconBan className="size-5 text-destructive" />
                           Programas incompatibles
                         </CardTitle>
                         <CardDescription>
@@ -237,7 +229,7 @@ function RouteComponent() {
                         {(program.incompatibilities ?? []).map((incompatibility) => (
                           <Button
                             key={incompatibility.id ?? incompatibility.name}
-                            variant="outline"
+                            variant="destructive"
                             size="sm"
                             render={
                               <Link
@@ -263,7 +255,7 @@ function RouteComponent() {
   )
 }
 
-function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) {
+function EditionCard({ edition, programaId }: { edition: AvailableProgramEditionResponse; programaId: string }) {
   const currentEnrollment = edition.currentEnrollment ?? 0
   const maxCapacity = edition.maxCapacity ?? 0
   const availableCapacity = edition.availableCapacity ?? Math.max(0, maxCapacity - currentEnrollment)
@@ -307,7 +299,7 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
           <div>
             <h3 className="font-heading font-medium">Períodos de inscripción</h3>
             <p className="text-sm text-muted-foreground">
-              Fechas habilitadas actualmente para presentar una solicitud.
+              Consultá las fechas y el estado de cada período para presentar una solicitud.
             </p>
           </div>
           {(edition.enrollmentPeriods ?? []).length === 0 ? (
@@ -316,20 +308,33 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
             </p>
           ) : (
             <ItemGroup className="grid gap-3 md:grid-cols-2">
-              {(edition.enrollmentPeriods ?? []).map((period) => (
+              {(edition.enrollmentPeriods ?? []).map((period) => {
+                const unavailableReason = applicationPeriodUnavailableReason(edition, period)
+                return (
                 <Item key={period.id} variant="outline">
                   <ItemMedia variant="icon">
                     <IconClock className="text-primary" />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>Inscripción abierta</ItemTitle>
+                    <ItemTitle>Período de inscripción</ItemTitle>
                     <ItemDescription>
                       Del {formatProgramDate(period.openDate)} al {formatProgramDate(period.closeDate)}
                     </ItemDescription>
                   </ItemContent>
-                  <Badge variant="secondary">Abierta</Badge>
+                  <Badge variant="secondary">{period.status ? enrollmentStatusLabels[period.status] : "Sin estado"}</Badge>
+                  {!unavailableReason && period.id ? (
+                    <Button className="w-full animate-pulse" render={<Link to="/portal/solicitudes/nueva" search={{ programaId, periodoId: period.id }} />}>
+                      Solicitar este programa
+                    </Button>
+                  ) : (
+                    <div className="w-full space-y-2">
+                      <Button className="w-full" disabled>Solicitar este programa</Button>
+                      <p className="text-sm text-muted-foreground">{unavailableReason}</p>
+                    </div>
+                  )}
                 </Item>
-              ))}
+                )
+              })}
             </ItemGroup>
           )}
         </div>
