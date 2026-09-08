@@ -90,17 +90,20 @@ class GlobalExceptionHandler {
             )
 
     @ExceptionHandler(MaxUploadSizeExceededException::class)
-    fun handleMaxUploadSize(request: HttpServletRequest): ResponseEntity<ErrorResponse> =
-        ResponseEntity
+    fun handleMaxUploadSize(request: HttpServletRequest): ResponseEntity<ErrorResponse> {
+        val isProgramImage = request.requestURI.matches(Regex("/api/admin/programs/[^/]+/image"))
+
+        return ResponseEntity
             .status(HttpStatus.PAYLOAD_TOO_LARGE)
             .body(
                 ErrorResponse(
-                    message = "El archivo no puede superar 10 MB.",
-                    code = "APPLICATION_DOCUMENT_FILE_TOO_LARGE",
+                    message = if (isProgramImage) "La imagen no puede superar 10 MB." else "El archivo no puede superar 10 MB.",
+                    code = if (isProgramImage) "PROGRAM_IMAGE_FILE_TOO_LARGE" else "APPLICATION_DOCUMENT_FILE_TOO_LARGE",
                     status = HttpStatus.PAYLOAD_TOO_LARGE.value(),
                     path = request.requestURI,
                 ),
             )
+    }
 
     @ExceptionHandler(BadCredentialsException::class, AuthenticationException::class)
     fun handleAuthentication(

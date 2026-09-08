@@ -15,6 +15,7 @@ import com.uade.dda2.server.feature.program.mapper.toOptionResponse
 import com.uade.dda2.server.feature.program.mapper.toResponse
 import com.uade.dda2.server.feature.program.mapper.updateFrom
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
+import com.uade.dda2.server.feature.program.repository.ProgramImageRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
 import com.uade.dda2.server.feature.program.validator.AdminProgramValidator
 import org.springframework.dao.DataIntegrityViolationException
@@ -27,6 +28,7 @@ import java.util.*
 class AdminProgramService(
     private val programRepository: ProgramRepository,
     private val programEditionRepository: ProgramEditionRepository,
+    private val programImageRepository: ProgramImageRepository,
     private val adminProgramValidator: AdminProgramValidator,
     private val currentUserService: CurrentUserService,
 ) {
@@ -48,19 +50,28 @@ class AdminProgramService(
                 status = ProgramEditionStatus.ACTIVE,
             ).toSet()
         }
+        val imageIdsByProgram = findImageIds(programIds)
 
-        return programs.toListResponse(activeProgramIds)
+        return programs.toListResponse(
+            activeProgramIds = activeProgramIds,
+            imageIdsByProgram = imageIdsByProgram,
+        )
     }
 
     @Transactional(readOnly = true)
     fun get(id: UUID): ProgramResponse =
-        findProgram(id).toResponse()
+        findProgram(id).toResponse(programImageRepository.findImageIdByProgramId(id))
 
     @Transactional(readOnly = true)
-    fun options(): List<ProgramOptionResponse> =
-        programRepository
-            .findAllByOrderByNameAsc()
-            .map { it.toOptionResponse() }
+    fun options(): List<ProgramOptionResponse> {
+        val programs = programRepository.findAllByOrderByNameAsc()
+        val imageIdsByProgram = findImageIds(programs.map { requireNotNull(it.id) })
+
+        return programs.map { program ->
+            val programId = requireNotNull(program.id)
+            program.toOptionResponse(imageIdsByProgram[programId])
+        }
+    }
 
     @Transactional
     fun create(request: CreateProgramRequest): ProgramResponse {
@@ -73,7 +84,7 @@ class AdminProgramService(
         return try {
             programRepository
                 .saveAndFlush(program)
-                .toResponse()
+                .toResponse(imageId = null)
         } catch (_: DataIntegrityViolationException) {
             throw ProgramErrors.nameAlreadyExists(program.name)
         }
@@ -96,7 +107,7 @@ class AdminProgramService(
         return try {
             programRepository
                 .saveAndFlush(program)
-                .toResponse()
+                .toResponse(programImageRepository.findImageIdByProgramId(id))
         } catch (_: DataIntegrityViolationException) {
             throw ProgramErrors.nameAlreadyExists(program.name)
         }
@@ -108,6 +119,7 @@ class AdminProgramService(
 
         adminProgramValidator.validateDelete(program)
 
+        programImageRepository.deleteByProgramId(id)
         programRepository.delete(program)
     }
 
@@ -117,4 +129,13 @@ class AdminProgramService(
             .orElseThrow {
                 ProgramErrors.notFound(id)
             }
+
+    private fun findImageIds(programIds: Collection<UUID>): Map<UUID, UUID> =
+        if (programIds.isEmpty()) {
+            emptyMap()
+        } else {
+            programImageRepository
+                .findReferencesByProgramIdIn(programIds)
+                .associate { it.programId to it.id }
+        }
 }

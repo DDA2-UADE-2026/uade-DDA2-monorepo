@@ -11,6 +11,8 @@ data class AvailableProgramDetailResponse(
     val name: String,
     @field:Schema(description = "Objetivo del programa.", example = "Mejorar la empleabilidad de jóvenes.", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
     val objective: String?,
+    @field:Schema(description = "URL pública de la imagen de portada.", example = "/api/images/750e8400-e29b-41d4-a716-446655440002", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
+    val imageUrl: String?,
     @field:Schema(description = "Ediciones vigentes o futuras disponibles para el ciudadano.", accessMode = Schema.AccessMode.READ_ONLY)
     val editions: List<AvailableProgramEditionResponse>,
     @field:Schema(description = "Programas incompatibles con el programa consultado.", accessMode = Schema.AccessMode.READ_ONLY)

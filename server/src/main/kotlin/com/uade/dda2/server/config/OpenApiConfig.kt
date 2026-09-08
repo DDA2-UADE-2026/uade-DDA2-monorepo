@@ -94,6 +94,7 @@ class OpenApiConfig {
     private val publicPaths = setOf(
         "/auth/login",
         "/auth/select-role",
+        "/api/images/{imageId}",
         "/actuator/health",
     )
 

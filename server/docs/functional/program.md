@@ -31,6 +31,8 @@ Reglas del nombre:
 
 El nombre y el objetivo se pueden editar. El programa general no tiene estados de borrador, activo o cerrado: esos estados corresponden a sus ediciones.
 
+Cada programa puede tener una **imagen de portada opcional**. El personal municipal puede agregarla, reemplazarla o eliminarla independientemente de las ediciones. Se admiten archivos JPEG y PNG de hasta 10 MB; la aplicación comprueba nombre, extensión, tipo MIME y firma binaria antes de guardarlos. Los listados y detalles de programas exponen solamente `imageUrl`, nunca los bytes de la imagen. Esa URL apunta al controller público de imágenes y vale `null` mientras no haya una portada asociada.
+
 En el listado administrativo, el campo `active` resume esos estados: vale `true` cuando al menos una edición del programa tiene estado **Activa** y `false` en caso contrario.
 
 Un programa no se puede eliminar si tiene ediciones o incompatibilidades registradas. La eliminación no sirve para borrar de una sola vez toda su historia.

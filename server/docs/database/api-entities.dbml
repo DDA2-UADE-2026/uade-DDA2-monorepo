@@ -158,6 +158,23 @@ Table program {
   }
 }
 
+Table program_image {
+  id uuid [pk]
+  program_id uuid [not null, ref: > program.id]
+  original_name varchar(255) [not null]
+  content_type varchar(100) [not null, note: 'image/jpeg o image/png, validado contra extensión y firma binaria.']
+  size_bytes bigint [not null, note: 'Máximo 10 MB.']
+  content bytea [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  indexes {
+    program_id [unique, name: 'uk_program_image_program']
+  }
+
+  Note: 'Portada opcional del programa. Como máximo existe una por programa y sus bytes solo se entregan mediante el controller público de imágenes.'
+}
+
 Table program_edition {
   id uuid [pk]
   program_id uuid [not null, ref: > program.id]
