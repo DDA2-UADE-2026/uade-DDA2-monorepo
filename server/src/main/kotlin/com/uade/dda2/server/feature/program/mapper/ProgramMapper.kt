@@ -30,11 +30,12 @@ fun Program.updateFrom(
     objective = request.objective?.trim()
 }
 
-fun Program.toResponse(): ProgramResponse =
+fun Program.toResponse(imageId: UUID? = null): ProgramResponse =
     ProgramResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        imageUrl = programImageUrl(imageId),
         createdBy = createdBy.toProgramCreatedByResponse(),
         createdAt = createdAt,
         updatedAt = updatedAt,
@@ -42,11 +43,13 @@ fun Program.toResponse(): ProgramResponse =
 
 fun Program.toListItemResponse(
     active: Boolean,
+    imageId: UUID? = null,
 ): ProgramListItemResponse =
     ProgramListItemResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        imageUrl = programImageUrl(imageId),
         active = active,
         createdAt = createdAt,
         updatedAt = updatedAt,
@@ -54,11 +57,15 @@ fun Program.toListItemResponse(
 
 fun Page<Program>.toListResponse(
     activeProgramIds: Set<UUID>,
+    imageIdsByProgram: Map<UUID, UUID> = emptyMap(),
 ): ProgramListResponse =
     ProgramListResponse(
         content = content.map { program ->
             val programId = requireNotNull(program.id)
-            program.toListItemResponse(active = programId in activeProgramIds)
+            program.toListItemResponse(
+                active = programId in activeProgramIds,
+                imageId = imageIdsByProgram[programId],
+            )
         },
         page = number,
         size = size,
@@ -72,8 +79,9 @@ fun User.toProgramCreatedByResponse(): ProgramCreatedByResponse =
         name = name,
     )
 
-fun Program.toOptionResponse(): ProgramOptionResponse =
+fun Program.toOptionResponse(imageId: UUID? = null): ProgramOptionResponse =
     ProgramOptionResponse(
         id = requireNotNull(id),
         name = name,
+        imageUrl = programImageUrl(imageId),
     )

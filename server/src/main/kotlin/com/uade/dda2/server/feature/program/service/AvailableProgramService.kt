@@ -14,6 +14,7 @@ import com.uade.dda2.server.feature.program.mapper.toAvailableDocumentRequiremen
 import com.uade.dda2.server.feature.program.repository.ProgramBenefitRepository
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
 import com.uade.dda2.server.feature.program.repository.ProgramIncompatibilityRepository
+import com.uade.dda2.server.feature.program.repository.ProgramImageRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRequirementRepository
 import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
@@ -31,6 +32,7 @@ class AvailableProgramService(
     private val programRequirementRepository: ProgramRequirementRepository,
     private val programDocumentRequirementRepository: ProgramDocumentRequirementRepository,
     private val programIncompatibilityRepository: ProgramIncompatibilityRepository,
+    private val programImageRepository: ProgramImageRepository,
     private val enrollmentPeriodRepository: EnrollmentPeriodRepository,
 ) {
 
@@ -57,12 +59,20 @@ class AvailableProgramService(
                 )
                 .groupBy { requireNotNull(it.program.id) }
         }
+        val imageIdsByProgram = if (programIds.isEmpty()) {
+            emptyMap()
+        } else {
+            programImageRepository
+                .findReferencesByProgramIdIn(programIds)
+                .associate { it.programId to it.id }
+        }
 
         return AvailableProgramListResponse(
             content = programs.content.map { program ->
                 val programId = requireNotNull(program.id)
                 program.toAvailableListItemResponse(
                     editions = requireNotNull(editionsByProgram[programId]),
+                    imageId = imageIdsByProgram[programId],
                 )
             },
             page = programs.number,
@@ -123,6 +133,7 @@ class AvailableProgramService(
         return program.toAvailableDetailResponse(
             editions = editionResponses,
             incompatibilities = incompatibilities,
+            imageId = programImageRepository.findImageIdByProgramId(id),
         )
     }
 }

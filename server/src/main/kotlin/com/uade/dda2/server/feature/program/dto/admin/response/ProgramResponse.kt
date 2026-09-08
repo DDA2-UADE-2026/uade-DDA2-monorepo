@@ -12,6 +12,8 @@ data class ProgramResponse(
     val name: String,
     @field:Schema(description = "Objetivo del programa.", example = "Mejorar la empleabilidad de jóvenes.", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
     val objective: String?,
+    @field:Schema(description = "URL pública de la imagen de portada.", example = "/api/images/750e8400-e29b-41d4-a716-446655440002", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
+    val imageUrl: String?,
     @field:Schema(description = "Usuario que creó el programa.", accessMode = Schema.AccessMode.READ_ONLY)
     val createdBy: ProgramCreatedByResponse,
     @field:Schema(description = "Fecha y hora de creación.", example = "2026-02-01T10:00:00", format = "date-time", accessMode = Schema.AccessMode.READ_ONLY)

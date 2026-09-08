@@ -9,4 +9,6 @@ data class ProgramOptionResponse(
     val id: UUID,
     @field:Schema(description = "Nombre del programa.", example = "Becas de formación laboral", accessMode = Schema.AccessMode.READ_ONLY)
     val name: String,
+    @field:Schema(description = "URL pública de la imagen de portada.", example = "/api/images/750e8400-e29b-41d4-a716-446655440002", nullable = true, accessMode = Schema.AccessMode.READ_ONLY)
+    val imageUrl: String?,
 )
