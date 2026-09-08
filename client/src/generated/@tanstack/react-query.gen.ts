@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, close, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, createEnrollmentPeriod, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, getAvailableProgram, getEnrollmentPeriod, health, info, links, list, list1, list2, list3, list4, list5, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, updateEnrollmentPeriod } from '../sdk.gen';
-import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateResponse } from '../types.gen';
+import { activate, close, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, createEnrollmentPeriod, createProgramImage, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, getAvailableProgram, getEnrollmentPeriod, getManagedApplication, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listManagedApplications, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, updateEnrollmentPeriod, updateProgramImage } from '../sdk.gen';
+import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetManagedApplicationData, GetManagedApplicationError, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListManagedApplicationsData, ListManagedApplicationsError, ListManagedApplicationsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -164,6 +164,61 @@ export const putMutation = (options?: Partial<Options<PutData>>): UseMutationOpt
     const mutationOptions: UseMutationOptions<PutResponse, PutError, Options<PutData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await put({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Eliminar la imagen de un programa
+ */
+export const deleteProgramImageMutation = (options?: Partial<Options<DeleteProgramImageData>>): UseMutationOptions<DeleteProgramImageResponse, DeleteProgramImageError, Options<DeleteProgramImageData>> => {
+    const mutationOptions: UseMutationOptions<DeleteProgramImageResponse, DeleteProgramImageError, Options<DeleteProgramImageData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deleteProgramImage({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Agregar la imagen de un programa
+ *
+ * Admite una imagen JPEG o PNG de hasta 10 MB.
+ */
+export const createProgramImageMutation = (options?: Partial<Options<CreateProgramImageData>>): UseMutationOptions<CreateProgramImageResponse, CreateProgramImageError, Options<CreateProgramImageData>> => {
+    const mutationOptions: UseMutationOptions<CreateProgramImageResponse, CreateProgramImageError, Options<CreateProgramImageData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createProgramImage({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reemplazar la imagen de un programa
+ *
+ * Reemplaza la portada existente por una imagen JPEG o PNG de hasta 10 MB.
+ */
+export const updateProgramImageMutation = (options?: Partial<Options<UpdateProgramImageData>>): UseMutationOptions<UpdateProgramImageResponse, UpdateProgramImageError, Options<UpdateProgramImageData>> => {
+    const mutationOptions: UseMutationOptions<UpdateProgramImageResponse, UpdateProgramImageError, Options<UpdateProgramImageData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateProgramImage({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1172,10 +1227,62 @@ export const create7Mutation = (options?: Partial<Options<Create7Data>>): UseMut
     return mutationOptions;
 };
 
+export const listManagedApplicationsQueryKey = (options?: Options<ListManagedApplicationsData>) => createQueryKey('listManagedApplications', options);
+
+/**
+ * Listar solicitudes para gestión
+ *
+ * Devuelve todas las solicitudes por número descendente. Permite buscar por número, nombre, usuario o email del titular.
+ */
+export const listManagedApplicationsOptions = (options?: Options<ListManagedApplicationsData>) => queryOptions<ListManagedApplicationsResponse, ListManagedApplicationsError, ListManagedApplicationsResponse, ReturnType<typeof listManagedApplicationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listManagedApplications({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listManagedApplicationsQueryKey(options)
+});
+
+export const listManagedApplicationsInfiniteQueryKey = (options?: Options<ListManagedApplicationsData>): QueryKey<Options<ListManagedApplicationsData>> => createQueryKey('listManagedApplications', options, true);
+
+/**
+ * Listar solicitudes para gestión
+ *
+ * Devuelve todas las solicitudes por número descendente. Permite buscar por número, nombre, usuario o email del titular.
+ */
+export const listManagedApplicationsInfiniteOptions = (options?: Options<ListManagedApplicationsData>) => {
+    const opts = infiniteQueryOptions<ListManagedApplicationsResponse, ListManagedApplicationsError, InfiniteData<ListManagedApplicationsResponse>, QueryKey<Options<ListManagedApplicationsData>>, number | Pick<QueryKey<Options<ListManagedApplicationsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListManagedApplicationsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listManagedApplications({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listManagedApplicationsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
 /**
  * Registrar una solicitud asistida
  *
- * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. Registrar para otra persona no habilita a consultar sus solicitudes: no se agrega un detalle administrativo.
+ * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. La consulta posterior requiere por separado applications:management:view.
  */
 export const submit1Mutation = (options?: Partial<Options<Submit1Data>>): UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> => {
     const mutationOptions: UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> = {
@@ -1439,6 +1546,26 @@ export const getAvailableProgramOptions = (options: Options<GetAvailableProgramD
     queryKey: getAvailableProgramQueryKey(options)
 });
 
+export const getPublicImageQueryKey = (options: Options<GetPublicImageData>) => createQueryKey('getPublicImage', options);
+
+/**
+ * Obtener una imagen
+ *
+ * Devuelve públicamente los bytes de una imagen de programa.
+ */
+export const getPublicImageOptions = (options: Options<GetPublicImageData>) => queryOptions<GetPublicImageResponse, GetPublicImageError, GetPublicImageResponse, ReturnType<typeof getPublicImageQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getPublicImage({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getPublicImageQueryKey(options)
+});
+
 export const get1QueryKey = (options: Options<Get1Data>) => createQueryKey('get1', options);
 
 /**
@@ -1555,6 +1682,26 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
         return data;
     },
     queryKey: listProgramEditionOptionsQueryKey(options)
+});
+
+export const getManagedApplicationQueryKey = (options: Options<GetManagedApplicationData>) => createQueryKey('getManagedApplication', options);
+
+/**
+ * Consultar una solicitud para gestión
+ *
+ * Devuelve el detalle administrativo de cualquier solicitud, incluidas las personas vinculadas y su documentación pendiente.
+ */
+export const getManagedApplicationOptions = (options: Options<GetManagedApplicationData>) => queryOptions<unknown, GetManagedApplicationError, unknown, ReturnType<typeof getManagedApplicationQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getManagedApplication({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getManagedApplicationQueryKey(options)
 });
 
 export const list5QueryKey = (options: Options<List5Data>) => createQueryKey('list5', options);

@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.gen"
+import { programImageSource } from "@/lib/program-images"
 
 const PAGE_SIZE = 9
 const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
@@ -134,7 +135,7 @@ function RouteComponent() {
                   return (
                     <Card key={program.id ?? program.name} className="h-full transition-shadow hover:shadow-md">
                       <img
-                        src={PROGRAM_IMAGE}
+                        src={programImageSource(program.imageUrl) ?? PROGRAM_IMAGE}
                         alt=""
                         className="aspect-[1.91/1] w-full object-cover"
                         loading="lazy"

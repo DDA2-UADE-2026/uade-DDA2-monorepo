@@ -48,7 +48,7 @@ function SidebarUser() {
             />
           }
         >
-          <UserAvatar size="sm" addBlob blobProps="opacity-100! blur-lg size-8" user={data?.user ?? { name: displayName, email }} />
+          <UserAvatar size="default" addBlob blobProps="opacity-100! blur-xl size-8" user={data?.user ?? { name: displayName, email }} />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{displayName}</span>
             <span className="truncate text-xs text-sidebar-foreground/70">{activeRole ?? email}</span>

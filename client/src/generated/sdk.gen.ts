@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PutData, PutErrors, PutResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateResponses } from './types.gen';
+import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetManagedApplicationData, GetManagedApplicationErrors, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListManagedApplicationsData, ListManagedApplicationsErrors, ListManagedApplicationsResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PutData, PutErrors, PutResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -101,6 +101,47 @@ export const put = <ThrowOnError extends boolean = false>(options: Options<PutDa
     ...formDataBodySerializer,
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/applications/{applicationId}/documents/{requirementId}',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
+});
+
+/**
+ * Eliminar la imagen de un programa
+ */
+export const deleteProgramImage = <ThrowOnError extends boolean = false>(options: Options<DeleteProgramImageData, ThrowOnError>): RequestResult<DeleteProgramImageResponses, DeleteProgramImageErrors, ThrowOnError> => (options.client ?? client).delete<DeleteProgramImageResponses, DeleteProgramImageErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/image',
+    ...options
+});
+
+/**
+ * Agregar la imagen de un programa
+ *
+ * Admite una imagen JPEG o PNG de hasta 10 MB.
+ */
+export const createProgramImage = <ThrowOnError extends boolean = false>(options: Options<CreateProgramImageData, ThrowOnError>): RequestResult<CreateProgramImageResponses, CreateProgramImageErrors, ThrowOnError> => (options.client ?? client).post<CreateProgramImageResponses, CreateProgramImageErrors, ThrowOnError>({
+    ...formDataBodySerializer,
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/image',
+    ...options,
+    headers: {
+        'Content-Type': null,
+        ...options.headers
+    }
+});
+
+/**
+ * Reemplazar la imagen de un programa
+ *
+ * Reemplaza la portada existente por una imagen JPEG o PNG de hasta 10 MB.
+ */
+export const updateProgramImage = <ThrowOnError extends boolean = false>(options: Options<UpdateProgramImageData, ThrowOnError>): RequestResult<UpdateProgramImageResponses, UpdateProgramImageErrors, ThrowOnError> => (options.client ?? client).put<UpdateProgramImageResponses, UpdateProgramImageErrors, ThrowOnError>({
+    ...formDataBodySerializer,
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/programs/{programId}/image',
     ...options,
     headers: {
         'Content-Type': null,
@@ -653,9 +694,20 @@ export const create7 = <ThrowOnError extends boolean = false>(options: Options<C
 });
 
 /**
+ * Listar solicitudes para gestión
+ *
+ * Devuelve todas las solicitudes por número descendente. Permite buscar por número, nombre, usuario o email del titular.
+ */
+export const listManagedApplications = <ThrowOnError extends boolean = false>(options?: Options<ListManagedApplicationsData, ThrowOnError>): RequestResult<ListManagedApplicationsResponses, ListManagedApplicationsErrors, ThrowOnError> => (options?.client ?? client).get<ListManagedApplicationsResponses, ListManagedApplicationsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/applications',
+    ...options
+});
+
+/**
  * Registrar una solicitud asistida
  *
- * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. Registrar para otra persona no habilita a consultar sus solicitudes: no se agrega un detalle administrativo.
+ * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. La consulta posterior requiere por separado applications:management:view.
  */
 export const submit1 = <ThrowOnError extends boolean = false>(options: Options<Submit1Data, ThrowOnError>): RequestResult<Submit1Responses, Submit1Errors, ThrowOnError> => (options.client ?? client).post<Submit1Responses, Submit1Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
@@ -793,6 +845,13 @@ export const getAvailableProgram = <ThrowOnError extends boolean = false>(option
 });
 
 /**
+ * Obtener una imagen
+ *
+ * Devuelve públicamente los bytes de una imagen de programa.
+ */
+export const getPublicImage = <ThrowOnError extends boolean = false>(options: Options<GetPublicImageData, ThrowOnError>): RequestResult<GetPublicImageResponses, GetPublicImageErrors, ThrowOnError> => (options.client ?? client).get<GetPublicImageResponses, GetPublicImageErrors, ThrowOnError>({ url: '/api/images/{imageId}', ...options });
+
+/**
  * Consultar una solicitud propia
  *
  * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
@@ -853,6 +912,17 @@ export const listProgramOptions = <ThrowOnError extends boolean = false>(options
 export const listProgramEditionOptions = <ThrowOnError extends boolean = false>(options: Options<ListProgramEditionOptionsData, ThrowOnError>): RequestResult<ListProgramEditionOptionsResponses, ListProgramEditionOptionsErrors, ThrowOnError> => (options.client ?? client).get<ListProgramEditionOptionsResponses, ListProgramEditionOptionsErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/program-editions/program/{programId}/options',
+    ...options
+});
+
+/**
+ * Consultar una solicitud para gestión
+ *
+ * Devuelve el detalle administrativo de cualquier solicitud, incluidas las personas vinculadas y su documentación pendiente.
+ */
+export const getManagedApplication = <ThrowOnError extends boolean = false>(options: Options<GetManagedApplicationData, ThrowOnError>): RequestResult<unknown, GetManagedApplicationErrors, ThrowOnError> => (options.client ?? client).get<unknown, GetManagedApplicationErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/applications/{id}',
     ...options
 });
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import type { Icon } from "@tabler/icons-react"
+import { IconArrowBack, type Icon } from "@tabler/icons-react"
 
 import { AuthBrand } from "@/components/auth/AuthBrand"
 import { ThemeToggle } from "@/components/ThemeToggle"
@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Link } from "@tanstack/react-router"
+import { Button } from "../ui/button"
 
 interface AuthCardProps {
   title: string
@@ -26,11 +28,20 @@ interface AuthCardProps {
 function AuthCard({ title, description, icon: TitleIcon, headerVisual, children, footer, className }: AuthCardProps) {
   return (
     <Card className={cn("relative w-full sm:max-w-md", className)}>
-      <div className="absolute right-4 top-4">
+      <div className="absolute right-4 top-4 hidden">
         <ThemeToggle />
       </div>
       <CardHeader className="flex flex-col items-center gap-7 text-center">
-        <AuthBrand />
+        <div className="flex w-full items-center gap-2">
+          <AuthBrand />
+          <ThemeToggle />
+          <Button size={"icon"} variant={"outline"} render={
+            <Link to="/">
+              <IconArrowBack className="" />
+            </Link>
+          }/>
+        </div>
+
         <div className="flex flex-col items-center gap-3">
           {headerVisual ?? (TitleIcon ? (
             <div className="relative flex size-14 items-center justify-center bg-primary rounded-2xl">
