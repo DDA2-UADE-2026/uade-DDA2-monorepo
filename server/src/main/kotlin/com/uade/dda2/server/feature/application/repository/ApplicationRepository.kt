@@ -5,6 +5,7 @@ import com.uade.dda2.server.feature.application.entity.ApplicationStatus
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -20,7 +21,9 @@ interface ApplicationRepository : JpaRepository<Application, UUID> {
     @Query("select a from Application a join fetch a.programEdition where a.id = :id")
     fun findByIdForUpdate(@Param("id") id: UUID): Application?
 
+    @EntityGraph(attributePaths = ["programEdition.program"])
     fun findByIdAndUserId(id: UUID, userId: Long): Application?
+    @EntityGraph(attributePaths = ["programEdition.program"])
     fun findAllByUserId(userId: Long, pageable: Pageable): Page<Application>
     fun findByUserIdAndIdempotencyKey(userId: Long, idempotencyKey: String): Application?
     fun existsByUserIdAndEnrollmentPeriodId(userId: Long, enrollmentPeriodId: UUID): Boolean

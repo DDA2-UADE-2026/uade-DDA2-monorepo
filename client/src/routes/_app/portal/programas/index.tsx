@@ -40,8 +40,7 @@ import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.
 
 const PAGE_SIZE = 9
 const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
-const PROGRAM_DESCRIPTION =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Conocé los detalles y requisitos del programa."
+const PROGRAM_DESCRIPTION_FALLBACK = "El objetivo de este programa se informará próximamente."
 
 const searchSchema = z.object({
   page: z.coerce.number().int().positive().catch(1).default(1),
@@ -143,7 +142,7 @@ function RouteComponent() {
                       <CardHeader>
                         <CardTitle className="text-lg">{program.name || "Programa sin nombre"}</CardTitle>
                         <CardDescription className="line-clamp-2">
-                          {PROGRAM_DESCRIPTION}
+                          {program.objective || PROGRAM_DESCRIPTION_FALLBACK}
                         </CardDescription>
                         <CardAction>
                           <Badge variant="secondary">

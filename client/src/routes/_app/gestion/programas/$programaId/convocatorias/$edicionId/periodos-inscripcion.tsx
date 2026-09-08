@@ -2,6 +2,7 @@ import {
   IconAlertTriangle,
   IconCalendarEvent,
   IconPencil,
+  IconPlayerPlay,
   IconPlus,
   IconRefresh,
 } from "@tabler/icons-react"
@@ -10,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect, useState, type ComponentProps } from "react"
 import { z } from "zod"
+import { toast } from "sonner"
 
 import { DataPagination } from "@/components/DataPagination"
 import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
@@ -51,10 +53,12 @@ import {
   closeEnrollmentPeriodMutation,
   createEnrollmentPeriodMutation,
   findById3Options,
+  getAvailableProgramQueryKey,
   getEnrollmentPeriodOptions,
   getEnrollmentPeriodQueryKey,
   listEnrollmentPeriodsOptions,
   listEnrollmentPeriodsQueryKey,
+  listAvailableProgramsQueryKey,
   openEnrollmentPeriodMutation,
   reopenEnrollmentPeriodMutation,
   suspendEnrollmentPeriodMutation,
@@ -118,7 +122,23 @@ function RouteComponent() {
   const { programaId, edicionId } = Route.useParams()
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
+  const queryClient = useQueryClient()
   const [dialogState, setDialogState] = useState<DialogState>(null)
+
+  const openPeriod = useMutation({
+    ...openEnrollmentPeriodMutation(),
+    retry: false,
+    onSuccess: async (data, variables) => {
+      queryClient.setQueryData(getEnrollmentPeriodQueryKey({ path: variables.path }), data)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: listEnrollmentPeriodsQueryKey({ path: { programId: programaId, editionId: edicionId } }) }),
+        queryClient.invalidateQueries({ queryKey: getAvailableProgramQueryKey({ path: { id: programaId } }) }),
+        queryClient.invalidateQueries({ queryKey: listAvailableProgramsQueryKey() }),
+      ])
+      toast.success("Inscripción abierta")
+    },
+    onError: showApiErrorToast,
+  })
 
   const edition = useQuery(findById3Options({ path: { id: edicionId } }))
   const periods = useQuery(listEnrollmentPeriodsOptions({
@@ -227,14 +247,28 @@ function RouteComponent() {
                   </TableCell>
                   <TableCell>
                     {period.id && (
+                      <div className="flex items-center justify-end gap-2">
+                        {period.status === "SCHEDULED" && (
+                          <Button
+                            size="sm"
+                            disabled={openPeriod.isPending || edition.data?.status !== "ACTIVE"}
+                            title={edition.data?.status !== "ACTIVE" ? "La edición debe estar activa para abrir la inscripción." : undefined}
+                            onClick={() => openPeriod.mutate({ path: { programId: programaId, editionId: edicionId, enrollmentPeriodId: period.id! } })}
+                          >
+                            <IconPlayerPlay />
+                            {openPeriod.isPending && openPeriod.variables?.path.enrollmentPeriodId === period.id ? "Abriendo…" : "Abrir inscripción"}
+                          </Button>
+                        )}
                       <Button
                         size="icon-sm"
                         variant="ghost"
                         aria-label="Editar período de inscripción"
+                        disabled={openPeriod.isPending}
                         onClick={() => setDialogState({ enrollmentPeriodId: period.id! })}
                       >
                         <IconPencil />
                       </Button>
+                      </div>
                     )}
                   </TableCell>
                 </TableRow>

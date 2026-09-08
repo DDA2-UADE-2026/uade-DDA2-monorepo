@@ -88,7 +88,7 @@ function RouteComponent() {
               <p className="text-sm text-muted-foreground">No hay programas registrados.</p>
             ) : (
               <Table>
-                <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Objetivo</TableHead><TableHead>Creado</TableHead><TableHead>Actualizado</TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Objetivo</TableHead><TableHead>Estado</TableHead><TableHead>Creado</TableHead><TableHead>Actualizado</TableHead></TableRow></TableHeader>
                 <TableBody>
                   {programs.map((program) => (
                     <TableRow key={program.id}>
@@ -96,6 +96,18 @@ function RouteComponent() {
                         <Link to="/gestion/programas/$programaId" params={{ programaId: program.id ?? "" }} className="hover:underline">{program.name}</Link>
                       </TableCell>
                       <TableCell className="max-w-xl whitespace-normal text-muted-foreground">{program.objective || "—"}</TableCell>
+                      <TableCell>
+                        <span className="flex items-center gap-1.5 text-xs">
+                          <span
+                            className={`size-2 shrink-0 rounded-full ${
+                              program.active
+                                ? "bg-emerald-500"
+                                : "bg-muted-foreground"
+                            }`}
+                          />
+                          {program.active ? "Activo" : "Inactivo"}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{program.createdAt ? new Date(program.createdAt).toLocaleDateString("es-AR") : "—"}</TableCell>
                       <TableCell className="text-muted-foreground">{program.updatedAt ? new Date(program.updatedAt).toLocaleDateString("es-AR") : "—"}</TableCell>
                     </TableRow>

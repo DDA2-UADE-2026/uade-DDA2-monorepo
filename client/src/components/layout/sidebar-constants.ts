@@ -31,7 +31,6 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
     title: "Mis solicitudes",
     url: "/portal/solicitudes",
     icon: IconFileText,
-    items: [{ title: "Nueva solicitud", url: "/portal/solicitudes/nueva" }],
   },
   { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift },
   {

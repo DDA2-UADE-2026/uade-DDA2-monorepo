@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.application.dto.response
 
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
+import com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramDocumentRequirementResponse
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 import java.util.UUID
@@ -22,6 +23,11 @@ data class ApplicationResponse(
     val updatedAt: LocalDateTime,
     @field:Schema(description = "Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.")
     val pendingDocuments: List<PendingApplicationDocumentResponse>,
+    val programId: UUID,
+    val programName: String,
+    val programEditionName: String,
+    @field:Schema(description = "Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.")
+    val documentRequirements: List<AvailableProgramDocumentRequirementResponse>,
 )
 
 data class ApplicationListResponse(
