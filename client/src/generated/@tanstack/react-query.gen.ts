@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, close, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, createEnrollmentPeriod, createProgramImage, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, getAvailableProgram, getEnrollmentPeriod, getManagedApplication, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listManagedApplications, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, updateEnrollmentPeriod, updateProgramImage } from '../sdk.gen';
-import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetManagedApplicationData, GetManagedApplicationError, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListManagedApplicationsData, ListManagedApplicationsError, ListManagedApplicationsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
+import { activate, close, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, createEnrollmentPeriod, createProgramImage, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, getAvailableProgram, getEnrollmentPeriod, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, updateEnrollmentPeriod, updateProgramImage } from '../sdk.gen';
+import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -1227,16 +1227,16 @@ export const create7Mutation = (options?: Partial<Options<Create7Data>>): UseMut
     return mutationOptions;
 };
 
-export const listManagedApplicationsQueryKey = (options?: Options<ListManagedApplicationsData>) => createQueryKey('listManagedApplications', options);
+export const list4QueryKey = (options?: Options<List4Data>) => createQueryKey('list4', options);
 
 /**
- * Listar solicitudes para gestión
+ * Listar solicitudes de cualquier titular
  *
- * Devuelve todas las solicitudes por número descendente. Permite buscar por número, nombre, usuario o email del titular.
+ * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
  */
-export const listManagedApplicationsOptions = (options?: Options<ListManagedApplicationsData>) => queryOptions<ListManagedApplicationsResponse, ListManagedApplicationsError, ListManagedApplicationsResponse, ReturnType<typeof listManagedApplicationsQueryKey>>({
+export const list4Options = (options?: Options<List4Data>) => queryOptions<List4Response, List4Error, List4Response, ReturnType<typeof list4QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await listManagedApplications({
+        const { data } = await list4({
             ...options,
             ...queryKey[0],
             signal,
@@ -1244,29 +1244,29 @@ export const listManagedApplicationsOptions = (options?: Options<ListManagedAppl
         });
         return data;
     },
-    queryKey: listManagedApplicationsQueryKey(options)
+    queryKey: list4QueryKey(options)
 });
 
-export const listManagedApplicationsInfiniteQueryKey = (options?: Options<ListManagedApplicationsData>): QueryKey<Options<ListManagedApplicationsData>> => createQueryKey('listManagedApplications', options, true);
+export const list4InfiniteQueryKey = (options?: Options<List4Data>): QueryKey<Options<List4Data>> => createQueryKey('list4', options, true);
 
 /**
- * Listar solicitudes para gestión
+ * Listar solicitudes de cualquier titular
  *
- * Devuelve todas las solicitudes por número descendente. Permite buscar por número, nombre, usuario o email del titular.
+ * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
  */
-export const listManagedApplicationsInfiniteOptions = (options?: Options<ListManagedApplicationsData>) => {
-    const opts = infiniteQueryOptions<ListManagedApplicationsResponse, ListManagedApplicationsError, InfiniteData<ListManagedApplicationsResponse>, QueryKey<Options<ListManagedApplicationsData>>, number | Pick<QueryKey<Options<ListManagedApplicationsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const list4InfiniteOptions = (options?: Options<List4Data>) => {
+    const opts = infiniteQueryOptions<List4Response, List4Error, InfiniteData<List4Response>, QueryKey<Options<List4Data>>, number | Pick<QueryKey<Options<List4Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
     // @ts-ignore
     {
         queryFn: async ({ pageParam, queryKey, signal }) => {
             // @ts-ignore
-            const page: Pick<QueryKey<Options<ListManagedApplicationsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            const page: Pick<QueryKey<Options<List4Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
                 query: {
                     page: pageParam
                 }
             };
             const params = createInfiniteParams(queryKey, page);
-            const { data } = await listManagedApplications({
+            const { data } = await list4({
                 ...options,
                 ...params,
                 signal,
@@ -1274,7 +1274,7 @@ export const listManagedApplicationsInfiniteOptions = (options?: Options<ListMan
             });
             return data;
         },
-        queryKey: listManagedApplicationsInfiniteQueryKey(options)
+        queryKey: list4InfiniteQueryKey(options)
     });
     return opts as Omit<typeof opts, 'initialData'>;
 };
@@ -1282,7 +1282,7 @@ export const listManagedApplicationsInfiniteOptions = (options?: Options<ListMan
 /**
  * Registrar una solicitud asistida
  *
- * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. La consulta posterior requiere por separado applications:management:view.
+ * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. Registrar para otra persona no habilita por sí mismo a consultar sus solicitudes: la consulta administrativa exige applications:management:view.
  */
 export const submit1Mutation = (options?: Partial<Options<Submit1Data>>): UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> => {
     const mutationOptions: UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> = {
@@ -1586,14 +1586,14 @@ export const get1Options = (options: Options<Get1Data>) => queryOptions<Get1Resp
     queryKey: get1QueryKey(options)
 });
 
-export const list4QueryKey = (options: Options<List4Data>) => createQueryKey('list4', options);
+export const list5QueryKey = (options: Options<List5Data>) => createQueryKey('list5', options);
 
 /**
  * Listar los documentos entregados en una solicitud propia
  */
-export const list4Options = (options: Options<List4Data>) => queryOptions<List4Response, List4Error, List4Response, ReturnType<typeof list4QueryKey>>({
+export const list5Options = (options: Options<List5Data>) => queryOptions<List5Response, List5Error, List5Response, ReturnType<typeof list5QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list4({
+        const { data } = await list5({
             ...options,
             ...queryKey[0],
             signal,
@@ -1601,7 +1601,7 @@ export const list4Options = (options: Options<List4Data>) => queryOptions<List4R
         });
         return data;
     },
-    queryKey: list4QueryKey(options)
+    queryKey: list5QueryKey(options)
 });
 
 export const contentQueryKey = (options: Options<ContentData>) => createQueryKey('content', options);
@@ -1684,16 +1684,16 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
     queryKey: listProgramEditionOptionsQueryKey(options)
 });
 
-export const getManagedApplicationQueryKey = (options: Options<GetManagedApplicationData>) => createQueryKey('getManagedApplication', options);
+export const get2QueryKey = (options: Options<Get2Data>) => createQueryKey('get2', options);
 
 /**
- * Consultar una solicitud para gestión
+ * Consultar una solicitud de cualquier titular
  *
- * Devuelve el detalle administrativo de cualquier solicitud, incluidas las personas vinculadas y su documentación pendiente.
+ * Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.
  */
-export const getManagedApplicationOptions = (options: Options<GetManagedApplicationData>) => queryOptions<unknown, GetManagedApplicationError, unknown, ReturnType<typeof getManagedApplicationQueryKey>>({
+export const get2Options = (options: Options<Get2Data>) => queryOptions<Get2Response, Get2Error, Get2Response, ReturnType<typeof get2QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await getManagedApplication({
+        const { data } = await get2({
             ...options,
             ...queryKey[0],
             signal,
@@ -1701,17 +1701,17 @@ export const getManagedApplicationOptions = (options: Options<GetManagedApplicat
         });
         return data;
     },
-    queryKey: getManagedApplicationQueryKey(options)
+    queryKey: get2QueryKey(options)
 });
 
-export const list5QueryKey = (options: Options<List5Data>) => createQueryKey('list5', options);
+export const list6QueryKey = (options: Options<List6Data>) => createQueryKey('list6', options);
 
 /**
  * Listar documentos de cualquier solicitud
  */
-export const list5Options = (options: Options<List5Data>) => queryOptions<List5Response, List5Error, List5Response, ReturnType<typeof list5QueryKey>>({
+export const list6Options = (options: Options<List6Data>) => queryOptions<List6Response, List6Error, List6Response, ReturnType<typeof list6QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list5({
+        const { data } = await list6({
             ...options,
             ...queryKey[0],
             signal,
@@ -1719,7 +1719,7 @@ export const list5Options = (options: Options<List5Data>) => queryOptions<List5R
         });
         return data;
     },
-    queryKey: list5QueryKey(options)
+    queryKey: list6QueryKey(options)
 });
 
 export const content1QueryKey = (options: Options<Content1Data>) => createQueryKey('content1', options);

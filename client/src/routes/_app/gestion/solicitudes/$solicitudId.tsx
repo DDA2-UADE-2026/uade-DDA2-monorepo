@@ -30,16 +30,8 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  getManagedApplicationOptions,
-  list5Options,
-} from "@/generated/@tanstack/react-query.gen"
-import type {
-  AdminApplicationResponse,
-  ApplicationResponse,
-  ApplicationUserSummaryResponse,
-  ErrorResponse,
-} from "@/generated/types.gen"
+import { get2Options, list6Options } from "@/generated/@tanstack/react-query.gen"
+import type { AdminApplicationResponse, ErrorResponse } from "@/generated/types.gen"
 import {
   applicationStatusLabels,
   formatApplicationDateTime,
@@ -52,10 +44,8 @@ export const Route = createFileRoute("/_app/gestion/solicitudes/$solicitudId")({
 
 function RouteComponent() {
   const { solicitudId } = Route.useParams()
-  const query = useQuery(getManagedApplicationOptions({ path: { id: solicitudId } }))
-  // El contrato generado no declara el esquema de la respuesta 200 de este endpoint.
-  const detail = query.data as AdminApplicationResponse | undefined
-  const application = detail?.application
+  const query = useQuery(get2Options({ path: { id: solicitudId } }))
+  const application = query.data
   const heading = application?.applicationNumber != null
     ? `Solicitud N.º ${application.applicationNumber}`
     : "Solicitud"
@@ -72,10 +62,10 @@ function RouteComponent() {
           <Button
             size="sm"
             variant="outline"
-            render={<Link to="/gestion/documentos" search={{ solicitudId }} />}
+            render={<Link to="/gestion/solicitudes" search={{ page: 1 }} />}
           >
             <IconFileCheck />
-            Revisión documental
+            Ver todas
           </Button>
         </OutletNavRightButton>
       </OutletNavSticky>
@@ -92,7 +82,7 @@ function RouteComponent() {
               </div>
             ) : query.isError ? (
               <DetailError error={query.error} retry={() => query.refetch()} />
-            ) : !detail ? (
+            ) : !application ? (
               <Empty className="min-h-72 border">
                 <EmptyHeader>
                   <EmptyMedia variant="icon"><IconFileDescription /></EmptyMedia>
@@ -109,16 +99,16 @@ function RouteComponent() {
                       {solicitudId}
                     </p>
                   </div>
-                  <ApplicationStatusBadge status={application?.status} />
+                  <ApplicationStatusBadge status={application.status} />
                 </header>
 
-                {(application?.pendingDocuments?.length ?? 0) > 0 && (
+                {(application.pendingDocuments?.length ?? 0) > 0 && (
                   <Alert>
                     <IconAlertTriangle />
                     <AlertTitle>Documentación pendiente</AlertTitle>
                     <AlertDescription>
                       <ul className="list-disc pl-4">
-                        {application?.pendingDocuments?.map((pending) => (
+                        {application.pendingDocuments?.map((pending) => (
                           <li key={pending.requirementId ?? pending.code}>
                             {pending.name ?? pending.code ?? "Documento"}
                             {" — "}
@@ -138,20 +128,45 @@ function RouteComponent() {
                       <CardTitle className="text-base">Datos de la solicitud</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-3 text-sm">
-                      <DetailRow label="Programa" value={application?.programName} />
-                      <DetailRow label="Edición" value={application?.programEditionName} />
-                      <DetailRow label="Presentada" value={formatApplicationDateTime(application?.submittedAt)} />
-                      <DetailRow label="Última actualización" value={formatApplicationDateTime(application?.updatedAt)} />
-                      {detail.resolvedAt && (
-                        <DetailRow label="Resuelta" value={formatApplicationDateTime(detail.resolvedAt)} />
+                      <DetailRow
+                        label="Programa"
+                        value={application.programId ? (
+                          <Link
+                            to="/gestion/programas/$programaId"
+                            params={{ programaId: application.programId }}
+                            className="hover:underline"
+                          >
+                            {application.programName || "Programa"}
+                          </Link>
+                        ) : application.programName}
+                      />
+                      <DetailRow
+                        label="Edición"
+                        value={application.programId && application.programEditionId ? (
+                          <Link
+                            to="/gestion/programas/$programaId/convocatorias/$edicionId"
+                            params={{
+                              programaId: application.programId,
+                              edicionId: application.programEditionId,
+                            }}
+                            className="hover:underline"
+                          >
+                            {application.programEditionName || "Edición"}
+                          </Link>
+                        ) : application.programEditionName}
+                      />
+                      <DetailRow label="Presentada" value={formatApplicationDateTime(application.submittedAt)} />
+                      <DetailRow label="Última actualización" value={formatApplicationDateTime(application.updatedAt)} />
+                      {application.resolvedAt && (
+                        <DetailRow label="Resuelta" value={formatApplicationDateTime(application.resolvedAt)} />
                       )}
-                      {detail.resolutionReason && (
-                        <DetailRow label="Motivo de la resolución" value={detail.resolutionReason} />
+                      {application.resolutionReason && (
+                        <DetailRow label="Motivo de la resolución" value={application.resolutionReason} />
                       )}
-                      {detail.originTicketId && (
-                        <DetailRow label="Trámite de origen" value={detail.originTicketId} mono />
+                      {application.originTicketId && (
+                        <DetailRow label="Trámite de origen" value={application.originTicketId} mono />
                       )}
-                      <DetailRow label="Convocatoria" value={application?.enrollmentPeriodId} mono />
+                      <DetailRow label="Convocatoria" value={application.enrollmentPeriodId} mono />
                     </CardContent>
                   </Card>
 
@@ -160,9 +175,28 @@ function RouteComponent() {
                       <CardTitle className="text-base">Personas vinculadas</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-4 text-sm">
-                      <PersonRow label="Titular" user={detail.applicant} />
-                      <PersonRow label="Registrada por" user={detail.registeredBy} />
-                      <PersonRow label="Trabajador asignado" user={detail.assignedWorker} empty="Sin asignar" />
+                      <PersonRow
+                        label="Titular"
+                        id={application.userId}
+                        name={application.userName}
+                        email={application.userEmail}
+                      />
+                      <PersonRow
+                        label="Registrada por"
+                        id={application.registeredByUserId}
+                        name={application.registeredByUserName
+                          ?? (application.registeredByUserId === application.userId ? application.userName : undefined)}
+                        email={application.registeredByUserId === application.userId ? application.userEmail : undefined}
+                      />
+                      <PersonRow
+                        label="Trabajador asignado"
+                        id={application.assignedWorkerUserId}
+                        name={application.assignedWorkerName}
+                        empty="Sin asignar"
+                      />
+                      {application.idempotencyKey && (
+                        <DetailRow label="Clave de idempotencia" value={application.idempotencyKey} mono />
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -178,7 +212,7 @@ function RouteComponent() {
 }
 
 function ApplicationDocumentsSection({ applicationId }: { applicationId: string }) {
-  const documents = useQuery(list5Options({ path: { applicationId } }))
+  const documents = useQuery(list6Options({ path: { applicationId } }))
 
   return (
     <section aria-labelledby="admin-application-documents" className="space-y-3">
@@ -224,38 +258,50 @@ function ApplicationDocumentsSection({ applicationId }: { applicationId: string 
   )
 }
 
-function DetailRow({ label, value, mono }: { label: string; value?: ReactNode; mono?: boolean }) {
+function DetailRow({
+  label,
+  value,
+  description,
+  mono,
+}: {
+  label: string
+  value?: ReactNode
+  description?: string
+  mono?: boolean
+}) {
   return (
-    <div className="grid gap-0.5">
+    <div className="grid min-w-0 gap-0.5">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <span className={mono ? "break-all font-mono text-xs" : "font-medium"}>{value || "—"}</span>
+      <span className={mono ? "break-all font-mono text-xs" : "truncate font-medium"}>{value || "—"}</span>
+      {description && <span className="truncate text-xs text-muted-foreground">{description}</span>}
     </div>
   )
 }
 
 function PersonRow({
   label,
-  user,
+  id,
+  name,
+  email,
   empty = "—",
 }: {
   label: string
-  user?: ApplicationUserSummaryResponse
+  id?: number
+  name?: string
+  email?: string
   empty?: string
 }) {
-  if (!user?.id && !user?.name && !user?.username) {
-    return <DetailRow label={label} value={empty} />
-  }
+  if (!name && id == null) return <DetailRow label={label} value={empty} />
 
   return (
-    <div className="grid gap-1.5">
+    <div className="grid min-w-0 gap-1.5">
       <span className="text-xs text-muted-foreground">{label}</span>
       <div className="flex min-w-0 items-center gap-2.5">
-        <UserAvatar user={user} size="sm" />
+        <UserAvatar user={{ id, name, email }} size="sm" />
         <div className="min-w-0">
-          <p className="truncate font-medium">{user.name || user.username || `Usuario #${user.id}`}</p>
+          <p className="truncate font-medium">{name || `Usuario #${id}`}</p>
           <p className="truncate text-xs text-muted-foreground">
-            {user.email || (user.username ? `@${user.username}` : `ID interno ${user.id}`)}
-            {user.active === false ? " · Inactivo" : ""}
+            {email || (id != null ? `ID interno ${id}` : "—")}
           </p>
         </div>
       </div>
@@ -263,7 +309,7 @@ function PersonRow({
   )
 }
 
-function ApplicationStatusBadge({ status }: { status: ApplicationResponse["status"] }) {
+function ApplicationStatusBadge({ status }: { status: AdminApplicationResponse["status"] }) {
   if (!status) return <Badge variant="outline">Sin estado</Badge>
 
   return (
@@ -298,7 +344,7 @@ function DetailError({
             type="button"
             size="sm"
             variant="ghost"
-            render={<Link to="/gestion/solicitudes" search={{ page: 1, estado: undefined, q: "" }} />}
+            render={<Link to="/gestion/solicitudes" search={{ page: 1 }} />}
           >
             Volver a la bandeja
           </Button>

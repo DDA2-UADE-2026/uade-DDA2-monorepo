@@ -14,14 +14,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { contentQueryKey, delete8Mutation, get1QueryKey, list4Options, list4QueryKey, listQueryKey } from "@/generated/@tanstack/react-query.gen"
+import { contentQueryKey, delete8Mutation, get1QueryKey, list5Options, list5QueryKey, listQueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse, ApplicationResponse, AvailableProgramDocumentRequirementResponse } from "@/generated/types.gen"
 import { applicationDocumentRequirements, formatDocumentSize, isApplicationResolved } from "@/lib/application-flow"
 
 export function ApplicationDocuments({ application }: { application: ApplicationResponse & { id: string } }) {
   const applicationId = application.id
   const queryClient = useQueryClient()
-  const documents = useQuery(list4Options({ path: { applicationId } }))
+  const documents = useQuery(list5Options({ path: { applicationId } }))
   const [uploadTarget, setUploadTarget] = useState<(AvailableProgramDocumentRequirementResponse & { id: string }) | null>(null)
   const [preview, setPreview] = useState<(ApplicationDocumentResponse & { id: string }) | null>(null)
   const [finalized, setFinalized] = useState(false)
@@ -31,7 +31,7 @@ export function ApplicationDocuments({ application }: { application: Application
     onSuccess: async (_data, variables) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: list4QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list5QueryKey({ path: { applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: listQueryKey() }),
       ])
       queryClient.removeQueries({ queryKey: contentQueryKey({ path: variables.path }) })

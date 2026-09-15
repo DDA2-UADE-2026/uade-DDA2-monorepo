@@ -64,13 +64,13 @@ function RouteComponent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-3 sm:flex-row">
-                  <Button render={<Link to="/gestion/solicitudes" />}>
+                  <Button render={<Link to="/gestion/solicitudes/asistida" />}>
                     <IconFilePlus />
                     Registrar solicitud asistida
                   </Button>
-                  <Button variant="outline" render={<Link to="/gestion/documentos" search={{ solicitudId: "" }} />}>
+                  <Button variant="outline" render={<Link to="/gestion/solicitudes" search={{ page: 1 }} />}>
                     <IconFileCheck />
-                    Revisar documentos
+                    Ver solicitudes
                   </Button>
                 </CardContent>
               </Card>
