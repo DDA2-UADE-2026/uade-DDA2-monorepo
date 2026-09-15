@@ -33,6 +33,7 @@ VALUES ('permissions:view'),
        ('applications:own:documents:view'),
        ('applications:own:documents:manage'),
        ('applications:management:create'),
+       ('applications:management:view'),
        ('applications:management:documents:view'),
        ('applications:management:documents:review')
 ON CONFLICT (name) DO NOTHING;

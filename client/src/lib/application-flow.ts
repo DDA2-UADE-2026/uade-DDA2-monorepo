@@ -53,6 +53,21 @@ export function formatDocumentSize(bytes?: number) {
   return bytes < 1024 * 1024 ? `${Math.max(1, Math.ceil(bytes / 1024))} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+// Variante para la revisión administrativa: distingue el tamaño desconocido y muestra bytes sueltos.
+export function formatDocumentFileSize(bytes?: number) {
+  if (bytes == null) return "Tamaño desconocido"
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
+export function formatApplicationDateTime(value?: string) {
+  if (!value) return "—"
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return "—"
+  return date.toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" })
+}
+
 export const DOCUMENT_ACCEPT = ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
 export const MAX_DOCUMENT_BYTES = 10 * 1024 * 1024
 

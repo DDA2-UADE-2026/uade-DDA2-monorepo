@@ -6,7 +6,9 @@ import {
   IconFileDescription,
   IconHeartHandshake,
   IconInfoCircle,
+  IconListSearch,
   IconUser,
+  IconUserSearch,
 } from "@tabler/icons-react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
@@ -20,6 +22,9 @@ import {
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { ProgramSelectionDialog } from "@/components/programs/ProgramSelectionDialog"
+import { UserSelectionDialog } from "@/components/users/UserSelectionDialog"
+import { UserAvatar } from "@/components/UserAvatar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -41,15 +46,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
-  findAllOptions,
   getAvailableProgramOptions,
-  listAvailableProgramsOptions,
   submit1Mutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type {
   ApplicationResponse,
   AvailableEnrollmentPeriodResponse,
   AvailableProgramEditionResponse,
+  AvailableProgramListItemResponse,
   UserManagementResponse,
 } from "@/generated/types.gen"
 import {
@@ -60,8 +64,6 @@ import {
   formatApplicationDate,
   getSubmissionKey,
 } from "@/lib/application-flow"
-
-const PROGRAM_PAGE_SIZE = 100
 
 export const Route = createFileRoute("/_app/gestion/solicitudes/asistida")({
   component: RouteComponent,
@@ -119,29 +121,24 @@ type PeriodOption = {
 }
 
 export function AssistedApplicationForm({ currentUserId }: { currentUserId?: number }) {
-  const [selectedUserId, setSelectedUserId] = useState<number>()
-  const [selectedProgramId, setSelectedProgramId] = useState("")
+  const [selectedUser, setSelectedUser] = useState<UserManagementResponse & { id: number }>()
+  const [selectedProgram, setSelectedProgram] = useState<AvailableProgramListItemResponse & { id: string }>()
   const [selectedPeriodId, setSelectedPeriodId] = useState("")
+  const [userDialogOpen, setUserDialogOpen] = useState(false)
+  const [programDialogOpen, setProgramDialogOpen] = useState(false)
   const [confirmation, setConfirmation] = useState<ApplicationResponse>()
   const attemptKey = useRef<string | null>(null)
   const submitting = useRef(false)
 
-  const users = useQuery(findAllOptions())
-  const programs = useQuery(listAvailableProgramsOptions({
-    query: { page: 0, size: PROGRAM_PAGE_SIZE },
-  }))
+  const selectedUserId = selectedUser?.id
+  const selectedProgramId = selectedProgram?.id ?? ""
+
   const program = useQuery({
     ...getAvailableProgramOptions({ path: { id: selectedProgramId } }),
     enabled: Boolean(selectedProgramId),
   })
   const submit = useMutation({ ...submit1Mutation(), retry: false })
 
-  const selectableUsers = (users.data ?? []).filter(
-    (candidate): candidate is UserManagementResponse & { id: number } =>
-      candidate.id != null && candidate.id !== currentUserId,
-  )
-  const selectedUser = selectableUsers.find((candidate) => candidate.id === selectedUserId)
-  const selectedProgram = programs.data?.content?.find((candidate) => candidate.id === selectedProgramId)
   const periodOptions: PeriodOption[] = (program.data?.editions ?? []).flatMap((edition) =>
     (edition.enrollmentPeriods ?? []).flatMap((period) =>
       period.id && canApplyToPeriod(edition, period) ? [{ edition, period: { ...period, id: period.id } }] : [],
@@ -155,14 +152,18 @@ export function AssistedApplicationForm({ currentUserId }: { currentUserId?: num
     submit.reset()
   }
 
-  const changeUser = (value: string | null) => {
-    setSelectedUserId(value ? Number(value) : undefined)
+  const changeUser = (candidate: UserManagementResponse) => {
+    const id = candidate.id
+    if (id == null) return
+    setSelectedUser({ ...candidate, id })
     resetMutation()
   }
 
-  const changeProgram = (value: string | null) => {
-    setSelectedProgramId(value ?? "")
-    setSelectedPeriodId("")
+  const changeProgram = (candidate: AvailableProgramListItemResponse) => {
+    const id = candidate.id
+    if (!id) return
+    setSelectedProgram({ ...candidate, id })
+    if (id !== selectedProgramId) setSelectedPeriodId("")
     resetMutation()
   }
 
@@ -195,8 +196,8 @@ export function AssistedApplicationForm({ currentUserId }: { currentUserId?: num
   }
 
   const startAnother = () => {
-    setSelectedUserId(undefined)
-    setSelectedProgramId("")
+    setSelectedUser(undefined)
+    setSelectedProgram(undefined)
     setSelectedPeriodId("")
     setConfirmation(undefined)
     resetMutation()
@@ -213,37 +214,102 @@ export function AssistedApplicationForm({ currentUserId }: { currentUserId?: num
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <Badge variant="secondary" className="w-fit">
-          <IconFileDescription />
-          Presentación asistida
-        </Badge>
-        <CardTitle>Registrar una solicitud</CardTitle>
-        <CardDescription>
-          Seleccioná al titular y una convocatoria abierta. Vos quedarás registrado como quien realizó la presentación.
-        </CardDescription>
-      </CardHeader>
+    <>
+      <Card>
+        <CardHeader>
+          <Badge variant="secondary" className="w-fit">
+            <IconFileDescription />
+            Presentación asistida
+          </Badge>
+          <CardTitle>Registrar una solicitud</CardTitle>
+          <CardDescription>
+            Seleccioná al titular y una convocatoria abierta. Vos quedarás registrado como quien realizó la presentación.
+          </CardDescription>
+        </CardHeader>
 
-      <CardContent className="space-y-6">
-        <FieldGroup className="grid gap-5 md:grid-cols-2">
+        <CardContent className="space-y-6">
+          <FieldGroup className="grid gap-5 md:grid-cols-2">
+            <Field>
+              <FieldLabel htmlFor="assisted-applicant">Persona solicitante</FieldLabel>
+              <Button
+                id="assisted-applicant"
+                type="button"
+                variant="outline"
+                className="w-full min-w-0 justify-start font-normal"
+                disabled={submit.isPending}
+                onClick={() => setUserDialogOpen(true)}
+              >
+                {selectedUser ? (
+                  <>
+                    <UserAvatar user={selectedUser} className="size-5" />
+                    <span className="truncate">
+                      {selectedUser.name || selectedUser.username || `Usuario #${selectedUser.id}`}
+                      {selectedUser.username && ` (@${selectedUser.username})`}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <IconUserSearch />
+                    Seleccionar persona
+                  </>
+                )}
+              </Button>
+              <FieldDescription>
+                La solicitud quedará a nombre de esta persona. No podés usar la presentación asistida para vos mismo.
+              </FieldDescription>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="assisted-program">Programa</FieldLabel>
+              <Button
+                id="assisted-program"
+                type="button"
+                variant="outline"
+                className="w-full min-w-0 justify-start font-normal"
+                disabled={submit.isPending}
+                onClick={() => setProgramDialogOpen(true)}
+              >
+                {selectedProgram ? (
+                  <>
+                    <IconHeartHandshake />
+                    <span className="truncate">{selectedProgram.name || "Programa sin nombre"}</span>
+                  </>
+                ) : (
+                  <>
+                    <IconListSearch />
+                    Seleccionar programa
+                  </>
+                )}
+              </Button>
+              <FieldDescription>
+                Se muestran programas con ediciones activas vigentes o futuras.
+              </FieldDescription>
+            </Field>
+          </FieldGroup>
+
+          <Separator />
+
           <Field>
-            <FieldLabel htmlFor="assisted-applicant">Persona solicitante</FieldLabel>
+            <FieldLabel htmlFor="assisted-period">Convocatoria</FieldLabel>
             <Select
-              value={selectedUserId == null ? null : String(selectedUserId)}
-              onValueChange={changeUser}
-              disabled={users.isPending || users.isError || submit.isPending}
+              value={selectedPeriodId || null}
+              onValueChange={changePeriod}
+              disabled={!selectedProgramId || program.isPending || program.isError || periodOptions.length === 0 || submit.isPending}
             >
-              <SelectTrigger id="assisted-applicant" className="w-full">
-                <SelectValue placeholder={users.isPending ? "Cargando personas…" : "Seleccioná una persona"} />
+              <SelectTrigger id="assisted-period" className="w-full">
+                <SelectValue placeholder={
+                  !selectedProgramId ? "Primero seleccioná un programa"
+                    : program.isPending ? "Cargando convocatorias…"
+                      : "Seleccioná una convocatoria abierta"
+                } />
               </SelectTrigger>
               <SelectContent>
-                {selectableUsers.map((candidate) => (
-                  <SelectItem key={candidate.id} value={String(candidate.id)}>
+                {periodOptions.map(({ edition, period }) => (
+                  <SelectItem key={period.id} value={period.id}>
                     <span className="flex min-w-0 flex-col">
-                      <span className="truncate">{candidate.name || candidate.username || `Usuario #${candidate.id}`}</span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        {candidate.email || `ID interno ${candidate.id}`}{candidate.active === false ? " · Inactivo" : ""}
+                      <span className="truncate">{edition.name || "Edición"}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatPeriod(period)}
                       </span>
                     </span>
                   </SelectItem>
@@ -251,114 +317,63 @@ export function AssistedApplicationForm({ currentUserId }: { currentUserId?: num
               </SelectContent>
             </Select>
             <FieldDescription>
-              La solicitud quedará a nombre de esta persona. No podés usar la presentación asistida para vos mismo.
+              Solo se habilitan convocatorias abiertas y vigentes. El backend vuelve a validar su estado al confirmar.
             </FieldDescription>
-            {users.isError && <QueryError label="No se pudieron cargar las personas." retry={() => users.refetch()} />}
-            {!users.isPending && !users.isError && selectableUsers.length === 0 && (
-              <p className="text-sm text-muted-foreground">No hay otras personas disponibles para seleccionar.</p>
+            {program.isError && <QueryError label="No se pudieron cargar las convocatorias." retry={() => program.refetch()} />}
+            {selectedProgramId && !program.isPending && !program.isError && periodOptions.length === 0 && (
+              <Alert>
+                <IconInfoCircle />
+                <AlertTitle>Sin convocatorias habilitadas</AlertTitle>
+                <AlertDescription>Este programa no tiene una inscripción abierta y vigente en este momento.</AlertDescription>
+              </Alert>
             )}
           </Field>
 
-          <Field>
-            <FieldLabel htmlFor="assisted-program">Programa</FieldLabel>
-            <Select
-              value={selectedProgramId || null}
-              onValueChange={changeProgram}
-              disabled={programs.isPending || programs.isError || submit.isPending}
-            >
-              <SelectTrigger id="assisted-program" className="w-full">
-                <SelectValue placeholder={programs.isPending ? "Cargando programas…" : "Seleccioná un programa"} />
-              </SelectTrigger>
-              <SelectContent>
-                {(programs.data?.content ?? []).flatMap((candidate) => candidate.id ? (
-                  <SelectItem key={candidate.id} value={candidate.id}>
-                    {candidate.name || "Programa sin nombre"}
-                  </SelectItem>
-                ) : [])}
-              </SelectContent>
-            </Select>
-            <FieldDescription>
-              Se muestran programas con ediciones activas vigentes o futuras.
-            </FieldDescription>
-            {programs.isError && <QueryError label="No se pudieron cargar los programas." retry={() => programs.refetch()} />}
-            {!programs.isPending && !programs.isError && (programs.data?.content?.length ?? 0) === 0 && (
-              <p className="text-sm text-muted-foreground">No hay programas disponibles.</p>
-            )}
-            {(programs.data?.totalElements ?? 0) > PROGRAM_PAGE_SIZE && (
-              <p className="text-sm text-amber-700 dark:text-amber-300">
-                Se muestran los primeros {PROGRAM_PAGE_SIZE} programas disponibles.
-              </p>
-            )}
-          </Field>
-        </FieldGroup>
+          {selectedUser && selectedProgram && selectedPeriod && (
+            <ApplicationSummary
+              applicant={selectedUser}
+              programName={program.data?.name ?? selectedProgram.name}
+              option={selectedPeriod}
+            />
+          )}
 
-        <Separator />
-
-        <Field>
-          <FieldLabel htmlFor="assisted-period">Convocatoria</FieldLabel>
-          <Select
-            value={selectedPeriodId || null}
-            onValueChange={changePeriod}
-            disabled={!selectedProgramId || program.isPending || program.isError || periodOptions.length === 0 || submit.isPending}
-          >
-            <SelectTrigger id="assisted-period" className="w-full">
-              <SelectValue placeholder={
-                !selectedProgramId ? "Primero seleccioná un programa"
-                  : program.isPending ? "Cargando convocatorias…"
-                    : "Seleccioná una convocatoria abierta"
-              } />
-            </SelectTrigger>
-            <SelectContent>
-              {periodOptions.map(({ edition, period }) => (
-                <SelectItem key={period.id} value={period.id}>
-                  <span className="flex min-w-0 flex-col">
-                    <span className="truncate">{edition.name || "Edición"}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatPeriod(period)}
-                    </span>
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <FieldDescription>
-            Solo se habilitan convocatorias abiertas y vigentes. El backend vuelve a validar su estado al confirmar.
-          </FieldDescription>
-          {program.isError && <QueryError label="No se pudieron cargar las convocatorias." retry={() => program.refetch()} />}
-          {selectedProgramId && !program.isPending && !program.isError && periodOptions.length === 0 && (
-            <Alert>
-              <IconInfoCircle />
-              <AlertTitle>Sin convocatorias habilitadas</AlertTitle>
-              <AlertDescription>Este programa no tiene una inscripción abierta y vigente en este momento.</AlertDescription>
+          {submit.isError && (
+            <Alert variant="destructive">
+              <IconAlertCircle />
+              <AlertTitle>No se pudo registrar la solicitud</AlertTitle>
+              <AlertDescription>
+                {submit.error.message ?? "Revisá que la persona y la convocatoria sigan habilitadas e intentá nuevamente."}
+              </AlertDescription>
             </Alert>
           )}
-        </Field>
+        </CardContent>
 
-        {selectedUser && selectedProgram && selectedPeriod && (
-          <ApplicationSummary
-            applicant={selectedUser}
-            programName={program.data?.name ?? selectedProgram.name}
-            option={selectedPeriod}
-          />
-        )}
+        <CardFooter className="justify-end">
+          <Button type="button" disabled={!formReady || submit.isPending || submit.isSuccess} onClick={present}>
+            {submit.isPending ? "Registrando…" : "Registrar solicitud"}
+          </Button>
+        </CardFooter>
+      </Card>
 
-        {submit.isError && (
-          <Alert variant="destructive">
-            <IconAlertCircle />
-            <AlertTitle>No se pudo registrar la solicitud</AlertTitle>
-            <AlertDescription>
-              {submit.error.message ?? "Revisá que la persona y la convocatoria sigan habilitadas e intentá nuevamente."}
-            </AlertDescription>
-          </Alert>
-        )}
-      </CardContent>
+      <UserSelectionDialog
+        open={userDialogOpen}
+        onOpenChange={setUserDialogOpen}
+        onSelect={changeUser}
+        selectedUserId={selectedUserId}
+        excludeUserId={currentUserId}
+        title="Seleccionar persona solicitante"
+        description="Elegí la persona a nombre de quien quedará la solicitud."
+      />
 
-      <CardFooter className="justify-end">
-        <Button type="button" disabled={!formReady || submit.isPending || submit.isSuccess} onClick={present}>
-          {submit.isPending ? "Registrando…" : "Registrar solicitud"}
-        </Button>
-      </CardFooter>
-    </Card>
+      <ProgramSelectionDialog
+        open={programDialogOpen}
+        onOpenChange={setProgramDialogOpen}
+        onSelect={changeProgram}
+        selectedProgramId={selectedProgram?.id}
+        title="Seleccionar programa"
+        description="Elegí el programa al que se presentará la solicitud."
+      />
+    </>
   )
 }
 

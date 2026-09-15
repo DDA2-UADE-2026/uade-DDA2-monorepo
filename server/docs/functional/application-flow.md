@@ -137,6 +137,15 @@ La solicitud pertenece al usuario indicado. El administrativo queda guardado por
 
 La presentación asistida no permite adjuntar documentos y esta entrega tampoco incluye una carga administrativa en nombre del ciudadano.
 
+Registrar una solicitud para otra persona no habilita a consultarla: quien necesite ver las solicitudes de otros titulares requiere `applications:management:view`, con las rutas de la sección siguiente.
+
+| Acción | Método y ruta |
+| --- | --- |
+| Listar solicitudes de cualquier titular | `GET /api/admin/applications` |
+| Consultar una solicitud de cualquier titular | `GET /api/admin/applications/{applicationId}` |
+
+El listado administrativo no filtra por titular ni por quien registró la solicitud, e identifica a cada titular por su nombre y correo. El detalle agrega los campos internos que la vista ciudadana no muestra, como el trámite de origen, el motivo de resolución y el trabajador asignado. Ninguna de las dos rutas modifica la solicitud ni devuelve archivos.
+
 ## 4. Consulta ciudadana y documentos pendientes
 
 El ciudadano consulta únicamente sus solicitudes:
@@ -277,6 +286,7 @@ Los endpoints administrativos operan con un `applicationId` conocido. Actualment
 | Listar y descargar documentos propios | `applications:own:documents:view` |
 | Cargar, reemplazar y eliminar documentos propios | `applications:own:documents:manage` |
 | Registrar una solicitud asistida | `applications:management:create` |
+| Consultar solicitudes de cualquier titular | `applications:management:view` |
 | Listar y descargar documentos para revisión | `applications:management:documents:view` |
 | Revisar documentos | `applications:management:documents:review` |
 | Consultar el catálogo documental | `programs:management:view` |
