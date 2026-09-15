@@ -1,11 +1,16 @@
 package com.uade.dda2.server.feature.program.service
 
+import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.feature.log.entity.LogAction
+import com.uade.dda2.server.feature.log.entity.LogEntityType
+import com.uade.dda2.server.feature.log.service.LogService
 import com.uade.dda2.server.feature.program.dto.ProgramImageContent
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramImageResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramImage
 import com.uade.dda2.server.feature.program.error.ProgramErrors
 import com.uade.dda2.server.feature.program.error.ProgramImageErrors
+import com.uade.dda2.server.feature.program.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.program.mapper.toResponse
 import com.uade.dda2.server.feature.program.repository.ProgramImageRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
@@ -14,6 +19,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -22,6 +28,9 @@ class ProgramImageService(
     private val programRepository: ProgramRepository,
     private val programImageRepository: ProgramImageRepository,
     private val programImageValidator: ProgramImageValidator,
+    private val currentUserService: CurrentUserService,
+    private val logService: LogService,
+    private val jsonMapper: JsonMapper,
 ) {
     @Transactional
     fun create(programId: UUID, file: MultipartFile): ProgramImageResponse {
@@ -43,11 +52,21 @@ class ProgramImageService(
         )
         program.updatedAt = now
 
-        return try {
-            programImageRepository.saveAndFlush(image).toResponse()
+        val saved = try {
+            programImageRepository.saveAndFlush(image)
         } catch (_: DataIntegrityViolationException) {
             throw ProgramImageErrors.alreadyExists(programId)
         }
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.CREATE,
+            entityType = LogEntityType.PROGRAM_IMAGE,
+            entityId = requireNotNull(saved.id).toString(),
+            newValues = json(saved.toAuditSnapshot()),
+        )
+
+        return saved.toResponse()
     }
 
     @Transactional
@@ -58,6 +77,7 @@ class ProgramImageService(
         val validated = programImageValidator.validate(file)
         val now = LocalDateTime.now()
 
+        val oldValues = json(image.toAuditSnapshot())
         image.originalName = validated.originalName
         image.contentType = validated.contentType
         image.sizeBytes = validated.content.size.toLong()
@@ -65,19 +85,38 @@ class ProgramImageService(
         image.updatedAt = now
         program.updatedAt = now
 
-        return programImageRepository.saveAndFlush(image).toResponse()
+        val saved = programImageRepository.saveAndFlush(image)
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.PROGRAM_IMAGE,
+            entityId = requireNotNull(saved.id).toString(),
+            oldValues = oldValues,
+            newValues = json(saved.toAuditSnapshot()),
+        )
+
+        return saved.toResponse()
     }
 
     @Transactional
     fun delete(programId: UUID) {
         val program = findProgram(programId)
-        if (!programImageRepository.existsByProgramId(programId)) {
-            throw ProgramImageErrors.notFound(programId)
-        }
+        val image = programImageRepository.findByProgramId(programId)
+            ?: throw ProgramImageErrors.notFound(programId)
         val now = LocalDateTime.now()
+
+        val oldValues = json(image.toAuditSnapshot())
 
         programImageRepository.deleteByProgramId(programId)
         program.updatedAt = now
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.DELETE,
+            entityType = LogEntityType.PROGRAM_IMAGE,
+            entityId = requireNotNull(image.id).toString(),
+            oldValues = oldValues,
+        )
     }
 
     @Transactional(readOnly = true)
@@ -95,4 +134,7 @@ class ProgramImageService(
 
     private fun findProgram(id: UUID): Program =
         programRepository.findById(id).orElseThrow { ProgramErrors.notFound(id) }
+
+    private fun json(value: Any): String =
+        requireNotNull(jsonMapper.writeValueAsString(value))
 }

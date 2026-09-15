@@ -1,5 +1,9 @@
 package com.uade.dda2.server.feature.program.service
 
+import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.feature.log.entity.LogAction
+import com.uade.dda2.server.feature.log.entity.LogEntityType
+import com.uade.dda2.server.feature.log.service.LogService
 import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramRequirementRequest
 import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramRequirementRequest
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramRequirementResponse
@@ -7,6 +11,7 @@ import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.ProgramRequirement
 import com.uade.dda2.server.feature.program.error.ProgramEditionErrors
 import com.uade.dda2.server.feature.program.error.ProgramRequirementErrors
+import com.uade.dda2.server.feature.program.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.program.mapper.toEntity
 import com.uade.dda2.server.feature.program.mapper.toResponse
 import com.uade.dda2.server.feature.program.mapper.updateFrom
@@ -16,6 +21,7 @@ import com.uade.dda2.server.feature.program.validator.AdminProgramRequirementVal
 import com.uade.dda2.server.feature.program.validator.AdminProgramEditionValidator
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.json.JsonMapper
 import java.util.UUID
 
 @Service
@@ -24,6 +30,9 @@ class AdminProgramRequirementService(
     private val programRequirementRepository: ProgramRequirementRepository,
     private val adminProgramRequirementValidator: AdminProgramRequirementValidator,
     private val adminProgramEditionValidator: AdminProgramEditionValidator,
+    private val currentUserService: CurrentUserService,
+    private val logService: LogService,
+    private val jsonMapper: JsonMapper,
 ) {
 
     @Transactional(readOnly = true)
@@ -61,9 +70,16 @@ class AdminProgramRequirementService(
             programEdition = edition,
         )
 
-        return programRequirementRepository
-            .save(requirement)
-            .toResponse()
+        val saved = programRequirementRepository.save(requirement)
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.CREATE,
+            entityType = LogEntityType.PROGRAM_REQUIREMENT,
+            entityId = requireNotNull(saved.id).toString(),
+            newValues = json(saved.toAuditSnapshot()),
+        )
+
+        return saved.toResponse()
     }
 
     @Transactional
@@ -80,11 +96,20 @@ class AdminProgramRequirementService(
         adminProgramEditionValidator.validateCanModify(requirement.programEdition)
         adminProgramRequirementValidator.validateUpdate(request)
 
+        val oldValues = json(requirement.toAuditSnapshot())
         requirement.updateFrom(request)
 
-        return programRequirementRepository
-            .save(requirement)
-            .toResponse()
+        val saved = programRequirementRepository.save(requirement)
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.PROGRAM_REQUIREMENT,
+            entityId = requireNotNull(saved.id).toString(),
+            oldValues = oldValues,
+            newValues = json(saved.toAuditSnapshot()),
+        )
+
+        return saved.toResponse()
     }
 
     @Transactional
@@ -98,7 +123,17 @@ class AdminProgramRequirementService(
         )
 
         adminProgramEditionValidator.validateCanModify(requirement.programEdition)
+
+        val oldValues = json(requirement.toAuditSnapshot())
         programRequirementRepository.delete(requirement)
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.DELETE,
+            entityType = LogEntityType.PROGRAM_REQUIREMENT,
+            entityId = requirementId.toString(),
+            oldValues = oldValues,
+        )
     }
 
     private fun findEdition(id: UUID): ProgramEdition =
@@ -121,4 +156,7 @@ class AdminProgramRequirementService(
                 id = requirementId,
                 programEditionId = editionId,
             )
+
+    private fun json(value: Any): String =
+        requireNotNull(jsonMapper.writeValueAsString(value))
 }

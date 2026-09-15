@@ -531,7 +531,14 @@ export const zLogResponse = z.object({
         'USER',
         'ENROLLMENT_PERIOD',
         'APPLICATION',
-        'APPLICATION_DOCUMENT'
+        'APPLICATION_DOCUMENT',
+        'PROGRAM',
+        'PROGRAM_EDITION',
+        'PROGRAM_BENEFIT',
+        'PROGRAM_REQUIREMENT',
+        'PROGRAM_DOCUMENT_REQUIREMENT',
+        'PROGRAM_IMAGE',
+        'PROGRAM_INCOMPATIBILITY'
     ]).readonly().optional(),
     entityId: z.string().readonly().optional(),
     oldValues: z.string().readonly().optional(),
@@ -1536,7 +1543,14 @@ export const zListLogsByEntityPath = z.object({
         'USER',
         'ENROLLMENT_PERIOD',
         'APPLICATION',
-        'APPLICATION_DOCUMENT'
+        'APPLICATION_DOCUMENT',
+        'PROGRAM',
+        'PROGRAM_EDITION',
+        'PROGRAM_BENEFIT',
+        'PROGRAM_REQUIREMENT',
+        'PROGRAM_DOCUMENT_REQUIREMENT',
+        'PROGRAM_IMAGE',
+        'PROGRAM_INCOMPATIBILITY'
     ]),
     entityId: z.string().min(1)
 });

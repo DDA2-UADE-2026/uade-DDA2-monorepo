@@ -69,6 +69,14 @@ const entityLabels: Partial<Record<EntityType, string>> = {
   USER: "Usuario",
   ENROLLMENT_PERIOD: "Período de inscripción",
   APPLICATION: "Solicitud",
+  APPLICATION_DOCUMENT: "Documento de solicitud",
+  PROGRAM: "Programa",
+  PROGRAM_EDITION: "Edición de programa",
+  PROGRAM_BENEFIT: "Beneficio de programa",
+  PROGRAM_REQUIREMENT: "Requisito de programa",
+  PROGRAM_DOCUMENT_REQUIREMENT: "Requisito documental de programa",
+  PROGRAM_IMAGE: "Imagen de programa",
+  PROGRAM_INCOMPATIBILITY: "Incompatibilidad de programa",
 }
 const entityTypes: readonly EntityType[] =
   zListLogsByEntityPath.shape.entityType.options

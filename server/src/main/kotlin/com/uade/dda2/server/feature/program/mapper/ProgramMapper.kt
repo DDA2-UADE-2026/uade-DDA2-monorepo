@@ -85,3 +85,13 @@ fun Program.toOptionResponse(imageId: UUID? = null): ProgramOptionResponse =
         name = name,
         imageUrl = programImageUrl(imageId),
     )
+
+fun Program.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "name" to name,
+        "objective" to objective,
+        "createdBy" to createdBy.id,
+        "createdAt" to createdAt.toString(),
+        "updatedAt" to updatedAt.toString(),
+    )

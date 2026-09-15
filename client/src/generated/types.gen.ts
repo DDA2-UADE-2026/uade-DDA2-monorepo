@@ -925,7 +925,7 @@ export type LogResponse = {
     /**
      * Tipo de entidad afectada.
      */
-    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT';
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
     /**
      * Identificador de la entidad afectada.
      */
@@ -4719,7 +4719,7 @@ export type ListLogsByEntityData = {
         /**
          * Tipo de entidad auditada.
          */
-        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT';
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
         /**
          * Identificador de la entidad auditada.
          */

@@ -32,3 +32,12 @@ fun ProgramBenefit.toResponse(): ProgramBenefitResponse =
         description = description,
         amount = amount,
     )
+
+fun ProgramBenefit.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "programEditionId" to programEdition.id,
+        "benefitType" to benefitType.name,
+        "description" to description,
+        "amount" to amount?.toString(),
+    )
