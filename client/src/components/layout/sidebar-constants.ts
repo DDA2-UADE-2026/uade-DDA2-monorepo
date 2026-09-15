@@ -52,7 +52,7 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     url: "/gestion/solicitudes",
     icon: IconFileText,
     items: [
-      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida" },
+      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
     ]
   },
   { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
@@ -70,7 +70,6 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     icon: IconCalendarEvent,
   },
   { title: "Campañas", url: "/gestion/campanias", icon: IconSpeakerphone },
-  { title: "Documentos", url: "/gestion/documentos", icon: IconFileCheck },
   { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
   { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },
 ]

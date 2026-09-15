@@ -22,7 +22,6 @@ import { Route as AuthCallbackRouteImport } from "./routes/_auth/callback"
 import { Route as AuthSeleccionarRolRouteImport } from "./routes/_auth/seleccionar-rol"
 import { Route as AppGestionIndexRouteImport } from "./routes/_app/gestion/index"
 import { Route as AppGestionAuditoriaRouteRouteImport } from "./routes/_app/gestion/auditoria/route"
-import { Route as AppGestionDocumentosRouteImport } from "./routes/_app/gestion/documentos"
 import { Route as AppGestionIndicadoresRouteImport } from "./routes/_app/gestion/indicadores"
 import { Route as AppGestionPerfilRouteImport } from "./routes/_app/gestion/perfil"
 import { Route as AppGestionRolesRouteImport } from "./routes/_app/gestion/roles"
@@ -148,11 +147,6 @@ const AppGestionAuditoriaRouteRoute =
     path: "/auditoria",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
-const AppGestionDocumentosRoute = AppGestionDocumentosRouteImport.update({
-  id: "/documentos",
-  path: "/documentos",
-  getParentRoute: () => AppGestionRouteRoute,
-} as any)
 const AppGestionIndicadoresRoute = AppGestionIndicadoresRouteImport.update({
   id: "/indicadores",
   path: "/indicadores",
@@ -520,7 +514,6 @@ export interface FileRoutesByFullPath {
   "/callback": typeof AuthCallbackRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
-  "/gestion/documentos": typeof AppGestionDocumentosRoute
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/gestion/perfil": typeof AppGestionPerfilRoute
   "/gestion/roles": typeof AppGestionRolesRoute
@@ -591,7 +584,6 @@ export interface FileRoutesByTo {
   "/tree": typeof TreeRoute
   "/callback": typeof AuthCallbackRoute
   "/seleccionar-rol": typeof AuthSeleccionarRolRoute
-  "/gestion/documentos": typeof AppGestionDocumentosRoute
   "/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/gestion/perfil": typeof AppGestionPerfilRoute
   "/gestion/roles": typeof AppGestionRolesRoute
@@ -665,7 +657,6 @@ export interface FileRoutesById {
   "/_auth/callback": typeof AuthCallbackRoute
   "/_auth/seleccionar-rol": typeof AuthSeleccionarRolRoute
   "/_app/gestion/auditoria": typeof AppGestionAuditoriaRouteRouteWithChildren
-  "/_app/gestion/documentos": typeof AppGestionDocumentosRoute
   "/_app/gestion/indicadores": typeof AppGestionIndicadoresRoute
   "/_app/gestion/perfil": typeof AppGestionPerfilRoute
   "/_app/gestion/roles": typeof AppGestionRolesRoute
@@ -741,7 +732,6 @@ export interface FileRouteTypes {
     | "/callback"
     | "/seleccionar-rol"
     | "/gestion/auditoria"
-    | "/gestion/documentos"
     | "/gestion/indicadores"
     | "/gestion/perfil"
     | "/gestion/roles"
@@ -812,7 +802,6 @@ export interface FileRouteTypes {
     | "/tree"
     | "/callback"
     | "/seleccionar-rol"
-    | "/gestion/documentos"
     | "/gestion/indicadores"
     | "/gestion/perfil"
     | "/gestion/roles"
@@ -885,7 +874,6 @@ export interface FileRouteTypes {
     | "/_auth/callback"
     | "/_auth/seleccionar-rol"
     | "/_app/gestion/auditoria"
-    | "/_app/gestion/documentos"
     | "/_app/gestion/indicadores"
     | "/_app/gestion/perfil"
     | "/_app/gestion/roles"
@@ -1050,13 +1038,6 @@ declare module "@tanstack/react-router" {
       path: "/auditoria"
       fullPath: "/gestion/auditoria"
       preLoaderRoute: typeof AppGestionAuditoriaRouteRouteImport
-      parentRoute: typeof AppGestionRouteRoute
-    }
-    "/_app/gestion/documentos": {
-      id: "/_app/gestion/documentos"
-      path: "/documentos"
-      fullPath: "/gestion/documentos"
-      preLoaderRoute: typeof AppGestionDocumentosRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/indicadores": {
@@ -1599,7 +1580,6 @@ const AppGestionProgramasProgramaIdRouteRouteWithChildren =
 
 interface AppGestionRouteRouteChildren {
   AppGestionAuditoriaRouteRoute: typeof AppGestionAuditoriaRouteRouteWithChildren
-  AppGestionDocumentosRoute: typeof AppGestionDocumentosRoute
   AppGestionIndicadoresRoute: typeof AppGestionIndicadoresRoute
   AppGestionPerfilRoute: typeof AppGestionPerfilRoute
   AppGestionRolesRoute: typeof AppGestionRolesRoute
@@ -1633,7 +1613,6 @@ interface AppGestionRouteRouteChildren {
 
 const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionAuditoriaRouteRoute: AppGestionAuditoriaRouteRouteWithChildren,
-  AppGestionDocumentosRoute: AppGestionDocumentosRoute,
   AppGestionIndicadoresRoute: AppGestionIndicadoresRoute,
   AppGestionPerfilRoute: AppGestionPerfilRoute,
   AppGestionRolesRoute: AppGestionRolesRoute,

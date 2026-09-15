@@ -76,15 +76,18 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavBreadcrumbs items={[{ label: "Solicitudes" }]} />
+        <OutletNavBreadcrumbs items={[
+          { label: "Solicitudes", to: "/gestion/solicitudes" },
+          { label: "Presentación asistida" },
+        ]} />
         <OutletNavRightButton>
           <Button
             size="sm"
             variant="outline"
-            render={<Link to="/gestion/documentos" search={{ solicitudId: "" }} />}
+            render={<Link to="/gestion/solicitudes" search={{ page: 1 }} />}
           >
             <IconFileCheck />
-            Revisar documentos
+            Ver solicitudes
           </Button>
         </OutletNavRightButton>
       </OutletNavSticky>
@@ -98,14 +101,6 @@ function RouteComponent() {
                 Registrá una presentación asistida para una persona que ya existe en el sistema.
               </p>
             </header>
-
-            <Alert>
-              <IconInfoCircle />
-              <AlertTitle>Alcance de la gestión actual</AlertTitle>
-              <AlertDescription>
-                Podés registrar solicitudes y revisar sus documentos. La bandeja general, la evaluación y la resolución todavía no están disponibles.
-              </AlertDescription>
-            </Alert>
 
             <AssistedApplicationForm currentUserId={user.id} />
           </main>
@@ -504,9 +499,11 @@ function ApplicationConfirmation({
       <CardFooter className="flex-col-reverse gap-3 sm:flex-row sm:justify-between">
         <Button type="button" variant="outline" onClick={onReset}>Registrar otra solicitud</Button>
         {application.id && (
-          <Button render={<Link to="/gestion/documentos" search={{ solicitudId: application.id }} />}>
+          <Button render={(
+            <Link to="/gestion/solicitudes/$solicitudId" params={{ solicitudId: application.id }} />
+          )}>
             <IconFileCheck />
-            Revisar documentación
+            Ver la solicitud
           </Button>
         )}
       </CardFooter>

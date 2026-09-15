@@ -13,6 +13,7 @@ import {
 export interface SidebarNavSubItem {
   title: string
   url: string
+  icon?: ComponentType<{ className?: string }>
 }
 
 export interface SidebarNavItem {
@@ -50,7 +51,8 @@ function SidebarNavMenu({ items, pathname }: { items: readonly SidebarNavItem[];
                       // TODO: drop the `as string` cast once this route exists as a real Route (see notes/routes.md).
                       render={<Link to={sub.url as string} />}
                     >
-                      {sub.title}
+                      {sub.icon && <sub.icon />}
+                      <span>{sub.title}</span>
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
                 ))}
