@@ -25,6 +25,14 @@ interface ApplicationRepository : JpaRepository<Application, UUID> {
     fun findByIdAndUserId(id: UUID, userId: Long): Application?
     @EntityGraph(attributePaths = ["programEdition.program"])
     fun findAllByUserId(userId: Long, pageable: Pageable): Page<Application>
+
+    // Administrative read side: the titular and the actor are part of the response, so they are fetched with the page.
+    @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "programEdition.program"])
+    override fun findAll(pageable: Pageable): Page<Application>
+
+    @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "programEdition.program"])
+    fun findDetailById(id: UUID): Application?
+
     fun findByUserIdAndIdempotencyKey(userId: Long, idempotencyKey: String): Application?
     fun existsByUserIdAndEnrollmentPeriodId(userId: Long, enrollmentPeriodId: UUID): Boolean
     fun existsByUserIdAndProgramEditionIdAndStatusNotIn(userId: Long, programEditionId: UUID, statuses: Collection<ApplicationStatus>): Boolean

@@ -1,6 +1,6 @@
 # Solicitudes de beneficios
 
-El backend implementa presentación propia y asistida, listado y detalle propios, catálogo documental por edición y documentos protegidos de solicitudes, mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan imágenes públicas de programas, evaluación general, visitas, transiciones del estado de la solicitud, asignaciones ni integración con Ciudadanos.
+El backend implementa presentación propia y asistida, listado y detalle propios, listado y detalle administrativos, catálogo documental por edición y documentos protegidos de solicitudes, mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan imágenes públicas de programas, evaluación general, visitas, transiciones del estado de la solicitud, asignaciones ni integración con Ciudadanos.
 
 ## Contrato HTTP
 
@@ -10,6 +10,8 @@ El backend implementa presentación propia y asistida, listado y detalle propios
 | `POST /api/admin/applications` | `applications:management:create` | Presentación asistida para otro usuario existente; `201` nueva, `200` reintento |
 | `GET /api/applications?page=0&size=20` | `applications:own:view` | Página de solicitudes propias, por número descendente |
 | `GET /api/applications/{id}` | `applications:own:view` | Detalle propio; una solicitud ajena devuelve `404`, igual que una inexistente |
+| `GET /api/admin/applications?page=0&size=20` | `applications:management:view` | Página de solicitudes de todos los titulares, por número descendente |
+| `GET /api/admin/applications/{id}` | `applications:management:view` | Detalle administrativo con la entidad completa |
 | `GET /api/applications/{applicationId}/documents` | `applications:own:documents:view` | Metadatos de entregas propias, sin bytes |
 | `PUT /api/applications/{applicationId}/documents/{requirementId}` | `applications:own:documents:manage` | Primera carga `201` o reemplazo `200`, mediante `multipart/form-data` |
 | `DELETE /api/applications/{applicationId}/documents/{applicationDocumentId}` | `applications:own:documents:manage` | Elimina la entrega y su archivo, `204` |
@@ -21,7 +23,7 @@ El backend implementa presentación propia y asistida, listado y detalle propios
 
 Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El actor autenticado debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. Como en el resto del modelo JWT, un cambio de permisos no revoca automáticamente tokens anteriores; se renuevan iniciando sesión o cambiando de rol.
 
-La consulta no recibe un identificador de usuario: siempre filtra por el solicitante autenticado. `page` empieza en cero y `size` admite valores entre 1 y 100.
+La consulta propia no recibe un identificador de usuario: siempre filtra por el solicitante autenticado. La consulta administrativa no filtra por titular ni por el administrativo que registró la solicitud. En ambas, `page` empieza en cero y `size` admite valores entre 1 y 100.
 
 El POST propio acepta únicamente este cuerpo; cualquier campo adicional se rechaza con `400`:
 
@@ -76,9 +78,17 @@ Idempotency-Replayed: false
 
 El listado utiliza `content`, `page`, `size`, `totalElements` y `totalPages`. El detalle y los elementos del listado tienen el mismo contrato que la respuesta del POST. No exponen el hash, la clave de idempotencia ni datos personales del solicitante.
 
-La respuesta asistida tiene el mismo cuerpo, con `userId` del titular y `registeredByUserId` del administrativo que registró originalmente la solicitud. Devuelve `Idempotency-Replayed`; no informa `Location`, ya que no se implementa una consulta administrativa de solicitudes. Registrar para otra persona no concede acceso a su detalle propio. El titular sí recibe la solicitud asistida en su listado y detalle propios.
+La respuesta asistida tiene el mismo cuerpo, con `userId` del titular y `registeredByUserId` del administrativo que registró originalmente la solicitud. Devuelve `Idempotency-Replayed` y no informa `Location`. Registrar para otra persona no concede acceso a su detalle propio: la consulta administrativa depende de su propio permiso. El titular sí recibe la solicitud asistida en su listado y detalle propios.
 
 El campo `status` todavía devuelve el estado interno: la correspondencia completa con los estados públicos simplificados está pendiente de definición, en particular para los cierres sin resultado explícito. No se modifican los estados almacenados ni sus reglas.
+
+## Consulta administrativa de solicitudes
+
+`GET /api/admin/applications` devuelve una página con las solicitudes de todos los titulares, sin filtros y ordenada por `applicationNumber` descendente, igual que el listado propio. Utiliza la misma envoltura `content`, `page`, `size`, `totalElements` y `totalPages`. Cada elemento agrega al contrato propio el nombre y el correo del titular tomados de `users`, el trabajador asignado y `resolvedAt`, y omite los documentos: `pendingDocuments` y `documentRequirements` se calculan solo en el detalle, para no multiplicar consultas por página.
+
+`GET /api/admin/applications/{id}` devuelve la entidad completa. Además de los campos del detalle propio incorpora `userName`, `userEmail`, `registeredByUserName`, `originTicketId`, `resolutionReason`, `assignedWorkerUserId`, `assignedWorkerName`, `resolvedAt`, `idempotencyKey` y `requestHash`. La clave y el hash se exponen únicamente en esta vista administrativa, nunca en el detalle propio. Una solicitud inexistente devuelve `404 APPLICATION_NOT_FOUND`; no existe un filtro de titular que convierta una solicitud ajena en inexistente, porque la vista es global por definición.
+
+Ninguna de las dos rutas devuelve archivos ni metadatos de entregas. Los documentos conservan sus rutas y sus permisos administrativos separados. Ambas son de solo lectura: no cambian estado, no asignan trabajadores y no registran auditoría.
 
 ## Catálogo y entregas documentales
 
@@ -156,7 +166,7 @@ Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza elim
 
 El init incluye `CIUDADANO` con `applications:own:create`, `applications:own:view`, `applications:own:documents:view` y `applications:own:documents:manage`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción anterior de superusuario técnico con todos los permisos.
 
-El init incorpora `applications:management:create`, `applications:management:documents:view` y `applications:management:documents:review` y los incluye en `ADMIN`. No los concede a `CIUDADANO` ni crea nuevos roles: se deben asignar explícitamente a los roles administrativos que correspondan mediante la gestión existente. Después de cambiar permisos, renovar el JWT para que los contenga.
+El init incorpora `applications:management:create`, `applications:management:view`, `applications:management:documents:view` y `applications:management:documents:review` y los incluye en `ADMIN`. No los concede a `CIUDADANO` ni crea nuevos roles: se deben asignar explícitamente a los roles administrativos que correspondan mediante la gestión existente. Después de cambiar permisos, renovar el JWT para que los contenga.
 
 Las cuentas de ejemplo `admin` y `viewer` también reciben `CIUDADANO` al ejecutar el init. En una base nueva, ambas deben seleccionar rol después del login. La gestión de roles del ABM conserva la asignación explícita existente; no se cambió para agregar roles automáticamente.
 

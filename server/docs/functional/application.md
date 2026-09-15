@@ -171,6 +171,14 @@ Al elegir una, consulta su número, estado, fechas, la edición y convocatoria a
 
 Este listado no muestra solicitudes de otras personas. No es una bandeja municipal de evaluación ni una búsqueda de todos los expedientes del sistema.
 
+## Consultar solicitudes desde el municipio
+
+El personal municipal con autorización específica de consulta administrativa accede a un listado aparte, que incluye las solicitudes de todas las personas, sin importar quién las registró. Se ordena igual que el listado ciudadano, por número descendente, y se recorre por páginas. Cada solicitud se identifica con el nombre y el correo de su titular.
+
+Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo de una resolución o el trabajador asignado. Muchos de esos campos permanecen vacíos mientras no existan las etapas de evaluación y asignación.
+
+Esta consulta es solo de lectura: no cambia estados, no asigna responsables y no devuelve archivos. Ver o descargar documentos sigue siendo un flujo aparte, con su propia autorización. Registrar una solicitud asistida tampoco alcanza para consultarlas: son autorizaciones distintas.
+
 ## Estados y transiciones
 
 ### Qué transición existe hoy

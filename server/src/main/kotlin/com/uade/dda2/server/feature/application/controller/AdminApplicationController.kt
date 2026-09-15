@@ -2,6 +2,8 @@ package com.uade.dda2.server.feature.application.controller
 
 import com.uade.dda2.server.error.ErrorResponse
 import com.uade.dda2.server.feature.application.dto.request.CreateAssistedApplicationRequest
+import com.uade.dda2.server.feature.application.dto.response.AdminApplicationListResponse
+import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.service.ApplicationService
 import io.swagger.v3.oas.annotations.Operation
@@ -12,17 +14,25 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/admin/applications", produces = ["application/json"])
-@Tag(name = "Solicitudes asistidas", description = "Registro administrativo de solicitudes para ciudadanos existentes.")
+@Validated
+@Tag(name = "Solicitudes asistidas", description = "Registro y consulta administrativa de solicitudes de cualquier titular.")
 class AdminApplicationController(private val service: ApplicationService) {
     @PostMapping
     @PreAuthorize("hasAuthority('applications:management:create')")
@@ -31,7 +41,8 @@ class AdminApplicationController(private val service: ApplicationService) {
         "de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. " +
         "Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. " +
         "Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. " +
-        "Registrar para otra persona no habilita a consultar sus solicitudes: no se agrega un detalle administrativo.")
+        "Registrar para otra persona no habilita por sí mismo a consultar sus solicitudes: la consulta administrativa " +
+        "exige applications:management:view.")
     @ApiResponse(responseCode = "201", description = "Solicitud registrada para el titular indicado.", headers = [
         Header(name = "Idempotency-Replayed", schema = Schema(type = "boolean", example = "false")),
     ])
@@ -55,4 +66,38 @@ class AdminApplicationController(private val service: ApplicationService) {
             .header("Idempotency-Replayed", result.replayed.toString())
             .body(result.application)
     }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('applications:management:view')")
+    @Operation(summary = "Listar solicitudes de cualquier titular", description =
+        "Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los " +
+        "titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. " +
+        "Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en " +
+        "GET /api/admin/applications/{id}.")
+    @ApiResponse(responseCode = "200", description = "Página de solicitudes.", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400", description = "Paginación fuera de rango.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "403", description = "Sin permiso en el rol activo o rol retirado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    fun list(
+        @Parameter(description = "Número de página, comenzando en cero.", example = "0")
+        @Min(value = 0, message = "La página no puede ser negativa.")
+        @RequestParam(defaultValue = "0") page: Int,
+
+        @Parameter(description = "Cantidad de elementos por página, entre 1 y 100.", example = "20")
+        @Min(value = 1, message = "El tamaño de página debe ser mayor a cero.")
+        @Max(value = 100, message = "El tamaño de página no puede superar 100 elementos.")
+        @RequestParam(defaultValue = "20") size: Int,
+    ): AdminApplicationListResponse = service.listAdmin(page, size)
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('applications:management:view')")
+    @Operation(summary = "Consultar una solicitud de cualquier titular", description =
+        "Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de " +
+        "origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. " +
+        "No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.")
+    @ApiResponse(responseCode = "200", description = "Detalle completo de la solicitud.", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "403", description = "Sin permiso en el rol activo o rol retirado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "404", description = "Solicitud inexistente.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    fun get(@PathVariable id: UUID): AdminApplicationResponse = service.getAdmin(id)
 }

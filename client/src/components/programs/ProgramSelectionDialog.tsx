@@ -1,9 +1,8 @@
-import { IconCheck, IconSearch, IconUsers } from "@tabler/icons-react"
+import { IconCheck, IconHeartHandshake, IconSearch } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 
 import { DataPagination } from "@/components/DataPagination"
-import { UserAvatar } from "@/components/UserAvatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -33,59 +32,61 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { findAllOptions } from "@/generated/@tanstack/react-query.gen"
-import type { UserManagementResponse } from "@/generated/types.gen"
+import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.gen"
+import type { AvailableProgramListItemResponse } from "@/generated/types.gen"
+import { formatApplicationDate } from "@/lib/application-flow"
+import { programImageSource } from "@/lib/program-images"
 
 const PAGE_SIZE = 8
+const FETCH_SIZE = 100
+const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
 
-type UserSelectionDialogProps = {
+type ProgramSelectionDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSelect: (user: UserManagementResponse) => void
-  selectedUserId?: number
-  excludeUserId?: number
+  onSelect: (program: AvailableProgramListItemResponse) => void
+  selectedProgramId?: string
   title?: string
   description?: string
 }
 
-export function UserSelectionDialog({
+export function ProgramSelectionDialog({
   open,
   onOpenChange,
   onSelect,
-  selectedUserId,
-  excludeUserId,
-  title = "Seleccionar usuario",
-  description = "Buscá por nombre, usuario o correo electrónico.",
-}: UserSelectionDialogProps) {
+  selectedProgramId,
+  title = "Seleccionar programa",
+  description = "Buscá por nombre u objetivo del programa.",
+}: ProgramSelectionDialogProps) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const query = useQuery({
-    ...findAllOptions(),
+    ...listAvailableProgramsOptions({ query: { page: 0, size: FETCH_SIZE } }),
     enabled: open,
   })
 
   const normalizedSearch = search.trim().toLocaleLowerCase("es-AR")
-  const users = (query.data ?? []).filter((user) => {
-    if (excludeUserId !== undefined && user.id === excludeUserId) return false
+  const programs = (query.data?.content ?? []).filter((program) => {
     if (!normalizedSearch) return true
 
-    return [user.name, user.username, user.email]
+    return [program.name, program.objective]
       .filter(Boolean)
       .some((value) =>
         value?.toLocaleLowerCase("es-AR").includes(normalizedSearch),
       )
   })
-  const totalItems = users.length
+  const totalItems = programs.length
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
-  const pageItems = users.slice(
+  const pageItems = programs.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   )
+  const truncated = (query.data?.totalElements ?? 0) > FETCH_SIZE
 
-  const selectUser = (user: UserManagementResponse) => {
-    if (user.id === undefined) return
-    onSelect(user)
+  const selectProgram = (program: AvailableProgramListItemResponse) => {
+    if (program.id === undefined) return
+    onSelect(program)
     onOpenChange(false)
   }
 
@@ -107,17 +108,17 @@ export function UserSelectionDialog({
               setSearch(event.target.value)
               setPage(1)
             }}
-            placeholder="Buscar usuario"
-            aria-label="Buscar usuario"
+            placeholder="Buscar programa"
+            aria-label="Buscar programa"
             autoFocus
           />
         </InputGroup>
 
         {query.isPending ? (
-          <p className="text-sm text-muted-foreground">Cargando usuarios…</p>
+          <p className="text-sm text-muted-foreground">Cargando programas…</p>
         ) : query.isError ? (
           <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
-            <p>No se pudieron cargar los usuarios.</p>
+            <p>No se pudieron cargar los programas.</p>
             <Button size="sm" variant="outline" onClick={() => query.refetch()}>
               Reintentar
             </Button>
@@ -126,13 +127,13 @@ export function UserSelectionDialog({
           <Empty className="min-h-56 border">
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <IconUsers />
+                <IconHeartHandshake />
               </EmptyMedia>
               <EmptyTitle>Sin resultados</EmptyTitle>
               <EmptyDescription>
                 {search
-                  ? "No encontramos usuarios que coincidan con la búsqueda."
-                  : "No hay usuarios disponibles para seleccionar."}
+                  ? "No encontramos programas que coincidan con la búsqueda."
+                  : "No hay programas disponibles para seleccionar."}
               </EmptyDescription>
             </EmptyHeader>
           </Empty>
@@ -141,48 +142,55 @@ export function UserSelectionDialog({
             <Table className="min-w-2xl">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Usuario</TableHead>
-                  <TableHead>Correo electrónico</TableHead>
-                  <TableHead>Estado</TableHead>
+                  <TableHead>Programa</TableHead>
+                  <TableHead>Ediciones</TableHead>
+                  <TableHead>Próxima edición</TableHead>
                   <TableHead className="w-28">
                     <span className="sr-only">Seleccionar</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {pageItems.map((user) => {
-                  const selected = user.id === selectedUserId
+                {pageItems.map((program) => {
+                  const selected = program.id === selectedProgramId
+                  const editions = program.availableEditions ?? 0
 
                   return (
-                    <TableRow key={user.id ?? user.username}>
+                    <TableRow key={program.id ?? program.name}>
                       <TableCell>
                         <div className="flex min-w-48 items-center gap-2.5">
-                          <UserAvatar user={user} size="sm" />
+                          <img
+                            src={programImageSource(program.imageUrl) ?? PROGRAM_IMAGE}
+                            alt=""
+                            className="size-8 shrink-0 rounded-md object-cover"
+                          />
                           <div className="min-w-0">
                             <p className="truncate font-medium">
-                              {user.name || "Sin nombre"}
+                              {program.name || "Programa sin nombre"}
                             </p>
                             <p className="truncate text-xs text-muted-foreground">
-                              {user.username ? `@${user.username}` : "Sin usuario"}
+                              {program.objective || "Sin objetivo declarado"}
                             </p>
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {user.email || "—"}
-                      </TableCell>
                       <TableCell>
-                        <Badge variant={user.active ? "outline" : "secondary"}>
-                          {user.active ? "Activo" : "Inactivo"}
+                        <Badge variant={editions > 0 ? "outline" : "secondary"}>
+                          {editions === 1 ? "1 edición" : `${editions} ediciones`}
                         </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {program.nextEditionStartDate
+                          ? `${formatApplicationDate(program.nextEditionStartDate)} al ${formatApplicationDate(program.nextEditionEndDate)}`
+                          : "—"}
                       </TableCell>
                       <TableCell className="text-right">
                         <Button
                           type="button"
                           size="sm"
                           variant={selected ? "secondary" : "outline"}
-                          disabled={user.id === undefined}
-                          onClick={() => selectUser(user)}
+                          disabled={program.id === undefined}
+                          onClick={() => selectProgram(program)}
                         >
                           {selected && <IconCheck />}
                           {selected ? "Seleccionado" : "Seleccionar"}
@@ -194,6 +202,12 @@ export function UserSelectionDialog({
               </TableBody>
             </Table>
           </div>
+        )}
+
+        {truncated && (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            Se muestran los primeros {FETCH_SIZE} programas disponibles.
+          </p>
         )}
 
         {!query.isPending && !query.isError && totalItems > 0 && (

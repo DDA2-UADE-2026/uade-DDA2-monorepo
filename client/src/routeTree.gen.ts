@@ -49,6 +49,7 @@ import { Route as AppGestionIntervencionesPlanIdRouteImport } from "./routes/_ap
 import { Route as AppGestionProgramasIndexRouteImport } from "./routes/_app/gestion/programas/index"
 import { Route as AppGestionProgramasProgramaIdRouteRouteImport } from "./routes/_app/gestion/programas/$programaId/route"
 import { Route as AppGestionSolicitudesIndexRouteImport } from "./routes/_app/gestion/solicitudes/index"
+import { Route as AppGestionSolicitudesSolicitudIdRouteImport } from "./routes/_app/gestion/solicitudes/$solicitudId"
 import { Route as AppGestionSolicitudesAsistidaRouteImport } from "./routes/_app/gestion/solicitudes/asistida"
 import { Route as AppGestionTurnosIndexRouteImport } from "./routes/_app/gestion/turnos/index"
 import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestion/turnos/agenda"
@@ -297,6 +298,12 @@ const AppGestionSolicitudesIndexRoute =
     path: "/solicitudes/",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
+const AppGestionSolicitudesSolicitudIdRoute =
+  AppGestionSolicitudesSolicitudIdRouteImport.update({
+    id: "/solicitudes/$solicitudId",
+    path: "/solicitudes/$solicitudId",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
 const AppGestionSolicitudesAsistidaRoute =
   AppGestionSolicitudesAsistidaRouteImport.update({
     id: "/solicitudes/asistida",
@@ -533,6 +540,7 @@ export interface FileRoutesByFullPath {
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
+  "/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
   "/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
@@ -600,6 +608,7 @@ export interface FileRoutesByTo {
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
+  "/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
   "/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
@@ -676,6 +685,7 @@ export interface FileRoutesById {
   "/_app/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/_app/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/_app/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
+  "/_app/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
   "/_app/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
@@ -751,6 +761,7 @@ export interface FileRouteTypes {
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
+    | "/gestion/solicitudes/$solicitudId"
     | "/gestion/solicitudes/asistida"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
@@ -818,6 +829,7 @@ export interface FileRouteTypes {
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
+    | "/gestion/solicitudes/$solicitudId"
     | "/gestion/solicitudes/asistida"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
@@ -893,6 +905,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/debug/documentacion-local"
     | "/_app/gestion/debug/estado-red"
     | "/_app/gestion/intervenciones/$planId"
+    | "/_app/gestion/solicitudes/$solicitudId"
     | "/_app/gestion/solicitudes/asistida"
     | "/_app/gestion/turnos/agenda"
     | "/_app/gestion/turnos/nuevo"
@@ -1226,6 +1239,13 @@ declare module "@tanstack/react-router" {
       path: "/solicitudes"
       fullPath: "/gestion/solicitudes/"
       preLoaderRoute: typeof AppGestionSolicitudesIndexRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/solicitudes/$solicitudId": {
+      id: "/_app/gestion/solicitudes/$solicitudId"
+      path: "/solicitudes/$solicitudId"
+      fullPath: "/gestion/solicitudes/$solicitudId"
+      preLoaderRoute: typeof AppGestionSolicitudesSolicitudIdRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/solicitudes/asistida": {
@@ -1593,6 +1613,7 @@ interface AppGestionRouteRouteChildren {
   AppGestionDebugDocumentacionLocalRoute: typeof AppGestionDebugDocumentacionLocalRoute
   AppGestionDebugEstadoRedRoute: typeof AppGestionDebugEstadoRedRoute
   AppGestionIntervencionesPlanIdRoute: typeof AppGestionIntervencionesPlanIdRoute
+  AppGestionSolicitudesSolicitudIdRoute: typeof AppGestionSolicitudesSolicitudIdRoute
   AppGestionSolicitudesAsistidaRoute: typeof AppGestionSolicitudesAsistidaRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
   AppGestionTurnosNuevoRoute: typeof AppGestionTurnosNuevoRoute
@@ -1631,6 +1652,7 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
     AppGestionDebugDocumentacionLocalRoute,
   AppGestionDebugEstadoRedRoute: AppGestionDebugEstadoRedRoute,
   AppGestionIntervencionesPlanIdRoute: AppGestionIntervencionesPlanIdRoute,
+  AppGestionSolicitudesSolicitudIdRoute: AppGestionSolicitudesSolicitudIdRoute,
   AppGestionSolicitudesAsistidaRoute: AppGestionSolicitudesAsistidaRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,
   AppGestionTurnosNuevoRoute: AppGestionTurnosNuevoRoute,
