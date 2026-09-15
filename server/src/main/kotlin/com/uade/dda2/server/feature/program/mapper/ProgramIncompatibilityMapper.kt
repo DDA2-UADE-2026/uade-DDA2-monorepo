@@ -32,6 +32,12 @@ fun toProgramIncompatibility(
     )
 }
 
+fun ProgramIncompatibility.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "programId" to program.id,
+        "incompatibleWithProgramId" to incompatibleWithProgram.id,
+    )
+
 fun ProgramIncompatibility.toResponse(): ProgramIncompatibilityResponse =
     ProgramIncompatibilityResponse(
         programId = requireNotNull(program.id),

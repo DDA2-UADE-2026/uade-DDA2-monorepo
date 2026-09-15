@@ -18,3 +18,14 @@ fun ProgramImage.toResponse(): ProgramImageResponse =
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
+
+fun ProgramImage.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "programId" to program.id,
+        "originalName" to originalName,
+        "contentType" to contentType,
+        "sizeBytes" to sizeBytes,
+        "createdAt" to createdAt.toString(),
+        "updatedAt" to updatedAt.toString(),
+    )

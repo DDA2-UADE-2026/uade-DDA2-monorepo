@@ -32,3 +32,12 @@ fun ProgramRequirement.toResponse(): ProgramRequirementResponse =
         value = value,
         description = description,
     )
+
+fun ProgramRequirement.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "programEditionId" to programEdition.id,
+        "type" to type.name,
+        "value" to value,
+        "description" to description,
+    )

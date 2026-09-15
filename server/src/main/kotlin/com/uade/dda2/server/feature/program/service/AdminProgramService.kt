@@ -1,6 +1,9 @@
 package com.uade.dda2.server.feature.program.service
 
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.feature.log.entity.LogAction
+import com.uade.dda2.server.feature.log.entity.LogEntityType
+import com.uade.dda2.server.feature.log.service.LogService
 import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramRequest
 import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramRequest
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramListResponse
@@ -9,6 +12,7 @@ import com.uade.dda2.server.feature.program.dto.admin.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
 import com.uade.dda2.server.feature.program.error.ProgramErrors
+import com.uade.dda2.server.feature.program.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.program.mapper.toEntity
 import com.uade.dda2.server.feature.program.mapper.toListResponse
 import com.uade.dda2.server.feature.program.mapper.toOptionResponse
@@ -22,6 +26,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.json.JsonMapper
 import java.util.*
 
 @Service
@@ -31,6 +36,8 @@ class AdminProgramService(
     private val programImageRepository: ProgramImageRepository,
     private val adminProgramValidator: AdminProgramValidator,
     private val currentUserService: CurrentUserService,
+    private val logService: LogService,
+    private val jsonMapper: JsonMapper,
 ) {
 
     @Transactional(readOnly = true)
@@ -81,13 +88,21 @@ class AdminProgramService(
             createdBy = currentUserService.userReference(),
         )
 
-        return try {
-            programRepository
-                .saveAndFlush(program)
-                .toResponse(imageId = null)
+        val saved = try {
+            programRepository.saveAndFlush(program)
         } catch (_: DataIntegrityViolationException) {
             throw ProgramErrors.nameAlreadyExists(program.name)
         }
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.CREATE,
+            entityType = LogEntityType.PROGRAM,
+            entityId = requireNotNull(saved.id).toString(),
+            newValues = json(saved.toAuditSnapshot()),
+        )
+
+        return saved.toResponse(imageId = null)
     }
 
     @Transactional
@@ -102,15 +117,25 @@ class AdminProgramService(
             request = request,
         )
 
+        val oldValues = json(program.toAuditSnapshot())
         program.updateFrom(request)
 
-        return try {
-            programRepository
-                .saveAndFlush(program)
-                .toResponse(programImageRepository.findImageIdByProgramId(id))
+        val saved = try {
+            programRepository.saveAndFlush(program)
         } catch (_: DataIntegrityViolationException) {
             throw ProgramErrors.nameAlreadyExists(program.name)
         }
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.PROGRAM,
+            entityId = id.toString(),
+            oldValues = oldValues,
+            newValues = json(saved.toAuditSnapshot()),
+        )
+
+        return saved.toResponse(programImageRepository.findImageIdByProgramId(id))
     }
 
     @Transactional
@@ -119,8 +144,18 @@ class AdminProgramService(
 
         adminProgramValidator.validateDelete(program)
 
+        val oldValues = json(program.toAuditSnapshot())
+
         programImageRepository.deleteByProgramId(id)
         programRepository.delete(program)
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.DELETE,
+            entityType = LogEntityType.PROGRAM,
+            entityId = id.toString(),
+            oldValues = oldValues,
+        )
     }
 
     private fun findProgram(id: UUID): Program =
@@ -138,4 +173,7 @@ class AdminProgramService(
                 .findReferencesByProgramIdIn(programIds)
                 .associate { it.programId to it.id }
         }
+
+    private fun json(value: Any): String =
+        requireNotNull(jsonMapper.writeValueAsString(value))
 }

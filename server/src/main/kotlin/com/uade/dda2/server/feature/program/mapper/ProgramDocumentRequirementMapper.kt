@@ -32,6 +32,16 @@ fun ProgramDocumentRequirement.toDocumentRequirementResponse() = ProgramDocument
     required = required,
 )
 
+fun ProgramDocumentRequirement.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "programEditionId" to programEdition.id,
+        "code" to code,
+        "name" to name,
+        "description" to description,
+        "required" to required,
+    )
+
 fun ProgramDocumentRequirement.toAvailableDocumentRequirementResponse() =
     AvailableProgramDocumentRequirementResponse(
         id = requireNotNull(id),
