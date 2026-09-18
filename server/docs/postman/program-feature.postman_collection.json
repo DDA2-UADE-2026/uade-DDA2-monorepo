@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, solicitudes propias y asistidas, catálogo documental y documentos protegidos de solicitudes. Los archivos son privados y se envían como multipart; configurar applicationDocumentFile con un PDF, JPEG o PNG de hasta 10 MB. Ciudadanos sigue preparado solo en el modelo y no contiene seeds ni migraciones.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental y documentos protegidos de solicitudes. Los archivos son privados y se envían como multipart; configurar applicationDocumentFile con un PDF, JPEG o PNG de hasta 10 MB. Ciudadanos sigue preparado solo en el modelo y no contiene seeds ni migraciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -967,6 +967,275 @@
               ]
             },
             "description": "Elimina el programa auxiliar después de borrar la incompatibilidad. Devuelve 409 mientras tenga ediciones o incompatibilidades asociadas."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Actividades comunitarias",
+      "description": "Recorrido administrativo de HU-21. Ejecutar en orden con un accessToken cuyo rol activo sea ADMIN y posea los permisos activities:management:*.",
+      "item": [
+        {
+          "name": "Crear actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('La actividad se crea en borrador', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql('DRAFT');",
+                  "    pm.collectionVariables.set('activityId', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Taller comunitario de RCP\",\n  \"description\": \"Capacitación abierta sobre técnicas básicas de reanimación.\",\n  \"location\": \"Centro Municipal Norte\",\n  \"startDate\": \"2026-10-10\",\n  \"endDate\": \"2026-10-10\",\n  \"capacity\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities"
+              ]
+            },
+            "description": "Crea una actividad en estado DRAFT y guarda su UUID en activityId para las solicitudes siguientes."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar actividades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Devuelve una página de actividades', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.content).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Devuelve la actividad creada', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('activityId'));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar actividad en borrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Actualiza la actividad y conserva DRAFT', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.name).to.eql('Taller comunitario de primeros auxilios');",
+                  "    pm.expect(body.status).to.eql('DRAFT');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Taller comunitario de primeros auxilios\",\n  \"description\": \"Capacitación práctica de RCP y primeros auxilios básicos.\",\n  \"location\": \"Centro Municipal Sur\",\n  \"startDate\": \"2026-10-10\",\n  \"endDate\": \"2026-10-11\",\n  \"capacity\": 40\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}"
+              ]
+            },
+            "description": "La actualización debe ejecutarse antes de publicar, porque solo las actividades DRAFT son editables."
+          },
+          "response": []
+        },
+        {
+          "name": "Publicar actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Publica la actividad', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql('OPEN');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}",
+                "publish"
+              ]
+            },
+            "description": "Realiza la transición DRAFT a OPEN. No requiere body."
+          },
+          "response": []
+        },
+        {
+          "name": "Cerrar actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Cierra la actividad', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql('CLOSED');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}/close",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}",
+                "close"
+              ]
+            },
+            "description": "Realiza la transición OPEN a CLOSED. No requiere body y el cierre es terminal."
           },
           "response": []
         }
@@ -4392,6 +4661,11 @@
     {
       "key": "programId",
       "value": ""
+    },
+    {
+      "key": "activityId",
+      "value": "",
+      "type": "string"
     },
     {
       "key": "accessToken",

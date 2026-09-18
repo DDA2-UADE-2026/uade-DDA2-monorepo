@@ -45,6 +45,12 @@ Enum enrollment_period_status {
   CLOSED
 }
 
+Enum activity_status {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
 Enum program_edition_status {
   DRAFT
   ACTIVE
@@ -142,6 +148,27 @@ Table logs {
     user_id [name: 'ix_logs_user_id']
     created_at [name: 'ix_logs_created_at']
   }
+}
+
+Table activity {
+  id uuid [pk]
+  name varchar(200) [not null]
+  description text [not null]
+  location varchar(300) [not null]
+  start_date date [not null]
+  end_date date [not null]
+  capacity integer [not null]
+  status activity_status [not null, note: 'Persistido como varchar(20). Valor inicial asignado por la aplicación: DRAFT.']
+  created_by bigint [not null, ref: > users.id]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  checks {
+    `capacity > 0` [name: 'ck_activity_positive_capacity']
+    `start_date <= end_date` [name: 'ck_activity_date_range']
+  }
+
+  Note: 'Una única entidad representa actividades, talleres, jornadas y campañas comunitarias. DRAFT puede editarse y publicarse; OPEN puede cerrarse; CLOSED es terminal.'
 }
 
 Table program {
