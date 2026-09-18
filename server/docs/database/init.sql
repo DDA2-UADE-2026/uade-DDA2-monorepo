@@ -21,6 +21,14 @@ VALUES ('permissions:view'),
        ('users:edit'),
        ('users:delete'),
        ('logs:view'),
+       ('activities:management:view'),
+       ('activities:management:create'),
+       ('activities:management:edit'),
+       ('activities:management:change-status'),
+       ('activities:own:view'),
+       ('activities:own:enroll'),
+       ('activities:attendance:view'),
+       ('activities:attendance:manage'),
        ('programs:management:view'),
        ('programs:management:create'),
        ('programs:management:edit'),
@@ -41,7 +49,8 @@ ON CONFLICT (name) DO NOTHING;
 INSERT INTO roles (name)
 VALUES ('ADMIN'),
        ('VIEWER'),
-       ('CIUDADANO')
+       ('CIUDADANO'),
+       ('PROFESIONAL_CENTRO')
 ON CONFLICT (name) DO NOTHING;
 
 -- ADMIN conserva acceso a todos los permisos registrados, como en el original.
@@ -57,12 +66,26 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
 JOIN permissions p ON p.name IN (
+    'activities:own:view',
+    'activities:own:enroll',
     'applications:own:create',
     'applications:own:view',
     'applications:own:documents:view',
     'applications:own:documents:manage'
 )
 WHERE r.name = 'CIUDADANO'
+ON CONFLICT DO NOTHING;
+
+-- El profesional accede a todas las actividades publicadas o cerradas.
+-- La asignación a centros o actividades queda fuera del alcance actual.
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r
+JOIN permissions p ON p.name IN (
+    'activities:attendance:view',
+    'activities:attendance:manage'
+)
+WHERE r.name = 'PROFESIONAL_CENTRO'
 ON CONFLICT DO NOTHING;
 
 -- VIEWER queda sin permisos administrativos en una base nueva.
@@ -121,6 +144,14 @@ CROSS JOIN roles r
 WHERE u.username IN ('admin', 'viewer') AND r.name = 'CIUDADANO'
 ON CONFLICT DO NOTHING;
 
+-- La cuenta viewer puede seleccionar el rol profesional para probar HU-23.
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+CROSS JOIN roles r
+WHERE u.username = 'viewer' AND r.name = 'PROFESIONAL_CENTRO'
+ON CONFLICT DO NOTHING;
+
 -- No se insertan citizen_snapshot ni identidades externas: son opcionales
 -- y la integración con Ciudadanos todavía no está implementada.
 -- ADMIN se conserva como superusuario técnico (incluye los permisos own).
@@ -128,6 +159,6 @@ ON CONFLICT DO NOTHING;
 -- actuar como solicitante, el usuario debe seleccionar su rol CIUDADANO.
 -- No existe una columna active_role ni una tabla de sesiones: el rol activo
 -- se incluye en el JWT.
--- Estas cuentas tienen dos roles en una base nueva: el login requiere selección.
+-- Estas cuentas tienen múltiples roles en una base nueva: el login requiere selección.
 
 COMMIT;

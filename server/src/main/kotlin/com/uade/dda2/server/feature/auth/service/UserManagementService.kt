@@ -11,6 +11,8 @@ import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
+import com.uade.dda2.server.feature.activity.repository.ActivityRepository
+import com.uade.dda2.server.feature.activity.repository.ActivityEnrollmentRepository
 import com.uade.dda2.server.feature.document.repository.DocumentRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
@@ -36,6 +38,8 @@ class UserManagementService(
     private val jsonMapper: JsonMapper,
     private val programRepository: ProgramRepository,
     private val programEditionRepository: ProgramEditionRepository,
+    private val activityRepository: ActivityRepository,
+    private val activityEnrollmentRepository: ActivityEnrollmentRepository,
     private val applicationRepository: ApplicationRepository,
     private val applicationDocumentRepository: ApplicationDocumentRepository,
     private val documentRepository: DocumentRepository,
@@ -142,6 +146,16 @@ class UserManagementService(
             throw ConflictException(
                 code = "USER_HAS_PROGRAM_REFERENCES",
                 message = "The user cannot be deleted because it created programs or program editions.",
+            )
+        }
+
+        if (
+            activityRepository.existsByCreatedById(id) ||
+            activityEnrollmentRepository.existsByCitizenIdOrAttendanceRecordedById(id, id)
+        ) {
+            throw ConflictException(
+                code = "USER_HAS_ACTIVITY_REFERENCES",
+                message = "No se puede eliminar un usuario vinculado a actividades comunitarias o sus inscripciones.",
             )
         }
 

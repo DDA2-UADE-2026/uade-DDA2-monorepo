@@ -45,6 +45,17 @@ Enum enrollment_period_status {
   CLOSED
 }
 
+Enum activity_status {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+Enum activity_attendance_status {
+  PRESENT
+  ABSENT
+}
+
 Enum program_edition_status {
   DRAFT
   ACTIVE
@@ -142,6 +153,49 @@ Table logs {
     user_id [name: 'ix_logs_user_id']
     created_at [name: 'ix_logs_created_at']
   }
+}
+
+Table activity {
+  id uuid [pk]
+  name varchar(200) [not null]
+  description text [not null]
+  location varchar(300) [not null]
+  start_date date [not null]
+  end_date date [not null]
+  capacity integer [not null]
+  status activity_status [not null, note: 'Persistido como varchar(20). Valor inicial asignado por la aplicación: DRAFT.']
+  created_by bigint [not null, ref: > users.id]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  checks {
+    `capacity > 0` [name: 'ck_activity_positive_capacity']
+    `start_date <= end_date` [name: 'ck_activity_date_range']
+  }
+
+  Note: 'Una única entidad representa actividades, talleres, jornadas y campañas comunitarias. DRAFT puede editarse y publicarse; OPEN puede cerrarse; CLOSED es terminal.'
+}
+
+Table activity_enrollment {
+  id uuid [pk]
+  activity_id uuid [not null, ref: > activity.id]
+  citizen_id bigint [not null, ref: > users.id]
+  enrolled_at timestamptz [not null]
+  attendance activity_attendance_status [note: 'Nulo hasta que un profesional registre PRESENT o ABSENT.']
+  attendance_recorded_by bigint [ref: > users.id]
+  attendance_recorded_at timestamptz
+
+  indexes {
+    (activity_id, citizen_id) [unique, name: 'uk_activity_enrollment_activity_citizen']
+    activity_id [name: 'ix_activity_enrollment_activity']
+    citizen_id [name: 'ix_activity_enrollment_citizen']
+  }
+
+  checks {
+    `(attendance is null and attendance_recorded_by is null and attendance_recorded_at is null) or (attendance is not null and attendance_recorded_by is not null and attendance_recorded_at is not null)` [name: 'ck_activity_enrollment_attendance_audit']
+  }
+
+  Note: 'Inscripción confirmada de un ciudadano. El bloqueo de activity serializa la validación de cupo. La asistencia solo se registra para actividades OPEN o CLOSED.'
 }
 
 Table program {

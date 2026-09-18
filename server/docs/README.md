@@ -11,16 +11,17 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | [Program — Programas y ediciones](functional/program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
 | [EnrollmentPeriod — Convocatorias](functional/enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
 | [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cuándo puede volver a solicitar. |
+| [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
 
 ## Organización de `/docs`
 
 | Carpeta | Contenido |
 | --- | --- |
-| [`functional/`](functional/) | Guías de negocio y recorridos de programas, convocatorias, solicitudes y documentos. |
-| [`technical/`](technical/) | Contratos, seguridad, decisiones técnicas y verificación del backend. |
-| [`database/`](database/) | Modelo DBML y datos iniciales para recrear el entorno de pruebas. |
-| [`postman/`](postman/) | Colección de Postman del backend. |
+| `functional/` | Guías de negocio y recorridos de programas, convocatorias, solicitudes y documentos. |
+| `technical/` | Contratos, seguridad, decisiones técnicas y verificación del backend. |
+| `database/` | Modelo DBML y datos iniciales para recrear el entorno de pruebas. |
+| `postman/` | Colección de Postman del backend. |
 
 Recursos principales:
 

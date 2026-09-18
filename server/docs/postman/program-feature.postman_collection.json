@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, solicitudes propias y asistidas, catálogo documental y documentos protegidos de solicitudes. Los archivos son privados y se envían como multipart; configurar applicationDocumentFile con un PDF, JPEG o PNG de hasta 10 MB. Ciudadanos sigue preparado solo en el modelo y no contiene seeds ni migraciones.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental y documentos protegidos de solicitudes. Los archivos son privados y se envían como multipart; configurar applicationDocumentFile con un PDF, JPEG o PNG de hasta 10 MB. Ciudadanos sigue preparado solo en el modelo y no contiene seeds ni migraciones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -184,6 +184,9 @@
                   "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
                   "});",
                   "pm.collectionVariables.set('accessToken', response.token);",
+                  "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
+                  "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
+                  "if (response.user.activeRole === 'PROFESIONAL_CENTRO') pm.collectionVariables.set('professionalAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -362,6 +365,9 @@
                   "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
                   "});",
                   "pm.collectionVariables.set('accessToken', response.token);",
+                  "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
+                  "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
+                  "if (response.user.activeRole === 'PROFESIONAL_CENTRO') pm.collectionVariables.set('professionalAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -512,6 +518,9 @@
                   "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
                   "});",
                   "pm.collectionVariables.set('accessToken', response.token);",
+                  "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
+                  "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
+                  "if (response.user.activeRole === 'PROFESIONAL_CENTRO') pm.collectionVariables.set('professionalAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -968,6 +977,601 @@
             },
             "description": "Elimina el programa auxiliar después de borrar la incompatibilidad. Devuelve 409 mientras tenga ediciones o incompatibilidades asociadas."
           },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Actividades comunitarias",
+      "description": "Recorrido de HU-21 y HU-22. Autenticarse una vez como ADMIN y otra como CIUDADANO: los scripts guardan ambos JWT automáticamente para ejecutar esta carpeta en orden.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{adminAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Crear actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('La actividad se crea en borrador', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql('DRAFT');",
+                  "    pm.collectionVariables.set('activityId', body.id);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Taller comunitario de RCP\",\n  \"description\": \"Capacitación abierta sobre técnicas básicas de reanimación.\",\n  \"location\": \"Centro Municipal Norte\",\n  \"startDate\": \"2026-10-10\",\n  \"endDate\": \"2026-10-10\",\n  \"capacity\": 30\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities"
+              ]
+            },
+            "description": "Crea una actividad en estado DRAFT y guarda su UUID en activityId para las solicitudes siguientes."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar actividades",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Devuelve una página de actividades', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.content).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Devuelve la actividad creada', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('activityId'));",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar actividad en borrador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Actualiza la actividad y conserva DRAFT', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.name).to.eql('Taller comunitario de primeros auxilios');",
+                  "    pm.expect(body.status).to.eql('DRAFT');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Taller comunitario de primeros auxilios\",\n  \"description\": \"Capacitación práctica de RCP y primeros auxilios básicos.\",\n  \"location\": \"Centro Municipal Sur\",\n  \"startDate\": \"2026-10-10\",\n  \"endDate\": \"2026-10-11\",\n  \"capacity\": 40\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}"
+              ]
+            },
+            "description": "La actualización debe ejecutarse antes de publicar, porque solo las actividades DRAFT son editables."
+          },
+          "response": []
+        },
+        {
+          "name": "Publicar actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Publica la actividad', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql('OPEN');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}",
+                "publish"
+              ]
+            },
+            "description": "Realiza la transición DRAFT a OPEN. No requiere body."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar actividades abiertas como ciudadano",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('citizenAccessToken')) {",
+                  "    console.warn('Configurar citizenAccessToken con un JWT cuyo rol activo sea CIUDADANO.');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Devuelve actividades abiertas', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.content).to.be.an('array');",
+                  "    pm.expect(body.content.some(item => item.id === pm.collectionVariables.get('activityId'))).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{citizenAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Lista únicamente actividades OPEN e informa cupos ocupados y disponibles."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener actividad abierta como ciudadano",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities/{{activityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities", "{{activityId}}"]
+            },
+            "description": "Consulta el detalle y los cupos de una actividad OPEN. Requiere activities:own:view."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Devuelve la actividad abierta', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('activityId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Inscribirse en la actividad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities/{{activityId}}/enrollments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities", "{{activityId}}", "enrollments"]
+            },
+            "description": "No requiere body: el ciudadano se obtiene del JWT. Guarda el identificador en activityEnrollmentId."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Confirma la inscripción', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.confirmation).to.eql('CONFIRMED');",
+                  "    pm.collectionVariables.set('activityEnrollmentId', body.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Rechazar inscripción duplicada",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities/{{activityId}}/enrollments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities", "{{activityId}}", "enrollments"]
+            },
+            "description": "Repite la inscripción con el mismo ciudadano y debe obtener ACTIVITY_ALREADY_ENROLLED."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Rechaza el duplicado', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "    pm.expect(pm.response.json().code).to.eql('ACTIVITY_ALREADY_ENROLLED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Cerrar actividad",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Cierra la actividad', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().status).to.eql('CLOSED');",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/activities/{{activityId}}/close",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "activities",
+                "{{activityId}}",
+                "close"
+              ]
+            },
+            "description": "Realiza la transición OPEN a CLOSED. No requiere body y el cierre es terminal."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar actividades como profesional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Lista actividades OPEN y CLOSED disponibles para registrar asistencia."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Devuelve actividades para asistencia', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().content).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Listar inscriptos como profesional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities/{{activityId}}/enrollments?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities", "{{activityId}}", "enrollments"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Muestra las personas inscriptas y su asistencia actual."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Incluye la inscripción ciudadana', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const enrollment = pm.response.json().content.find(item => item.id === pm.collectionVariables.get('activityEnrollmentId'));",
+                  "    pm.expect(enrollment).to.not.equal(undefined);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Marcar asistencia presente",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attendance\": \"PRESENT\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities/{{activityId}}/enrollments/{{activityEnrollmentId}}/attendance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities", "{{activityId}}", "enrollments", "{{activityEnrollmentId}}", "attendance"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Guarda presente y el profesional', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.attendance).to.eql('PRESENT');",
+                  "    pm.expect(body.attendanceRecordedBy).to.not.equal(null);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Corregir asistencia a ausente",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attendance\": \"ABSENT\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities/{{activityId}}/enrollments/{{activityEnrollmentId}}/attendance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities", "{{activityId}}", "enrollments", "{{activityEnrollmentId}}", "attendance"]
+            },
+            "description": "Demuestra que una marca puede corregirse y el cambio queda auditado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Guarda ausente', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().attendance).to.eql('ABSENT');",
+                  "});"
+                ]
+              }
+            }
+          ],
           "response": []
         }
       ]
@@ -4392,6 +4996,31 @@
     {
       "key": "programId",
       "value": ""
+    },
+    {
+      "key": "activityId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "citizenAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "professionalAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "activityEnrollmentId",
+      "value": "",
+      "type": "string"
     },
     {
       "key": "accessToken",
