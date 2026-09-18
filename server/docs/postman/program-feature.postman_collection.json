@@ -184,6 +184,8 @@
                   "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
                   "});",
                   "pm.collectionVariables.set('accessToken', response.token);",
+                  "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
+                  "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -362,6 +364,8 @@
                   "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
                   "});",
                   "pm.collectionVariables.set('accessToken', response.token);",
+                  "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
+                  "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -512,6 +516,8 @@
                   "    pm.expect(Array.isArray(response.user.permissions)).to.equal(true);",
                   "});",
                   "pm.collectionVariables.set('accessToken', response.token);",
+                  "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
+                  "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -974,7 +980,17 @@
     },
     {
       "name": "Actividades comunitarias",
-      "description": "Recorrido administrativo de HU-21. Ejecutar en orden con un accessToken cuyo rol activo sea ADMIN y posea los permisos activities:management:*.",
+      "description": "Recorrido de HU-21 y HU-22. Autenticarse una vez como ADMIN y otra como CIUDADANO: los scripts guardan ambos JWT automáticamente para ejecutar esta carpeta en orden.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{adminAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
       "item": [
         {
           "name": "Crear actividad",
@@ -1199,6 +1215,166 @@
             },
             "description": "Realiza la transición DRAFT a OPEN. No requiere body."
           },
+          "response": []
+        },
+        {
+          "name": "Listar actividades abiertas como ciudadano",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get('citizenAccessToken')) {",
+                  "    console.warn('Configurar citizenAccessToken con un JWT cuyo rol activo sea CIUDADANO.');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Devuelve actividades abiertas', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.content).to.be.an('array');",
+                  "    pm.expect(body.content.some(item => item.id === pm.collectionVariables.get('activityId'))).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{citizenAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Lista únicamente actividades OPEN e informa cupos ocupados y disponibles."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener actividad abierta como ciudadano",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities/{{activityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities", "{{activityId}}"]
+            },
+            "description": "Consulta el detalle y los cupos de una actividad OPEN. Requiere activities:own:view."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Devuelve la actividad abierta', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().id).to.eql(pm.collectionVariables.get('activityId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Inscribirse en la actividad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities/{{activityId}}/enrollments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities", "{{activityId}}", "enrollments"]
+            },
+            "description": "No requiere body: el ciudadano se obtiene del JWT. Guarda el identificador en activityEnrollmentId."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Confirma la inscripción', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.confirmation).to.eql('CONFIRMED');",
+                  "    pm.collectionVariables.set('activityEnrollmentId', body.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Rechazar inscripción duplicada",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/activities/{{activityId}}/enrollments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities", "{{activityId}}", "enrollments"]
+            },
+            "description": "Repite la inscripción con el mismo ciudadano y debe obtener ACTIVITY_ALREADY_ENROLLED."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Rechaza el duplicado', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "    pm.expect(pm.response.json().code).to.eql('ACTIVITY_ALREADY_ENROLLED');",
+                  "});"
+                ]
+              }
+            }
+          ],
           "response": []
         },
         {
@@ -4664,6 +4840,21 @@
     },
     {
       "key": "activityId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "citizenAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "activityEnrollmentId",
       "value": "",
       "type": "string"
     },

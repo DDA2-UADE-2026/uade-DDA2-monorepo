@@ -171,6 +171,21 @@ Table activity {
   Note: 'Una única entidad representa actividades, talleres, jornadas y campañas comunitarias. DRAFT puede editarse y publicarse; OPEN puede cerrarse; CLOSED es terminal.'
 }
 
+Table activity_enrollment {
+  id uuid [pk]
+  activity_id uuid [not null, ref: > activity.id]
+  citizen_id bigint [not null, ref: > users.id]
+  enrolled_at timestamptz [not null]
+
+  indexes {
+    (activity_id, citizen_id) [unique, name: 'uk_activity_enrollment_activity_citizen']
+    activity_id [name: 'ix_activity_enrollment_activity']
+    citizen_id [name: 'ix_activity_enrollment_citizen']
+  }
+
+  Note: 'Inscripción confirmada de un ciudadano. El bloqueo de activity serializa la validación de cupo y evita sobreinscripciones concurrentes.'
+}
+
 Table program {
   id uuid [pk]
   name varchar(200) [not null]

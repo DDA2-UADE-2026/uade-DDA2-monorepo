@@ -6,9 +6,14 @@ import com.uade.dda2.server.feature.activity.dto.response.ActivityCreatedByRespo
 import com.uade.dda2.server.feature.activity.dto.response.ActivityListItemResponse
 import com.uade.dda2.server.feature.activity.dto.response.ActivityListResponse
 import com.uade.dda2.server.feature.activity.dto.response.ActivityResponse
+import com.uade.dda2.server.feature.activity.dto.response.ActivityEnrollmentResponse
+import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityListResponse
+import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityResponse
 import com.uade.dda2.server.feature.activity.entity.Activity
+import com.uade.dda2.server.feature.activity.entity.ActivityEnrollment
 import com.uade.dda2.server.feature.auth.entity.User
 import org.springframework.data.domain.Page
+import java.util.UUID
 
 fun CreateActivityRequest.toEntity(createdBy: User): Activity =
     Activity(
@@ -82,4 +87,44 @@ fun Activity.toAuditSnapshot(): Map<String, Any?> =
         "createdBy" to createdBy.id,
         "createdAt" to createdAt.toString(),
         "updatedAt" to updatedAt.toString(),
+    )
+
+fun Activity.toCitizenResponse(enrolledCount: Long): CitizenActivityResponse =
+    CitizenActivityResponse(
+        id = requireNotNull(id),
+        name = name,
+        description = description,
+        location = location,
+        startDate = startDate,
+        endDate = endDate,
+        capacity = capacity,
+        enrolledCount = enrolledCount,
+        availableCapacity = (capacity.toLong() - enrolledCount).coerceAtLeast(0),
+    )
+
+fun Page<Activity>.toCitizenListResponse(enrollmentCounts: Map<UUID, Long>): CitizenActivityListResponse =
+    CitizenActivityListResponse(
+        content = content.map { activity ->
+            activity.toCitizenResponse(enrollmentCounts[requireNotNull(activity.id)] ?: 0)
+        },
+        page = number,
+        size = size,
+        totalElements = totalElements,
+        totalPages = totalPages,
+    )
+
+fun ActivityEnrollment.toResponse(): ActivityEnrollmentResponse =
+    ActivityEnrollmentResponse(
+        id = requireNotNull(id),
+        activityId = requireNotNull(activity.id),
+        citizenId = requireNotNull(citizen.id),
+        enrolledAt = enrolledAt,
+    )
+
+fun ActivityEnrollment.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "activityId" to activity.id,
+        "citizenId" to citizen.id,
+        "enrolledAt" to enrolledAt.toString(),
     )

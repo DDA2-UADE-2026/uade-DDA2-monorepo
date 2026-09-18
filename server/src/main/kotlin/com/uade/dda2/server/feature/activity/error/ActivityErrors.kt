@@ -33,4 +33,28 @@ object ActivityErrors {
             code = "ACTIVITY_INVALID_STATUS_TRANSITION",
             message = "No se puede cambiar la actividad de $currentStatus a $newStatus.",
         )
+
+    fun notAvailable(id: UUID): NotFoundException =
+        NotFoundException(
+            code = "ACTIVITY_NOT_AVAILABLE",
+            message = "No se encontró una actividad abierta con id '$id'.",
+        )
+
+    fun notOpen(): ConflictException =
+        ConflictException(
+            code = "ACTIVITY_NOT_OPEN",
+            message = "La actividad no está abierta para inscripciones.",
+        )
+
+    fun alreadyEnrolled(): ConflictException =
+        ConflictException(
+            code = "ACTIVITY_ALREADY_ENROLLED",
+            message = "El ciudadano ya está inscripto en esta actividad.",
+        )
+
+    fun capacityFull(): ConflictException =
+        ConflictException(
+            code = "ACTIVITY_CAPACITY_FULL",
+            message = "La actividad no tiene cupos disponibles.",
+        )
 }

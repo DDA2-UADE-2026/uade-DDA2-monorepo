@@ -25,6 +25,8 @@ VALUES ('permissions:view'),
        ('activities:management:create'),
        ('activities:management:edit'),
        ('activities:management:change-status'),
+       ('activities:own:view'),
+       ('activities:own:enroll'),
        ('programs:management:view'),
        ('programs:management:create'),
        ('programs:management:edit'),
@@ -61,6 +63,8 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
 JOIN permissions p ON p.name IN (
+    'activities:own:view',
+    'activities:own:enroll',
     'applications:own:create',
     'applications:own:view',
     'applications:own:documents:view',

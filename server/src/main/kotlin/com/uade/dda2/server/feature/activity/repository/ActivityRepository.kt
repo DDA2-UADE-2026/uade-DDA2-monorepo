@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.activity.repository
 
 import com.uade.dda2.server.feature.activity.entity.Activity
+import com.uade.dda2.server.feature.activity.entity.ActivityStatus
 import jakarta.persistence.LockModeType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,4 +19,8 @@ interface ActivityRepository : JpaRepository<Activity, UUID> {
     fun findByIdForUpdate(@Param("id") id: UUID): Activity?
 
     fun existsByCreatedById(createdById: Long): Boolean
+
+    fun findAllByStatusOrderByStartDateAsc(status: ActivityStatus, pageable: Pageable): Page<Activity>
+
+    fun findByIdAndStatus(id: UUID, status: ActivityStatus): Activity?
 }
