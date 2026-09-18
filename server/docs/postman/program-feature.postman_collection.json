@@ -186,6 +186,7 @@
                   "pm.collectionVariables.set('accessToken', response.token);",
                   "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
                   "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
+                  "if (response.user.activeRole === 'PROFESIONAL_CENTRO') pm.collectionVariables.set('professionalAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -366,6 +367,7 @@
                   "pm.collectionVariables.set('accessToken', response.token);",
                   "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
                   "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
+                  "if (response.user.activeRole === 'PROFESIONAL_CENTRO') pm.collectionVariables.set('professionalAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -518,6 +520,7 @@
                   "pm.collectionVariables.set('accessToken', response.token);",
                   "if (response.user.activeRole === 'ADMIN') pm.collectionVariables.set('adminAccessToken', response.token);",
                   "if (response.user.activeRole === 'CIUDADANO') pm.collectionVariables.set('citizenAccessToken', response.token);",
+                  "if (response.user.activeRole === 'PROFESIONAL_CENTRO') pm.collectionVariables.set('professionalAccessToken', response.token);",
                   "pm.collectionVariables.set('activeRole', response.user.activeRole);",
                   "pm.collectionVariables.set('activePermissions', JSON.stringify(response.user.permissions));",
                   "pm.collectionVariables.set('availableRoles', JSON.stringify(response.user.roles));",
@@ -1413,6 +1416,162 @@
             },
             "description": "Realiza la transición OPEN a CLOSED. No requiere body y el cierre es terminal."
           },
+          "response": []
+        },
+        {
+          "name": "Listar actividades como profesional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Lista actividades OPEN y CLOSED disponibles para registrar asistencia."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Devuelve actividades para asistencia', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().content).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Listar inscriptos como profesional",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities/{{activityId}}/enrollments?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities", "{{activityId}}", "enrollments"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Muestra las personas inscriptas y su asistencia actual."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Incluye la inscripción ciudadana', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const enrollment = pm.response.json().content.find(item => item.id === pm.collectionVariables.get('activityEnrollmentId'));",
+                  "    pm.expect(enrollment).to.not.equal(undefined);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Marcar asistencia presente",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attendance\": \"PRESENT\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities/{{activityId}}/enrollments/{{activityEnrollmentId}}/attendance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities", "{{activityId}}", "enrollments", "{{activityEnrollmentId}}", "attendance"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Guarda presente y el profesional', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.attendance).to.eql('PRESENT');",
+                  "    pm.expect(body.attendanceRecordedBy).to.not.equal(null);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Corregir asistencia a ausente",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {"key": "token", "value": "{{professionalAccessToken}}", "type": "string"}
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attendance\": \"ABSENT\"\n}",
+              "options": {"raw": {"language": "json"}}
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/professional/activities/{{activityId}}/enrollments/{{activityEnrollmentId}}/attendance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "professional", "activities", "{{activityId}}", "enrollments", "{{activityEnrollmentId}}", "attendance"]
+            },
+            "description": "Demuestra que una marca puede corregirse y el cambio queda auditado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Guarda ausente', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.json().attendance).to.eql('ABSENT');",
+                  "});"
+                ]
+              }
+            }
+          ],
           "response": []
         }
       ]
@@ -4850,6 +5009,11 @@
     },
     {
       "key": "citizenAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "professionalAccessToken",
       "value": "",
       "type": "string"
     },

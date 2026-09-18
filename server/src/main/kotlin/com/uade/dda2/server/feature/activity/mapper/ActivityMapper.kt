@@ -9,6 +9,11 @@ import com.uade.dda2.server.feature.activity.dto.response.ActivityResponse
 import com.uade.dda2.server.feature.activity.dto.response.ActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityListResponse
 import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityResponse
+import com.uade.dda2.server.feature.activity.dto.response.AttendanceRecordedByResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentListResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityListResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityResponse
 import com.uade.dda2.server.feature.activity.entity.Activity
 import com.uade.dda2.server.feature.activity.entity.ActivityEnrollment
 import com.uade.dda2.server.feature.auth.entity.User
@@ -127,4 +132,52 @@ fun ActivityEnrollment.toAuditSnapshot(): Map<String, Any?> =
         "activityId" to activity.id,
         "citizenId" to citizen.id,
         "enrolledAt" to enrolledAt.toString(),
+        "attendance" to attendance,
+        "attendanceRecordedBy" to attendanceRecordedBy?.id,
+        "attendanceRecordedAt" to attendanceRecordedAt?.toString(),
+    )
+
+fun Page<Activity>.toProfessionalListResponse(enrollmentCounts: Map<UUID, Long>): ProfessionalActivityListResponse =
+    ProfessionalActivityListResponse(
+        content = content.map { activity ->
+            ProfessionalActivityResponse(
+                id = requireNotNull(activity.id),
+                name = activity.name,
+                location = activity.location,
+                startDate = activity.startDate,
+                endDate = activity.endDate,
+                status = activity.status,
+                enrolledCount = enrollmentCounts[requireNotNull(activity.id)] ?: 0,
+            )
+        },
+        page = number,
+        size = size,
+        totalElements = totalElements,
+        totalPages = totalPages,
+    )
+
+fun ActivityEnrollment.toProfessionalResponse(): ProfessionalActivityEnrollmentResponse =
+    ProfessionalActivityEnrollmentResponse(
+        id = requireNotNull(id),
+        activityId = requireNotNull(activity.id),
+        citizenId = requireNotNull(citizen.id),
+        citizenName = citizen.name,
+        enrolledAt = enrolledAt,
+        attendance = attendance,
+        attendanceRecordedBy = attendanceRecordedBy?.let { recorder ->
+            AttendanceRecordedByResponse(
+                id = requireNotNull(recorder.id),
+                name = recorder.name,
+            )
+        },
+        attendanceRecordedAt = attendanceRecordedAt,
+    )
+
+fun Page<ActivityEnrollment>.toProfessionalEnrollmentListResponse(): ProfessionalActivityEnrollmentListResponse =
+    ProfessionalActivityEnrollmentListResponse(
+        content = content.map(ActivityEnrollment::toProfessionalResponse),
+        page = number,
+        size = size,
+        totalElements = totalElements,
+        totalPages = totalPages,
     )

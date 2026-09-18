@@ -24,10 +24,16 @@ Los ciudadanos con los permisos `activities:own:view` y `activities:own:enroll` 
 
 Cada ciudadano puede inscribirse una sola vez. La inscripción se confirma con HTTP `201`, siempre que la actividad continúe abierta y la cantidad de inscriptos sea menor a su capacidad. La actividad se bloquea durante esta operación para evitar que solicitudes concurrentes superen el cupo.
 
+## Registro de asistencia
+
+Un usuario con rol `PROFESIONAL_CENTRO` puede consultar actividades `OPEN` o `CLOSED`, listar sus inscriptos y marcar cada inscripción como `PRESENT` o `ABSENT`. Las actividades `DRAFT` no admiten registro de asistencia.
+
+La inscripción conserva el profesional autenticado que realizó la última registración y su fecha. Cada cambio también genera un registro de auditoría con los valores anteriores y nuevos. En esta etapa los profesionales no se asignan a centros ni a actividades específicas.
+
 ## Autorización
 
-La administración utiliza los permisos `activities:management:view`, `activities:management:create`, `activities:management:edit` y `activities:management:change-status`. La consulta e inscripción propias utilizan `activities:own:view` y `activities:own:enroll`. El rol técnico `ADMIN` recibe todos los permisos registrados y `CIUDADANO` recibe los permisos propios mediante el script de datos iniciales.
+La administración utiliza los permisos `activities:management:view`, `activities:management:create`, `activities:management:edit` y `activities:management:change-status`. La consulta e inscripción propias utilizan `activities:own:view` y `activities:own:enroll`. La asistencia utiliza `activities:attendance:view` y `activities:attendance:manage`. El rol técnico `ADMIN` recibe todos los permisos registrados; `CIUDADANO` y `PROFESIONAL_CENTRO` reciben únicamente los de su función.
 
 ## Alcance actual
 
-Los incrementos HU-21 y HU-22 implementan el alta, listado, consulta, edición, publicación, cierre e inscripción ciudadana. El registro de asistencia pertenece a HU-23 y todavía no forma parte de esta funcionalidad.
+Los incrementos HU-21, HU-22 y HU-23 implementan el ciclo administrativo, la inscripción ciudadana y el registro profesional de asistencia.

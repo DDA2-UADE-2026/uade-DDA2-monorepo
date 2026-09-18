@@ -149,7 +149,10 @@ class UserManagementService(
             )
         }
 
-        if (activityRepository.existsByCreatedById(id) || activityEnrollmentRepository.existsByCitizenId(id)) {
+        if (
+            activityRepository.existsByCreatedById(id) ||
+            activityEnrollmentRepository.existsByCitizenIdOrAttendanceRecordedById(id, id)
+        ) {
             throw ConflictException(
                 code = "USER_HAS_ACTIVITY_REFERENCES",
                 message = "No se puede eliminar un usuario vinculado a actividades comunitarias o sus inscripciones.",

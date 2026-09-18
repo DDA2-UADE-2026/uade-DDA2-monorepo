@@ -23,4 +23,6 @@ interface ActivityRepository : JpaRepository<Activity, UUID> {
     fun findAllByStatusOrderByStartDateAsc(status: ActivityStatus, pageable: Pageable): Page<Activity>
 
     fun findByIdAndStatus(id: UUID, status: ActivityStatus): Activity?
+
+    fun findAllByStatusInOrderByStartDateDesc(statuses: Collection<ActivityStatus>, pageable: Pageable): Page<Activity>
 }

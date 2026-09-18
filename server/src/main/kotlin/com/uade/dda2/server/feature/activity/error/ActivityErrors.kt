@@ -57,4 +57,16 @@ object ActivityErrors {
             code = "ACTIVITY_CAPACITY_FULL",
             message = "La actividad no tiene cupos disponibles.",
         )
+
+    fun enrollmentNotFound(id: UUID): NotFoundException =
+        NotFoundException(
+            code = "ACTIVITY_ENROLLMENT_NOT_FOUND",
+            message = "No se encontró la inscripción con id '$id' para esta actividad.",
+        )
+
+    fun attendanceNotAllowed(): ConflictException =
+        ConflictException(
+            code = "ACTIVITY_ATTENDANCE_NOT_ALLOWED",
+            message = "No se puede registrar asistencia en una actividad en borrador.",
+        )
 }
