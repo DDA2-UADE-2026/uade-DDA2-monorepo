@@ -28,4 +28,16 @@ object CenterErrors {
 
     fun serviceAlreadyInactive(): ConflictException =
         ConflictException("MUNICIPAL_SERVICE_ALREADY_INACTIVE", "El servicio municipal ya se encuentra inactivo.")
+
+    fun centerServiceNotFound(id: UUID): NotFoundException =
+        NotFoundException("CENTER_SERVICE_NOT_FOUND", "No se encontró el servicio del centro con id '$id'.")
+
+    fun centerServiceAlreadyActive(): ConflictException =
+        ConflictException("CENTER_SERVICE_ALREADY_ACTIVE", "El servicio ya se encuentra asignado al centro.")
+
+    fun centerServiceAlreadyInactive(): ConflictException =
+        ConflictException("CENTER_SERVICE_ALREADY_INACTIVE", "El servicio del centro ya se encuentra inactivo.")
+
+    fun inactiveDependency(name: String): ConflictException =
+        ConflictException("CENTER_DEPENDENCY_INACTIVE", "No se puede completar la operación porque $name está inactivo.")
 }
