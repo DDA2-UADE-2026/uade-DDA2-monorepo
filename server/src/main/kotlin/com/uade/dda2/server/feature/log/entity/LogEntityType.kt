@@ -9,6 +9,8 @@ enum class LogEntityType(val tableName: String) {
     APPLICATION_DOCUMENT("application_document"),
     ACTIVITY("activity"),
     ACTIVITY_ENROLLMENT("activity_enrollment"),
+    MUNICIPAL_CENTER("municipal_center"),
+    MUNICIPAL_SERVICE("municipal_service"),
     PROGRAM("program"),
     PROGRAM_EDITION("program_edition"),
     PROGRAM_BENEFIT("program_benefit"),
