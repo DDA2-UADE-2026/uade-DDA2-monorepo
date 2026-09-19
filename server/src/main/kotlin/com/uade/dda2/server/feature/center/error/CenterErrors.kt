@@ -40,4 +40,22 @@ object CenterErrors {
 
     fun inactiveDependency(name: String): ConflictException =
         ConflictException("CENTER_DEPENDENCY_INACTIVE", "No se puede completar la operación porque $name está inactivo.")
+
+    fun professionalNotFound(id: Long): NotFoundException =
+        NotFoundException("PROFESSIONAL_NOT_FOUND", "No se encontró el profesional con id '$id'.")
+
+    fun professionalNotEligible(): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_NOT_ELIGIBLE",
+            "El usuario debe estar activo y tener el rol PROFESIONAL_CENTRO.",
+        )
+
+    fun professionalAssignmentNotFound(id: UUID): NotFoundException =
+        NotFoundException("PROFESSIONAL_ASSIGNMENT_NOT_FOUND", "No se encontró la asignación profesional con id '$id'.")
+
+    fun professionalAssignmentAlreadyActive(): ConflictException =
+        ConflictException("PROFESSIONAL_ASSIGNMENT_ALREADY_ACTIVE", "El profesional ya está asignado a este servicio.")
+
+    fun professionalAssignmentAlreadyInactive(): ConflictException =
+        ConflictException("PROFESSIONAL_ASSIGNMENT_ALREADY_INACTIVE", "La asignación profesional ya está inactiva.")
 }
