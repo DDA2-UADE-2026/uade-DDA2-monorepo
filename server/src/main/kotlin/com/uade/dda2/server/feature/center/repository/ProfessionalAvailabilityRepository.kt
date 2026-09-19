@@ -16,6 +16,8 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
         active: Boolean,
     ): List<ProfessionalAvailability>
 
+    fun findAllByAssignmentIdOrderByDayOfWeekAscStartTimeAsc(assignmentId: UUID): List<ProfessionalAvailability>
+
     @Query(
         """
         select availability from ProfessionalAvailability availability

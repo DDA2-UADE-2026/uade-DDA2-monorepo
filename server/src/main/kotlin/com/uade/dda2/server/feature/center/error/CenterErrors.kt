@@ -80,4 +80,34 @@ object CenterErrors {
             "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
             "El cambio dejaría una disponibilidad profesional fuera del horario de apertura del centro.",
         )
+
+    fun professionalAvailabilityNotFound(id: UUID): NotFoundException =
+        NotFoundException(
+            "PROFESSIONAL_AVAILABILITY_NOT_FOUND",
+            "No se encontró la disponibilidad profesional con id '$id'.",
+        )
+
+    fun invalidAvailabilityRange(): BadRequestException =
+        BadRequestException(
+            "PROFESSIONAL_AVAILABILITY_INVALID_RANGE",
+            "La hora de inicio debe ser anterior a la hora de fin.",
+        )
+
+    fun professionalAvailabilityOverlap(): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OVERLAP",
+            "La disponibilidad se superpone con otra franja efectiva del profesional.",
+        )
+
+    fun professionalAvailabilityOutsideOpeningHours(): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
+            "La disponibilidad debe quedar cubierta por el horario de apertura del centro.",
+        )
+
+    fun professionalAvailabilityAlreadyActive(): ConflictException =
+        ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_ACTIVE", "La disponibilidad profesional ya está activa.")
+
+    fun professionalAvailabilityAlreadyInactive(): ConflictException =
+        ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_INACTIVE", "La disponibilidad profesional ya está inactiva.")
 }
