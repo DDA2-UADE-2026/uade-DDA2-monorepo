@@ -20,9 +20,10 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
 
     @Query(
         """
-        select availability from ProfessionalAvailability availability
+        select distinct availability from ProfessionalAvailability availability
         join fetch availability.assignment assignment
         join fetch assignment.professional professional
+        join professional.roles professionalRole
         join fetch assignment.centerService centerService
         join fetch centerService.center center
         join fetch centerService.service service
@@ -31,6 +32,7 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
           and availability.active = true
           and assignment.active = true
           and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
           and centerService.active = true
           and center.active = true
           and service.active = true
@@ -44,9 +46,10 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
 
     @Query(
         """
-        select availability from ProfessionalAvailability availability
+        select distinct availability from ProfessionalAvailability availability
         join availability.assignment assignment
         join assignment.professional professional
+        join professional.roles professionalRole
         join assignment.centerService centerService
         join centerService.center center
         join centerService.service service
@@ -55,6 +58,7 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
           and availability.active = true
           and assignment.active = true
           and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
           and centerService.active = true
           and center.active = true
           and service.active = true
@@ -72,9 +76,10 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
 
     @Query(
         """
-        select availability from ProfessionalAvailability availability
+        select distinct availability from ProfessionalAvailability availability
         join availability.assignment assignment
         join assignment.professional professional
+        join professional.roles professionalRole
         join assignment.centerService centerService
         join centerService.center center
         join centerService.service service
@@ -83,6 +88,7 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
           and availability.active = true
           and assignment.active = true
           and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
           and centerService.active = true
           and center.active = true
           and service.active = true
@@ -99,6 +105,76 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
         @Param("requestedEnd") requestedEnd: LocalTime,
         @Param("excludedId") excludedId: UUID,
     ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.centerService.center.id = :centerId
+        """,
+    )
+    fun findActiveByCenterId(@Param("centerId") centerId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.centerService.service.id = :serviceId
+        """,
+    )
+    fun findActiveByServiceId(@Param("serviceId") serviceId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.centerService.id = :centerServiceId
+        """,
+    )
+    fun findActiveByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.id = :assignmentId
+        """,
+    )
+    fun findActiveByAssignmentId(@Param("assignmentId") assignmentId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.professional.id = :professionalId
+        """,
+    )
+    fun findActiveByProfessionalId(@Param("professionalId") professionalId: Long): List<ProfessionalAvailability>
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select availability from ProfessionalAvailability availability where availability.id = :id")

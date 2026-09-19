@@ -32,6 +32,8 @@ interface ProfessionalAssignmentRepository : JpaRepository<ProfessionalAssignmen
 
     fun existsByProfessionalIdAndActiveTrue(professionalId: Long): Boolean
 
+    fun existsByActiveTrue(): Boolean
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
         """

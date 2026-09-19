@@ -11,6 +11,7 @@ import com.uade.dda2.server.feature.center.mapper.toResponse
 import com.uade.dda2.server.feature.center.repository.CenterServiceRepository
 import com.uade.dda2.server.feature.center.repository.MunicipalCenterRepository
 import com.uade.dda2.server.feature.center.repository.ProfessionalAssignmentRepository
+import com.uade.dda2.server.feature.center.validator.CenterLifecycleValidator
 import com.uade.dda2.server.feature.center.validator.ProfessionalAssignmentValidator
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
@@ -27,6 +28,7 @@ class AdminProfessionalAssignmentService(
     private val assignmentRepository: ProfessionalAssignmentRepository,
     private val userRepository: UserRepository,
     private val validator: ProfessionalAssignmentValidator,
+    private val lifecycleValidator: CenterLifecycleValidator,
     private val currentUserService: CurrentUserService,
     private val logService: LogService,
     private val jsonMapper: JsonMapper,
@@ -54,6 +56,7 @@ class AdminProfessionalAssignmentService(
         val assignment = existing ?: ProfessionalAssignment(professional = professional, centerService = centerService)
         val oldValues = existing?.let { json(it.toAuditSnapshot()) }
         assignment.active = true
+        if (existing != null) lifecycleValidator.validateAssignmentActivation(requireNotNull(assignment.id))
         assignmentRepository.saveAndFlush(assignment)
         record(assignment, if (existing == null) LogAction.CREATE else LogAction.UPDATE, oldValues)
         return assignment.toResponse()
@@ -97,6 +100,7 @@ class AdminProfessionalAssignmentService(
     private fun changeStatus(assignment: ProfessionalAssignment, active: Boolean): ProfessionalAssignmentResponse {
         val oldValues = json(assignment.toAuditSnapshot())
         assignment.active = active
+        if (active) lifecycleValidator.validateAssignmentActivation(requireNotNull(assignment.id))
         assignmentRepository.saveAndFlush(assignment)
         record(assignment, LogAction.UPDATE, oldValues)
         return assignment.toResponse()

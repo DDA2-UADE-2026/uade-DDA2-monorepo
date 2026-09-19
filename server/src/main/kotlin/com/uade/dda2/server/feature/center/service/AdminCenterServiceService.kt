@@ -10,6 +10,7 @@ import com.uade.dda2.server.feature.center.mapper.toResponse
 import com.uade.dda2.server.feature.center.repository.CenterServiceRepository
 import com.uade.dda2.server.feature.center.repository.MunicipalCenterRepository
 import com.uade.dda2.server.feature.center.repository.MunicipalServiceRepository
+import com.uade.dda2.server.feature.center.validator.CenterLifecycleValidator
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
@@ -23,6 +24,7 @@ class AdminCenterServiceService(
     private val centerRepository: MunicipalCenterRepository,
     private val municipalServiceRepository: MunicipalServiceRepository,
     private val centerServiceRepository: CenterServiceRepository,
+    private val lifecycleValidator: CenterLifecycleValidator,
     private val currentUserService: CurrentUserService,
     private val logService: LogService,
     private val jsonMapper: JsonMapper,
@@ -46,6 +48,7 @@ class AdminCenterServiceService(
         val relation = existing ?: CenterService(center = center, service = service)
         val oldValues = existing?.let { json(it.toAuditSnapshot()) }
         relation.active = true
+        if (existing != null) lifecycleValidator.validateCenterServiceActivation(requireNotNull(relation.id))
         centerServiceRepository.saveAndFlush(relation)
         record(relation, if (existing == null) LogAction.CREATE else LogAction.UPDATE, oldValues)
         return relation.toResponse()
@@ -70,6 +73,7 @@ class AdminCenterServiceService(
     private fun changeStatus(relation: CenterService, active: Boolean): CenterServiceResponse {
         val oldValues = json(relation.toAuditSnapshot())
         relation.active = active
+        if (active) lifecycleValidator.validateCenterServiceActivation(requireNotNull(relation.id))
         centerServiceRepository.saveAndFlush(relation)
         record(relation, LogAction.UPDATE, oldValues)
         return relation.toResponse()

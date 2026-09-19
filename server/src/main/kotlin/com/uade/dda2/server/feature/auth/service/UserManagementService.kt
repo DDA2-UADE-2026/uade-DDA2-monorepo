@@ -13,6 +13,8 @@ import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityEnrollmentRepository
+import com.uade.dda2.server.feature.center.repository.ProfessionalAssignmentRepository
+import com.uade.dda2.server.feature.center.validator.CenterLifecycleValidator
 import com.uade.dda2.server.feature.document.repository.DocumentRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
@@ -43,6 +45,8 @@ class UserManagementService(
     private val applicationRepository: ApplicationRepository,
     private val applicationDocumentRepository: ApplicationDocumentRepository,
     private val documentRepository: DocumentRepository,
+    private val professionalAssignmentRepository: ProfessionalAssignmentRepository,
+    private val centerLifecycleValidator: CenterLifecycleValidator,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): List<UserManagementResponse> =
@@ -83,7 +87,12 @@ class UserManagementService(
 
     @Transactional
     fun update(id: Long, request: UpdateUserRequest): UserManagementResponse {
-        val user = findUser(id)
+        val resolvedRoles = resolveRoles(request.roles)
+        val willHaveProfessionalRole = resolvedRoles.any { it.name.equals("PROFESIONAL_CENTRO", ignoreCase = true) }
+        if (request.active && willHaveProfessionalRole) {
+            centerLifecycleValidator.lockProfessionalActivation(id)
+        }
+        val user = findUserForUpdate(id)
         val username = request.username?.let(::normalizeUsername) ?: user.username
         val passwordHash = request.password?.let { requireNotNull(passwordEncoder.encode(it)) } ?: user.passwordHash
         if (username?.isBlank() == true || (username == null) != (passwordHash == null)) {
@@ -96,6 +105,15 @@ class UserManagementService(
             throw usernameConflict(username)
         }
 
+        val hadProfessionalRole = user.hasRole("PROFESIONAL_CENTRO")
+        if (hadProfessionalRole && !willHaveProfessionalRole && professionalAssignmentRepository.existsByProfessionalIdAndActiveTrue(id)) {
+            throw ConflictException(
+                code = "PROFESSIONAL_ROLE_HAS_ACTIVE_ASSIGNMENTS",
+                message = "No se puede retirar PROFESIONAL_CENTRO mientras el usuario tenga asignaciones activas.",
+            )
+        }
+
+        val wasActive = user.active
         val oldValues = json(userSnapshot(user))
         user.username = username
         user.passwordHash = passwordHash
@@ -104,7 +122,11 @@ class UserManagementService(
         user.active = request.active
         user.updatedAt = Instant.now()
         user.roles.clear()
-        user.roles.addAll(resolveRoles(request.roles))
+        user.roles.addAll(resolvedRoles)
+
+        if (request.active && willHaveProfessionalRole && (!wasActive || !hadProfessionalRole)) {
+            centerLifecycleValidator.validateProfessionalActivation(id)
+        }
 
         val response = toResponse(user)
         logService.record(
@@ -159,6 +181,13 @@ class UserManagementService(
             )
         }
 
+        if (professionalAssignmentRepository.existsByProfessionalId(id)) {
+            throw ConflictException(
+                code = "USER_HAS_PROFESSIONAL_ASSIGNMENTS",
+                message = "No se puede eliminar un usuario con asignaciones profesionales.",
+            )
+        }
+
         val oldValues = json(userSnapshot(user))
 
         user.roles.clear()
@@ -179,6 +208,16 @@ class UserManagementService(
                 code = "USER_NOT_FOUND",
                 message = "User not found.",
             )
+
+    private fun findUserForUpdate(id: Long): User =
+        userRepository.findByIdForUpdate(id)
+            ?: throw NotFoundException(
+                code = "USER_NOT_FOUND",
+                message = "User not found.",
+            )
+
+    private fun User.hasRole(name: String): Boolean =
+        roles.any { it.name.equals(name, ignoreCase = true) }
 
     private fun resolveRoles(roleNames: List<String>): Set<Role> {
         val names = roleNames.map(::normalizeRoleName).filter(String::isNotBlank).distinct().toSet()

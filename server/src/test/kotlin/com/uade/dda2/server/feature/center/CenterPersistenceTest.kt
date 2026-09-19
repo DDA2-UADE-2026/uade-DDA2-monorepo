@@ -1,6 +1,8 @@
 package com.uade.dda2.server.feature.center
 
+import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.entity.User
+import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.center.entity.CenterOpeningHour
 import com.uade.dda2.server.feature.center.entity.CenterService
@@ -46,6 +48,7 @@ class CenterPersistenceTest {
     @Autowired lateinit var assignments: ProfessionalAssignmentRepository
     @Autowired lateinit var availabilities: ProfessionalAvailabilityRepository
     @Autowired lateinit var users: UserRepository
+    @Autowired lateinit var roles: RoleRepository
     @Autowired lateinit var entityManager: EntityManager
 
     @Test
@@ -225,7 +228,10 @@ class CenterPersistenceTest {
     fun `consulta conflictos globales del profesional y filtra toda la cadena activa`() {
         val firstRelation = persistedCenterService("Centro Uno", "Servicio Uno")
         val secondRelation = persistedCenterService("Centro Dos", "Servicio Dos")
-        val professional = users.saveAndFlush(user("global@example.com"))
+        val professionalRole = roles.saveAndFlush(Role(name = "PROFESIONAL_CENTRO"))
+        val professional = users.saveAndFlush(
+            user("global@example.com").also { it.roles.add(professionalRole) },
+        )
         val firstAssignment = assignments.saveAndFlush(
             ProfessionalAssignment(professional = professional, centerService = firstRelation),
         )
@@ -293,6 +299,20 @@ class CenterPersistenceTest {
         assertTrue(globalOverlaps(professional.id!!).isEmpty())
         firstRelation.service.active = true
         services.saveAndFlush(firstRelation.service)
+
+        val professionalWithoutRole = users.saveAndFlush(user("without-role@example.com"))
+        val assignmentWithoutRole = assignments.saveAndFlush(
+            ProfessionalAssignment(professional = professionalWithoutRole, centerService = firstRelation),
+        )
+        availabilities.saveAndFlush(
+            ProfessionalAvailability(
+                assignment = assignmentWithoutRole,
+                dayOfWeek = DayOfWeek.WEDNESDAY,
+                startTime = LocalTime.of(9, 0),
+                endTime = LocalTime.of(10, 0),
+            ),
+        )
+        assertTrue(globalOverlaps(professionalWithoutRole.id!!).isEmpty())
 
         professional.active = false
         users.saveAndFlush(professional)

@@ -14,6 +14,7 @@ import com.uade.dda2.server.feature.center.mapper.toListResponse
 import com.uade.dda2.server.feature.center.mapper.toResponse
 import com.uade.dda2.server.feature.center.mapper.updateFrom
 import com.uade.dda2.server.feature.center.repository.MunicipalServiceRepository
+import com.uade.dda2.server.feature.center.validator.CenterLifecycleValidator
 import com.uade.dda2.server.feature.center.validator.MunicipalServiceValidator
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
@@ -28,6 +29,7 @@ import java.util.UUID
 class AdminMunicipalServiceService(
     private val repository: MunicipalServiceRepository,
     private val validator: MunicipalServiceValidator,
+    private val lifecycleValidator: CenterLifecycleValidator,
     private val currentUserService: CurrentUserService,
     private val logService: LogService,
     private val jsonMapper: JsonMapper,
@@ -71,6 +73,7 @@ class AdminMunicipalServiceService(
         }
         val oldValues = json(service.toAuditSnapshot())
         service.active = active
+        if (active) lifecycleValidator.validateServiceActivation(id)
         repository.saveAndFlush(service)
         record(service, LogAction.UPDATE, oldValues)
         return service.toResponse()

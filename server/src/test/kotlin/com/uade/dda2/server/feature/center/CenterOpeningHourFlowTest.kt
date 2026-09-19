@@ -70,6 +70,7 @@ class CenterOpeningHourFlowTest {
     @Autowired lateinit var transactions: PlatformTransactionManager
 
     private lateinit var token: String
+    private lateinit var professionalRole: Role
 
     @BeforeEach
     fun setup() {
@@ -81,6 +82,8 @@ class CenterOpeningHourFlowTest {
                 ?.also { it.permissions.addAll(granted) }
                 ?: Role(name = "ADMIN", permissions = granted)
             roles.saveAndFlush(role)
+            professionalRole = roles.findByNameIn(listOf("PROFESIONAL_CENTRO")).firstOrNull()
+                ?: roles.saveAndFlush(Role(name = "PROFESIONAL_CENTRO"))
             val admin = users.saveAndFlush(
                 User(
                     name = "Schedule Admin",
@@ -143,7 +146,11 @@ class CenterOpeningHourFlowTest {
         )
         val centerService = centerServices.saveAndFlush(CenterService(center = center, service = service))
         val professional = users.saveAndFlush(
-            User(name = "Profesional", email = "professional-${UUID.randomUUID()}@example.com"),
+            User(
+                name = "Profesional",
+                email = "professional-${UUID.randomUUID()}@example.com",
+                roles = mutableSetOf(professionalRole),
+            ),
         )
         val assignment = assignments.saveAndFlush(
             ProfessionalAssignment(professional = professional, centerService = centerService),
