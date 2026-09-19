@@ -19,6 +19,30 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
     @Query(
         """
         select availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center center
+        join fetch centerService.service service
+        where center.id = :centerId
+          and availability.dayOfWeek = :dayOfWeek
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+        order by availability.startTime
+        """,
+    )
+    fun findEffectiveByCenterIdAndDayOfWeek(
+        @Param("centerId") centerId: UUID,
+        @Param("dayOfWeek") dayOfWeek: DayOfWeek,
+    ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select availability from ProfessionalAvailability availability
         join availability.assignment assignment
         join assignment.professional professional
         join assignment.centerService centerService

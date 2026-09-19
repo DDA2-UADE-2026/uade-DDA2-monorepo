@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.center.error
 
 import com.uade.dda2.server.error.ConflictException
+import com.uade.dda2.server.error.BadRequestException
 import com.uade.dda2.server.error.NotFoundException
 import java.util.UUID
 
@@ -58,4 +59,25 @@ object CenterErrors {
 
     fun professionalAssignmentAlreadyInactive(): ConflictException =
         ConflictException("PROFESSIONAL_ASSIGNMENT_ALREADY_INACTIVE", "La asignación profesional ya está inactiva.")
+
+    fun openingHourNotFound(id: UUID): NotFoundException =
+        NotFoundException("CENTER_OPENING_HOUR_NOT_FOUND", "No se encontró el horario de apertura con id '$id'.")
+
+    fun invalidTimeRange(): BadRequestException =
+        BadRequestException("CENTER_OPENING_HOUR_INVALID_RANGE", "La hora de inicio debe ser anterior a la hora de fin.")
+
+    fun openingHourOverlap(): ConflictException =
+        ConflictException("CENTER_OPENING_HOUR_OVERLAP", "El horario se superpone con otra franja activa del centro.")
+
+    fun openingHourAlreadyActive(): ConflictException =
+        ConflictException("CENTER_OPENING_HOUR_ALREADY_ACTIVE", "El horario de apertura ya está activo.")
+
+    fun openingHourAlreadyInactive(): ConflictException =
+        ConflictException("CENTER_OPENING_HOUR_ALREADY_INACTIVE", "El horario de apertura ya está inactivo.")
+
+    fun availabilityWouldLoseCoverage(): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
+            "El cambio dejaría una disponibilidad profesional fuera del horario de apertura del centro.",
+        )
 }

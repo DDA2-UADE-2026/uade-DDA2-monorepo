@@ -16,6 +16,8 @@ interface CenterOpeningHourRepository : JpaRepository<CenterOpeningHour, UUID> {
         active: Boolean,
     ): List<CenterOpeningHour>
 
+    fun findAllByCenterIdOrderByDayOfWeekAscStartTimeAsc(centerId: UUID): List<CenterOpeningHour>
+
     @Query(
         """
         select h from CenterOpeningHour h
