@@ -71,15 +71,19 @@ class CenterConcurrencyFlowTest {
     private lateinit var professionalRole: Role
 
     companion object {
-        private const val SAFE_POSTGRES_URL = "jdbc:postgresql://127.0.0.1:55439/center_test"
+        private val SAFE_POSTGRES_URLS = setOf(
+            "jdbc:postgresql://127.0.0.1:55439/center_test",
+            "jdbc:postgresql://127.0.0.1:5433/center_test_real",
+        )
 
         @JvmStatic
         @DynamicPropertySource
         fun database(registry: DynamicPropertyRegistry) {
             val postgresUrl = System.getProperty("center.test.postgres-url")
-            require(postgresUrl == null || postgresUrl == SAFE_POSTGRES_URL) {
-                "Las pruebas de centros solo pueden usar la base PostgreSQL local descartable $SAFE_POSTGRES_URL."
+            require(postgresUrl == null || postgresUrl in SAFE_POSTGRES_URLS) {
+                "Las pruebas de centros solo pueden usar bases locales descartables: $SAFE_POSTGRES_URLS."
             }
+            val isRealisticClone = postgresUrl?.contains("center_test_real") == true
             registry.add("spring.datasource.url") {
                 postgresUrl ?: "jdbc:h2:mem:center-concurrency;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;NON_KEYWORDS=VALUE;LOCK_TIMEOUT=10000"
             }
@@ -89,9 +93,14 @@ class CenterConcurrencyFlowTest {
             registry.add("spring.jpa.properties.hibernate.dialect") {
                 if (postgresUrl == null) "org.hibernate.dialect.H2Dialect" else "org.hibernate.dialect.PostgreSQLDialect"
             }
-            registry.add("spring.datasource.username") { if (postgresUrl == null) "sa" else "center_test" }
+            registry.add("spring.datasource.username") {
+                if (postgresUrl == null) "sa" else System.getProperty("center.test.postgres-user", "postgres")
+            }
             registry.add("spring.datasource.password") {
                 if (postgresUrl == null) "" else System.getProperty("center.test.postgres-password", "")
+            }
+            registry.add("spring.jpa.hibernate.ddl-auto") {
+                System.getProperty("center.test.ddl-auto") ?: if (isRealisticClone) "update" else "create-drop"
             }
         }
     }
