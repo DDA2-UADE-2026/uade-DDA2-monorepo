@@ -17,6 +17,22 @@ Enum log_entity_type {
   enrollment_period
   application
   application_document
+  municipal_center
+  municipal_service
+  center_service
+  center_opening_hour
+  professional_assignment
+  professional_availability
+}
+
+Enum day_of_week {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
 }
 
 Enum application_status {
@@ -153,6 +169,121 @@ Table logs {
     user_id [name: 'ix_logs_user_id']
     created_at [name: 'ix_logs_created_at']
   }
+}
+
+Table municipal_center {
+  id uuid [pk]
+  name varchar(150) [not null]
+  normalized_name varchar(150) [not null, unique]
+  address varchar(255) [not null]
+  phone varchar(30)
+  email varchar(180)
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    active [name: 'ix_municipal_center_active']
+  }
+
+  Note: 'Centro municipal con baja lógica. El nombre normalizado usa NFC, espacios internos simples y minúsculas con Locale.ROOT.'
+}
+
+Table municipal_service {
+  id uuid [pk]
+  name varchar(150) [not null]
+  normalized_name varchar(150) [not null, unique]
+  description text [not null]
+  duration_minutes integer [not null]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    active [name: 'ix_municipal_service_active']
+  }
+
+  checks {
+    `duration_minutes > 0` [name: 'ck_municipal_service_positive_duration']
+  }
+
+  Note: 'Catálogo municipal centralizado y compartido por todos los centros.'
+}
+
+Table center_service {
+  id uuid [pk]
+  center_id uuid [not null, ref: > municipal_center.id]
+  service_id uuid [not null, ref: > municipal_service.id]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (center_id, service_id) [unique, name: 'uk_center_service_center_service']
+    (center_id, active) [name: 'ix_center_service_center_active']
+    service_id [name: 'ix_center_service_service']
+  }
+
+  Note: 'La combinación centro-servicio es inmutable y se reactiva en lugar de duplicarse.'
+}
+
+Table center_opening_hour {
+  id uuid [pk]
+  center_id uuid [not null, ref: > municipal_center.id]
+  day_of_week day_of_week [not null, note: 'Persistido como varchar(9).']
+  start_time time [not null]
+  end_time time [not null]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (center_id, day_of_week, active) [name: 'ix_center_opening_hour_center_day_active']
+  }
+
+  checks {
+    `start_time < end_time` [name: 'ck_center_opening_hour_time_range']
+  }
+
+  Note: 'Franja semanal recurrente y semiabierta [inicio, fin). La aplicación impide superposiciones activas.'
+}
+
+Table professional_assignment {
+  id uuid [pk]
+  professional_id bigint [not null, ref: > users.id]
+  center_service_id uuid [not null, ref: > center_service.id]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (professional_id, center_service_id) [unique, name: 'uk_professional_assignment_professional_center_service']
+    (professional_id, active) [name: 'ix_professional_assignment_professional_active']
+    center_service_id [name: 'ix_professional_assignment_center_service']
+  }
+
+  Note: 'Asigna un User con rol PROFESIONAL_CENTRO a un servicio concreto de un centro.'
+}
+
+Table professional_availability {
+  id uuid [pk]
+  assignment_id uuid [not null, ref: > professional_assignment.id]
+  day_of_week day_of_week [not null, note: 'Persistido como varchar(9).']
+  start_time time [not null]
+  end_time time [not null]
+  active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (assignment_id, day_of_week, active) [name: 'ix_professional_availability_assignment_day_active']
+  }
+
+  checks {
+    `start_time < end_time` [name: 'ck_professional_availability_time_range']
+  }
+
+  Note: 'Franja semanal específica de una asignación. La aplicación valida cobertura del centro y ausencia global de superposición para el profesional.'
 }
 
 Table activity {
