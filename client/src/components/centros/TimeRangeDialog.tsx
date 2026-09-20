@@ -2,7 +2,7 @@ import { IconAlertTriangle } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
 
-import { DAYS, type DayOfWeekValue, type TimeRangeValue } from "@/components/centros/timeRanges"
+import { DAYS, dayLabel, type DayOfWeekValue, type TimeRangeValue } from "@/components/centros/timeRanges"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -83,7 +83,9 @@ export function TimeRangeDialog({ title, description, initial, pending, error, s
                 <FieldLabel htmlFor={field.name}>Día</FieldLabel>
                 <Select value={field.state.value} onValueChange={(value) => field.handleChange(value as DayOfWeekValue)}>
                   <SelectTrigger id={field.name} aria-label="Día de la semana">
-                    <SelectValue />
+                    <SelectValue>
+                      {(value: string | null) => (value ? dayLabel(value) : "Seleccioná un día")}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {DAYS.map((day) => (

@@ -85,8 +85,12 @@ class AdminMunicipalCenterService(
     private fun findForUpdate(id: UUID): MunicipalCenter =
         repository.findByIdForUpdate(id) ?: throw CenterErrors.centerNotFound(id)
 
-    private fun normalizedSearch(search: String?): String? =
-        search?.takeIf { it.isNotBlank() }?.let(MunicipalNameNormalizer::normalize)
+    // Nunca se pasa null al repositorio: en PostgreSQL un parámetro null dentro
+    // del `concat` del LIKE se bindea como bytea y la consulta falla con
+    // "operator does not exist: character varying ~~ bytea". Con "" el
+    // LIKE '%%' matchea todo y el parámetro viaja como varchar.
+    private fun normalizedSearch(search: String?): String =
+        search?.takeIf { it.isNotBlank() }?.let(MunicipalNameNormalizer::normalize) ?: ""
 
     private fun record(center: MunicipalCenter, action: LogAction, oldValues: String? = null) {
         logService.record(
