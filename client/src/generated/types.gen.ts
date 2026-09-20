@@ -998,6 +998,15 @@ export type CreateProfessionalAvailabilityRequest = {
 };
 
 /**
+ * Misma disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
+ */
+export type CreateProfessionalAvailabilitiesRequest = {
+    days?: Array<'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'>;
+    startTime?: string;
+    endTime?: string;
+};
+
+/**
  * Datos requeridos para crear un servicio municipal.
  */
 export type CreateMunicipalServiceRequest = {
@@ -5159,6 +5168,53 @@ export type CreateProfessionalAvailabilityResponses = {
 };
 
 export type CreateProfessionalAvailabilityResponse = CreateProfessionalAvailabilityResponses[keyof CreateProfessionalAvailabilityResponses];
+
+export type CreateProfessionalAvailabilitiesBatchData = {
+    body: CreateProfessionalAvailabilitiesRequest;
+    path: {
+        assignmentId: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-assignments/{assignmentId}/availability/batch';
+};
+
+export type CreateProfessionalAvailabilitiesBatchErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateProfessionalAvailabilitiesBatchError = CreateProfessionalAvailabilitiesBatchErrors[keyof CreateProfessionalAvailabilitiesBatchErrors];
+
+export type CreateProfessionalAvailabilitiesBatchResponses = {
+    /**
+     * Created
+     */
+    201: Array<ProfessionalAvailabilityResponse>;
+};
+
+export type CreateProfessionalAvailabilitiesBatchResponse = CreateProfessionalAvailabilitiesBatchResponses[keyof CreateProfessionalAvailabilitiesBatchResponses];
 
 export type ListMunicipalServicesData = {
     body?: never;
