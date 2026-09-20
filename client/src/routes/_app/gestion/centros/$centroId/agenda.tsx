@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { TimeRangeDialog } from "@/components/centros/TimeRangeDialog"
-import { dayIndex, dayLabel, shortTime, type TimeRangeValue } from "@/components/centros/timeRanges"
+import { DAYS, dayIndex, dayLabel, shortTime, type TimeRangeValue } from "@/components/centros/timeRanges"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -56,7 +56,12 @@ function OpeningHoursSection({ centroId }: { centroId: string }) {
   const deactivate = useMutation({ ...deactivateCenterOpeningHourMutation(), onSuccess: invalidate })
   const isPending = create.isPending || createBulk.isPending || update.isPending
   const mutationError = create.error ?? createBulk.error ?? update.error ?? activate.error ?? deactivate.error
-  const ranges = [...(hours.data ?? [])].sort((a, b) => dayIndex(a.dayOfWeek) - dayIndex(b.dayOfWeek))
+  const byDay = DAYS.map((day) => ({
+    ...day,
+    ranges: [...(hours.data ?? [])]
+      .filter((range) => range.dayOfWeek === day.value)
+      .sort((a, b) => (a.startTime ?? "").localeCompare(b.startTime ?? "")),
+  })).filter((group) => group.ranges.length > 0)
 
   return (
     <section className="space-y-3">
@@ -84,44 +89,49 @@ function OpeningHoursSection({ centroId }: { centroId: string }) {
           <p>No se pudieron cargar los horarios.</p>
           <Button size="sm" variant="outline" onClick={() => hours.refetch()}><IconRefresh />Reintentar</Button>
         </div>
-      ) : ranges.length === 0 ? (
+      ) : byDay.length === 0 ? (
         <p className="text-sm text-muted-foreground">Este centro todavía no tiene horarios de apertura.</p>
       ) : (
         <Card>
           <CardContent className="divide-y px-4 py-0">
-            {ranges.map((range) => (
-              <div key={range.id} className="flex items-center justify-between gap-2 py-2.5 text-sm">
-                <span className={range.active ? undefined : "text-muted-foreground"}>
-                  <span className="font-medium">{dayLabel(range.dayOfWeek)}</span>
-                  {" · "}
-                  {shortTime(range.startTime)}–{shortTime(range.endTime)}
-                  {!range.active && " (inactiva)"}
-                </span>
-                <span className="flex gap-1">
-                  <Button
-                    type="button"
-                    size="icon-sm"
-                    variant="ghost"
-                    aria-label={`Editar franja ${dayLabel(range.dayOfWeek)} ${shortTime(range.startTime)}`}
-                    onClick={() => { create.reset(); update.reset(); setDialog({ range }) }}
-                  >
-                    <IconPencil />
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon-sm"
-                    variant="ghost"
-                    aria-label={`${range.active ? "Desactivar" : "Activar"} franja`}
-                    disabled={activate.isPending || deactivate.isPending}
-                    onClick={() => {
-                      if (!range.id) return
-                      if (range.active) deactivate.mutate({ path: { id: range.id } })
-                      else activate.mutate({ path: { id: range.id } })
-                    }}
-                  >
-                    <IconPower />
-                  </Button>
-                </span>
+            {byDay.map((group) => (
+              <div key={group.value} className="py-2">
+                <p className="px-1 pb-1 text-sm font-semibold">{group.label}</p>
+                <ul className="divide-y">
+                  {group.ranges.map((range) => (
+                    <li key={range.id} className="flex items-center justify-between gap-2 py-2 text-sm">
+                      <span className={range.active ? "tabular-nums" : "text-muted-foreground tabular-nums"}>
+                        {shortTime(range.startTime)}–{shortTime(range.endTime)}
+                        {!range.active && " (inactiva)"}
+                      </span>
+                      <span className="flex gap-1">
+                        <Button
+                          type="button"
+                          size="icon-sm"
+                          variant="ghost"
+                          aria-label={`Editar franja ${group.label} ${shortTime(range.startTime)}`}
+                          onClick={() => { create.reset(); update.reset(); setDialog({ range }) }}
+                        >
+                          <IconPencil />
+                        </Button>
+                        <Button
+                          type="button"
+                          size="icon-sm"
+                          variant="ghost"
+                          aria-label={`${range.active ? "Desactivar" : "Activar"} franja`}
+                          disabled={activate.isPending || deactivate.isPending}
+                          onClick={() => {
+                            if (!range.id) return
+                            if (range.active) deactivate.mutate({ path: { id: range.id } })
+                            else activate.mutate({ path: { id: range.id } })
+                          }}
+                        >
+                          <IconPower />
+                        </Button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </CardContent>
