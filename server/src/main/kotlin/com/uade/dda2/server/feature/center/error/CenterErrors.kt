@@ -72,7 +72,7 @@ object CenterErrors {
     fun openingHourOverlapOnDay(day: java.time.DayOfWeek): ConflictException =
         ConflictException(
             "CENTER_OPENING_HOUR_OVERLAP",
-            "El horario se superpone con otra franja activa del centro el día $day.",
+            "El horario se superpone con otra franja activa del centro el día ${dayName(day)}.",
         )
 
     fun invalidBulkDays(): BadRequestException =
@@ -123,13 +123,13 @@ object CenterErrors {
     fun professionalAvailabilityOverlapOnDay(day: java.time.DayOfWeek): ConflictException =
         ConflictException(
             "PROFESSIONAL_AVAILABILITY_OVERLAP",
-            "La disponibilidad se superpone con otra franja efectiva del profesional el día $day.",
+            "La disponibilidad se superpone con otra franja efectiva del profesional el día ${dayName(day)}.",
         )
 
     fun professionalAvailabilityOutsideOpeningHoursOnDay(day: java.time.DayOfWeek): ConflictException =
         ConflictException(
             "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
-            "La disponibilidad quedaría fuera del horario de apertura del centro el día $day.",
+            "La disponibilidad quedaría fuera del horario de apertura del centro el día ${dayName(day)}.",
         )
 
     fun invalidBulkAvailabilityDays(): BadRequestException =
@@ -140,4 +140,15 @@ object CenterErrors {
 
     fun professionalAvailabilityAlreadyInactive(): ConflictException =
         ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_INACTIVE", "La disponibilidad profesional ya está inactiva.")
+
+    private fun dayName(day: java.time.DayOfWeek): String =
+        when (day) {
+            java.time.DayOfWeek.MONDAY -> "lunes"
+            java.time.DayOfWeek.TUESDAY -> "martes"
+            java.time.DayOfWeek.WEDNESDAY -> "miércoles"
+            java.time.DayOfWeek.THURSDAY -> "jueves"
+            java.time.DayOfWeek.FRIDAY -> "viernes"
+            java.time.DayOfWeek.SATURDAY -> "sábado"
+            java.time.DayOfWeek.SUNDAY -> "domingo"
+        }
 }

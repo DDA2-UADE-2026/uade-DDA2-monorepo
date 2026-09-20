@@ -228,7 +228,7 @@ class ProfessionalAvailabilityFlowTest {
 
         val conflict = createBulk(fixture.secondAssignmentId, listOf("TUESDAY", "WEDNESDAY"), "09:30", "10:30")
         expect(conflict, 409, "PROFESSIONAL_AVAILABILITY_OVERLAP")
-        assertTrue(conflict.response.contentAsString.contains("TUESDAY"))
+        assertTrue(conflict.response.contentAsString.contains("martes"))
         val wednesday = mvc.perform(
             get("/api/admin/professional-assignments/${fixture.secondAssignmentId}/availability")
                 .header("Authorization", "Bearer $token"),
@@ -242,7 +242,7 @@ class ProfessionalAvailabilityFlowTest {
         val fixture = fixture()
         val noCoverage = createBulk(fixture.firstAssignmentId, listOf("THURSDAY"), "09:00", "11:00")
         expect(noCoverage, 409, "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS")
-        assertTrue(noCoverage.response.contentAsString.contains("THURSDAY"))
+        assertTrue(noCoverage.response.contentAsString.contains("jueves"))
 
         expect(createBulk(fixture.firstAssignmentId, emptyList(), "09:00", "11:00"), 400, "PROFESSIONAL_AVAILABILITY_INVALID_DAYS")
         expect(

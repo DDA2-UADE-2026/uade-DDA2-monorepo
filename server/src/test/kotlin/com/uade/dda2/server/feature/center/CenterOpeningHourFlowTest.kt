@@ -148,7 +148,7 @@ class CenterOpeningHourFlowTest {
 
         val conflict = createBulk(centerId, listOf("MONDAY", "WEDNESDAY"), "10:00", "11:00")
         expect(conflict, 409, "CENTER_OPENING_HOUR_OVERLAP")
-        assertTrue(conflict.response.contentAsString.contains("MONDAY"))
+        assertTrue(conflict.response.contentAsString.contains("lunes"))
         assertEquals(3, activeCount(centerId))
         assertTrue(
             tx {
