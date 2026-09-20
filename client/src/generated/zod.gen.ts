@@ -667,6 +667,23 @@ export const zCreateProfessionalAvailabilityRequest = z.object({
 });
 
 /**
+ * Misma disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
+ */
+export const zCreateProfessionalAvailabilitiesRequest = z.object({
+    days: z.array(z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ])).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
  * Datos requeridos para crear un servicio municipal.
  */
 export const zCreateMunicipalServiceRequest = z.object({
@@ -717,6 +734,23 @@ export const zCreateCenterOpeningHourRequest = z.object({
         'SATURDAY',
         'SUNDAY'
     ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Misma franja de apertura replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
+ */
+export const zCreateCenterOpeningHoursRequest = z.object({
+    days: z.array(z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ])).optional(),
     startTime: z.string().optional(),
     endTime: z.string().optional()
 });
@@ -2000,6 +2034,17 @@ export const zCreateProfessionalAvailabilityPath = z.object({
  */
 export const zCreateProfessionalAvailabilityResponse = zProfessionalAvailabilityResponse;
 
+export const zCreateProfessionalAvailabilitiesBatchBody = zCreateProfessionalAvailabilitiesRequest;
+
+export const zCreateProfessionalAvailabilitiesBatchPath = z.object({
+    assignmentId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateProfessionalAvailabilitiesBatchResponse = z.array(zProfessionalAvailabilityResponse);
+
 export const zListMunicipalServicesQuery = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
     size: z.int().gte(1).lte(100).optional().default(20),
@@ -2077,6 +2122,17 @@ export const zCreateCenterOpeningHourPath = z.object({
  * Created
  */
 export const zCreateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zCreateCenterOpeningHoursBatchBody = zCreateCenterOpeningHoursRequest;
+
+export const zCreateCenterOpeningHoursBatchPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateCenterOpeningHoursBatchResponse = z.array(zCenterOpeningHourResponse);
 
 export const zListProfessionalAssignmentsPath = z.object({
     centerServiceId: z.uuid()

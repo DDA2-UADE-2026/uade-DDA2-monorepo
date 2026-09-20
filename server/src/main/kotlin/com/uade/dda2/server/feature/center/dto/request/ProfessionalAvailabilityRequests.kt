@@ -17,3 +17,10 @@ data class UpdateProfessionalAvailabilityRequest(
     val startTime: LocalTime,
     val endTime: LocalTime,
 )
+
+@Schema(description = "Misma disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.")
+data class CreateProfessionalAvailabilitiesRequest(
+    val days: List<DayOfWeek>,
+    val startTime: LocalTime,
+    val endTime: LocalTime,
+)

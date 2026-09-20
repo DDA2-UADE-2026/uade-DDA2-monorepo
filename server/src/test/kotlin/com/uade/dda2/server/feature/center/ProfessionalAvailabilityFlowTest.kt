@@ -174,6 +174,22 @@ class ProfessionalAvailabilityFlowTest {
                 endTime = LocalTime.of(12, 0),
             ),
         )
+        openingHours.saveAndFlush(
+            CenterOpeningHour(
+                center = center,
+                dayOfWeek = DayOfWeek.TUESDAY,
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(12, 0),
+            ),
+        )
+        openingHours.saveAndFlush(
+            CenterOpeningHour(
+                center = center,
+                dayOfWeek = DayOfWeek.WEDNESDAY,
+                startTime = LocalTime.of(8, 0),
+                endTime = LocalTime.of(12, 0),
+            ),
+        )
         val firstService = services.saveAndFlush(
             MunicipalService(name = "Servicio A $suffix", description = "Descripción", durationMinutes = 30),
         )
@@ -203,12 +219,58 @@ class ProfessionalAvailabilityFlowTest {
         )
     }
 
+    @Test
+    fun `crea la misma disponibilidad en varios días y revierte todo ante conflicto`() {
+        val fixture = fixture()
+        val created = createBulk(fixture.firstAssignmentId, listOf("TUESDAY", "WEDNESDAY"), "09:00", "11:00")
+            .also { expect(it, 201) }.response.contentAsString
+        assertTrue(created.contains("TUESDAY") && created.contains("WEDNESDAY"))
+
+        val conflict = createBulk(fixture.secondAssignmentId, listOf("TUESDAY", "WEDNESDAY"), "09:30", "10:30")
+        expect(conflict, 409, "PROFESSIONAL_AVAILABILITY_OVERLAP")
+        assertTrue(conflict.response.contentAsString.contains("martes"))
+        val wednesday = mvc.perform(
+            get("/api/admin/professional-assignments/${fixture.secondAssignmentId}/availability")
+                .header("Authorization", "Bearer $token"),
+        ).andReturn()
+        expect(wednesday, 200)
+        assertEquals("[]", wednesday.response.contentAsString)
+    }
+
+    @Test
+    fun `rechaza bulk sin cobertura o con días inválidos`() {
+        val fixture = fixture()
+        val noCoverage = createBulk(fixture.firstAssignmentId, listOf("THURSDAY"), "09:00", "11:00")
+        expect(noCoverage, 409, "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS")
+        assertTrue(noCoverage.response.contentAsString.contains("jueves"))
+
+        expect(createBulk(fixture.firstAssignmentId, emptyList(), "09:00", "11:00"), 400, "PROFESSIONAL_AVAILABILITY_INVALID_DAYS")
+        expect(
+            createBulk(fixture.firstAssignmentId, listOf("TUESDAY", "TUESDAY"), "09:00", "11:00"),
+            400,
+            "PROFESSIONAL_AVAILABILITY_INVALID_DAYS",
+        )
+        expect(
+            createBulk(fixture.firstAssignmentId, listOf("TUESDAY"), "11:00", "11:00"),
+            400,
+            "PROFESSIONAL_AVAILABILITY_INVALID_RANGE",
+        )
+    }
+
     private fun create(assignmentId: UUID, start: String, end: String): MvcResult =
         mvc.perform(
             post("/api/admin/professional-assignments/$assignmentId/availability")
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(scheduleBody(start, end)),
+        ).andReturn()
+
+    private fun createBulk(assignmentId: UUID, days: List<String>, start: String, end: String): MvcResult =
+        mvc.perform(
+            post("/api/admin/professional-assignments/$assignmentId/availability/batch")
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json.writeValueAsString(mapOf("days" to days, "startTime" to start, "endTime" to end))),
         ).andReturn()
 
     private fun update(id: UUID, start: String, end: String): MvcResult =

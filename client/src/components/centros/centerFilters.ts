@@ -10,6 +10,14 @@ export const centerSearchSchema = z.object({
 
 export type CenterSearch = z.infer<typeof centerSearchSchema>
 
+export type EstadoFilter = CenterSearch["estado"]
+
+export const ESTADO_LABELS: Record<EstadoFilter, string> = {
+  todos: "Todos",
+  activos: "Activos",
+  inactivos: "Inactivos",
+}
+
 export interface CenterListQuery {
   page: number
   size: number

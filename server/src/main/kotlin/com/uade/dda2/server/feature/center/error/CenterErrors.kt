@@ -69,6 +69,18 @@ object CenterErrors {
     fun openingHourOverlap(): ConflictException =
         ConflictException("CENTER_OPENING_HOUR_OVERLAP", "El horario se superpone con otra franja activa del centro.")
 
+    fun openingHourOverlapOnDay(day: java.time.DayOfWeek): ConflictException =
+        ConflictException(
+            "CENTER_OPENING_HOUR_OVERLAP",
+            "El horario se superpone con otra franja activa del centro el día ${dayName(day)}.",
+        )
+
+    fun invalidBulkDays(): BadRequestException =
+        BadRequestException(
+            "CENTER_OPENING_HOUR_INVALID_DAYS",
+            "Se requiere al menos un día distinto para crear las franjas de apertura.",
+        )
+
     fun openingHourAlreadyActive(): ConflictException =
         ConflictException("CENTER_OPENING_HOUR_ALREADY_ACTIVE", "El horario de apertura ya está activo.")
 
@@ -108,6 +120,35 @@ object CenterErrors {
     fun professionalAvailabilityAlreadyActive(): ConflictException =
         ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_ACTIVE", "La disponibilidad profesional ya está activa.")
 
+    fun professionalAvailabilityOverlapOnDay(day: java.time.DayOfWeek): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OVERLAP",
+            "La disponibilidad se superpone con otra franja efectiva del profesional el día ${dayName(day)}.",
+        )
+
+    fun professionalAvailabilityOutsideOpeningHoursOnDay(day: java.time.DayOfWeek): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
+            "La disponibilidad quedaría fuera del horario de apertura del centro el día ${dayName(day)}.",
+        )
+
+    fun invalidBulkAvailabilityDays(): BadRequestException =
+        BadRequestException(
+            "PROFESSIONAL_AVAILABILITY_INVALID_DAYS",
+            "Se requiere al menos un día distinto para crear las disponibilidades.",
+        )
+
     fun professionalAvailabilityAlreadyInactive(): ConflictException =
         ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_INACTIVE", "La disponibilidad profesional ya está inactiva.")
+
+    private fun dayName(day: java.time.DayOfWeek): String =
+        when (day) {
+            java.time.DayOfWeek.MONDAY -> "lunes"
+            java.time.DayOfWeek.TUESDAY -> "martes"
+            java.time.DayOfWeek.WEDNESDAY -> "miércoles"
+            java.time.DayOfWeek.THURSDAY -> "jueves"
+            java.time.DayOfWeek.FRIDAY -> "viernes"
+            java.time.DayOfWeek.SATURDAY -> "sábado"
+            java.time.DayOfWeek.SUNDAY -> "domingo"
+        }
 }
