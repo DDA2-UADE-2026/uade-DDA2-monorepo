@@ -12,6 +12,7 @@ import {
   activateCenterOpeningHourMutation,
   activateProfessionalAvailabilityMutation,
   createCenterOpeningHourMutation,
+  createCenterOpeningHoursBatchMutation,
   createProfessionalAvailabilityMutation,
   deactivateCenterOpeningHourMutation,
   deactivateProfessionalAvailabilityMutation,
@@ -49,18 +50,19 @@ function OpeningHoursSection({ centroId }: { centroId: string }) {
   const key = listCenterOpeningHoursQueryKey({ path: { centerId: centroId } })
   const invalidate = () => queryClient.invalidateQueries({ queryKey: key })
   const create = useMutation({ ...createCenterOpeningHourMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
+  const createBulk = useMutation({ ...createCenterOpeningHoursBatchMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
   const update = useMutation({ ...updateCenterOpeningHourMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
   const activate = useMutation({ ...activateCenterOpeningHourMutation(), onSuccess: invalidate })
   const deactivate = useMutation({ ...deactivateCenterOpeningHourMutation(), onSuccess: invalidate })
-  const isPending = create.isPending || update.isPending
-  const mutationError = create.error ?? update.error ?? activate.error ?? deactivate.error
+  const isPending = create.isPending || createBulk.isPending || update.isPending
+  const mutationError = create.error ?? createBulk.error ?? update.error ?? activate.error ?? deactivate.error
   const ranges = [...(hours.data ?? [])].sort((a, b) => dayIndex(a.dayOfWeek) - dayIndex(b.dayOfWeek))
 
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-base font-semibold"><IconCalendarClock className="size-4" />Horarios de apertura</h2>
-        <Button size="sm" onClick={() => { create.reset(); update.reset(); setDialog({ range: null }) }}>
+        <Button size="sm" onClick={() => { create.reset(); createBulk.reset(); update.reset(); setDialog({ range: null }) }}>
           <IconPlus />Nueva franja
         </Button>
       </div>
@@ -129,20 +131,27 @@ function OpeningHoursSection({ centroId }: { centroId: string }) {
       {dialog && (
         <TimeRangeDialog
           title={dialog.range ? "Editar franja de apertura" : "Nueva franja de apertura"}
-          description="Las franjas son semanales y semiabiertas [inicio, fin): 09:00–10:00 y 10:00–11:00 no se superponen."
+          description="Las franjas son semanales y semiabiertas [inicio, fin): 09:00–10:00 y 10:00–11:00 no se superponen. Con varios días tildados se crean todas juntas o ninguna."
           initial={{
             dayOfWeek: (dialog.range?.dayOfWeek ?? "MONDAY") as TimeRangeValue["dayOfWeek"],
             startTime: dialog.range?.startTime?.slice(0, 5) ?? "",
             endTime: dialog.range?.endTime?.slice(0, 5) ?? "",
           }}
+          allowMultipleDays={!dialog.range}
           pending={isPending}
-          error={create.error ?? update.error}
+          error={create.error ?? createBulk.error ?? update.error}
           submitLabel={dialog.range ? "Guardar cambios" : "Crear franja"}
           onSubmit={(value) => {
             create.reset()
+            createBulk.reset()
             update.reset()
             if (dialog.range?.id) {
               update.mutate({ path: { id: dialog.range.id }, body: value })
+            } else if (value.days.length > 1) {
+              createBulk.mutate({
+                path: { centerId: centroId },
+                body: { days: value.days, startTime: value.startTime, endTime: value.endTime },
+              })
             } else {
               create.mutate({ path: { centerId: centroId }, body: value })
             }
