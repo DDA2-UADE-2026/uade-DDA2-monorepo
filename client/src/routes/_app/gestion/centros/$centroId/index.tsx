@@ -116,7 +116,12 @@ function CenterServicesSection({ centroId }: { centroId: string }) {
         <CardContent className="flex flex-col gap-2 pt-6 sm:flex-row">
           <Select value={selectedServiceId} onValueChange={(value) => setSelectedServiceId(value ?? "")} disabled={!catalog.data}>
             <SelectTrigger className="flex-1" aria-label="Servicio del catálogo para asignar">
-              <SelectValue placeholder={catalog.isPending ? "Cargando catálogo…" : "Seleccioná un servicio del catálogo"} />
+              <SelectValue>
+                {(value: string | null) =>
+                  value
+                    ? (available.find((service) => service.id === value)?.name ?? value)
+                    : (catalog.isPending ? "Cargando catálogo…" : "Seleccioná un servicio del catálogo")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {available.map((service) => (
@@ -230,9 +235,15 @@ function ServiceProfessionals({ centerServiceId, serviceActive }: {
       <div className="flex flex-col gap-2 sm:flex-row">
         <Select value={selectedProfessionalId} onValueChange={(value) => setSelectedProfessionalId(value ?? "")} disabled={!users.data || !serviceActive}>
           <SelectTrigger className="flex-1" aria-label="Profesional para asignar">
-            <SelectValue placeholder={
-              !serviceActive ? "Reactivá el servicio para asignar profesionales" : users.isPending ? "Cargando profesionales…" : "Seleccioná un profesional activo"
-            } />
+            <SelectValue>
+              {(value: string | null) => {
+                const selected = eligible.find((user) => String(user.id) === value)
+                if (selected) return `${selected.name} — ${selected.email}`
+                if (!serviceActive) return "Reactivá el servicio para asignar profesionales"
+                if (users.isPending) return "Cargando profesionales…"
+                return "Seleccioná un profesional activo"
+              }}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {eligible.map((user) => (
