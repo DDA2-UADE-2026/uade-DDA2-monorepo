@@ -14,14 +14,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { contentQueryKey, delete8Mutation, get1QueryKey, list5Options, list5QueryKey, listQueryKey } from "@/generated/@tanstack/react-query.gen"
+import { contentQueryKey, delete8Mutation, get2QueryKey, list6Options, list6QueryKey, listQueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse, ApplicationResponse, AvailableProgramDocumentRequirementResponse } from "@/generated/types.gen"
 import { applicationDocumentRequirements, formatDocumentSize, isApplicationResolved } from "@/lib/application-flow"
 
 export function ApplicationDocuments({ application }: { application: ApplicationResponse & { id: string } }) {
   const applicationId = application.id
   const queryClient = useQueryClient()
-  const documents = useQuery(list5Options({ path: { applicationId } }))
+  const documents = useQuery(list6Options({ path: { applicationId } }))
   const [uploadTarget, setUploadTarget] = useState<(AvailableProgramDocumentRequirementResponse & { id: string }) | null>(null)
   const [preview, setPreview] = useState<(ApplicationDocumentResponse & { id: string }) | null>(null)
   const [finalized, setFinalized] = useState(false)
@@ -30,8 +30,8 @@ export function ApplicationDocuments({ application }: { application: Application
     ...delete8Mutation(),
     onSuccess: async (_data, variables) => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: list5QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list6QueryKey({ path: { applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: listQueryKey() }),
       ])
       queryClient.removeQueries({ queryKey: contentQueryKey({ path: variables.path }) })
@@ -48,7 +48,7 @@ export function ApplicationDocuments({ application }: { application: Application
   return <section id="documentacion" aria-labelledby="application-documents-title" className="scroll-mt-6 space-y-4">
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div><h2 id="application-documents-title" className="font-heading text-xl font-medium">Documentación</h2><p className="mt-1 text-sm text-muted-foreground">Consultá tus entregas y completá los documentos solicitados.</p></div>
-      <Button size="sm" variant="outline" disabled={documents.isFetching} onClick={() => { documents.refetch(); queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: applicationId } }) }) }}><IconRefresh className={documents.isFetching ? "animate-spin" : undefined} />Actualizar documentos</Button>
+      <Button size="sm" variant="outline" disabled={documents.isFetching} onClick={() => { documents.refetch(); queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }) }}><IconRefresh className={documents.isFetching ? "animate-spin" : undefined} />Actualizar documentos</Button>
     </div>
     {disabled && <Alert><IconFileCheck /><AlertTitle>Documentación disponible para consulta</AlertTitle><AlertDescription>El estado de esta solicitud ya no permite cargar, reemplazar ni eliminar documentos.</AlertDescription></Alert>}
     {documents.isPending ? <Skeleton className="h-40 w-full" /> : documents.isError ? <ApplicationError error={documents.error} title="No pudimos cargar la documentación" retry={() => documents.refetch()} /> : requirements.length === 0 ? (

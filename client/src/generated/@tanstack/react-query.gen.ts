@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, close, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, createEnrollmentPeriod, createProgramImage, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, getAvailableProgram, getEnrollmentPeriod, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, listAvailablePrograms, listEnrollmentPeriods, listLogs, listLogsByEntity, listLogsByUser, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, updateEnrollmentPeriod, updateProgramImage } from '../sdk.gen';
-import type { ActivateData, ActivateError, ActivateResponse, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
+import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assignProfessional, assignServiceToCenter, close, close1, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, create8, createCenterOpeningHour, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, get3, get4, getAvailableProgram, getEnrollmentPeriod, getMunicipalCenter, getMunicipalService, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, list7, list8, listActivities, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, put, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, update7, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage } from '../sdk.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PublishData, PublishError, PublishResponse, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -542,6 +542,147 @@ export const update6Mutation = (options?: Partial<Options<Update6Data>>): UseMut
     const mutationOptions: UseMutationOptions<Update6Response, Update6Error, Options<Update6Data>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await update6({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Editar una disponibilidad profesional
+ */
+export const updateProfessionalAvailabilityMutation = (options?: Partial<Options<UpdateProfessionalAvailabilityData>>): UseMutationOptions<UpdateProfessionalAvailabilityResponse, UpdateProfessionalAvailabilityError, Options<UpdateProfessionalAvailabilityData>> => {
+    const mutationOptions: UseMutationOptions<UpdateProfessionalAvailabilityResponse, UpdateProfessionalAvailabilityError, Options<UpdateProfessionalAvailabilityData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateProfessionalAvailability({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getMunicipalServiceQueryKey = (options: Options<GetMunicipalServiceData>) => createQueryKey('getMunicipalService', options);
+
+/**
+ * Consultar un servicio municipal
+ */
+export const getMunicipalServiceOptions = (options: Options<GetMunicipalServiceData>) => queryOptions<GetMunicipalServiceResponse, GetMunicipalServiceError, GetMunicipalServiceResponse, ReturnType<typeof getMunicipalServiceQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMunicipalService({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMunicipalServiceQueryKey(options)
+});
+
+/**
+ * Editar un servicio municipal
+ */
+export const updateMunicipalServiceMutation = (options?: Partial<Options<UpdateMunicipalServiceData>>): UseMutationOptions<UpdateMunicipalServiceResponse, UpdateMunicipalServiceError, Options<UpdateMunicipalServiceData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMunicipalServiceResponse, UpdateMunicipalServiceError, Options<UpdateMunicipalServiceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateMunicipalService({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getMunicipalCenterQueryKey = (options: Options<GetMunicipalCenterData>) => createQueryKey('getMunicipalCenter', options);
+
+/**
+ * Consultar un centro municipal
+ */
+export const getMunicipalCenterOptions = (options: Options<GetMunicipalCenterData>) => queryOptions<GetMunicipalCenterResponse, GetMunicipalCenterError, GetMunicipalCenterResponse, ReturnType<typeof getMunicipalCenterQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getMunicipalCenter({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getMunicipalCenterQueryKey(options)
+});
+
+/**
+ * Editar un centro municipal
+ */
+export const updateMunicipalCenterMutation = (options?: Partial<Options<UpdateMunicipalCenterData>>): UseMutationOptions<UpdateMunicipalCenterResponse, UpdateMunicipalCenterError, Options<UpdateMunicipalCenterData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMunicipalCenterResponse, UpdateMunicipalCenterError, Options<UpdateMunicipalCenterData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateMunicipalCenter({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Editar un horario de apertura
+ */
+export const updateCenterOpeningHourMutation = (options?: Partial<Options<UpdateCenterOpeningHourData>>): UseMutationOptions<UpdateCenterOpeningHourResponse, UpdateCenterOpeningHourError, Options<UpdateCenterOpeningHourData>> => {
+    const mutationOptions: UseMutationOptions<UpdateCenterOpeningHourResponse, UpdateCenterOpeningHourError, Options<UpdateCenterOpeningHourData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateCenterOpeningHour({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const get1QueryKey = (options: Options<Get1Data>) => createQueryKey('get1', options);
+
+/**
+ * Consultar una actividad
+ */
+export const get1Options = (options: Options<Get1Data>) => queryOptions<Get1Response, Get1Error, Get1Response, ReturnType<typeof get1QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await get1({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: get1QueryKey(options)
+});
+
+/**
+ * Actualizar una actividad
+ *
+ * Solo se pueden modificar actividades en estado DRAFT.
+ */
+export const update7Mutation = (options?: Partial<Options<Update7Data>>): UseMutationOptions<Update7Response, Update7Error, Options<Update7Data>> => {
+    const mutationOptions: UseMutationOptions<Update7Response, Update7Error, Options<Update7Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await update7({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1227,6 +1368,276 @@ export const create7Mutation = (options?: Partial<Options<Create7Data>>): UseMut
     return mutationOptions;
 };
 
+export const listProfessionalAvailabilityQueryKey = (options: Options<ListProfessionalAvailabilityData>) => createQueryKey('listProfessionalAvailability', options);
+
+/**
+ * Listar disponibilidad de una asignación
+ */
+export const listProfessionalAvailabilityOptions = (options: Options<ListProfessionalAvailabilityData>) => queryOptions<ListProfessionalAvailabilityResponse, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ReturnType<typeof listProfessionalAvailabilityQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listProfessionalAvailability({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProfessionalAvailabilityQueryKey(options)
+});
+
+/**
+ * Crear una disponibilidad profesional
+ */
+export const createProfessionalAvailabilityMutation = (options?: Partial<Options<CreateProfessionalAvailabilityData>>): UseMutationOptions<CreateProfessionalAvailabilityResponse, CreateProfessionalAvailabilityError, Options<CreateProfessionalAvailabilityData>> => {
+    const mutationOptions: UseMutationOptions<CreateProfessionalAvailabilityResponse, CreateProfessionalAvailabilityError, Options<CreateProfessionalAvailabilityData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createProfessionalAvailability({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listMunicipalServicesQueryKey = (options?: Options<ListMunicipalServicesData>) => createQueryKey('listMunicipalServices', options);
+
+/**
+ * Listar servicios municipales
+ */
+export const listMunicipalServicesOptions = (options?: Options<ListMunicipalServicesData>) => queryOptions<ListMunicipalServicesResponse, ListMunicipalServicesError, ListMunicipalServicesResponse, ReturnType<typeof listMunicipalServicesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listMunicipalServices({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMunicipalServicesQueryKey(options)
+});
+
+export const listMunicipalServicesInfiniteQueryKey = (options?: Options<ListMunicipalServicesData>): QueryKey<Options<ListMunicipalServicesData>> => createQueryKey('listMunicipalServices', options, true);
+
+/**
+ * Listar servicios municipales
+ */
+export const listMunicipalServicesInfiniteOptions = (options?: Options<ListMunicipalServicesData>) => {
+    const opts = infiniteQueryOptions<ListMunicipalServicesResponse, ListMunicipalServicesError, InfiniteData<ListMunicipalServicesResponse>, QueryKey<Options<ListMunicipalServicesData>>, number | Pick<QueryKey<Options<ListMunicipalServicesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListMunicipalServicesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listMunicipalServices({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listMunicipalServicesInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Crear un servicio municipal
+ */
+export const createMunicipalServiceMutation = (options?: Partial<Options<CreateMunicipalServiceData>>): UseMutationOptions<CreateMunicipalServiceResponse, CreateMunicipalServiceError, Options<CreateMunicipalServiceData>> => {
+    const mutationOptions: UseMutationOptions<CreateMunicipalServiceResponse, CreateMunicipalServiceError, Options<CreateMunicipalServiceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createMunicipalService({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listMunicipalCentersQueryKey = (options?: Options<ListMunicipalCentersData>) => createQueryKey('listMunicipalCenters', options);
+
+/**
+ * Listar centros municipales
+ */
+export const listMunicipalCentersOptions = (options?: Options<ListMunicipalCentersData>) => queryOptions<ListMunicipalCentersResponse, ListMunicipalCentersError, ListMunicipalCentersResponse, ReturnType<typeof listMunicipalCentersQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listMunicipalCenters({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMunicipalCentersQueryKey(options)
+});
+
+export const listMunicipalCentersInfiniteQueryKey = (options?: Options<ListMunicipalCentersData>): QueryKey<Options<ListMunicipalCentersData>> => createQueryKey('listMunicipalCenters', options, true);
+
+/**
+ * Listar centros municipales
+ */
+export const listMunicipalCentersInfiniteOptions = (options?: Options<ListMunicipalCentersData>) => {
+    const opts = infiniteQueryOptions<ListMunicipalCentersResponse, ListMunicipalCentersError, InfiniteData<ListMunicipalCentersResponse>, QueryKey<Options<ListMunicipalCentersData>>, number | Pick<QueryKey<Options<ListMunicipalCentersData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListMunicipalCentersData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listMunicipalCenters({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listMunicipalCentersInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Crear un centro municipal
+ */
+export const createMunicipalCenterMutation = (options?: Partial<Options<CreateMunicipalCenterData>>): UseMutationOptions<CreateMunicipalCenterResponse, CreateMunicipalCenterError, Options<CreateMunicipalCenterData>> => {
+    const mutationOptions: UseMutationOptions<CreateMunicipalCenterResponse, CreateMunicipalCenterError, Options<CreateMunicipalCenterData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createMunicipalCenter({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listCenterServicesQueryKey = (options: Options<ListCenterServicesData>) => createQueryKey('listCenterServices', options);
+
+/**
+ * Listar servicios de un centro
+ */
+export const listCenterServicesOptions = (options: Options<ListCenterServicesData>) => queryOptions<ListCenterServicesResponse, ListCenterServicesError, ListCenterServicesResponse, ReturnType<typeof listCenterServicesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCenterServices({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCenterServicesQueryKey(options)
+});
+
+/**
+ * Asignar un servicio a un centro
+ */
+export const assignServiceToCenterMutation = (options?: Partial<Options<AssignServiceToCenterData>>): UseMutationOptions<AssignServiceToCenterResponse, AssignServiceToCenterError, Options<AssignServiceToCenterData>> => {
+    const mutationOptions: UseMutationOptions<AssignServiceToCenterResponse, AssignServiceToCenterError, Options<AssignServiceToCenterData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assignServiceToCenter({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listCenterOpeningHoursQueryKey = (options: Options<ListCenterOpeningHoursData>) => createQueryKey('listCenterOpeningHours', options);
+
+/**
+ * Listar horarios de apertura
+ */
+export const listCenterOpeningHoursOptions = (options: Options<ListCenterOpeningHoursData>) => queryOptions<ListCenterOpeningHoursResponse, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ReturnType<typeof listCenterOpeningHoursQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCenterOpeningHours({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCenterOpeningHoursQueryKey(options)
+});
+
+/**
+ * Crear un horario de apertura
+ */
+export const createCenterOpeningHourMutation = (options?: Partial<Options<CreateCenterOpeningHourData>>): UseMutationOptions<CreateCenterOpeningHourResponse, CreateCenterOpeningHourError, Options<CreateCenterOpeningHourData>> => {
+    const mutationOptions: UseMutationOptions<CreateCenterOpeningHourResponse, CreateCenterOpeningHourError, Options<CreateCenterOpeningHourData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createCenterOpeningHour({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listProfessionalAssignmentsQueryKey = (options: Options<ListProfessionalAssignmentsData>) => createQueryKey('listProfessionalAssignments', options);
+
+/**
+ * Listar profesionales de un servicio del centro
+ */
+export const listProfessionalAssignmentsOptions = (options: Options<ListProfessionalAssignmentsData>) => queryOptions<ListProfessionalAssignmentsResponse, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ReturnType<typeof listProfessionalAssignmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listProfessionalAssignments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProfessionalAssignmentsQueryKey(options)
+});
+
+/**
+ * Asignar un profesional a un servicio del centro
+ */
+export const assignProfessionalMutation = (options?: Partial<Options<AssignProfessionalData>>): UseMutationOptions<AssignProfessionalResponse, AssignProfessionalError, Options<AssignProfessionalData>> => {
+    const mutationOptions: UseMutationOptions<AssignProfessionalResponse, AssignProfessionalError, Options<AssignProfessionalData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assignProfessional({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const list4QueryKey = (options?: Options<List4Data>) => createQueryKey('list4', options);
 
 /**
@@ -1298,6 +1709,113 @@ export const submit1Mutation = (options?: Partial<Options<Submit1Data>>): UseMut
     return mutationOptions;
 };
 
+export const list5QueryKey = (options?: Options<List5Data>) => createQueryKey('list5', options);
+
+/**
+ * Listar actividades
+ *
+ * Devuelve una página de actividades comunitarias.
+ */
+export const list5Options = (options?: Options<List5Data>) => queryOptions<List5Response, List5Error, List5Response, ReturnType<typeof list5QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list5({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list5QueryKey(options)
+});
+
+export const list5InfiniteQueryKey = (options?: Options<List5Data>): QueryKey<Options<List5Data>> => createQueryKey('list5', options, true);
+
+/**
+ * Listar actividades
+ *
+ * Devuelve una página de actividades comunitarias.
+ */
+export const list5InfiniteOptions = (options?: Options<List5Data>) => {
+    const opts = infiniteQueryOptions<List5Response, List5Error, InfiniteData<List5Response>, QueryKey<Options<List5Data>>, number | Pick<QueryKey<Options<List5Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<List5Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await list5({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: list5InfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Crear una actividad
+ *
+ * Registra una actividad comunitaria en estado DRAFT.
+ */
+export const create8Mutation = (options?: Partial<Options<Create8Data>>): UseMutationOptions<Create8Response, Create8Error, Options<Create8Data>> => {
+    const mutationOptions: UseMutationOptions<Create8Response, Create8Error, Options<Create8Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await create8({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Inscribirse en una actividad
+ *
+ * La identidad ciudadana se obtiene del JWT. La actividad debe estar abierta y tener cupo.
+ */
+export const enrollMutation = (options?: Partial<Options<EnrollData>>): UseMutationOptions<EnrollResponse, EnrollError, Options<EnrollData>> => {
+    const mutationOptions: UseMutationOptions<EnrollResponse, EnrollError, Options<EnrollData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await enroll({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Marcar a una persona como presente o ausente
+ */
+export const updateAttendanceMutation = (options?: Partial<Options<UpdateAttendanceData>>): UseMutationOptions<UpdateAttendanceResponse, UpdateAttendanceError, Options<UpdateAttendanceData>> => {
+    const mutationOptions: UseMutationOptions<UpdateAttendanceResponse, UpdateAttendanceError, Options<UpdateAttendanceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await updateAttendance({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 /**
  * Suspender una edición
  *
@@ -1356,6 +1874,210 @@ export const activateMutation = (options?: Partial<Options<ActivateData>>): UseM
 };
 
 /**
+ * Desactivar una disponibilidad profesional
+ */
+export const deactivateProfessionalAvailabilityMutation = (options?: Partial<Options<DeactivateProfessionalAvailabilityData>>): UseMutationOptions<DeactivateProfessionalAvailabilityResponse, DeactivateProfessionalAvailabilityError, Options<DeactivateProfessionalAvailabilityData>> => {
+    const mutationOptions: UseMutationOptions<DeactivateProfessionalAvailabilityResponse, DeactivateProfessionalAvailabilityError, Options<DeactivateProfessionalAvailabilityData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deactivateProfessionalAvailability({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reactivar una disponibilidad profesional
+ */
+export const activateProfessionalAvailabilityMutation = (options?: Partial<Options<ActivateProfessionalAvailabilityData>>): UseMutationOptions<ActivateProfessionalAvailabilityResponse, ActivateProfessionalAvailabilityError, Options<ActivateProfessionalAvailabilityData>> => {
+    const mutationOptions: UseMutationOptions<ActivateProfessionalAvailabilityResponse, ActivateProfessionalAvailabilityError, Options<ActivateProfessionalAvailabilityData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await activateProfessionalAvailability({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Desactivar una asignación profesional
+ */
+export const deactivateProfessionalAssignmentMutation = (options?: Partial<Options<DeactivateProfessionalAssignmentData>>): UseMutationOptions<DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAssignmentError, Options<DeactivateProfessionalAssignmentData>> => {
+    const mutationOptions: UseMutationOptions<DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAssignmentError, Options<DeactivateProfessionalAssignmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deactivateProfessionalAssignment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reactivar una asignación profesional
+ */
+export const activateProfessionalAssignmentMutation = (options?: Partial<Options<ActivateProfessionalAssignmentData>>): UseMutationOptions<ActivateProfessionalAssignmentResponse, ActivateProfessionalAssignmentError, Options<ActivateProfessionalAssignmentData>> => {
+    const mutationOptions: UseMutationOptions<ActivateProfessionalAssignmentResponse, ActivateProfessionalAssignmentError, Options<ActivateProfessionalAssignmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await activateProfessionalAssignment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Desactivar un servicio municipal
+ */
+export const deactivateMunicipalServiceMutation = (options?: Partial<Options<DeactivateMunicipalServiceData>>): UseMutationOptions<DeactivateMunicipalServiceResponse, DeactivateMunicipalServiceError, Options<DeactivateMunicipalServiceData>> => {
+    const mutationOptions: UseMutationOptions<DeactivateMunicipalServiceResponse, DeactivateMunicipalServiceError, Options<DeactivateMunicipalServiceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deactivateMunicipalService({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Activar un servicio municipal
+ */
+export const activateMunicipalServiceMutation = (options?: Partial<Options<ActivateMunicipalServiceData>>): UseMutationOptions<ActivateMunicipalServiceResponse, ActivateMunicipalServiceError, Options<ActivateMunicipalServiceData>> => {
+    const mutationOptions: UseMutationOptions<ActivateMunicipalServiceResponse, ActivateMunicipalServiceError, Options<ActivateMunicipalServiceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await activateMunicipalService({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Desactivar un centro municipal
+ */
+export const deactivateMunicipalCenterMutation = (options?: Partial<Options<DeactivateMunicipalCenterData>>): UseMutationOptions<DeactivateMunicipalCenterResponse, DeactivateMunicipalCenterError, Options<DeactivateMunicipalCenterData>> => {
+    const mutationOptions: UseMutationOptions<DeactivateMunicipalCenterResponse, DeactivateMunicipalCenterError, Options<DeactivateMunicipalCenterData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deactivateMunicipalCenter({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Activar un centro municipal
+ */
+export const activateMunicipalCenterMutation = (options?: Partial<Options<ActivateMunicipalCenterData>>): UseMutationOptions<ActivateMunicipalCenterResponse, ActivateMunicipalCenterError, Options<ActivateMunicipalCenterData>> => {
+    const mutationOptions: UseMutationOptions<ActivateMunicipalCenterResponse, ActivateMunicipalCenterError, Options<ActivateMunicipalCenterData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await activateMunicipalCenter({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Desactivar un servicio del centro
+ */
+export const deactivateCenterServiceMutation = (options?: Partial<Options<DeactivateCenterServiceData>>): UseMutationOptions<DeactivateCenterServiceResponse, DeactivateCenterServiceError, Options<DeactivateCenterServiceData>> => {
+    const mutationOptions: UseMutationOptions<DeactivateCenterServiceResponse, DeactivateCenterServiceError, Options<DeactivateCenterServiceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deactivateCenterService({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reactivar un servicio del centro
+ */
+export const activateCenterServiceMutation = (options?: Partial<Options<ActivateCenterServiceData>>): UseMutationOptions<ActivateCenterServiceResponse, ActivateCenterServiceError, Options<ActivateCenterServiceData>> => {
+    const mutationOptions: UseMutationOptions<ActivateCenterServiceResponse, ActivateCenterServiceError, Options<ActivateCenterServiceData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await activateCenterService({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Desactivar un horario de apertura
+ */
+export const deactivateCenterOpeningHourMutation = (options?: Partial<Options<DeactivateCenterOpeningHourData>>): UseMutationOptions<DeactivateCenterOpeningHourResponse, DeactivateCenterOpeningHourError, Options<DeactivateCenterOpeningHourData>> => {
+    const mutationOptions: UseMutationOptions<DeactivateCenterOpeningHourResponse, DeactivateCenterOpeningHourError, Options<DeactivateCenterOpeningHourData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await deactivateCenterOpeningHour({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reactivar un horario de apertura
+ */
+export const activateCenterOpeningHourMutation = (options?: Partial<Options<ActivateCenterOpeningHourData>>): UseMutationOptions<ActivateCenterOpeningHourResponse, ActivateCenterOpeningHourError, Options<ActivateCenterOpeningHourData>> => {
+    const mutationOptions: UseMutationOptions<ActivateCenterOpeningHourResponse, ActivateCenterOpeningHourError, Options<ActivateCenterOpeningHourData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await activateCenterOpeningHour({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Revisar un documento pendiente
  *
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
@@ -1364,6 +2086,44 @@ export const reviewMutation = (options?: Partial<Options<ReviewData>>): UseMutat
     const mutationOptions: UseMutationOptions<unknown, ReviewError, Options<ReviewData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await review({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Publicar una actividad
+ *
+ * Cambia una actividad de DRAFT a OPEN.
+ */
+export const publishMutation = (options?: Partial<Options<PublishData>>): UseMutationOptions<PublishResponse, PublishError, Options<PublishData>> => {
+    const mutationOptions: UseMutationOptions<PublishResponse, PublishError, Options<PublishData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await publish({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cerrar una actividad
+ *
+ * Cambia una actividad de OPEN a CLOSED.
+ */
+export const close1Mutation = (options?: Partial<Options<Close1Data>>): UseMutationOptions<Close1Response, Close1Error, Options<Close1Data>> => {
+    const mutationOptions: UseMutationOptions<Close1Response, Close1Error, Options<Close1Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await close1({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1546,6 +2306,102 @@ export const getAvailableProgramOptions = (options: Options<GetAvailableProgramD
     queryKey: getAvailableProgramQueryKey(options)
 });
 
+export const listActivitiesQueryKey = (options?: Options<ListActivitiesData>) => createQueryKey('listActivities', options);
+
+/**
+ * Listar actividades habilitadas para registrar asistencia
+ */
+export const listActivitiesOptions = (options?: Options<ListActivitiesData>) => queryOptions<ListActivitiesResponse, ListActivitiesError, ListActivitiesResponse, ReturnType<typeof listActivitiesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listActivities({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listActivitiesQueryKey(options)
+});
+
+export const listActivitiesInfiniteQueryKey = (options?: Options<ListActivitiesData>): QueryKey<Options<ListActivitiesData>> => createQueryKey('listActivities', options, true);
+
+/**
+ * Listar actividades habilitadas para registrar asistencia
+ */
+export const listActivitiesInfiniteOptions = (options?: Options<ListActivitiesData>) => {
+    const opts = infiniteQueryOptions<ListActivitiesResponse, ListActivitiesError, InfiniteData<ListActivitiesResponse>, QueryKey<Options<ListActivitiesData>>, number | Pick<QueryKey<Options<ListActivitiesData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListActivitiesData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listActivities({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listActivitiesInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const listEnrollmentsQueryKey = (options: Options<ListEnrollmentsData>) => createQueryKey('listEnrollments', options);
+
+/**
+ * Listar personas inscriptas y su asistencia
+ */
+export const listEnrollmentsOptions = (options: Options<ListEnrollmentsData>) => queryOptions<ListEnrollmentsResponse, ListEnrollmentsError, ListEnrollmentsResponse, ReturnType<typeof listEnrollmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listEnrollments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listEnrollmentsQueryKey(options)
+});
+
+export const listEnrollmentsInfiniteQueryKey = (options: Options<ListEnrollmentsData>): QueryKey<Options<ListEnrollmentsData>> => createQueryKey('listEnrollments', options, true);
+
+/**
+ * Listar personas inscriptas y su asistencia
+ */
+export const listEnrollmentsInfiniteOptions = (options: Options<ListEnrollmentsData>) => {
+    const opts = infiniteQueryOptions<ListEnrollmentsResponse, ListEnrollmentsError, InfiniteData<ListEnrollmentsResponse>, QueryKey<Options<ListEnrollmentsData>>, number | Pick<QueryKey<Options<ListEnrollmentsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListEnrollmentsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listEnrollments({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listEnrollmentsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
 export const getPublicImageQueryKey = (options: Options<GetPublicImageData>) => createQueryKey('getPublicImage', options);
 
 /**
@@ -1566,16 +2422,16 @@ export const getPublicImageOptions = (options: Options<GetPublicImageData>) => q
     queryKey: getPublicImageQueryKey(options)
 });
 
-export const get1QueryKey = (options: Options<Get1Data>) => createQueryKey('get1', options);
+export const get2QueryKey = (options: Options<Get2Data>) => createQueryKey('get2', options);
 
 /**
  * Consultar una solicitud propia
  *
  * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
  */
-export const get1Options = (options: Options<Get1Data>) => queryOptions<Get1Response, Get1Error, Get1Response, ReturnType<typeof get1QueryKey>>({
+export const get2Options = (options: Options<Get2Data>) => queryOptions<Get2Response, Get2Error, Get2Response, ReturnType<typeof get2QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await get1({
+        const { data } = await get2({
             ...options,
             ...queryKey[0],
             signal,
@@ -1583,17 +2439,17 @@ export const get1Options = (options: Options<Get1Data>) => queryOptions<Get1Resp
         });
         return data;
     },
-    queryKey: get1QueryKey(options)
+    queryKey: get2QueryKey(options)
 });
 
-export const list5QueryKey = (options: Options<List5Data>) => createQueryKey('list5', options);
+export const list6QueryKey = (options: Options<List6Data>) => createQueryKey('list6', options);
 
 /**
  * Listar los documentos entregados en una solicitud propia
  */
-export const list5Options = (options: Options<List5Data>) => queryOptions<List5Response, List5Error, List5Response, ReturnType<typeof list5QueryKey>>({
+export const list6Options = (options: Options<List6Data>) => queryOptions<List6Response, List6Error, List6Response, ReturnType<typeof list6QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list5({
+        const { data } = await list6({
             ...options,
             ...queryKey[0],
             signal,
@@ -1601,7 +2457,7 @@ export const list5Options = (options: Options<List5Data>) => queryOptions<List5R
         });
         return data;
     },
-    queryKey: list5QueryKey(options)
+    queryKey: list6QueryKey(options)
 });
 
 export const contentQueryKey = (options: Options<ContentData>) => createQueryKey('content', options);
@@ -1684,16 +2540,16 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
     queryKey: listProgramEditionOptionsQueryKey(options)
 });
 
-export const get2QueryKey = (options: Options<Get2Data>) => createQueryKey('get2', options);
+export const get3QueryKey = (options: Options<Get3Data>) => createQueryKey('get3', options);
 
 /**
  * Consultar una solicitud de cualquier titular
  *
  * Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.
  */
-export const get2Options = (options: Options<Get2Data>) => queryOptions<Get2Response, Get2Error, Get2Response, ReturnType<typeof get2QueryKey>>({
+export const get3Options = (options: Options<Get3Data>) => queryOptions<Get3Response, Get3Error, Get3Response, ReturnType<typeof get3QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await get2({
+        const { data } = await get3({
             ...options,
             ...queryKey[0],
             signal,
@@ -1701,17 +2557,17 @@ export const get2Options = (options: Options<Get2Data>) => queryOptions<Get2Resp
         });
         return data;
     },
-    queryKey: get2QueryKey(options)
+    queryKey: get3QueryKey(options)
 });
 
-export const list6QueryKey = (options: Options<List6Data>) => createQueryKey('list6', options);
+export const list7QueryKey = (options: Options<List7Data>) => createQueryKey('list7', options);
 
 /**
  * Listar documentos de cualquier solicitud
  */
-export const list6Options = (options: Options<List6Data>) => queryOptions<List6Response, List6Error, List6Response, ReturnType<typeof list6QueryKey>>({
+export const list7Options = (options: Options<List7Data>) => queryOptions<List7Response, List7Error, List7Response, ReturnType<typeof list7QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list6({
+        const { data } = await list7({
             ...options,
             ...queryKey[0],
             signal,
@@ -1719,7 +2575,7 @@ export const list6Options = (options: Options<List6Data>) => queryOptions<List6R
         });
         return data;
     },
-    queryKey: list6QueryKey(options)
+    queryKey: list7QueryKey(options)
 });
 
 export const content1QueryKey = (options: Options<Content1Data>) => createQueryKey('content1', options);
@@ -1740,6 +2596,72 @@ export const content1Options = (options: Options<Content1Data>) => queryOptions<
         return data;
     },
     queryKey: content1QueryKey(options)
+});
+
+export const list8QueryKey = (options?: Options<List8Data>) => createQueryKey('list8', options);
+
+/**
+ * Listar actividades abiertas
+ */
+export const list8Options = (options?: Options<List8Data>) => queryOptions<List8Response, List8Error, List8Response, ReturnType<typeof list8QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list8({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list8QueryKey(options)
+});
+
+export const list8InfiniteQueryKey = (options?: Options<List8Data>): QueryKey<Options<List8Data>> => createQueryKey('list8', options, true);
+
+/**
+ * Listar actividades abiertas
+ */
+export const list8InfiniteOptions = (options?: Options<List8Data>) => {
+    const opts = infiniteQueryOptions<List8Response, List8Error, InfiniteData<List8Response>, QueryKey<Options<List8Data>>, number | Pick<QueryKey<Options<List8Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<List8Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await list8({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: list8InfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const get4QueryKey = (options: Options<Get4Data>) => createQueryKey('get4', options);
+
+/**
+ * Consultar una actividad abierta
+ */
+export const get4Options = (options: Options<Get4Data>) => queryOptions<Get4Response, Get4Error, Get4Response, ReturnType<typeof get4QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await get4({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: get4QueryKey(options)
 });
 
 export const linksQueryKey = (options?: Options<LinksData>) => createQueryKey('links', options);

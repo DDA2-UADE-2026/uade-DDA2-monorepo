@@ -26,8 +26,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import {
   content1Options,
-  get2QueryKey,
-  list6QueryKey,
+  get3QueryKey,
+  list7QueryKey,
   reviewMutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse } from "@/generated/types.gen"
@@ -251,8 +251,8 @@ export function AdminDocumentReviewDialog({
     onSuccess: async () => {
       // La revisión cambia la documentación pendiente que expone el detalle administrativo.
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: list6QueryKey({ path: { applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list7QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) }),
       ])
       onOpenChange(false)
     },

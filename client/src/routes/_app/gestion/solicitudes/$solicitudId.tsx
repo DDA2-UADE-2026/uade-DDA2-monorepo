@@ -30,7 +30,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
-import { get2Options, list6Options } from "@/generated/@tanstack/react-query.gen"
+import { get3Options, list7Options } from "@/generated/@tanstack/react-query.gen"
 import type { AdminApplicationResponse, ErrorResponse } from "@/generated/types.gen"
 import {
   applicationStatusLabels,
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/_app/gestion/solicitudes/$solicitudId")({
 
 function RouteComponent() {
   const { solicitudId } = Route.useParams()
-  const query = useQuery(get2Options({ path: { id: solicitudId } }))
+  const query = useQuery(get3Options({ path: { id: solicitudId } }))
   const application = query.data
   const heading = application?.applicationNumber != null
     ? `Solicitud N.º ${application.applicationNumber}`
@@ -212,7 +212,7 @@ function RouteComponent() {
 }
 
 function ApplicationDocumentsSection({ applicationId }: { applicationId: string }) {
-  const documents = useQuery(list6Options({ path: { applicationId } }))
+  const documents = useQuery(list7Options({ path: { applicationId } }))
 
   return (
     <section aria-labelledby="admin-application-documents" className="space-y-3">
