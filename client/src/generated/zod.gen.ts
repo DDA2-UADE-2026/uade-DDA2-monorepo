@@ -1735,6 +1735,20 @@ export const zUpdateCenterOpeningHourPath = z.object({
  */
 export const zUpdateCenterOpeningHourResponse = zCenterOpeningHourResponse;
 
+export const zPut1Body = z.object({
+    file: z.string()
+});
+
+export const zPut1Path = z.object({
+    applicationId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * Entrega existente reemplazada.
+ */
+export const zPut1Response = zApplicationDocumentResponse;
+
 export const zGet1Path = z.object({
     id: z.uuid()
 });

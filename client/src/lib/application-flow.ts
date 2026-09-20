@@ -101,7 +101,11 @@ export function clearSubmissionKey(userId: number, periodId: string) {
   try { sessionStorage.removeItem(submissionStorageKey(userId, periodId)) } catch { /* Storage may be disabled. */ }
 }
 
-export function applicationDocumentRequirements(application: ApplicationResponse, documents: ApplicationDocumentResponse[]) {
+// Acepta tambien AdminApplicationResponse: solo se usan el catalogo y los pendientes.
+export function applicationDocumentRequirements(
+  application: Pick<ApplicationResponse, "documentRequirements" | "pendingDocuments">,
+  documents: ApplicationDocumentResponse[],
+) {
   const requirements = new Map<string, AvailableProgramDocumentRequirementResponse & { id: string }>()
   for (const requirement of application.documentRequirements ?? []) {
     if (requirement.id) requirements.set(requirement.id, { ...requirement, id: requirement.id })

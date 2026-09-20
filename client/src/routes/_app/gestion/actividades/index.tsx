@@ -21,7 +21,7 @@ import {
   canCloseActivity,
   canEditActivity,
   canPublishActivity,
-  formatActivityDateRange,
+  FormatActivityDateRange,
 } from "@/components/activities/activity-ui"
 import { DataPagination } from "@/components/DataPagination"
 import {
@@ -163,7 +163,7 @@ function RouteComponent() {
                       <TableCell className="text-muted-foreground">
                         <span className="flex items-center gap-1.5">
                           <IconCalendarEvent className="size-3.5 shrink-0" />
-                          {formatActivityDateRange(activity.startDate, activity.endDate)}
+                          <FormatActivityDateRange startDate={activity.startDate} endDate={activity.endDate} />
                         </span>
                       </TableCell>
                       <TableCell className="text-muted-foreground">

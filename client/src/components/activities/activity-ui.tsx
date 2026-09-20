@@ -56,6 +56,13 @@ export function formatActivityDateRange(startDate?: string, endDate?: string) {
   return `${formatActivityDate(startDate)} — ${formatActivityDate(endDate)}`
 }
 
+export function FormatActivityDateRange({ startDate, endDate }: { startDate?: string; endDate?: string }) {
+  if (!startDate && !endDate) return "—"
+  if (!endDate || startDate === endDate) return formatActivityDate(startDate)
+  if (!startDate) return formatActivityDate(endDate)
+  return <>{formatActivityDate(startDate)} <br /> {formatActivityDate(endDate)}</>
+}
+
 export function formatActivityDateTime(value?: string) {
   if (!value) return "—"
 
