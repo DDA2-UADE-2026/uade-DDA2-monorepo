@@ -138,6 +138,43 @@ class CenterOpeningHourFlowTest {
         )
     }
 
+    @Test
+    fun `crea la misma franja en varios días y revierte todo ante conflicto`() {
+        val centerId = center()
+        val created = createBulk(centerId, listOf("MONDAY", "TUESDAY", "THURSDAY"), "09:00", "12:00")
+            .also { expect(it, 201) }.response.contentAsString
+        assertTrue(created.contains("MONDAY") && created.contains("TUESDAY") && created.contains("THURSDAY"))
+        assertEquals(3, activeCount(centerId))
+
+        val conflict = createBulk(centerId, listOf("MONDAY", "WEDNESDAY"), "10:00", "11:00")
+        expect(conflict, 409, "CENTER_OPENING_HOUR_OVERLAP")
+        assertTrue(conflict.response.contentAsString.contains("MONDAY"))
+        assertEquals(3, activeCount(centerId))
+        assertTrue(
+            tx {
+                openingHours.findAllByCenterIdAndActiveOrderByDayOfWeekAscStartTimeAsc(centerId, true)
+            }.none { it.dayOfWeek == DayOfWeek.WEDNESDAY },
+        )
+    }
+
+    @Test
+    fun `rechaza bulk con días inválidos o centro inactivo`() {
+        val centerId = center()
+        expect(createBulk(centerId, emptyList(), "09:00", "12:00"), 400, "CENTER_OPENING_HOUR_INVALID_DAYS")
+        expect(createBulk(centerId, listOf("MONDAY", "MONDAY"), "09:00", "12:00"), 400, "CENTER_OPENING_HOUR_INVALID_DAYS")
+        expect(createBulk(centerId, listOf("MONDAY"), "12:00", "09:00"), 400, "CENTER_OPENING_HOUR_INVALID_RANGE")
+        tx {
+            val center = centers.findById(centerId).orElseThrow()
+            center.active = false
+            centers.saveAndFlush(center)
+        }
+        expect(createBulk(centerId, listOf("MONDAY"), "09:00", "12:00"), 409, "CENTER_DEPENDENCY_INACTIVE")
+    }
+
+    private fun activeCount(centerId: UUID): Int = tx {
+        openingHours.findAllByCenterIdAndActiveOrderByDayOfWeekAscStartTimeAsc(centerId, true).size
+    }
+
     private fun fixtureWithAvailability(): Fixture = tx {
         val suffix = UUID.randomUUID().toString().take(8)
         val center = centers.saveAndFlush(MunicipalCenter(name = "Centro $suffix", address = "Calle 123"))
@@ -205,6 +242,14 @@ class CenterOpeningHourFlowTest {
 
     private fun scheduleBody(day: String, start: String, end: String): String =
         json.writeValueAsString(mapOf("dayOfWeek" to day, "startTime" to start, "endTime" to end))
+
+    private fun createBulk(centerId: UUID, days: List<String>, start: String, end: String): MvcResult =
+        mvc.perform(
+            post("/api/admin/municipal-centers/$centerId/opening-hours/batch")
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json.writeValueAsString(mapOf("days" to days, "startTime" to start, "endTime" to end))),
+        ).andReturn()
 
     private fun response(result: MvcResult): CenterOpeningHourResponse =
         json.readValue(result.response.contentAsString, CenterOpeningHourResponse::class.java)

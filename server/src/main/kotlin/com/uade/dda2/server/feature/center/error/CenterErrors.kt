@@ -69,6 +69,18 @@ object CenterErrors {
     fun openingHourOverlap(): ConflictException =
         ConflictException("CENTER_OPENING_HOUR_OVERLAP", "El horario se superpone con otra franja activa del centro.")
 
+    fun openingHourOverlapOnDay(day: java.time.DayOfWeek): ConflictException =
+        ConflictException(
+            "CENTER_OPENING_HOUR_OVERLAP",
+            "El horario se superpone con otra franja activa del centro el día $day.",
+        )
+
+    fun invalidBulkDays(): BadRequestException =
+        BadRequestException(
+            "CENTER_OPENING_HOUR_INVALID_DAYS",
+            "Se requiere al menos un día distinto para crear las franjas de apertura.",
+        )
+
     fun openingHourAlreadyActive(): ConflictException =
         ConflictException("CENTER_OPENING_HOUR_ALREADY_ACTIVE", "El horario de apertura ya está activo.")
 

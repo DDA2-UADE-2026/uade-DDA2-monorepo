@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.center.service
 
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.center.dto.request.CreateCenterOpeningHourRequest
+import com.uade.dda2.server.feature.center.dto.request.CreateCenterOpeningHoursRequest
 import com.uade.dda2.server.feature.center.dto.request.UpdateCenterOpeningHourRequest
 import com.uade.dda2.server.feature.center.dto.response.CenterOpeningHourResponse
 import com.uade.dda2.server.feature.center.entity.CenterOpeningHour
@@ -12,6 +13,7 @@ import com.uade.dda2.server.feature.center.mapper.updateFrom
 import com.uade.dda2.server.feature.center.repository.CenterOpeningHourRepository
 import com.uade.dda2.server.feature.center.repository.MunicipalCenterRepository
 import com.uade.dda2.server.feature.center.validator.CenterOpeningHourValidator
+import com.uade.dda2.server.error.ConflictException
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
@@ -53,6 +55,36 @@ class AdminCenterOpeningHourService(
         )
         record(openingHour, LogAction.CREATE)
         return openingHour.toResponse()
+    }
+
+    @Transactional
+    fun createBulk(centerId: UUID, request: CreateCenterOpeningHoursRequest): List<CenterOpeningHourResponse> {
+        val center = centerRepository.findByIdForUpdate(centerId) ?: throw CenterErrors.centerNotFound(centerId)
+        if (!center.active) throw CenterErrors.inactiveDependency("el centro municipal")
+        val days = request.days.distinct()
+        if (days.isEmpty() || days.size != request.days.size) throw CenterErrors.invalidBulkDays()
+        validator.validateRange(request.startTime, request.endTime)
+        // Crear solo agrega cobertura, así que basta validar superposiciones por día.
+        // Si un día falla, la transacción hace rollback y no se crea ninguna franja.
+        days.forEach { day ->
+            try {
+                validator.validateNoOverlap(centerId, day, request.startTime, request.endTime)
+            } catch (_: ConflictException) {
+                throw CenterErrors.openingHourOverlapOnDay(day)
+            }
+        }
+        return days.map { day ->
+            val openingHour = openingHourRepository.saveAndFlush(
+                CenterOpeningHour(
+                    center = center,
+                    dayOfWeek = day,
+                    startTime = request.startTime,
+                    endTime = request.endTime,
+                ),
+            )
+            record(openingHour, LogAction.CREATE)
+            openingHour.toResponse()
+        }
     }
 
     @Transactional

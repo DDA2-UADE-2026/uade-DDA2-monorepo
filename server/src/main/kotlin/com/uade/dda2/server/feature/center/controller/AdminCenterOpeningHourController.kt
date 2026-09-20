@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.center.controller
 
 import com.uade.dda2.server.feature.center.dto.request.CreateCenterOpeningHourRequest
+import com.uade.dda2.server.feature.center.dto.request.CreateCenterOpeningHoursRequest
 import com.uade.dda2.server.feature.center.dto.request.UpdateCenterOpeningHourRequest
 import com.uade.dda2.server.feature.center.dto.response.CenterOpeningHourResponse
 import com.uade.dda2.server.feature.center.service.AdminCenterOpeningHourService
@@ -39,6 +40,15 @@ class AdminCenterOpeningHourController(
         @PathVariable centerId: UUID,
         @Valid @RequestBody request: CreateCenterOpeningHourRequest,
     ): CenterOpeningHourResponse = service.create(centerId, request)
+
+    @PostMapping("/municipal-centers/{centerId}/opening-hours/batch")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('schedules:management:manage')")
+    @Operation(operationId = "createCenterOpeningHoursBatch", summary = "Crear la misma franja en varios días")
+    fun createBulk(
+        @PathVariable centerId: UUID,
+        @Valid @RequestBody request: CreateCenterOpeningHoursRequest,
+    ): List<CenterOpeningHourResponse> = service.createBulk(centerId, request)
 
     @PutMapping("/center-opening-hours/{id}")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('schedules:management:manage')")
