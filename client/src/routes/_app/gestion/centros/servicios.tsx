@@ -5,7 +5,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
 
-import { centerSearchSchema, toCenterListQuery } from "@/components/centros/centerFilters"
+import { ESTADO_LABELS, centerSearchSchema, toCenterListQuery } from "@/components/centros/centerFilters"
 import { DataPagination } from "@/components/DataPagination"
 import { OutletNavRightButton, OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
@@ -139,7 +139,9 @@ function RouteComponent() {
               <div className="flex gap-2">
                 <Select value={search.estado} onValueChange={(value) => setEstado(value as "todos" | "activos" | "inactivos")}>
                   <SelectTrigger className="w-36" aria-label="Filtrar por estado">
-                    <SelectValue />
+                    <SelectValue>
+                      {(value: string | null) => (value ? ESTADO_LABELS[value as keyof typeof ESTADO_LABELS] : "Todos")}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todos">Todos</SelectItem>
