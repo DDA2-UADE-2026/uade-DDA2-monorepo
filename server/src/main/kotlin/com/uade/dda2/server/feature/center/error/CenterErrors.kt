@@ -129,10 +129,10 @@ object CenterErrors {
     fun professionalAvailabilityOutsideOpeningHoursOnDay(day: java.time.DayOfWeek): ConflictException =
         ConflictException(
             "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
-            "La disponibilidad del día $day quedaría fuera del horario de apertura del centro.",
+            "La disponibilidad quedaría fuera del horario de apertura del centro el día $day.",
         )
 
-    fun invalidAvailabilityBulkDays(): BadRequestException =
+    fun invalidBulkAvailabilityDays(): BadRequestException =
         BadRequestException(
             "PROFESSIONAL_AVAILABILITY_INVALID_DAYS",
             "Se requiere al menos un día distinto para crear las disponibilidades.",

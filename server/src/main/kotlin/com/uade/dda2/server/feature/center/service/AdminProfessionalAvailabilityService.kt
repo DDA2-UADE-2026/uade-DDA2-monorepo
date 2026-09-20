@@ -3,7 +3,7 @@ package com.uade.dda2.server.feature.center.service
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.error.ConflictException
-import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilityBatchRequest
+import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilitiesRequest
 import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilityRequest
 import com.uade.dda2.server.feature.center.dto.request.UpdateProfessionalAvailabilityRequest
 import com.uade.dda2.server.feature.center.dto.response.ProfessionalAvailabilityResponse
@@ -65,11 +65,11 @@ class AdminProfessionalAvailabilityService(
     @Transactional
     fun createBulk(
         assignmentId: UUID,
-        request: CreateProfessionalAvailabilityBatchRequest,
+        request: CreateProfessionalAvailabilitiesRequest,
     ): List<ProfessionalAvailabilityResponse> {
         val assignment = lockAssignment(assignmentId)
         val days = request.days.distinct()
-        if (days.isEmpty() || days.size != request.days.size) throw CenterErrors.invalidAvailabilityBulkDays()
+        if (days.isEmpty() || days.size != request.days.size) throw CenterErrors.invalidBulkAvailabilityDays()
         validator.validateRange(request.startTime, request.endTime)
         // Los días son distintos entre sí, así que las filas nuevas no pueden
         // superponerse entre ellas: basta validar cada día contra lo efectivo.

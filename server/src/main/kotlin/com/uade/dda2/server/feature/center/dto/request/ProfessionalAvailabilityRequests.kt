@@ -18,8 +18,8 @@ data class UpdateProfessionalAvailabilityRequest(
     val endTime: LocalTime,
 )
 
-@Schema(description = "Misma franja de disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.")
-data class CreateProfessionalAvailabilityBatchRequest(
+@Schema(description = "Misma disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.")
+data class CreateProfessionalAvailabilitiesRequest(
     val days: List<DayOfWeek>,
     val startTime: LocalTime,
     val endTime: LocalTime,
