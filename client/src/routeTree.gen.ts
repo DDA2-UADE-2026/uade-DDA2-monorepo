@@ -40,6 +40,7 @@ import { Route as AppGestionCasosIndexRouteImport } from "./routes/_app/gestion/
 import { Route as AppGestionCasosSolicitudIdRouteRouteImport } from "./routes/_app/gestion/casos/$solicitudId/route"
 import { Route as AppGestionCentrosIndexRouteImport } from "./routes/_app/gestion/centros/index"
 import { Route as AppGestionCentrosCentroIdRouteRouteImport } from "./routes/_app/gestion/centros/$centroId/route"
+import { Route as AppGestionCentrosServiciosRouteImport } from "./routes/_app/gestion/centros/servicios"
 import { Route as AppGestionDebugDocumentacionEventosRouteImport } from "./routes/_app/gestion/debug/documentacion-eventos"
 import { Route as AppGestionDebugDocumentacionLocalRouteImport } from "./routes/_app/gestion/debug/documentacion-local"
 import { Route as AppGestionDebugEstadoRedRouteImport } from "./routes/_app/gestion/debug/estado-red"
@@ -242,6 +243,12 @@ const AppGestionCentrosCentroIdRouteRoute =
   AppGestionCentrosCentroIdRouteRouteImport.update({
     id: "/centros/$centroId",
     path: "/centros/$centroId",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionCentrosServiciosRoute =
+  AppGestionCentrosServiciosRouteImport.update({
+    id: "/centros/servicios",
+    path: "/centros/servicios",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
 const AppGestionDebugDocumentacionEventosRoute =
@@ -529,6 +536,7 @@ export interface FileRoutesByFullPath {
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/gestion/centros/servicios": typeof AppGestionCentrosServiciosRoute
   "/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
@@ -596,6 +604,7 @@ export interface FileRoutesByTo {
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/gestion/centros/servicios": typeof AppGestionCentrosServiciosRoute
   "/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
@@ -672,6 +681,7 @@ export interface FileRoutesById {
   "/_app/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/_app/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/_app/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/_app/gestion/centros/servicios": typeof AppGestionCentrosServiciosRoute
   "/_app/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
   "/_app/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/_app/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
@@ -747,6 +757,7 @@ export interface FileRouteTypes {
     | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/beneficios/$beneficioId"
+    | "/gestion/centros/servicios"
     | "/gestion/debug/documentacion-eventos"
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
@@ -814,6 +825,7 @@ export interface FileRouteTypes {
     | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/beneficios/$beneficioId"
+    | "/gestion/centros/servicios"
     | "/gestion/debug/documentacion-eventos"
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
@@ -889,6 +901,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/auditoria/dlq"
     | "/_app/gestion/auditoria/eventos"
     | "/_app/gestion/beneficios/$beneficioId"
+    | "/_app/gestion/centros/servicios"
     | "/_app/gestion/debug/documentacion-eventos"
     | "/_app/gestion/debug/documentacion-local"
     | "/_app/gestion/debug/estado-red"
@@ -1164,6 +1177,13 @@ declare module "@tanstack/react-router" {
       path: "/centros/$centroId"
       fullPath: "/gestion/centros/$centroId"
       preLoaderRoute: typeof AppGestionCentrosCentroIdRouteRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/centros/servicios": {
+      id: "/_app/gestion/centros/servicios"
+      path: "/centros/servicios"
+      fullPath: "/gestion/centros/servicios"
+      preLoaderRoute: typeof AppGestionCentrosServiciosRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/debug/documentacion-eventos": {
@@ -1589,6 +1609,7 @@ interface AppGestionRouteRouteChildren {
   AppGestionCentrosCentroIdRouteRoute: typeof AppGestionCentrosCentroIdRouteRouteWithChildren
   AppGestionProgramasProgramaIdRouteRoute: typeof AppGestionProgramasProgramaIdRouteRouteWithChildren
   AppGestionBeneficiosBeneficioIdRoute: typeof AppGestionBeneficiosBeneficioIdRoute
+  AppGestionCentrosServiciosRoute: typeof AppGestionCentrosServiciosRoute
   AppGestionDebugDocumentacionEventosRoute: typeof AppGestionDebugDocumentacionEventosRoute
   AppGestionDebugDocumentacionLocalRoute: typeof AppGestionDebugDocumentacionLocalRoute
   AppGestionDebugEstadoRedRoute: typeof AppGestionDebugEstadoRedRoute
@@ -1625,6 +1646,7 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionProgramasProgramaIdRouteRoute:
     AppGestionProgramasProgramaIdRouteRouteWithChildren,
   AppGestionBeneficiosBeneficioIdRoute: AppGestionBeneficiosBeneficioIdRoute,
+  AppGestionCentrosServiciosRoute: AppGestionCentrosServiciosRoute,
   AppGestionDebugDocumentacionEventosRoute:
     AppGestionDebugDocumentacionEventosRoute,
   AppGestionDebugDocumentacionLocalRoute:

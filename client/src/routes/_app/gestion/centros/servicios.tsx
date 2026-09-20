@@ -1,7 +1,7 @@
-import { IconAlertTriangle, IconMail, IconMapPin, IconPencil, IconPhone, IconPlus, IconPower, IconRefresh, IconSearch } from "@tabler/icons-react"
+import { IconAlertTriangle, IconClock, IconPencil, IconPlus, IconPower, IconRefresh, IconSearch } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
 
@@ -34,41 +34,35 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Textarea } from "@/components/ui/textarea"
 import {
-  activateMunicipalCenterMutation,
-  createMunicipalCenterMutation,
-  deactivateMunicipalCenterMutation,
-  listMunicipalCentersOptions,
-  listMunicipalCentersQueryKey,
-  updateMunicipalCenterMutation,
+  activateMunicipalServiceMutation,
+  createMunicipalServiceMutation,
+  deactivateMunicipalServiceMutation,
+  listMunicipalServicesOptions,
+  listMunicipalServicesQueryKey,
+  updateMunicipalServiceMutation,
 } from "@/generated/@tanstack/react-query.gen"
-import type { MunicipalCenterResponse } from "@/generated/types.gen"
-import { zCreateMunicipalCenterRequest, zUpdateMunicipalCenterRequest } from "@/generated/zod.gen"
+import type { MunicipalServiceResponse } from "@/generated/types.gen"
+import { zCreateMunicipalServiceRequest, zUpdateMunicipalServiceRequest } from "@/generated/zod.gen"
 
-// `phone` y `email` son opcionales en el DTO generado, pero el form siempre
-// los completa como string (vacío = ausente al enviar).
-const optionalEmail = zUpdateMunicipalCenterRequest.shape.email.unwrap()
-const phoneField = zUpdateMunicipalCenterRequest.shape.phone.unwrap()
-const emailField = z
-  .string()
-  .max(180)
-  .refine((value) => value === "" || optionalEmail.safeParse(value).success, "Ingresá un correo válido.")
+// `durationMinutes` es opcional en el DTO generado, pero el form siempre lo
+// completa como número (la duración estimada es obligatoria y positiva).
+const durationField = z.number({ error: "La duración debe ser un número positivo de minutos." }).int().positive("La duración debe ser un número positivo de minutos.")
 
-const createCenterSchema = zCreateMunicipalCenterRequest.extend({
-  name: zCreateMunicipalCenterRequest.shape.name.trim().min(1, "Ingresá el nombre del centro."),
-  address: zCreateMunicipalCenterRequest.shape.address.trim().min(1, "Ingresá la dirección del centro."),
-  phone: phoneField,
-  email: emailField,
+const createServiceSchema = zCreateMunicipalServiceRequest.extend({
+  name: zCreateMunicipalServiceRequest.shape.name.trim().min(1, "Ingresá el nombre del servicio."),
+  description: zCreateMunicipalServiceRequest.shape.description.trim().min(1, "Ingresá la descripción del servicio."),
+  durationMinutes: durationField,
 })
 
-const updateCenterSchema = zUpdateMunicipalCenterRequest.extend({
-  name: zUpdateMunicipalCenterRequest.shape.name.trim().min(1, "Ingresá el nombre del centro."),
-  address: zUpdateMunicipalCenterRequest.shape.address.trim().min(1, "Ingresá la dirección del centro."),
-  phone: phoneField,
-  email: emailField,
+const updateServiceSchema = zUpdateMunicipalServiceRequest.extend({
+  name: zUpdateMunicipalServiceRequest.shape.name.trim().min(1, "Ingresá el nombre del servicio."),
+  description: zUpdateMunicipalServiceRequest.shape.description.trim().min(1, "Ingresá la descripción del servicio."),
+  durationMinutes: durationField,
 })
 
-export const Route = createFileRoute("/_app/gestion/centros/")({
+export const Route = createFileRoute("/_app/gestion/centros/servicios")({
   validateSearch: centerSearchSchema,
   beforeLoad: ({ context }) => {
     if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
@@ -82,14 +76,14 @@ function RouteComponent() {
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const queryClient = useQueryClient()
-  const [dialog, setDialog] = useState<{ center: MunicipalCenterResponse | null } | null>(null)
-  const [statusChange, setStatusChange] = useState<MunicipalCenterResponse | null>(null)
+  const [dialog, setDialog] = useState<{ service: MunicipalServiceResponse | null } | null>(null)
+  const [statusChange, setStatusChange] = useState<MunicipalServiceResponse | null>(null)
   const [searchInput, setSearchInput] = useState(search.search)
 
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } = useQuery(
-    listMunicipalCentersOptions({ query: toCenterListQuery(search) }),
+    listMunicipalServicesOptions({ query: toCenterListQuery(search) }),
   )
-  const centers = data?.content ?? []
+  const services = data?.content ?? []
   const totalItems = Number(data?.totalElements ?? 0)
   const totalPages = Math.max(1, data?.totalPages ?? 1)
   const currentPage = Math.min(search.page, totalPages)
@@ -98,9 +92,9 @@ function RouteComponent() {
   const setEstado = (estado: "todos" | "activos" | "inactivos") =>
     navigate({ search: { ...search, estado, page: 1 } })
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
-  const activate = useMutation({ ...activateMunicipalCenterMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
-  const deactivate = useMutation({ ...deactivateMunicipalCenterMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
+  const activate = useMutation({ ...activateMunicipalServiceMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
+  const deactivate = useMutation({ ...deactivateMunicipalServiceMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
   const statusPending = activate.isPending || deactivate.isPending
   const statusError = activate.error ?? deactivate.error
 
@@ -108,22 +102,20 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavBreadcrumbs items={[{ label: "Centros" }]} />
+        <OutletNavBreadcrumbs items={[{ label: "Centros", to: "/gestion/centros" }, { label: "Catálogo de servicios" }]} />
         <OutletNavRightButton className="gap-1.5">
-          <Link to="/gestion/centros/servicios">
-            <Button size="sm" variant="outline">
-              Catálogo de servicios
-            </Button>
-          </Link>
-          <Button size="sm" onClick={() => setDialog({ center: null })}>
+          <Button size="sm" onClick={() => setDialog({ service: null })}>
             <IconPlus />
-            Nuevo centro
+            Nuevo servicio
           </Button>
         </OutletNavRightButton>
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="mx-2 py-2 sm:mx-4! lg:py-4">
+            <p className="mb-3 text-sm text-muted-foreground">
+              El catálogo es compartido por todos los centros: editar un servicio se refleja donde se ofrezca.
+            </p>
             {dataUpdatedAt > 0 && (
               <div className="mb-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
                 <span>Última actualización: {new Date(dataUpdatedAt).toLocaleTimeString("es-AR")}</span>
@@ -140,8 +132,8 @@ function RouteComponent() {
                   value={searchInput}
                   onChange={(event) => setSearchInput(event.target.value)}
                   onKeyDown={(event) => { if (event.key === "Enter") applySearch() }}
-                  placeholder="Buscar por nombre o dirección…"
-                  aria-label="Buscar centros"
+                  placeholder="Buscar por nombre…"
+                  aria-label="Buscar servicios"
                 />
               </InputGroup>
               <div className="flex gap-2">
@@ -159,48 +151,40 @@ function RouteComponent() {
               </div>
             </div>
             {isPending ? (
-              <p className="text-sm text-muted-foreground">Cargando centros…</p>
+              <p className="text-sm text-muted-foreground">Cargando servicios…</p>
             ) : isError ? (
               <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
-                <p>No se pudieron cargar los centros.</p>
+                <p>No se pudieron cargar los servicios.</p>
                 <Button size="sm" variant="outline" onClick={() => refetch()}>Reintentar</Button>
               </div>
-            ) : centers.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No hay centros registrados con ese criterio.</p>
+            ) : services.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No hay servicios registrados con ese criterio.</p>
             ) : (
               <Table>
-                <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Dirección</TableHead><TableHead>Contacto</TableHead><TableHead>Estado</TableHead><TableHead>Actualizado</TableHead><TableHead className="w-px"><span className="sr-only">Acciones</span></TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead>Nombre</TableHead><TableHead>Descripción</TableHead><TableHead>Duración</TableHead><TableHead>Estado</TableHead><TableHead>Actualizado</TableHead><TableHead className="w-px"><span className="sr-only">Acciones</span></TableHead></TableRow></TableHeader>
                 <TableBody>
-                  {centers.map((center) => (
-                    <TableRow key={center.id}>
-                      <TableCell className="font-medium">
-                        <Link to="/gestion/centros/$centroId" params={{ centroId: center.id ?? "" }} className="hover:underline">
-                          {center.name}
-                        </Link>
-                      </TableCell>
-                      <TableCell className="max-w-xs whitespace-normal text-muted-foreground">
-                        <span className="flex items-start gap-1.5"><IconMapPin className="mt-0.5 size-3.5 shrink-0" />{center.address}</span>
-                      </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {center.phone && <span className="flex items-center gap-1.5"><IconPhone className="size-3.5 shrink-0" />{center.phone}</span>}
-                        {center.email && <span className="flex items-center gap-1.5"><IconMail className="size-3.5 shrink-0" />{center.email}</span>}
-                        {!center.phone && !center.email && "—"}
+                  {services.map((service) => (
+                    <TableRow key={service.id}>
+                      <TableCell className="font-medium">{service.name}</TableCell>
+                      <TableCell className="max-w-xl whitespace-normal text-muted-foreground">{service.description || "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        <span className="flex items-center gap-1.5 text-xs"><IconClock className="size-3.5 shrink-0" />{service.durationMinutes ?? "—"} min</span>
                       </TableCell>
                       <TableCell>
                         <span className="flex items-center gap-1.5 text-xs">
-                          <span className={`size-2 shrink-0 rounded-full ${center.active ? "bg-emerald-500" : "bg-muted-foreground"}`} />
-                          {center.active ? "Activo" : "Inactivo"}
+                          <span className={`size-2 shrink-0 rounded-full ${service.active ? "bg-emerald-500" : "bg-muted-foreground"}`} />
+                          {service.active ? "Activo" : "Inactivo"}
                         </span>
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{center.updatedAt ? new Date(center.updatedAt).toLocaleDateString("es-AR") : "—"}</TableCell>
+                      <TableCell className="text-muted-foreground">{service.updatedAt ? new Date(service.updatedAt).toLocaleDateString("es-AR") : "—"}</TableCell>
                       <TableCell>
                         <div className="flex justify-end gap-1">
                           <Button
                             type="button"
                             size="icon-sm"
                             variant="ghost"
-                            aria-label={`Editar centro ${center.name ?? ""}`}
-                            onClick={() => setDialog({ center })}
+                            aria-label={`Editar servicio ${service.name ?? ""}`}
+                            onClick={() => setDialog({ service })}
                           >
                             <IconPencil />
                           </Button>
@@ -208,8 +192,8 @@ function RouteComponent() {
                             type="button"
                             size="icon-sm"
                             variant="ghost"
-                            aria-label={`${center.active ? "Desactivar" : "Activar"} centro ${center.name ?? ""}`}
-                            onClick={() => { activate.reset(); deactivate.reset(); setStatusChange(center) }}
+                            aria-label={`${service.active ? "Desactivar" : "Activar"} servicio ${service.name ?? ""}`}
+                            onClick={() => { activate.reset(); deactivate.reset(); setStatusChange(service) }}
                           >
                             <IconPower />
                           </Button>
@@ -227,8 +211,8 @@ function RouteComponent() {
         )}
       </SidebarShellContent>
       {dialog && (
-        <CenterDialog
-          center={dialog.center}
+        <ServiceDialog
+          service={dialog.service}
           onOpenChange={(open) => { if (!open) setDialog(null) }}
         />
       )}
@@ -236,11 +220,11 @@ function RouteComponent() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {statusChange?.active ? "Desactivar centro" : "Activar centro"}
+              {statusChange?.active ? "Desactivar servicio" : "Activar servicio"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {statusChange?.active
-                ? `«${statusChange?.name}» dejará de formar parte de la oferta activa, pero se conservan sus servicios, horarios y asignaciones.`
+                ? `«${statusChange?.name}» dejará de ofrecerse en todos los centros, pero se conservan sus asignaciones e historial.`
                 : `Se volverá a validar que las disponibilidades que «${statusChange?.name}» volvería efectivas tengan cobertura y no se superpongan. Si alguna falla, toda la activación se rechaza.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -248,7 +232,7 @@ function RouteComponent() {
             <Alert variant="destructive">
               <IconAlertTriangle />
               <AlertTitle>No se pudo cambiar el estado</AlertTitle>
-              <AlertDescription>{statusError.message ?? "Revisá el estado de los servicios y agendas e intentá nuevamente."}</AlertDescription>
+              <AlertDescription>{statusError.message ?? "Revisá las asignaciones del servicio e intentá nuevamente."}</AlertDescription>
             </Alert>
           )}
           <AlertDialogFooter>
@@ -274,23 +258,23 @@ function RouteComponent() {
   )
 }
 
-function CenterDialog({ center, onOpenChange }: {
-  center: MunicipalCenterResponse | null
+function ServiceDialog({ service, onOpenChange }: {
+  service: MunicipalServiceResponse | null
   onOpenChange: (open: boolean) => void
 }) {
   const queryClient = useQueryClient()
-  const isEditing = center !== null
+  const isEditing = service !== null
   const create = useMutation({
-    ...createMunicipalCenterMutation(),
+    ...createMunicipalServiceMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
+      queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
       onOpenChange(false)
     },
   })
   const update = useMutation({
-    ...updateMunicipalCenterMutation(),
+    ...updateMunicipalServiceMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
+      queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
       onOpenChange(false)
     },
   })
@@ -298,24 +282,22 @@ function CenterDialog({ center, onOpenChange }: {
   const mutationError = create.error ?? update.error
   const form = useForm({
     defaultValues: {
-      name: center?.name ?? "",
-      address: center?.address ?? "",
-      phone: center?.phone ?? "",
-      email: center?.email ?? "",
+      name: service?.name ?? "",
+      description: service?.description ?? "",
+      durationMinutes: service?.durationMinutes ?? 30,
     },
-    validators: { onChange: isEditing ? updateCenterSchema : createCenterSchema },
+    validators: { onChange: isEditing ? updateServiceSchema : createServiceSchema },
     onSubmit: ({ value }) => {
       if (isPending) return
       create.reset()
       update.reset()
       const body = {
         name: value.name.trim(),
-        address: value.address.trim(),
-        phone: value.phone.trim() || undefined,
-        email: value.email.trim() || undefined,
+        description: value.description.trim(),
+        durationMinutes: value.durationMinutes,
       }
-      if (center?.id) {
-        update.mutate({ path: { id: center.id }, body })
+      if (service?.id) {
+        update.mutate({ path: { id: service.id }, body })
       } else {
         create.mutate({ body })
       }
@@ -326,16 +308,16 @@ function CenterDialog({ center, onOpenChange }: {
     <Dialog open onOpenChange={(open) => { if (!isPending) onOpenChange(open) }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Editar centro" : "Nuevo centro"}</DialogTitle>
+          <DialogTitle>{isEditing ? "Editar servicio" : "Nuevo servicio"}</DialogTitle>
           <DialogDescription>
-            {isEditing ? "Actualizá los datos del centro municipal." : "Registrá un nuevo centro municipal con su ubicación."}
+            {isEditing ? "Los cambios se reflejan en todos los centros que lo ofrecen." : "Definí el servicio una sola vez en el catálogo municipal."}
           </DialogDescription>
         </DialogHeader>
 
         {mutationError && (
           <Alert variant="destructive">
             <IconAlertTriangle />
-            <AlertTitle>{mutationError.message ?? "No se pudo guardar el centro."}</AlertTitle>
+            <AlertTitle>{mutationError.message ?? "No se pudo guardar el servicio."}</AlertTitle>
             {mutationError.fields && mutationError.fields.length > 0 && (
               <AlertDescription>
                 <ul className="list-disc pl-4">{mutationError.fields.map((field, index) => <li key={`${field.field}-${index}`}>{field.message}</li>)}</ul>
@@ -345,7 +327,7 @@ function CenterDialog({ center, onOpenChange }: {
         )}
 
         <form
-          id="center-form"
+          id="service-form"
           noValidate
           onSubmit={(event) => {
             event.preventDefault()
@@ -367,7 +349,7 @@ function CenterDialog({ center, onOpenChange }: {
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
                       aria-invalid={invalid}
-                      placeholder="Centro Norte"
+                      placeholder="Asesoramiento jurídico"
                       maxLength={150}
                       autoFocus
                     />
@@ -377,69 +359,43 @@ function CenterDialog({ center, onOpenChange }: {
               )
             }} />
 
-            <form.Field name="address" children={(field) => {
+            <form.Field name="description" children={(field) => {
               const invalid = field.state.meta.isTouched && !field.state.meta.isValid
               return (
                 <Field data-invalid={invalid}>
-                  <FieldLabel htmlFor={field.name}>Dirección</FieldLabel>
-                  <InputGroup>
-                    <InputGroupAddon><IconMapPin /></InputGroupAddon>
-                    <InputGroupInput
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) => field.handleChange(event.target.value)}
-                      aria-invalid={invalid}
-                      placeholder="Av. Siempre Viva 123"
-                      maxLength={255}
-                    />
-                  </InputGroup>
+                  <FieldLabel htmlFor={field.name}>Descripción</FieldLabel>
+                  <Textarea
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(event) => field.handleChange(event.target.value)}
+                    aria-invalid={invalid}
+                    placeholder="Describí en qué consiste la atención"
+                    className="min-h-24"
+                    maxLength={1000}
+                  />
                   {invalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }} />
 
-            <form.Field name="phone" children={(field) => {
+            <form.Field name="durationMinutes" children={(field) => {
               const invalid = field.state.meta.isTouched && !field.state.meta.isValid
               return (
                 <Field data-invalid={invalid}>
-                  <FieldLabel htmlFor={field.name}>Teléfono (opcional)</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>Duración estimada (minutos)</FieldLabel>
                   <InputGroup>
-                    <InputGroupAddon><IconPhone /></InputGroupAddon>
+                    <InputGroupAddon><IconClock /></InputGroupAddon>
                     <InputGroupInput
                       id={field.name}
                       name={field.name}
+                      type="number"
+                      min={1}
                       value={field.state.value}
                       onBlur={field.handleBlur}
-                      onChange={(event) => field.handleChange(event.target.value)}
+                      onChange={(event) => field.handleChange(event.target.valueAsNumber)}
                       aria-invalid={invalid}
-                      placeholder="011 4567-8900"
-                      maxLength={30}
-                    />
-                  </InputGroup>
-                  {invalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              )
-            }} />
-
-            <form.Field name="email" children={(field) => {
-              const invalid = field.state.meta.isTouched && !field.state.meta.isValid
-              return (
-                <Field data-invalid={invalid}>
-                  <FieldLabel htmlFor={field.name}>Correo (opcional)</FieldLabel>
-                  <InputGroup>
-                    <InputGroupAddon><IconMail /></InputGroupAddon>
-                    <InputGroupInput
-                      id={field.name}
-                      name={field.name}
-                      type="email"
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(event) => field.handleChange(event.target.value)}
-                      aria-invalid={invalid}
-                      placeholder="centro@example.com"
-                      maxLength={180}
                     />
                   </InputGroup>
                   {invalid && <FieldError errors={field.state.meta.errors} />}
@@ -454,8 +410,8 @@ function CenterDialog({ center, onOpenChange }: {
             Cancelar
           </DialogClose>
           <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]} children={([canSubmit, isSubmitting]) => (
-            <Button type="submit" form="center-form" disabled={!canSubmit || isSubmitting || isPending}>
-              {isPending ? "Guardando…" : isEditing ? "Guardar cambios" : "Crear centro"}
+            <Button type="submit" form="service-form" disabled={!canSubmit || isSubmitting || isPending}>
+              {isPending ? "Guardando…" : isEditing ? "Guardar cambios" : "Crear servicio"}
             </Button>
           )} />
         </DialogFooter>
