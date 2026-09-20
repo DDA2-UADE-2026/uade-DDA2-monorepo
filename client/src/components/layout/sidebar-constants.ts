@@ -39,7 +39,7 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
     url: "/portal/turnos",
     icon: IconCalendarEvent,
   },
-  { title: "Campañas", url: "/portal/campanias", icon: IconSpeakerphone },
+  { title: "Actividades", url: "/portal/actividades", icon: IconSpeakerphone },
 ]
 
 // Superset de ítems de las 5 matrices de rol (ver notes/routes.md #7) — falta filtrar por
@@ -48,23 +48,7 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
 // Rutas todavía sin implementar como Route: anchors simples hasta que existan.
 export const OPERACION_NAV: readonly SidebarNavItem[] = [
   { title: "Inicio", url: "/gestion", icon: IconHome2 },
-  { 
-    title: "Solicitudes",
-    url: "/gestion/solicitudes",
-    icon: IconFileText,
-    items: [
-      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
-    ]
-  },
-  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
-  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift },
-  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart },
   {
-    title: "Programas",
-    url: "/gestion/programas",
-    icon: IconHeartHandshake,
-  },
-  { 
     title: "Centros",
     url: "/gestion/centros",
     icon: IconBuilding,
@@ -73,11 +57,36 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     ]
   },
   {
+    title: "Programas",
+    url: "/gestion/programas",
+    icon: IconHeartHandshake,
+    items: [
+      {
+        title: "Solicitudes",
+        url: "/gestion/solicitudes",
+        icon: IconFileText,
+      },
+      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
+    ]
+  },
+  { title: "Actividades", url: "/gestion/actividades", icon: IconSpeakerphone },
+  // { 
+  //   title: "Solicitudes",
+  //   url: "/gestion/solicitudes",
+  //   icon: IconFileText,
+  //   items: [
+  //     { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
+  //   ]
+  // },
+  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
+  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift },
+  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart },
+
+  {
     title: "Turnos",
     url: "/gestion/turnos",
     icon: IconCalendarEvent,
   },
-  { title: "Campañas", url: "/gestion/campanias", icon: IconSpeakerphone },
 ]
 
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [

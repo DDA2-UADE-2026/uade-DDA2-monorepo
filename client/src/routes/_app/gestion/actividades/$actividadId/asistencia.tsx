@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute(
-  "/_app/gestion/campanias/$actividadId/asistencia",
+  "/_app/gestion/actividades/$actividadId/asistencia",
 )({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/_app/gestion/campanias/$actividadId/asistencia"!</div>
+  return <div>Hello "/_app/gestion/actividades/$actividadId/asistencia"!</div>
 }
