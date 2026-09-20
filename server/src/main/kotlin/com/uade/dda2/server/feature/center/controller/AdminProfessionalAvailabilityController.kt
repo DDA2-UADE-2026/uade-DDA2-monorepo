@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.center.controller
 
+import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilityBatchRequest
 import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilityRequest
 import com.uade.dda2.server.feature.center.dto.request.UpdateProfessionalAvailabilityRequest
 import com.uade.dda2.server.feature.center.dto.response.ProfessionalAvailabilityResponse
@@ -39,6 +40,15 @@ class AdminProfessionalAvailabilityController(
         @PathVariable assignmentId: UUID,
         @Valid @RequestBody request: CreateProfessionalAvailabilityRequest,
     ): ProfessionalAvailabilityResponse = service.create(assignmentId, request)
+
+    @PostMapping("/professional-assignments/{assignmentId}/availability/batch")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('schedules:management:manage')")
+    @Operation(operationId = "createProfessionalAvailabilityBatch", summary = "Crear la misma disponibilidad en varios días")
+    fun createBulk(
+        @PathVariable assignmentId: UUID,
+        @Valid @RequestBody request: CreateProfessionalAvailabilityBatchRequest,
+    ): List<ProfessionalAvailabilityResponse> = service.createBulk(assignmentId, request)
 
     @PutMapping("/professional-availability/{id}")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('schedules:management:manage')")

@@ -120,6 +120,24 @@ object CenterErrors {
     fun professionalAvailabilityAlreadyActive(): ConflictException =
         ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_ACTIVE", "La disponibilidad profesional ya está activa.")
 
+    fun professionalAvailabilityOverlapOnDay(day: java.time.DayOfWeek): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OVERLAP",
+            "La disponibilidad se superpone con otra franja efectiva del profesional el día $day.",
+        )
+
+    fun professionalAvailabilityOutsideOpeningHoursOnDay(day: java.time.DayOfWeek): ConflictException =
+        ConflictException(
+            "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS",
+            "La disponibilidad del día $day quedaría fuera del horario de apertura del centro.",
+        )
+
+    fun invalidAvailabilityBulkDays(): BadRequestException =
+        BadRequestException(
+            "PROFESSIONAL_AVAILABILITY_INVALID_DAYS",
+            "Se requiere al menos un día distinto para crear las disponibilidades.",
+        )
+
     fun professionalAvailabilityAlreadyInactive(): ConflictException =
         ConflictException("PROFESSIONAL_AVAILABILITY_ALREADY_INACTIVE", "La disponibilidad profesional ya está inactiva.")
 }

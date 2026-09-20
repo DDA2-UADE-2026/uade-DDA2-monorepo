@@ -2,6 +2,8 @@ package com.uade.dda2.server.feature.center.service
 
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.error.ConflictException
+import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilityBatchRequest
 import com.uade.dda2.server.feature.center.dto.request.CreateProfessionalAvailabilityRequest
 import com.uade.dda2.server.feature.center.dto.request.UpdateProfessionalAvailabilityRequest
 import com.uade.dda2.server.feature.center.dto.response.ProfessionalAvailabilityResponse
@@ -58,6 +60,43 @@ class AdminProfessionalAvailabilityService(
         )
         record(availability, LogAction.CREATE)
         return availability.toResponse()
+    }
+
+    @Transactional
+    fun createBulk(
+        assignmentId: UUID,
+        request: CreateProfessionalAvailabilityBatchRequest,
+    ): List<ProfessionalAvailabilityResponse> {
+        val assignment = lockAssignment(assignmentId)
+        val days = request.days.distinct()
+        if (days.isEmpty() || days.size != request.days.size) throw CenterErrors.invalidAvailabilityBulkDays()
+        validator.validateRange(request.startTime, request.endTime)
+        // Los días son distintos entre sí, así que las filas nuevas no pueden
+        // superponerse entre ellas: basta validar cada día contra lo efectivo.
+        // Si un día falla, la transacción hace rollback y no se crea ninguna.
+        days.forEach { day ->
+            try {
+                validator.validateEffective(assignment, day, request.startTime, request.endTime)
+            } catch (conflict: ConflictException) {
+                throw when (conflict.code) {
+                    "PROFESSIONAL_AVAILABILITY_OUTSIDE_OPENING_HOURS" ->
+                        CenterErrors.professionalAvailabilityOutsideOpeningHoursOnDay(day)
+                    else -> CenterErrors.professionalAvailabilityOverlapOnDay(day)
+                }
+            }
+        }
+        return days.map { day ->
+            val availability = availabilityRepository.saveAndFlush(
+                ProfessionalAvailability(
+                    assignment = assignment,
+                    dayOfWeek = day,
+                    startTime = request.startTime,
+                    endTime = request.endTime,
+                ),
+            )
+            record(availability, LogAction.CREATE)
+            availability.toResponse()
+        }
     }
 
     @Transactional
