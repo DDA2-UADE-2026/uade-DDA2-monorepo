@@ -1,12 +1,11 @@
-import { IconArrowLeft, IconCheck, IconClipboardList } from "@tabler/icons-react"
+import { IconCheck, IconClipboardList } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import { ApplicationDocuments } from "@/components/applications/ApplicationDocuments"
 import { ApplicationError, ApplicationHeading, ApplicationLoading, ApplicationPage, ApplicationStatusBadge } from "@/components/applications/ApplicationUi"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { get2Options } from "@/generated/@tanstack/react-query.gen"
 import { formatApplicationDate, isApplicationResolved } from "@/lib/application-flow"
@@ -25,7 +24,6 @@ function RouteComponent() {
     { label: "Mis solicitudes", to: "/portal/solicitudes" },
     { label: application?.applicationNumber != null ? `Solicitud N.º ${application.applicationNumber}` : "Detalle de solicitud" },
   ]}>
-    <Button size="sm" variant="ghost" render={<Link to="/portal/solicitudes" search={{ page: 1 }} />}><IconArrowLeft />Mis solicitudes</Button>
     {!validId ? <ApplicationError error={{ status: 404, message: "El enlace de la solicitud no es válido." }} title="Solicitud no encontrada" /> : query.isPending ? <ApplicationLoading /> : query.isError ? <ApplicationError error={query.error} title="No pudimos cargar la solicitud" retry={() => query.refetch()} /> : application ? <>
       <ApplicationHeading title={`Solicitud N.º ${application.applicationNumber ?? "—"}`} description={`Presentada el ${formatApplicationDate(application.submittedAt)}`} action={<ApplicationStatusBadge status={application.status} />} />
       <Card>

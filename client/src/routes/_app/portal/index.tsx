@@ -1,6 +1,6 @@
-import { IconClipboardText } from "@tabler/icons-react"
 import { createFileRoute } from "@tanstack/react-router"
 
+import { RecentApplications } from "@/components/applications/RecentApplications"
 import {
   OutletNavSidebarTrigger,
   OutletNavSticky,
@@ -8,20 +8,7 @@ import {
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty"
+import { ProgramTicker } from "@/components/programs/ProgramTicker"
 import { UserAvatar } from "@/components/UserAvatar"
 import { useMe } from "@/hooks/use-auth"
 
@@ -61,31 +48,9 @@ function RouteComponent() {
               </div>
             </header>
 
-            <section aria-labelledby="recent-applications-title">
-              <Card className="w-full">
-                <CardHeader className="border-b">
-                  <CardTitle id="recent-applications-title">
-                    Mis solicitudes recientes
-                  </CardTitle>
-                  <CardDescription>
-                    Tus solicitudes más recientes aparecerán en esta sección.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Empty className="min-h-64 border">
-                    <EmptyHeader>
-                      <EmptyMedia variant="icon">
-                        <IconClipboardText />
-                      </EmptyMedia>
-                      <EmptyTitle>No tenés solicitudes recientes</EmptyTitle>
-                      <EmptyDescription>
-                        Cuando solicites un programa, vas a poder seguirlo desde acá.
-                      </EmptyDescription>
-                    </EmptyHeader>
-                  </Empty>
-                </CardContent>
-              </Card>
-            </section>
+            <ProgramTicker />
+
+            <RecentApplications />
           </main>
         </div>
       </SidebarShellContent>

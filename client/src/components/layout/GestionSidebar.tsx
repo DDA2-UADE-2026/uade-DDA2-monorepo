@@ -14,6 +14,7 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
 } from "@/components/ui/sidebar"
+import { BackendStatusPill } from "../BackendStatusPill"
 
 function GestionSidebar() {
   const { pathname } = useLocation()
@@ -30,14 +31,14 @@ function GestionSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Análisis</SidebarGroupLabel>
+          <SidebarGroupLabel>Seguridad y Análisis</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarNavMenu items={ANALISIS_NAV} pathname={pathname} />
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Debug</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex gap-1.5 items-center justify-between">Debug y estado <BackendStatusPill xs/></SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarNavMenu items={DEBUG_NAV} pathname={pathname} />
           </SidebarGroupContent>

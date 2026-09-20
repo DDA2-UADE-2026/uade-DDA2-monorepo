@@ -443,11 +443,14 @@ function ActorCell({ log }: { log: LogResponse }) {
   }
 
   return (
-    <div className="min-w-40">
-      <p className="font-medium">{log.actor.name || "Usuario eliminado"}</p>
-      {log.actor.username && (
-        <p className="text-xs text-muted-foreground">@{log.actor.username}</p>
-      )}
+    <div className="flex min-w-40 items-center gap-2">
+      <UserAvatar user={log.actor} className="size-8" />
+      <div>
+        <p className="font-medium">{log.actor.name || "Usuario eliminado"}</p>
+        {log.actor.username && (
+          <p className="text-xs text-muted-foreground">@{log.actor.username}</p>
+        )}
+      </div>
     </div>
   )
 }
