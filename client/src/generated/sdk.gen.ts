@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateData, ActivateErrors, ActivateResponses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PutData, PutErrors, PutResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PublishData, PublishErrors, PublishResponses, PutData, PutErrors, PutResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -355,6 +355,100 @@ export const update6 = <ThrowOnError extends boolean = false>(options: Options<U
 });
 
 /**
+ * Editar una disponibilidad profesional
+ */
+export const updateProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<UpdateProfessionalAvailabilityData, ThrowOnError>): RequestResult<UpdateProfessionalAvailabilityResponses, UpdateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).put<UpdateProfessionalAvailabilityResponses, UpdateProfessionalAvailabilityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-availability/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Consultar un servicio municipal
+ */
+export const getMunicipalService = <ThrowOnError extends boolean = false>(options: Options<GetMunicipalServiceData, ThrowOnError>): RequestResult<GetMunicipalServiceResponses, GetMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).get<GetMunicipalServiceResponses, GetMunicipalServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-services/{id}',
+    ...options
+});
+
+/**
+ * Editar un servicio municipal
+ */
+export const updateMunicipalService = <ThrowOnError extends boolean = false>(options: Options<UpdateMunicipalServiceData, ThrowOnError>): RequestResult<UpdateMunicipalServiceResponses, UpdateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).put<UpdateMunicipalServiceResponses, UpdateMunicipalServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-services/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Consultar un centro municipal
+ */
+export const getMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<GetMunicipalCenterData, ThrowOnError>): RequestResult<GetMunicipalCenterResponses, GetMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).get<GetMunicipalCenterResponses, GetMunicipalCenterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{id}',
+    ...options
+});
+
+/**
+ * Editar un centro municipal
+ */
+export const updateMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<UpdateMunicipalCenterData, ThrowOnError>): RequestResult<UpdateMunicipalCenterResponses, UpdateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).put<UpdateMunicipalCenterResponses, UpdateMunicipalCenterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Editar un horario de apertura
+ */
+export const updateCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<UpdateCenterOpeningHourData, ThrowOnError>): RequestResult<UpdateCenterOpeningHourResponses, UpdateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).put<UpdateCenterOpeningHourResponses, UpdateCenterOpeningHourErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-opening-hours/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Consultar una actividad
+ */
+export const get1 = <ThrowOnError extends boolean = false>(options: Options<Get1Data, ThrowOnError>): RequestResult<Get1Responses, Get1Errors, ThrowOnError> => (options.client ?? client).get<Get1Responses, Get1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/activities/{id}',
+    ...options
+});
+
+/**
+ * Actualizar una actividad
+ *
+ * Solo se pueden modificar actividades en estado DRAFT.
+ */
+export const update7 = <ThrowOnError extends boolean = false>(options: Options<Update7Data, ThrowOnError>): RequestResult<Update7Responses, Update7Errors, ThrowOnError> => (options.client ?? client).put<Update7Responses, Update7Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/activities/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Listar usuarios
  *
  * Devuelve todos los usuarios con sus roles y permisos separados por rol.
@@ -694,6 +788,138 @@ export const create7 = <ThrowOnError extends boolean = false>(options: Options<C
 });
 
 /**
+ * Listar disponibilidad de una asignación
+ */
+export const listProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAvailabilityData, ThrowOnError>): RequestResult<ListProfessionalAvailabilityResponses, ListProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAvailabilityResponses, ListProfessionalAvailabilityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-assignments/{assignmentId}/availability',
+    ...options
+});
+
+/**
+ * Crear una disponibilidad profesional
+ */
+export const createProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<CreateProfessionalAvailabilityData, ThrowOnError>): RequestResult<CreateProfessionalAvailabilityResponses, CreateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).post<CreateProfessionalAvailabilityResponses, CreateProfessionalAvailabilityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-assignments/{assignmentId}/availability',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar servicios municipales
+ */
+export const listMunicipalServices = <ThrowOnError extends boolean = false>(options?: Options<ListMunicipalServicesData, ThrowOnError>): RequestResult<ListMunicipalServicesResponses, ListMunicipalServicesErrors, ThrowOnError> => (options?.client ?? client).get<ListMunicipalServicesResponses, ListMunicipalServicesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-services',
+    ...options
+});
+
+/**
+ * Crear un servicio municipal
+ */
+export const createMunicipalService = <ThrowOnError extends boolean = false>(options: Options<CreateMunicipalServiceData, ThrowOnError>): RequestResult<CreateMunicipalServiceResponses, CreateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).post<CreateMunicipalServiceResponses, CreateMunicipalServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-services',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar centros municipales
+ */
+export const listMunicipalCenters = <ThrowOnError extends boolean = false>(options?: Options<ListMunicipalCentersData, ThrowOnError>): RequestResult<ListMunicipalCentersResponses, ListMunicipalCentersErrors, ThrowOnError> => (options?.client ?? client).get<ListMunicipalCentersResponses, ListMunicipalCentersErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers',
+    ...options
+});
+
+/**
+ * Crear un centro municipal
+ */
+export const createMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<CreateMunicipalCenterData, ThrowOnError>): RequestResult<CreateMunicipalCenterResponses, CreateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).post<CreateMunicipalCenterResponses, CreateMunicipalCenterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar servicios de un centro
+ */
+export const listCenterServices = <ThrowOnError extends boolean = false>(options: Options<ListCenterServicesData, ThrowOnError>): RequestResult<ListCenterServicesResponses, ListCenterServicesErrors, ThrowOnError> => (options.client ?? client).get<ListCenterServicesResponses, ListCenterServicesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{centerId}/services',
+    ...options
+});
+
+/**
+ * Asignar un servicio a un centro
+ */
+export const assignServiceToCenter = <ThrowOnError extends boolean = false>(options: Options<AssignServiceToCenterData, ThrowOnError>): RequestResult<AssignServiceToCenterResponses, AssignServiceToCenterErrors, ThrowOnError> => (options.client ?? client).post<AssignServiceToCenterResponses, AssignServiceToCenterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{centerId}/services',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar horarios de apertura
+ */
+export const listCenterOpeningHours = <ThrowOnError extends boolean = false>(options: Options<ListCenterOpeningHoursData, ThrowOnError>): RequestResult<ListCenterOpeningHoursResponses, ListCenterOpeningHoursErrors, ThrowOnError> => (options.client ?? client).get<ListCenterOpeningHoursResponses, ListCenterOpeningHoursErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{centerId}/opening-hours',
+    ...options
+});
+
+/**
+ * Crear un horario de apertura
+ */
+export const createCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<CreateCenterOpeningHourData, ThrowOnError>): RequestResult<CreateCenterOpeningHourResponses, CreateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).post<CreateCenterOpeningHourResponses, CreateCenterOpeningHourErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{centerId}/opening-hours',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar profesionales de un servicio del centro
+ */
+export const listProfessionalAssignments = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAssignmentsData, ThrowOnError>): RequestResult<ListProfessionalAssignmentsResponses, ListProfessionalAssignmentsErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAssignmentsResponses, ListProfessionalAssignmentsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-services/{centerServiceId}/professionals',
+    ...options
+});
+
+/**
+ * Asignar un profesional a un servicio del centro
+ */
+export const assignProfessional = <ThrowOnError extends boolean = false>(options: Options<AssignProfessionalData, ThrowOnError>): RequestResult<AssignProfessionalResponses, AssignProfessionalErrors, ThrowOnError> => (options.client ?? client).post<AssignProfessionalResponses, AssignProfessionalErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-services/{centerServiceId}/professionals',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Listar solicitudes de cualquier titular
  *
  * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
@@ -712,6 +938,56 @@ export const list4 = <ThrowOnError extends boolean = false>(options?: Options<Li
 export const submit1 = <ThrowOnError extends boolean = false>(options: Options<Submit1Data, ThrowOnError>): RequestResult<Submit1Responses, Submit1Errors, ThrowOnError> => (options.client ?? client).post<Submit1Responses, Submit1Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/applications',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar actividades
+ *
+ * Devuelve una página de actividades comunitarias.
+ */
+export const list5 = <ThrowOnError extends boolean = false>(options?: Options<List5Data, ThrowOnError>): RequestResult<List5Responses, List5Errors, ThrowOnError> => (options?.client ?? client).get<List5Responses, List5Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/activities',
+    ...options
+});
+
+/**
+ * Crear una actividad
+ *
+ * Registra una actividad comunitaria en estado DRAFT.
+ */
+export const create8 = <ThrowOnError extends boolean = false>(options: Options<Create8Data, ThrowOnError>): RequestResult<Create8Responses, Create8Errors, ThrowOnError> => (options.client ?? client).post<Create8Responses, Create8Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/activities',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Inscribirse en una actividad
+ *
+ * La identidad ciudadana se obtiene del JWT. La actividad debe estar abierta y tener cupo.
+ */
+export const enroll = <ThrowOnError extends boolean = false>(options: Options<EnrollData, ThrowOnError>): RequestResult<EnrollResponses, EnrollErrors, ThrowOnError> => (options.client ?? client).post<EnrollResponses, EnrollErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/activities/{id}/enrollments',
+    ...options
+});
+
+/**
+ * Marcar a una persona como presente o ausente
+ */
+export const updateAttendance = <ThrowOnError extends boolean = false>(options: Options<UpdateAttendanceData, ThrowOnError>): RequestResult<UpdateAttendanceResponses, UpdateAttendanceErrors, ThrowOnError> => (options.client ?? client).patch<UpdateAttendanceResponses, UpdateAttendanceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/professional/activities/{activityId}/enrollments/{enrollmentId}/attendance',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -753,6 +1029,114 @@ export const activate = <ThrowOnError extends boolean = false>(options: Options<
 });
 
 /**
+ * Desactivar una disponibilidad profesional
+ */
+export const deactivateProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<DeactivateProfessionalAvailabilityData, ThrowOnError>): RequestResult<DeactivateProfessionalAvailabilityResponses, DeactivateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateProfessionalAvailabilityResponses, DeactivateProfessionalAvailabilityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-availability/{id}/deactivate',
+    ...options
+});
+
+/**
+ * Reactivar una disponibilidad profesional
+ */
+export const activateProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<ActivateProfessionalAvailabilityData, ThrowOnError>): RequestResult<ActivateProfessionalAvailabilityResponses, ActivateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).patch<ActivateProfessionalAvailabilityResponses, ActivateProfessionalAvailabilityErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-availability/{id}/activate',
+    ...options
+});
+
+/**
+ * Desactivar una asignación profesional
+ */
+export const deactivateProfessionalAssignment = <ThrowOnError extends boolean = false>(options: Options<DeactivateProfessionalAssignmentData, ThrowOnError>): RequestResult<DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAssignmentErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAssignmentErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-assignments/{id}/deactivate',
+    ...options
+});
+
+/**
+ * Reactivar una asignación profesional
+ */
+export const activateProfessionalAssignment = <ThrowOnError extends boolean = false>(options: Options<ActivateProfessionalAssignmentData, ThrowOnError>): RequestResult<ActivateProfessionalAssignmentResponses, ActivateProfessionalAssignmentErrors, ThrowOnError> => (options.client ?? client).patch<ActivateProfessionalAssignmentResponses, ActivateProfessionalAssignmentErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/professional-assignments/{id}/activate',
+    ...options
+});
+
+/**
+ * Desactivar un servicio municipal
+ */
+export const deactivateMunicipalService = <ThrowOnError extends boolean = false>(options: Options<DeactivateMunicipalServiceData, ThrowOnError>): RequestResult<DeactivateMunicipalServiceResponses, DeactivateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateMunicipalServiceResponses, DeactivateMunicipalServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-services/{id}/deactivate',
+    ...options
+});
+
+/**
+ * Activar un servicio municipal
+ */
+export const activateMunicipalService = <ThrowOnError extends boolean = false>(options: Options<ActivateMunicipalServiceData, ThrowOnError>): RequestResult<ActivateMunicipalServiceResponses, ActivateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).patch<ActivateMunicipalServiceResponses, ActivateMunicipalServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-services/{id}/activate',
+    ...options
+});
+
+/**
+ * Desactivar un centro municipal
+ */
+export const deactivateMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<DeactivateMunicipalCenterData, ThrowOnError>): RequestResult<DeactivateMunicipalCenterResponses, DeactivateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateMunicipalCenterResponses, DeactivateMunicipalCenterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{id}/deactivate',
+    ...options
+});
+
+/**
+ * Activar un centro municipal
+ */
+export const activateMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<ActivateMunicipalCenterData, ThrowOnError>): RequestResult<ActivateMunicipalCenterResponses, ActivateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).patch<ActivateMunicipalCenterResponses, ActivateMunicipalCenterErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/municipal-centers/{id}/activate',
+    ...options
+});
+
+/**
+ * Desactivar un servicio del centro
+ */
+export const deactivateCenterService = <ThrowOnError extends boolean = false>(options: Options<DeactivateCenterServiceData, ThrowOnError>): RequestResult<DeactivateCenterServiceResponses, DeactivateCenterServiceErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateCenterServiceResponses, DeactivateCenterServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-services/{id}/deactivate',
+    ...options
+});
+
+/**
+ * Reactivar un servicio del centro
+ */
+export const activateCenterService = <ThrowOnError extends boolean = false>(options: Options<ActivateCenterServiceData, ThrowOnError>): RequestResult<ActivateCenterServiceResponses, ActivateCenterServiceErrors, ThrowOnError> => (options.client ?? client).patch<ActivateCenterServiceResponses, ActivateCenterServiceErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-services/{id}/activate',
+    ...options
+});
+
+/**
+ * Desactivar un horario de apertura
+ */
+export const deactivateCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<DeactivateCenterOpeningHourData, ThrowOnError>): RequestResult<DeactivateCenterOpeningHourResponses, DeactivateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateCenterOpeningHourResponses, DeactivateCenterOpeningHourErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-opening-hours/{id}/deactivate',
+    ...options
+});
+
+/**
+ * Reactivar un horario de apertura
+ */
+export const activateCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<ActivateCenterOpeningHourData, ThrowOnError>): RequestResult<ActivateCenterOpeningHourResponses, ActivateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).patch<ActivateCenterOpeningHourResponses, ActivateCenterOpeningHourErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/center-opening-hours/{id}/activate',
+    ...options
+});
+
+/**
  * Revisar un documento pendiente
  *
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
@@ -765,6 +1149,28 @@ export const review = <ThrowOnError extends boolean = false>(options: Options<Re
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * Publicar una actividad
+ *
+ * Cambia una actividad de DRAFT a OPEN.
+ */
+export const publish = <ThrowOnError extends boolean = false>(options: Options<PublishData, ThrowOnError>): RequestResult<PublishResponses, PublishErrors, ThrowOnError> => (options.client ?? client).patch<PublishResponses, PublishErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/activities/{id}/publish',
+    ...options
+});
+
+/**
+ * Cerrar una actividad
+ *
+ * Cambia una actividad de OPEN a CLOSED.
+ */
+export const close1 = <ThrowOnError extends boolean = false>(options: Options<Close1Data, ThrowOnError>): RequestResult<Close1Responses, Close1Errors, ThrowOnError> => (options.client ?? client).patch<Close1Responses, Close1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/admin/activities/{id}/close',
+    ...options
 });
 
 /**
@@ -845,6 +1251,24 @@ export const getAvailableProgram = <ThrowOnError extends boolean = false>(option
 });
 
 /**
+ * Listar actividades habilitadas para registrar asistencia
+ */
+export const listActivities = <ThrowOnError extends boolean = false>(options?: Options<ListActivitiesData, ThrowOnError>): RequestResult<ListActivitiesResponses, ListActivitiesErrors, ThrowOnError> => (options?.client ?? client).get<ListActivitiesResponses, ListActivitiesErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/professional/activities',
+    ...options
+});
+
+/**
+ * Listar personas inscriptas y su asistencia
+ */
+export const listEnrollments = <ThrowOnError extends boolean = false>(options: Options<ListEnrollmentsData, ThrowOnError>): RequestResult<ListEnrollmentsResponses, ListEnrollmentsErrors, ThrowOnError> => (options.client ?? client).get<ListEnrollmentsResponses, ListEnrollmentsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/professional/activities/{activityId}/enrollments',
+    ...options
+});
+
+/**
  * Obtener una imagen
  *
  * Devuelve públicamente los bytes de una imagen de programa.
@@ -856,7 +1280,7 @@ export const getPublicImage = <ThrowOnError extends boolean = false>(options: Op
  *
  * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
  */
-export const get1 = <ThrowOnError extends boolean = false>(options: Options<Get1Data, ThrowOnError>): RequestResult<Get1Responses, Get1Errors, ThrowOnError> => (options.client ?? client).get<Get1Responses, Get1Errors, ThrowOnError>({
+export const get2 = <ThrowOnError extends boolean = false>(options: Options<Get2Data, ThrowOnError>): RequestResult<Get2Responses, Get2Errors, ThrowOnError> => (options.client ?? client).get<Get2Responses, Get2Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/applications/{id}',
     ...options
@@ -865,7 +1289,7 @@ export const get1 = <ThrowOnError extends boolean = false>(options: Options<Get1
 /**
  * Listar los documentos entregados en una solicitud propia
  */
-export const list5 = <ThrowOnError extends boolean = false>(options: Options<List5Data, ThrowOnError>): RequestResult<List5Responses, List5Errors, ThrowOnError> => (options.client ?? client).get<List5Responses, List5Errors, ThrowOnError>({
+export const list6 = <ThrowOnError extends boolean = false>(options: Options<List6Data, ThrowOnError>): RequestResult<List6Responses, List6Errors, ThrowOnError> => (options.client ?? client).get<List6Responses, List6Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/applications/{applicationId}/documents',
     ...options
@@ -920,7 +1344,7 @@ export const listProgramEditionOptions = <ThrowOnError extends boolean = false>(
  *
  * Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.
  */
-export const get2 = <ThrowOnError extends boolean = false>(options: Options<Get2Data, ThrowOnError>): RequestResult<Get2Responses, Get2Errors, ThrowOnError> => (options.client ?? client).get<Get2Responses, Get2Errors, ThrowOnError>({
+export const get3 = <ThrowOnError extends boolean = false>(options: Options<Get3Data, ThrowOnError>): RequestResult<Get3Responses, Get3Errors, ThrowOnError> => (options.client ?? client).get<Get3Responses, Get3Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/applications/{id}',
     ...options
@@ -929,7 +1353,7 @@ export const get2 = <ThrowOnError extends boolean = false>(options: Options<Get2
 /**
  * Listar documentos de cualquier solicitud
  */
-export const list6 = <ThrowOnError extends boolean = false>(options: Options<List6Data, ThrowOnError>): RequestResult<List6Responses, List6Errors, ThrowOnError> => (options.client ?? client).get<List6Responses, List6Errors, ThrowOnError>({
+export const list7 = <ThrowOnError extends boolean = false>(options: Options<List7Data, ThrowOnError>): RequestResult<List7Responses, List7Errors, ThrowOnError> => (options.client ?? client).get<List7Responses, List7Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/applications/{applicationId}/documents',
     ...options
@@ -943,6 +1367,24 @@ export const list6 = <ThrowOnError extends boolean = false>(options: Options<Lis
 export const content1 = <ThrowOnError extends boolean = false>(options: Options<Content1Data, ThrowOnError>): RequestResult<Content1Responses, Content1Errors, ThrowOnError> => (options.client ?? client).get<Content1Responses, Content1Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/api/admin/applications/{applicationId}/documents/{applicationDocumentId}/content',
+    ...options
+});
+
+/**
+ * Listar actividades abiertas
+ */
+export const list8 = <ThrowOnError extends boolean = false>(options?: Options<List8Data, ThrowOnError>): RequestResult<List8Responses, List8Errors, ThrowOnError> => (options?.client ?? client).get<List8Responses, List8Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/activities',
+    ...options
+});
+
+/**
+ * Consultar una actividad abierta
+ */
+export const get4 = <ThrowOnError extends boolean = false>(options: Options<Get4Data, ThrowOnError>): RequestResult<Get4Responses, Get4Errors, ThrowOnError> => (options.client ?? client).get<Get4Responses, Get4Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/api/activities/{id}',
     ...options
 });
 

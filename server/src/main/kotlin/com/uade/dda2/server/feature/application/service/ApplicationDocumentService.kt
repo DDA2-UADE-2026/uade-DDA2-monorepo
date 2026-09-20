@@ -191,7 +191,11 @@ class ApplicationDocumentService(
         id = id, applicationId = applicationId, requirementId = requirementId, requirementCode = requirementCode,
         requirementName = requirementName, required = required, documentId = documentId, originalName = originalName,
         contentType = contentType, sizeBytes = sizeBytes, status = status, observation = observation,
-        uploadedAt = uploadedAt, reviewedByUserId = reviewedByUserId, reviewedAt = reviewedAt,
+        uploadedAt = uploadedAt, reviewedByUserId = reviewedByUserId,
+        // La identidad de quien revisó sólo le sirve a la gestión; el titular no ve al personal municipal.
+        reviewedByUserName = if (administrative) reviewedByUserName else null,
+        reviewedByUserEmail = if (administrative) reviewedByUserEmail else null,
+        reviewedAt = reviewedAt,
         contentUrl = if (administrative) "/api/admin/applications/$applicationId/documents/$id/content"
             else "/api/applications/$applicationId/documents/$id/content",
     )

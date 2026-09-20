@@ -23,6 +23,8 @@ interface ApplicationDocumentMetadataProjection {
     val observation: String?
     val uploadedAt: LocalDateTime
     val reviewedByUserId: Long?
+    val reviewedByUserName: String?
+    val reviewedByUserEmail: String?
     val reviewedAt: LocalDateTime?
 }
 
@@ -47,7 +49,8 @@ interface ApplicationDocumentRepository : JpaRepository<ApplicationDocument, UUI
                r.id as requirementId, r.code as requirementCode, r.name as requirementName, r.required as required,
                d.id as documentId, d.originalName as originalName, d.contentType as contentType, d.sizeBytes as sizeBytes,
                ad.status as status, ad.observation as observation, ad.uploadedAt as uploadedAt,
-               reviewer.id as reviewedByUserId, ad.reviewedAt as reviewedAt
+               reviewer.id as reviewedByUserId, reviewer.name as reviewedByUserName, reviewer.email as reviewedByUserEmail,
+               ad.reviewedAt as reviewedAt
         from ApplicationDocument ad
         join ad.application a join ad.requirement r join ad.document d
         left join ad.reviewedBy reviewer
@@ -61,7 +64,8 @@ interface ApplicationDocumentRepository : JpaRepository<ApplicationDocument, UUI
                r.id as requirementId, r.code as requirementCode, r.name as requirementName, r.required as required,
                d.id as documentId, d.originalName as originalName, d.contentType as contentType, d.sizeBytes as sizeBytes,
                ad.status as status, ad.observation as observation, ad.uploadedAt as uploadedAt,
-               reviewer.id as reviewedByUserId, ad.reviewedAt as reviewedAt
+               reviewer.id as reviewedByUserId, reviewer.name as reviewedByUserName, reviewer.email as reviewedByUserEmail,
+               ad.reviewedAt as reviewedAt
         from ApplicationDocument ad
         join ad.application a join ad.requirement r join ad.document d
         left join ad.reviewedBy reviewer

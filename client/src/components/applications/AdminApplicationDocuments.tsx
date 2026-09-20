@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useMemo, useState } from "react"
 
 import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
+import { UserAvatar } from "@/components/UserAvatar"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -26,8 +27,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import {
   content1Options,
-  get2QueryKey,
-  list6QueryKey,
+  get3QueryKey,
+  list7QueryKey,
   reviewMutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse } from "@/generated/types.gen"
@@ -58,6 +59,7 @@ export function AdminDocumentsTable({
               <TableHead>Requisito</TableHead>
               <TableHead>Archivo</TableHead>
               <TableHead>Estado</TableHead>
+              <TableHead className="hidden md:table-cell">Validado por</TableHead>
               <TableHead className="hidden lg:table-cell">Revisión</TableHead>
               <TableHead className="w-px"><span className="sr-only">Acciones</span></TableHead>
             </TableRow>
@@ -82,16 +84,16 @@ export function AdminDocumentsTable({
                 <TableCell className="align-top">
                   <AdminDocumentStatusBadge status={document.status} />
                 </TableCell>
+                <TableCell className="hidden min-w-44 align-top md:table-cell">
+                  <AdminDocumentReviewer document={document} />
+                </TableCell>
                 <TableCell className="hidden max-w-72 align-top lg:table-cell">
                   {document.observation ? (
                     <p className="line-clamp-2 text-sm text-muted-foreground" title={document.observation}>
                       {document.observation}
                     </p>
                   ) : document.reviewedAt ? (
-                    <div className="text-xs text-muted-foreground">
-                      <p>{formatApplicationDateTime(document.reviewedAt)}</p>
-                      {document.reviewedByUserId != null && <p>Usuario #{document.reviewedByUserId}</p>}
-                    </div>
+                    <p className="text-xs text-muted-foreground">{formatApplicationDateTime(document.reviewedAt)}</p>
                   ) : (
                     <span className="text-sm text-muted-foreground">—</span>
                   )}
@@ -147,6 +149,25 @@ export function AdminDocumentsTable({
         />
       )}
     </>
+  )
+}
+
+/** Quién resolvió la entrega: sin revisión todavía no hay persona que mostrar. */
+function AdminDocumentReviewer({ document }: { document: ApplicationDocumentResponse }) {
+  const { reviewedByUserId: id, reviewedByUserName: name, reviewedByUserEmail: email } = document
+
+  if (id == null && !name) return <span className="text-sm text-muted-foreground">—</span>
+
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <UserAvatar user={{ id, name, email }} size="sm" />
+      <div className="min-w-0">
+        <p className="max-w-44 truncate text-sm font-medium">{name || `Usuario #${id}`}</p>
+        <p className="max-w-44 truncate text-xs text-muted-foreground">
+          {email || (id != null ? `ID interno ${id}` : "—")}
+        </p>
+      </div>
+    </div>
   )
 }
 
@@ -251,8 +272,8 @@ export function AdminDocumentReviewDialog({
     onSuccess: async () => {
       // La revisión cambia la documentación pendiente que expone el detalle administrativo.
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: list6QueryKey({ path: { applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list7QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) }),
       ])
       onOpenChange(false)
     },

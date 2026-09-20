@@ -31,6 +31,10 @@ data class ApplicationDocumentResponse(
     val observation: String?,
     val uploadedAt: LocalDateTime,
     val reviewedByUserId: Long?,
+    @field:Schema(description = "Nombre de quien revisó la entrega; sólo se expone en las vistas administrativas.", nullable = true)
+    val reviewedByUserName: String?,
+    @field:Schema(description = "Correo de quien revisó la entrega; sólo se expone en las vistas administrativas.", nullable = true)
+    val reviewedByUserEmail: String?,
     val reviewedAt: LocalDateTime?,
     val contentUrl: String,
 )

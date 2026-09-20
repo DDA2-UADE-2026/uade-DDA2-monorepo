@@ -8,7 +8,7 @@ import { ApplicationError, ApplicationHeading, ApplicationLoading, ApplicationPa
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { get1Options } from "@/generated/@tanstack/react-query.gen"
+import { get2Options } from "@/generated/@tanstack/react-query.gen"
 import { formatApplicationDate, isApplicationResolved } from "@/lib/application-flow"
 
 export const Route = createFileRoute("/_app/portal/solicitudes/$solicitudId/")({
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_app/portal/solicitudes/$solicitudId/")({
 function RouteComponent() {
   const { solicitudId } = Route.useParams()
   const validId = z.uuid().safeParse(solicitudId).success
-  const query = useQuery({ ...get1Options({ path: { id: solicitudId } }), enabled: validId })
+  const query = useQuery({ ...get2Options({ path: { id: solicitudId } }), enabled: validId })
   const application = query.data
   const pending = application?.pendingDocuments?.length ?? 0
   return <ApplicationPage breadcrumbs={[

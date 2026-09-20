@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 import { toast } from "sonner"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { client } from "@/generated/client.gen"
-import { get1QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { get2QueryKey } from "@/generated/@tanstack/react-query.gen"
 import { enrollmentToday, submissionStorageKey } from "@/lib/application-flow"
 import { ApplicationConfirmation } from "@/routes/_app/portal/solicitudes/nueva"
 
@@ -68,7 +68,7 @@ describe("presentación de una solicitud", () => {
     expect(requests[0].headers.get("Idempotency-Key")).toMatch(/^[0-9a-f-]{36}$/)
     finish(Response.json({ id: "application-1", status: "SUBMITTED" }, { status: 201 }))
     await waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: "/portal/solicitudes/$solicitudId", params: { solicitudId: "application-1" }, replace: true }))
-    expect(queryClient.getQueryData(get1QueryKey({ path: { id: "application-1" } }))).toMatchObject({ id: "application-1" })
+    expect(queryClient.getQueryData(get2QueryKey({ path: { id: "application-1" } }))).toMatchObject({ id: "application-1" })
     expect(sessionStorage.getItem(submissionStorageKey(42, "period-1"))).toBeNull()
   })
 

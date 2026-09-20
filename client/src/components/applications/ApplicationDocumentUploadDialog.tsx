@@ -7,7 +7,7 @@ import { ApplicationError } from "@/components/applications/ApplicationUi"
 import { Attachment, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentMedia, AttachmentTitle, AttachmentTrigger } from "@/components/ui/attachment"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { contentQueryKey, get1QueryKey, list5QueryKey, listQueryKey, putMutation } from "@/generated/@tanstack/react-query.gen"
+import { contentQueryKey, get2QueryKey, list6QueryKey, listQueryKey, putMutation } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse, AvailableProgramDocumentRequirementResponse } from "@/generated/types.gen"
 import { DOCUMENT_ACCEPT, formatDocumentSize, validateApplicationFile } from "@/lib/application-flow"
 
@@ -29,8 +29,8 @@ export function ApplicationDocumentUploadDialog({ applicationId, requirement, ex
     retry: false,
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: list5QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list6QueryKey({ path: { applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: listQueryKey() }),
         ...(existing?.id ? [queryClient.invalidateQueries({ queryKey: contentQueryKey({ path: { applicationId, applicationDocumentId: existing.id } }) })] : []),
       ])
@@ -38,7 +38,7 @@ export function ApplicationDocumentUploadDialog({ applicationId, requirement, ex
       onOpenChange(false)
     },
     onError: (error) => {
-      if (error.status === 409) queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: applicationId } }) })
+      if (error.status === 409) queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) })
     },
   })
   const busy = disabled || upload.isPending

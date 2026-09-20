@@ -321,6 +321,12 @@ class ApplicationDocumentFlowTest {
             .header("Authorization", auth(f.adminToken))).andReturn(), 200)!!
         assertEquals("OBSERVED", reviewed.get("status").asString())
         assertEquals(f.adminId, reviewed.get("reviewedByUserId").asLong())
+        assertEquals("Revisor", reviewed.get("reviewedByUserName").asString())
+        assertTrue(reviewed.get("reviewedByUserEmail").asString().isNotBlank())
+        val ownDocuments = expect(mvc.perform(get("/api/applications/${f.applicationId}/documents")
+            .header("Authorization", auth(f.ownerToken))).andReturn(), 200)!!
+        assertTrue(ownDocuments.get(0).get("reviewedByUserName").isNull)
+        assertTrue(ownDocuments.get(0).get("reviewedByUserEmail").isNull)
         val detail = expect(mvc.perform(get("/api/applications/${f.applicationId}").header("Authorization", auth(f.ownerToken))).andReturn(), 200)!!
         assertEquals("OBSERVED", detail.get("pendingDocuments").get(0).get("reason").asString())
         assertEquals("Imagen ilegible", detail.get("pendingDocuments").get(0).get("observation").asString())
@@ -416,6 +422,27 @@ class ApplicationDocumentFlowTest {
         } finally {
             jdbc.execute("alter table logs drop constraint ck_document_audit_failure_${f.ownerId}")
         }
+    }
+
+    @Test
+    fun `el detalle administrativo sigue disponible con entregas validadas`() {
+        val linkId = expect(putDocument(), 201)!!.get("id").asString()
+        expect(mvc.perform(patch("/api/admin/applications/${f.applicationId}/documents/$linkId/review")
+            .contentType(MediaType.APPLICATION_JSON).content("""{"status":"VALID"}""")
+            .header("Authorization", auth(f.adminToken))).andReturn(), 200)
+        val listed = expect(mvc.perform(get("/api/admin/applications/${f.applicationId}/documents")
+            .header("Authorization", auth(f.adminToken))).andReturn(), 200)!!
+        assertEquals(f.adminId, listed.get(0).get("reviewedByUserId").asLong())
+        assertEquals("Revisor", listed.get(0).get("reviewedByUserName").asString())
+        val viewerToken = tx {
+            val viewerRole = role("GESTOR_SOLICITUDES_DOCUMENTOS", setOf("applications:management:view"))
+            val viewer = users.save(User(name = "Gestor", email = "viewer-${UUID.randomUUID()}@example.com", roles = mutableSetOf(viewerRole)))
+            jwt.createToken(viewer, viewerRole)
+        }
+        expect(mvc.perform(get("/api/admin/applications/${f.applicationId}")
+            .header("Authorization", auth(viewerToken))).andReturn(), 200)
+        expect(mvc.perform(get("/api/applications/${f.applicationId}/documents")
+            .header("Authorization", auth(f.ownerToken))).andReturn(), 200)
     }
 
     @Test
