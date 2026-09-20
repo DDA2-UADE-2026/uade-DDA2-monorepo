@@ -349,7 +349,7 @@ function ServiceDialog({ service, onOpenChange }: {
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
                       aria-invalid={invalid}
-                      placeholder="Asesoramiento jurídico"
+                      placeholder="Medico/a clínico/a, Psicología, etc."
                       maxLength={150}
                       autoFocus
                     />
