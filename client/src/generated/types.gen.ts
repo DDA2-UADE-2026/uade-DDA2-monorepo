@@ -535,6 +535,139 @@ export type ProgramBenefitResponse = {
 };
 
 /**
+ * Datos editables de una disponibilidad profesional.
+ */
+export type UpdateProfessionalAvailabilityRequest = {
+    dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+    startTime?: string;
+    endTime?: string;
+};
+
+/**
+ * Disponibilidad semanal para una asignación profesional y servicio.
+ */
+export type ProfessionalAvailabilityResponse = {
+    id?: string;
+    assignmentId?: string;
+    professionalId?: number;
+    centerId?: string;
+    serviceId?: string;
+    serviceName?: string;
+    dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+    startTime?: string;
+    endTime?: string;
+    active?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
+ * Datos editables de un servicio municipal.
+ */
+export type UpdateMunicipalServiceRequest = {
+    name: string;
+    description: string;
+    durationMinutes?: number;
+};
+
+/**
+ * Detalle de un servicio municipal compartido.
+ */
+export type MunicipalServiceResponse = {
+    id?: string;
+    name?: string;
+    description?: string;
+    durationMinutes?: number;
+    active?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
+ * Datos editables de un centro municipal.
+ */
+export type UpdateMunicipalCenterRequest = {
+    name: string;
+    address: string;
+    phone?: string;
+    email?: string;
+};
+
+/**
+ * Detalle de un centro municipal.
+ */
+export type MunicipalCenterResponse = {
+    id?: string;
+    name?: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+    active?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
+ * Datos editables de una franja semanal de apertura.
+ */
+export type UpdateCenterOpeningHourRequest = {
+    dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+    startTime?: string;
+    endTime?: string;
+};
+
+/**
+ * Franja semanal de apertura de un centro.
+ */
+export type CenterOpeningHourResponse = {
+    id?: string;
+    centerId?: string;
+    dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+    startTime?: string;
+    endTime?: string;
+    active?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
+ * Datos requeridos para actualizar una actividad comunitaria en borrador.
+ */
+export type UpdateActivityRequest = {
+    name: string;
+    description: string;
+    location: string;
+    startDate?: string;
+    endDate?: string;
+    capacity?: number;
+};
+
+/**
+ * Usuario que creó la actividad.
+ */
+export type ActivityCreatedByResponse = {
+    id?: number;
+    name?: string;
+};
+
+/**
+ * Detalle de una actividad comunitaria.
+ */
+export type ActivityResponse = {
+    id?: string;
+    name?: string;
+    description?: string;
+    location?: string;
+    startDate?: string;
+    endDate?: string;
+    capacity?: number;
+    status?: 'DRAFT' | 'OPEN' | 'CLOSED';
+    createdBy?: ActivityCreatedByResponse;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
  * Datos requeridos para crear un usuario.
  */
 export type CreateUserRequest = {
@@ -856,6 +989,86 @@ export type CreateProgramEditionRequest = {
 };
 
 /**
+ * Franja semanal de disponibilidad profesional.
+ */
+export type CreateProfessionalAvailabilityRequest = {
+    dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+    startTime?: string;
+    endTime?: string;
+};
+
+/**
+ * Datos requeridos para crear un servicio municipal.
+ */
+export type CreateMunicipalServiceRequest = {
+    name: string;
+    description: string;
+    durationMinutes?: number;
+};
+
+/**
+ * Datos requeridos para crear un centro municipal.
+ */
+export type CreateMunicipalCenterRequest = {
+    name: string;
+    address: string;
+    phone?: string;
+    email?: string;
+};
+
+/**
+ * Servicio del catálogo que se asignará al centro.
+ */
+export type AssignCenterServiceRequest = {
+    serviceId?: string;
+};
+
+/**
+ * Servicio del catálogo asignado a un centro municipal.
+ */
+export type CenterServiceResponse = {
+    id?: string;
+    centerId?: string;
+    service?: MunicipalServiceResponse;
+    active?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
+ * Franja semanal de apertura de un centro.
+ */
+export type CreateCenterOpeningHourRequest = {
+    dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+    startTime?: string;
+    endTime?: string;
+};
+
+/**
+ * Profesional que se asignará al servicio del centro.
+ */
+export type AssignProfessionalRequest = {
+    professionalId?: number;
+};
+
+/**
+ * Profesional asignado a un servicio específico de un centro.
+ */
+export type ProfessionalAssignmentResponse = {
+    id?: string;
+    professionalId?: number;
+    professionalName?: string;
+    professionalEmail?: string;
+    centerServiceId?: string;
+    centerId?: string;
+    serviceId?: string;
+    serviceName?: string;
+    active?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
  * Presentación asistida para un usuario existente. Quien registra se obtiene exclusivamente del JWT.
  */
 export type CreateAssistedApplicationRequest = {
@@ -864,6 +1077,76 @@ export type CreateAssistedApplicationRequest = {
      */
     userId: number;
     enrollmentPeriodId: string;
+};
+
+/**
+ * Datos requeridos para crear una actividad comunitaria.
+ */
+export type CreateActivityRequest = {
+    /**
+     * Nombre de la actividad.
+     */
+    name: string;
+    /**
+     * Descripción de la actividad.
+     */
+    description: string;
+    /**
+     * Lugar donde se realizará la actividad.
+     */
+    location: string;
+    /**
+     * Fecha inicial de la actividad, inclusive.
+     */
+    startDate?: string;
+    /**
+     * Fecha final de la actividad, inclusive.
+     */
+    endDate?: string;
+    /**
+     * Cantidad máxima de personas admitidas.
+     */
+    capacity?: number;
+};
+
+/**
+ * Confirmación de inscripción a una actividad.
+ */
+export type ActivityEnrollmentResponse = {
+    id?: string;
+    activityId?: string;
+    citizenId?: number;
+    enrolledAt?: string;
+    confirmation?: string;
+};
+
+/**
+ * Asistencia de un ciudadano inscripto en una actividad.
+ */
+export type UpdateActivityAttendanceRequest = {
+    attendance: 'PRESENT' | 'ABSENT';
+};
+
+/**
+ * Usuario que registró la asistencia.
+ */
+export type AttendanceRecordedByResponse = {
+    id?: number;
+    name?: string;
+};
+
+/**
+ * Inscripción visible para un profesional de centro.
+ */
+export type ProfessionalActivityEnrollmentResponse = {
+    id?: string;
+    activityId?: string;
+    citizenId?: number;
+    citizenName?: string;
+    enrolledAt?: string;
+    attendance?: 'PRESENT' | 'ABSENT';
+    attendanceRecordedBy?: AttendanceRecordedByResponse;
+    attendanceRecordedAt?: string;
 };
 
 /**
@@ -925,7 +1208,7 @@ export type LogResponse = {
     /**
      * Tipo de entidad afectada.
      */
-    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
     /**
      * Identificador de la entidad afectada.
      */
@@ -1178,6 +1461,35 @@ export type AvailableProgramRequirementResponse = {
     readonly description?: string;
 };
 
+export type ProfessionalActivityListResponse = {
+    content?: Array<ProfessionalActivityResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Actividad disponible para el registro profesional de asistencia.
+ */
+export type ProfessionalActivityResponse = {
+    id?: string;
+    name?: string;
+    location?: string;
+    startDate?: string;
+    endDate?: string;
+    status?: 'DRAFT' | 'OPEN' | 'CLOSED';
+    enrolledCount?: number;
+};
+
+export type ProfessionalActivityEnrollmentListResponse = {
+    content?: Array<ProfessionalActivityEnrollmentResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
 export type ApplicationListResponse = {
     content?: Array<ApplicationResponse>;
     page?: number;
@@ -1415,6 +1727,28 @@ export type ProgramEditionOptionResponse = {
 };
 
 /**
+ * Página de servicios municipales.
+ */
+export type MunicipalServiceListResponse = {
+    content?: Array<MunicipalServiceResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Página de centros municipales.
+ */
+export type MunicipalCenterListResponse = {
+    content?: Array<MunicipalCenterResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
  * Resumen de una solicitud en el listado administrativo. No incluye documentos ni campos internos de idempotencia.
  */
 export type AdminApplicationListItemResponse = {
@@ -1537,6 +1871,58 @@ export type AdminApplicationResponse = {
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+};
+
+/**
+ * Actividad incluida en un listado administrativo.
+ */
+export type ActivityListItemResponse = {
+    id?: string;
+    name?: string;
+    location?: string;
+    startDate?: string;
+    endDate?: string;
+    capacity?: number;
+    status?: 'DRAFT' | 'OPEN' | 'CLOSED';
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
+ * Página de actividades comunitarias.
+ */
+export type ActivityListResponse = {
+    content?: Array<ActivityListItemResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Página de actividades abiertas disponibles para la comunidad.
+ */
+export type CitizenActivityListResponse = {
+    content?: Array<CitizenActivityResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Actividad abierta disponible para la comunidad.
+ */
+export type CitizenActivityResponse = {
+    id?: string;
+    name?: string;
+    description?: string;
+    location?: string;
+    startDate?: string;
+    endDate?: string;
+    capacity?: number;
+    enrolledCount?: number;
+    availableCapacity?: number;
 };
 
 export type Link = {
@@ -3018,6 +3404,370 @@ export type Update6Responses = {
 
 export type Update6Response = Update6Responses[keyof Update6Responses];
 
+export type UpdateProfessionalAvailabilityData = {
+    body: UpdateProfessionalAvailabilityRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-availability/{id}';
+};
+
+export type UpdateProfessionalAvailabilityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateProfessionalAvailabilityError = UpdateProfessionalAvailabilityErrors[keyof UpdateProfessionalAvailabilityErrors];
+
+export type UpdateProfessionalAvailabilityResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalAvailabilityResponse;
+};
+
+export type UpdateProfessionalAvailabilityResponse = UpdateProfessionalAvailabilityResponses[keyof UpdateProfessionalAvailabilityResponses];
+
+export type GetMunicipalServiceData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-services/{id}';
+};
+
+export type GetMunicipalServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetMunicipalServiceError = GetMunicipalServiceErrors[keyof GetMunicipalServiceErrors];
+
+export type GetMunicipalServiceResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalServiceResponse;
+};
+
+export type GetMunicipalServiceResponse = GetMunicipalServiceResponses[keyof GetMunicipalServiceResponses];
+
+export type UpdateMunicipalServiceData = {
+    body: UpdateMunicipalServiceRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-services/{id}';
+};
+
+export type UpdateMunicipalServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateMunicipalServiceError = UpdateMunicipalServiceErrors[keyof UpdateMunicipalServiceErrors];
+
+export type UpdateMunicipalServiceResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalServiceResponse;
+};
+
+export type UpdateMunicipalServiceResponse = UpdateMunicipalServiceResponses[keyof UpdateMunicipalServiceResponses];
+
+export type GetMunicipalCenterData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{id}';
+};
+
+export type GetMunicipalCenterErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetMunicipalCenterError = GetMunicipalCenterErrors[keyof GetMunicipalCenterErrors];
+
+export type GetMunicipalCenterResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalCenterResponse;
+};
+
+export type GetMunicipalCenterResponse = GetMunicipalCenterResponses[keyof GetMunicipalCenterResponses];
+
+export type UpdateMunicipalCenterData = {
+    body: UpdateMunicipalCenterRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{id}';
+};
+
+export type UpdateMunicipalCenterErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateMunicipalCenterError = UpdateMunicipalCenterErrors[keyof UpdateMunicipalCenterErrors];
+
+export type UpdateMunicipalCenterResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalCenterResponse;
+};
+
+export type UpdateMunicipalCenterResponse = UpdateMunicipalCenterResponses[keyof UpdateMunicipalCenterResponses];
+
+export type UpdateCenterOpeningHourData = {
+    body: UpdateCenterOpeningHourRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/center-opening-hours/{id}';
+};
+
+export type UpdateCenterOpeningHourErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateCenterOpeningHourError = UpdateCenterOpeningHourErrors[keyof UpdateCenterOpeningHourErrors];
+
+export type UpdateCenterOpeningHourResponses = {
+    /**
+     * OK
+     */
+    200: CenterOpeningHourResponse;
+};
+
+export type UpdateCenterOpeningHourResponse = UpdateCenterOpeningHourResponses[keyof UpdateCenterOpeningHourResponses];
+
+export type Get1Data = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/activities/{id}';
+};
+
+export type Get1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Get1Error = Get1Errors[keyof Get1Errors];
+
+export type Get1Responses = {
+    /**
+     * OK
+     */
+    200: ActivityResponse;
+};
+
+export type Get1Response = Get1Responses[keyof Get1Responses];
+
+export type Update7Data = {
+    body: UpdateActivityRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/activities/{id}';
+};
+
+export type Update7Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update7Error = Update7Errors[keyof Update7Errors];
+
+export type Update7Responses = {
+    /**
+     * OK
+     */
+    200: ActivityResponse;
+};
+
+export type Update7Response = Update7Responses[keyof Update7Responses];
+
 export type FindAllData = {
     body?: never;
     path?: never;
@@ -4311,6 +5061,532 @@ export type Create7Responses = {
 
 export type Create7Response = Create7Responses[keyof Create7Responses];
 
+export type ListProfessionalAvailabilityData = {
+    body?: never;
+    path: {
+        assignmentId: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-assignments/{assignmentId}/availability';
+};
+
+export type ListProfessionalAvailabilityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListProfessionalAvailabilityError = ListProfessionalAvailabilityErrors[keyof ListProfessionalAvailabilityErrors];
+
+export type ListProfessionalAvailabilityResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProfessionalAvailabilityResponse>;
+};
+
+export type ListProfessionalAvailabilityResponse = ListProfessionalAvailabilityResponses[keyof ListProfessionalAvailabilityResponses];
+
+export type CreateProfessionalAvailabilityData = {
+    body: CreateProfessionalAvailabilityRequest;
+    path: {
+        assignmentId: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-assignments/{assignmentId}/availability';
+};
+
+export type CreateProfessionalAvailabilityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateProfessionalAvailabilityError = CreateProfessionalAvailabilityErrors[keyof CreateProfessionalAvailabilityErrors];
+
+export type CreateProfessionalAvailabilityResponses = {
+    /**
+     * Created
+     */
+    201: ProfessionalAvailabilityResponse;
+};
+
+export type CreateProfessionalAvailabilityResponse = CreateProfessionalAvailabilityResponses[keyof CreateProfessionalAvailabilityResponses];
+
+export type ListMunicipalServicesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+        search?: string;
+        active?: boolean;
+    };
+    url: '/api/admin/municipal-services';
+};
+
+export type ListMunicipalServicesErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListMunicipalServicesError = ListMunicipalServicesErrors[keyof ListMunicipalServicesErrors];
+
+export type ListMunicipalServicesResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalServiceListResponse;
+};
+
+export type ListMunicipalServicesResponse = ListMunicipalServicesResponses[keyof ListMunicipalServicesResponses];
+
+export type CreateMunicipalServiceData = {
+    body: CreateMunicipalServiceRequest;
+    path?: never;
+    query?: never;
+    url: '/api/admin/municipal-services';
+};
+
+export type CreateMunicipalServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateMunicipalServiceError = CreateMunicipalServiceErrors[keyof CreateMunicipalServiceErrors];
+
+export type CreateMunicipalServiceResponses = {
+    /**
+     * Created
+     */
+    201: MunicipalServiceResponse;
+};
+
+export type CreateMunicipalServiceResponse = CreateMunicipalServiceResponses[keyof CreateMunicipalServiceResponses];
+
+export type ListMunicipalCentersData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+        search?: string;
+        active?: boolean;
+    };
+    url: '/api/admin/municipal-centers';
+};
+
+export type ListMunicipalCentersErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListMunicipalCentersError = ListMunicipalCentersErrors[keyof ListMunicipalCentersErrors];
+
+export type ListMunicipalCentersResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalCenterListResponse;
+};
+
+export type ListMunicipalCentersResponse = ListMunicipalCentersResponses[keyof ListMunicipalCentersResponses];
+
+export type CreateMunicipalCenterData = {
+    body: CreateMunicipalCenterRequest;
+    path?: never;
+    query?: never;
+    url: '/api/admin/municipal-centers';
+};
+
+export type CreateMunicipalCenterErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateMunicipalCenterError = CreateMunicipalCenterErrors[keyof CreateMunicipalCenterErrors];
+
+export type CreateMunicipalCenterResponses = {
+    /**
+     * Created
+     */
+    201: MunicipalCenterResponse;
+};
+
+export type CreateMunicipalCenterResponse = CreateMunicipalCenterResponses[keyof CreateMunicipalCenterResponses];
+
+export type ListCenterServicesData = {
+    body?: never;
+    path: {
+        centerId: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{centerId}/services';
+};
+
+export type ListCenterServicesErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListCenterServicesError = ListCenterServicesErrors[keyof ListCenterServicesErrors];
+
+export type ListCenterServicesResponses = {
+    /**
+     * OK
+     */
+    200: Array<CenterServiceResponse>;
+};
+
+export type ListCenterServicesResponse = ListCenterServicesResponses[keyof ListCenterServicesResponses];
+
+export type AssignServiceToCenterData = {
+    body: AssignCenterServiceRequest;
+    path: {
+        centerId: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{centerId}/services';
+};
+
+export type AssignServiceToCenterErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AssignServiceToCenterError = AssignServiceToCenterErrors[keyof AssignServiceToCenterErrors];
+
+export type AssignServiceToCenterResponses = {
+    /**
+     * Created
+     */
+    201: CenterServiceResponse;
+};
+
+export type AssignServiceToCenterResponse = AssignServiceToCenterResponses[keyof AssignServiceToCenterResponses];
+
+export type ListCenterOpeningHoursData = {
+    body?: never;
+    path: {
+        centerId: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{centerId}/opening-hours';
+};
+
+export type ListCenterOpeningHoursErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListCenterOpeningHoursError = ListCenterOpeningHoursErrors[keyof ListCenterOpeningHoursErrors];
+
+export type ListCenterOpeningHoursResponses = {
+    /**
+     * OK
+     */
+    200: Array<CenterOpeningHourResponse>;
+};
+
+export type ListCenterOpeningHoursResponse = ListCenterOpeningHoursResponses[keyof ListCenterOpeningHoursResponses];
+
+export type CreateCenterOpeningHourData = {
+    body: CreateCenterOpeningHourRequest;
+    path: {
+        centerId: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{centerId}/opening-hours';
+};
+
+export type CreateCenterOpeningHourErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateCenterOpeningHourError = CreateCenterOpeningHourErrors[keyof CreateCenterOpeningHourErrors];
+
+export type CreateCenterOpeningHourResponses = {
+    /**
+     * Created
+     */
+    201: CenterOpeningHourResponse;
+};
+
+export type CreateCenterOpeningHourResponse = CreateCenterOpeningHourResponses[keyof CreateCenterOpeningHourResponses];
+
+export type ListProfessionalAssignmentsData = {
+    body?: never;
+    path: {
+        centerServiceId: string;
+    };
+    query?: never;
+    url: '/api/admin/center-services/{centerServiceId}/professionals';
+};
+
+export type ListProfessionalAssignmentsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListProfessionalAssignmentsError = ListProfessionalAssignmentsErrors[keyof ListProfessionalAssignmentsErrors];
+
+export type ListProfessionalAssignmentsResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProfessionalAssignmentResponse>;
+};
+
+export type ListProfessionalAssignmentsResponse = ListProfessionalAssignmentsResponses[keyof ListProfessionalAssignmentsResponses];
+
+export type AssignProfessionalData = {
+    body: AssignProfessionalRequest;
+    path: {
+        centerServiceId: string;
+    };
+    query?: never;
+    url: '/api/admin/center-services/{centerServiceId}/professionals';
+};
+
+export type AssignProfessionalErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AssignProfessionalError = AssignProfessionalErrors[keyof AssignProfessionalErrors];
+
+export type AssignProfessionalResponses = {
+    /**
+     * Created
+     */
+    201: ProfessionalAssignmentResponse;
+};
+
+export type AssignProfessionalResponse = AssignProfessionalResponses[keyof AssignProfessionalResponses];
+
 export type List4Data = {
     body?: never;
     path?: never;
@@ -4411,6 +5687,188 @@ export type Submit1Responses = {
 };
 
 export type Submit1Response = Submit1Responses[keyof Submit1Responses];
+
+export type List5Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/admin/activities';
+};
+
+export type List5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List5Error = List5Errors[keyof List5Errors];
+
+export type List5Responses = {
+    /**
+     * OK
+     */
+    200: ActivityListResponse;
+};
+
+export type List5Response = List5Responses[keyof List5Responses];
+
+export type Create8Data = {
+    body: CreateActivityRequest;
+    path?: never;
+    query?: never;
+    url: '/api/admin/activities';
+};
+
+export type Create8Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create8Error = Create8Errors[keyof Create8Errors];
+
+export type Create8Responses = {
+    /**
+     * Created
+     */
+    201: ActivityResponse;
+};
+
+export type Create8Response = Create8Responses[keyof Create8Responses];
+
+export type EnrollData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/activities/{id}/enrollments';
+};
+
+export type EnrollErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type EnrollError = EnrollErrors[keyof EnrollErrors];
+
+export type EnrollResponses = {
+    /**
+     * OK
+     */
+    200: ActivityEnrollmentResponse;
+};
+
+export type EnrollResponse = EnrollResponses[keyof EnrollResponses];
+
+export type UpdateAttendanceData = {
+    body: UpdateActivityAttendanceRequest;
+    path: {
+        activityId: string;
+        enrollmentId: string;
+    };
+    query?: never;
+    url: '/api/professional/activities/{activityId}/enrollments/{enrollmentId}/attendance';
+};
+
+export type UpdateAttendanceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UpdateAttendanceError = UpdateAttendanceErrors[keyof UpdateAttendanceErrors];
+
+export type UpdateAttendanceResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalActivityEnrollmentResponse;
+};
+
+export type UpdateAttendanceResponse = UpdateAttendanceResponses[keyof UpdateAttendanceResponses];
 
 export type SuspendData = {
     body?: never;
@@ -4562,6 +6020,570 @@ export type ActivateResponses = {
 
 export type ActivateResponse = ActivateResponses[keyof ActivateResponses];
 
+export type DeactivateProfessionalAvailabilityData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-availability/{id}/deactivate';
+};
+
+export type DeactivateProfessionalAvailabilityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeactivateProfessionalAvailabilityError = DeactivateProfessionalAvailabilityErrors[keyof DeactivateProfessionalAvailabilityErrors];
+
+export type DeactivateProfessionalAvailabilityResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalAvailabilityResponse;
+};
+
+export type DeactivateProfessionalAvailabilityResponse = DeactivateProfessionalAvailabilityResponses[keyof DeactivateProfessionalAvailabilityResponses];
+
+export type ActivateProfessionalAvailabilityData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-availability/{id}/activate';
+};
+
+export type ActivateProfessionalAvailabilityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateProfessionalAvailabilityError = ActivateProfessionalAvailabilityErrors[keyof ActivateProfessionalAvailabilityErrors];
+
+export type ActivateProfessionalAvailabilityResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalAvailabilityResponse;
+};
+
+export type ActivateProfessionalAvailabilityResponse = ActivateProfessionalAvailabilityResponses[keyof ActivateProfessionalAvailabilityResponses];
+
+export type DeactivateProfessionalAssignmentData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-assignments/{id}/deactivate';
+};
+
+export type DeactivateProfessionalAssignmentErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeactivateProfessionalAssignmentError = DeactivateProfessionalAssignmentErrors[keyof DeactivateProfessionalAssignmentErrors];
+
+export type DeactivateProfessionalAssignmentResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalAssignmentResponse;
+};
+
+export type DeactivateProfessionalAssignmentResponse = DeactivateProfessionalAssignmentResponses[keyof DeactivateProfessionalAssignmentResponses];
+
+export type ActivateProfessionalAssignmentData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/professional-assignments/{id}/activate';
+};
+
+export type ActivateProfessionalAssignmentErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateProfessionalAssignmentError = ActivateProfessionalAssignmentErrors[keyof ActivateProfessionalAssignmentErrors];
+
+export type ActivateProfessionalAssignmentResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalAssignmentResponse;
+};
+
+export type ActivateProfessionalAssignmentResponse = ActivateProfessionalAssignmentResponses[keyof ActivateProfessionalAssignmentResponses];
+
+export type DeactivateMunicipalServiceData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-services/{id}/deactivate';
+};
+
+export type DeactivateMunicipalServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeactivateMunicipalServiceError = DeactivateMunicipalServiceErrors[keyof DeactivateMunicipalServiceErrors];
+
+export type DeactivateMunicipalServiceResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalServiceResponse;
+};
+
+export type DeactivateMunicipalServiceResponse = DeactivateMunicipalServiceResponses[keyof DeactivateMunicipalServiceResponses];
+
+export type ActivateMunicipalServiceData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-services/{id}/activate';
+};
+
+export type ActivateMunicipalServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateMunicipalServiceError = ActivateMunicipalServiceErrors[keyof ActivateMunicipalServiceErrors];
+
+export type ActivateMunicipalServiceResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalServiceResponse;
+};
+
+export type ActivateMunicipalServiceResponse = ActivateMunicipalServiceResponses[keyof ActivateMunicipalServiceResponses];
+
+export type DeactivateMunicipalCenterData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{id}/deactivate';
+};
+
+export type DeactivateMunicipalCenterErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeactivateMunicipalCenterError = DeactivateMunicipalCenterErrors[keyof DeactivateMunicipalCenterErrors];
+
+export type DeactivateMunicipalCenterResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalCenterResponse;
+};
+
+export type DeactivateMunicipalCenterResponse = DeactivateMunicipalCenterResponses[keyof DeactivateMunicipalCenterResponses];
+
+export type ActivateMunicipalCenterData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/municipal-centers/{id}/activate';
+};
+
+export type ActivateMunicipalCenterErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateMunicipalCenterError = ActivateMunicipalCenterErrors[keyof ActivateMunicipalCenterErrors];
+
+export type ActivateMunicipalCenterResponses = {
+    /**
+     * OK
+     */
+    200: MunicipalCenterResponse;
+};
+
+export type ActivateMunicipalCenterResponse = ActivateMunicipalCenterResponses[keyof ActivateMunicipalCenterResponses];
+
+export type DeactivateCenterServiceData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/center-services/{id}/deactivate';
+};
+
+export type DeactivateCenterServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeactivateCenterServiceError = DeactivateCenterServiceErrors[keyof DeactivateCenterServiceErrors];
+
+export type DeactivateCenterServiceResponses = {
+    /**
+     * OK
+     */
+    200: CenterServiceResponse;
+};
+
+export type DeactivateCenterServiceResponse = DeactivateCenterServiceResponses[keyof DeactivateCenterServiceResponses];
+
+export type ActivateCenterServiceData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/center-services/{id}/activate';
+};
+
+export type ActivateCenterServiceErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateCenterServiceError = ActivateCenterServiceErrors[keyof ActivateCenterServiceErrors];
+
+export type ActivateCenterServiceResponses = {
+    /**
+     * OK
+     */
+    200: CenterServiceResponse;
+};
+
+export type ActivateCenterServiceResponse = ActivateCenterServiceResponses[keyof ActivateCenterServiceResponses];
+
+export type DeactivateCenterOpeningHourData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/center-opening-hours/{id}/deactivate';
+};
+
+export type DeactivateCenterOpeningHourErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DeactivateCenterOpeningHourError = DeactivateCenterOpeningHourErrors[keyof DeactivateCenterOpeningHourErrors];
+
+export type DeactivateCenterOpeningHourResponses = {
+    /**
+     * OK
+     */
+    200: CenterOpeningHourResponse;
+};
+
+export type DeactivateCenterOpeningHourResponse = DeactivateCenterOpeningHourResponses[keyof DeactivateCenterOpeningHourResponses];
+
+export type ActivateCenterOpeningHourData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/center-opening-hours/{id}/activate';
+};
+
+export type ActivateCenterOpeningHourErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ActivateCenterOpeningHourError = ActivateCenterOpeningHourErrors[keyof ActivateCenterOpeningHourErrors];
+
+export type ActivateCenterOpeningHourResponses = {
+    /**
+     * OK
+     */
+    200: CenterOpeningHourResponse;
+};
+
+export type ActivateCenterOpeningHourResponse = ActivateCenterOpeningHourResponses[keyof ActivateCenterOpeningHourResponses];
+
 export type ReviewData = {
     body: ReviewApplicationDocumentRequest;
     path: {
@@ -4600,6 +6622,100 @@ export type ReviewErrors = {
 };
 
 export type ReviewError = ReviewErrors[keyof ReviewErrors];
+
+export type PublishData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/activities/{id}/publish';
+};
+
+export type PublishErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type PublishError = PublishErrors[keyof PublishErrors];
+
+export type PublishResponses = {
+    /**
+     * OK
+     */
+    200: ActivityResponse;
+};
+
+export type PublishResponse = PublishResponses[keyof PublishResponses];
+
+export type Close1Data = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/activities/{id}/close';
+};
+
+export type Close1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Close1Error = Close1Errors[keyof Close1Errors];
+
+export type Close1Responses = {
+    /**
+     * OK
+     */
+    200: ActivityResponse;
+};
+
+export type Close1Response = Close1Responses[keyof Close1Responses];
 
 export type FindAll4Data = {
     body?: never;
@@ -4719,7 +6835,7 @@ export type ListLogsByEntityData = {
         /**
          * Tipo de entidad auditada.
          */
-        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
         /**
          * Identificador de la entidad auditada.
          */
@@ -4888,6 +7004,98 @@ export type GetAvailableProgramResponses = {
 
 export type GetAvailableProgramResponse = GetAvailableProgramResponses[keyof GetAvailableProgramResponses];
 
+export type ListActivitiesData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/professional/activities';
+};
+
+export type ListActivitiesErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListActivitiesError = ListActivitiesErrors[keyof ListActivitiesErrors];
+
+export type ListActivitiesResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalActivityListResponse;
+};
+
+export type ListActivitiesResponse = ListActivitiesResponses[keyof ListActivitiesResponses];
+
+export type ListEnrollmentsData = {
+    body?: never;
+    path: {
+        activityId: string;
+    };
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/api/professional/activities/{activityId}/enrollments';
+};
+
+export type ListEnrollmentsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListEnrollmentsError = ListEnrollmentsErrors[keyof ListEnrollmentsErrors];
+
+export type ListEnrollmentsResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalActivityEnrollmentListResponse;
+};
+
+export type ListEnrollmentsResponse = ListEnrollmentsResponses[keyof ListEnrollmentsResponses];
+
 export type GetPublicImageData = {
     body?: never;
     path: {
@@ -4923,7 +7131,7 @@ export type GetPublicImageResponses = {
 
 export type GetPublicImageResponse = GetPublicImageResponses[keyof GetPublicImageResponses];
 
-export type Get1Data = {
+export type Get2Data = {
     body?: never;
     path: {
         id: string;
@@ -4932,7 +7140,7 @@ export type Get1Data = {
     url: '/api/applications/{id}';
 };
 
-export type Get1Errors = {
+export type Get2Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -4955,18 +7163,18 @@ export type Get1Errors = {
     500: ErrorResponse;
 };
 
-export type Get1Error = Get1Errors[keyof Get1Errors];
+export type Get2Error = Get2Errors[keyof Get2Errors];
 
-export type Get1Responses = {
+export type Get2Responses = {
     /**
      * Detalle de la solicitud propia.
      */
     200: ApplicationResponse;
 };
 
-export type Get1Response = Get1Responses[keyof Get1Responses];
+export type Get2Response = Get2Responses[keyof Get2Responses];
 
-export type List5Data = {
+export type List6Data = {
     body?: never;
     path: {
         applicationId: string;
@@ -4975,7 +7183,7 @@ export type List5Data = {
     url: '/api/applications/{applicationId}/documents';
 };
 
-export type List5Errors = {
+export type List6Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -4998,16 +7206,16 @@ export type List5Errors = {
     500: ErrorResponse;
 };
 
-export type List5Error = List5Errors[keyof List5Errors];
+export type List6Error = List6Errors[keyof List6Errors];
 
-export type List5Responses = {
+export type List6Responses = {
     /**
      * Documentos entregados en la solicitud propia.
      */
     200: Array<ApplicationDocumentResponse>;
 };
 
-export type List5Response = List5Responses[keyof List5Responses];
+export type List6Response = List6Responses[keyof List6Responses];
 
 export type ContentData = {
     body?: never;
@@ -5178,7 +7386,7 @@ export type ListProgramEditionOptionsResponses = {
 
 export type ListProgramEditionOptionsResponse = ListProgramEditionOptionsResponses[keyof ListProgramEditionOptionsResponses];
 
-export type Get2Data = {
+export type Get3Data = {
     body?: never;
     path: {
         id: string;
@@ -5187,7 +7395,7 @@ export type Get2Data = {
     url: '/api/admin/applications/{id}';
 };
 
-export type Get2Errors = {
+export type Get3Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -5210,18 +7418,18 @@ export type Get2Errors = {
     500: ErrorResponse;
 };
 
-export type Get2Error = Get2Errors[keyof Get2Errors];
+export type Get3Error = Get3Errors[keyof Get3Errors];
 
-export type Get2Responses = {
+export type Get3Responses = {
     /**
      * Detalle completo de la solicitud.
      */
     200: AdminApplicationResponse;
 };
 
-export type Get2Response = Get2Responses[keyof Get2Responses];
+export type Get3Response = Get3Responses[keyof Get3Responses];
 
-export type List6Data = {
+export type List7Data = {
     body?: never;
     path: {
         applicationId: string;
@@ -5230,7 +7438,7 @@ export type List6Data = {
     url: '/api/admin/applications/{applicationId}/documents';
 };
 
-export type List6Errors = {
+export type List7Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -5253,16 +7461,16 @@ export type List6Errors = {
     500: ErrorResponse;
 };
 
-export type List6Error = List6Errors[keyof List6Errors];
+export type List7Error = List7Errors[keyof List7Errors];
 
-export type List6Responses = {
+export type List7Responses = {
     /**
      * OK
      */
     200: Array<ApplicationDocumentResponse>;
 };
 
-export type List6Response = List6Responses[keyof List6Responses];
+export type List7Response = List7Responses[keyof List7Responses];
 
 export type Content1Data = {
     body?: never;
@@ -5307,6 +7515,95 @@ export type Content1Responses = {
 };
 
 export type Content1Response = Content1Responses[keyof Content1Responses];
+
+export type List8Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/activities';
+};
+
+export type List8Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List8Error = List8Errors[keyof List8Errors];
+
+export type List8Responses = {
+    /**
+     * OK
+     */
+    200: CitizenActivityListResponse;
+};
+
+export type List8Response = List8Responses[keyof List8Responses];
+
+export type Get4Data = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/activities/{id}';
+};
+
+export type Get4Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Get4Error = Get4Errors[keyof Get4Errors];
+
+export type Get4Responses = {
+    /**
+     * OK
+     */
+    200: CitizenActivityResponse;
+};
+
+export type Get4Response = Get4Responses[keyof Get4Responses];
 
 export type LinksData = {
     body?: never;

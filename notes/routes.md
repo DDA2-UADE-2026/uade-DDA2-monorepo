@@ -123,6 +123,7 @@ src/routes/
         │               └── beneficios.tsx →  .../:edicionId/beneficios                  beneficios de la convocatoria
         ├── centros/
         │   ├── index.tsx            →  /gestion/centros               P13  listado
+        │   ├── servicios.tsx        →  /gestion/centros/servicios     P13  catálogo central de servicios
         │   └── $centroId/
         │       ├── route.tsx              layout del centro
         │       ├── index.tsx        →  .../:id                             servicios y profesionales

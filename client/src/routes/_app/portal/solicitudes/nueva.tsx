@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@/components/ui/item"
-import { get1QueryKey, getAvailableProgramOptions, listQueryKey, submitMutation } from "@/generated/@tanstack/react-query.gen"
+import { get2QueryKey, getAvailableProgramOptions, listQueryKey, submitMutation } from "@/generated/@tanstack/react-query.gen"
 import type { AvailableEnrollmentPeriodResponse, AvailableProgramDetailResponse, AvailableProgramEditionResponse } from "@/generated/types.gen"
 import { canApplyToPeriod, clearSubmissionKey, formatApplicationDate, getSubmissionKey } from "@/lib/application-flow"
 
@@ -74,7 +74,7 @@ export function ApplicationConfirmation({ program, edition, period, userId }: {
     try {
       const application = await submit.mutateAsync({ body: { enrollmentPeriodId: period.id }, headers: { "Idempotency-Key": attemptKey.current } })
       if (application.id) {
-        queryClient.setQueryData(get1QueryKey({ path: { id: application.id } }), application)
+        queryClient.setQueryData(get2QueryKey({ path: { id: application.id } }), application)
         clearSubmissionKey(userId, period.id)
         queryClient.invalidateQueries({ queryKey: listQueryKey() })
         await navigate({ to: "/portal/solicitudes/$solicitudId", params: { solicitudId: application.id }, replace: true })
