@@ -1,50 +1,29 @@
-import { Suspense, lazy } from 'react'
 import type { ErrorComponentProps } from '@tanstack/react-router'
 
-import { ErrorCard } from '@/components/errors/ErrorCard'
-import { ThemeToggle } from '@/components/ThemeToggle'
+import { cn } from '@/lib/utils'
+import { ErrorCard, type ErrorCardProps } from '@/components/errors/ErrorCard'
+import { RaysScreen } from '@/components/errors/RaysScreen'
 
-const SideRaysBackground = lazy(() => import('@/components/visual/SideRaysBackground'))
-
-interface RouteErrorPageProps extends ErrorComponentProps {
-  title?: string
-  description?: string
-}
+interface RouteErrorPageProps
+  extends ErrorComponentProps,
+    Pick<ErrorCardProps, 'title' | 'description' | 'homeHref' | 'homeLabel' | 'className'> {}
 
 /**
  * Full-page fallback for TanStack Router's error architecture — wired as the
  * `errorComponent` on the root route, so it's the last boundary any error
- * bubbles up to when no closer route claims one (see `_auth`, `_app/gestion`,
- * `_app/portal` for nested, chrome-preserving boundaries). Any route can
- * still opt into this exact full-page treatment by passing it directly, or
- * reuse `ErrorCard` on its own for a custom shell.
+ * bubbles up to when no closer route claims one, and on the `_auth`,
+ * `_app/gestion` and `_app/portal` layouts, where it catches crashes in the
+ * layout itself (its `beforeLoad`, its chrome) — the ones that leave no shell
+ * to render a smaller fallback inside. Crashes in a *page* below those
+ * layouts are caught earlier by their `CatchBoundary` + `SectionErrorFallback`
+ * so the sidebar survives. Any route can still opt into this full-page
+ * treatment by passing it directly, or reuse `ErrorCard` in a custom shell.
  */
-function RouteErrorPage(props: RouteErrorPageProps) {
+function RouteErrorPage({ className, ...props }: RouteErrorPageProps) {
   return (
-    <div className="relative grid min-h-svh place-items-center p-4">
-      <div className="dark absolute inset-0 z-0 bg-background pointer-events-none">
-        <Suspense fallback={null}>
-          <SideRaysBackground
-            speed={2}
-            rayColor1="#ef4444"
-            rayColor2="#7f1d1d"
-            intensity={2.2}
-            spread={2}
-            origin="top-right"
-            saturation={1.4}
-            blend={0.75}
-            falloff={1.6}
-            opacity={1}
-          />
-        </Suspense>
-      </div>
-
-      <div className="absolute right-4 top-4 z-10">
-        <ThemeToggle />
-      </div>
-
-      <ErrorCard {...props} className="relative z-10 sm:max-w-md" />
-    </div>
+    <RaysScreen tone="danger">
+      <ErrorCard {...props} className={cn('relative z-10 sm:max-w-md', className)} />
+    </RaysScreen>
   )
 }
 

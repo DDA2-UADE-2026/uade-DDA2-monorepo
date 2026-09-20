@@ -1,5 +1,6 @@
 export const PROGRAM_IMAGE_ACCEPT = ".jpg,.jpeg,.png,image/jpeg,image/png"
 export const MAX_PROGRAM_IMAGE_BYTES = 10 * 1024 * 1024
+export const PROGRAM_IMAGE_FALLBACK = `${import.meta.env.BASE_URL}brand/og.png`
 
 export function validateProgramImageFile(file: Pick<File, "name" | "size" | "type">): string | undefined {
   if (file.size === 0) return "La imagen está vacía. Seleccioná otra."
