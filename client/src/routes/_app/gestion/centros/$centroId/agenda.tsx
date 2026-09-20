@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { TimeRangeDialog } from "@/components/centros/TimeRangeDialog"
-import { DAYS, dayIndex, dayLabel, shortTime, type TimeRangeValue } from "@/components/centros/timeRanges"
+import { DAYS, shortTime, type TimeRangeValue } from "@/components/centros/timeRanges"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,6 +13,7 @@ import {
   activateProfessionalAvailabilityMutation,
   createCenterOpeningHourMutation,
   createCenterOpeningHoursBatchMutation,
+  createProfessionalAvailabilitiesBatchMutation,
   createProfessionalAvailabilityMutation,
   deactivateCenterOpeningHourMutation,
   deactivateProfessionalAvailabilityMutation,
@@ -260,20 +261,24 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
     onChanged()
   }
   const create = useMutation({ ...createProfessionalAvailabilityMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
+  const createBulk = useMutation({ ...createProfessionalAvailabilitiesBatchMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
   const update = useMutation({ ...updateProfessionalAvailabilityMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
   const activate = useMutation({ ...activateProfessionalAvailabilityMutation(), onSuccess: invalidate })
   const deactivate = useMutation({ ...deactivateProfessionalAvailabilityMutation(), onSuccess: invalidate })
-  const isPending = create.isPending || update.isPending
-  const mutationError = create.error ?? update.error ?? activate.error ?? deactivate.error
-  const ranges = [...(availability.data ?? [])]
-    .filter((range) => range.active)
-    .sort((a, b) => dayIndex(a.dayOfWeek) - dayIndex(b.dayOfWeek))
+  const isPending = create.isPending || createBulk.isPending || update.isPending
+  const mutationError = create.error ?? createBulk.error ?? update.error ?? activate.error ?? deactivate.error
+  const byDay = DAYS.map((day) => ({
+    ...day,
+    ranges: [...(availability.data ?? [])]
+      .filter((range) => range.active && range.dayOfWeek === day.value)
+      .sort((a, b) => (a.startTime ?? "").localeCompare(b.startTime ?? "")),
+  })).filter((group) => group.ranges.length > 0)
 
   return (
     <div className="space-y-2 border-t pt-3 first:border-t-0 first:pt-0">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">{professionalName}</h3>
-        <Button size="xs" variant="outline" onClick={() => { create.reset(); update.reset(); setDialog({ range: null }) }}>
+        <Button size="xs" variant="outline" onClick={() => { create.reset(); createBulk.reset(); update.reset(); setDialog({ range: null }) }}>
           <IconPlus />Agregar
         </Button>
       </div>
@@ -289,56 +294,70 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
         <p className="text-sm text-muted-foreground">Cargando…</p>
       ) : availability.isError ? (
         <Button size="xs" variant="outline" onClick={() => availability.refetch()}>Reintentar</Button>
-      ) : ranges.length === 0 ? (
+      ) : byDay.length === 0 ? (
         <p className="text-sm text-muted-foreground">Sin franjas activas.</p>
       ) : (
-        <ul className="divide-y rounded-lg border px-3">
-          {ranges.map((range) => (
-            <li key={range.id} className="flex items-center justify-between gap-2 py-2 text-sm">
-              <span>{dayLabel(range.dayOfWeek)} · {shortTime(range.startTime)}–{shortTime(range.endTime)}</span>
-              <span className="flex gap-1">
-                <Button
-                  type="button"
-                  size="icon-sm"
-                  variant="ghost"
-                  aria-label="Editar disponibilidad"
-                  onClick={() => { create.reset(); update.reset(); setDialog({ range }) }}
-                >
-                  <IconPencil />
-                </Button>
-                <Button
-                  type="button"
-                  size="icon-sm"
-                  variant="ghost"
-                  aria-label="Desactivar disponibilidad"
-                  disabled={deactivate.isPending}
-                  onClick={() => range.id && deactivate.mutate({ path: { id: range.id } })}
-                >
-                  <IconPower />
-                </Button>
-              </span>
-            </li>
+        <div className="divide-y rounded-lg border px-3">
+          {byDay.map((group) => (
+            <div key={group.value} className="py-1.5">
+              <p className="px-1 pb-0.5 text-xs font-semibold">{group.label}</p>
+              <ul className="divide-y">
+                {group.ranges.map((range) => (
+                  <li key={range.id} className="flex items-center justify-between gap-2 py-1.5 text-sm">
+                    <span className="tabular-nums">{shortTime(range.startTime)}–{shortTime(range.endTime)}</span>
+                    <span className="flex gap-1">
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        variant="ghost"
+                        aria-label="Editar disponibilidad"
+                        onClick={() => { create.reset(); update.reset(); setDialog({ range }) }}
+                      >
+                        <IconPencil />
+                      </Button>
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        variant="ghost"
+                        aria-label="Desactivar disponibilidad"
+                        disabled={deactivate.isPending}
+                        onClick={() => range.id && deactivate.mutate({ path: { id: range.id } })}
+                      >
+                        <IconPower />
+                      </Button>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
 
       {dialog && (
         <TimeRangeDialog
           title={dialog.range ? "Editar disponibilidad" : "Nueva disponibilidad"}
-          description={`${professionalName}: la franja debe quedar cubierta por el horario del centro y no superponerse con otras del profesional.`}
+          description={`${professionalName}: la franja debe quedar cubierta por el horario del centro y no superponerse con otras del profesional. Con varios días tildados se crean todas juntas o ninguna.`}
           initial={{
             dayOfWeek: (dialog.range?.dayOfWeek ?? "MONDAY") as TimeRangeValue["dayOfWeek"],
             startTime: dialog.range?.startTime?.slice(0, 5) ?? "",
             endTime: dialog.range?.endTime?.slice(0, 5) ?? "",
           }}
+          allowMultipleDays={!dialog.range}
           pending={isPending}
-          error={create.error ?? update.error}
+          error={create.error ?? createBulk.error ?? update.error}
           submitLabel={dialog.range ? "Guardar cambios" : "Crear disponibilidad"}
           onSubmit={(value) => {
             create.reset()
+            createBulk.reset()
             update.reset()
             if (dialog.range?.id) {
               update.mutate({ path: { id: dialog.range.id }, body: value })
+            } else if (value.days.length > 1) {
+              createBulk.mutate({
+                path: { assignmentId },
+                body: { days: value.days, startTime: value.startTime, endTime: value.endTime },
+              })
             } else {
               create.mutate({ path: { assignmentId }, body: value })
             }
