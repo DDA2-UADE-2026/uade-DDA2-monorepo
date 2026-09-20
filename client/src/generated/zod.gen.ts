@@ -722,6 +722,23 @@ export const zCreateCenterOpeningHourRequest = z.object({
 });
 
 /**
+ * Misma franja de apertura replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
+ */
+export const zCreateCenterOpeningHoursRequest = z.object({
+    days: z.array(z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ])).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
  * Profesional que se asignará al servicio del centro.
  */
 export const zAssignProfessionalRequest = z.object({
@@ -2077,6 +2094,17 @@ export const zCreateCenterOpeningHourPath = z.object({
  * Created
  */
 export const zCreateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zCreateCenterOpeningHoursBatchBody = zCreateCenterOpeningHoursRequest;
+
+export const zCreateCenterOpeningHoursBatchPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateCenterOpeningHoursBatchResponse = z.array(zCenterOpeningHourResponse);
 
 export const zListProfessionalAssignmentsPath = z.object({
     centerServiceId: z.uuid()
