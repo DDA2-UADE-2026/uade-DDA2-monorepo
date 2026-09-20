@@ -43,7 +43,17 @@ VALUES ('permissions:view'),
        ('applications:management:create'),
        ('applications:management:view'),
        ('applications:management:documents:view'),
-       ('applications:management:documents:review')
+       ('applications:management:documents:review'),
+       ('centers:management:view'),
+       ('centers:management:create'),
+       ('centers:management:edit'),
+       ('centers:management:change-status'),
+       ('services:management:view'),
+       ('services:management:create'),
+       ('services:management:edit'),
+       ('services:management:change-status'),
+       ('schedules:management:view'),
+       ('schedules:management:manage')
 ON CONFLICT (name) DO NOTHING;
 
 INSERT INTO roles (name)

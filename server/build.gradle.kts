@@ -225,3 +225,28 @@ tasks.register<Test>("testApplicationsPostgres") {
         providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get()
     )
 }
+
+tasks.register<Test>("testCentersPostgres") {
+    group = "verification"
+    description =
+        "Prueba concurrencia de centros contra PostgreSQL local en 127.0.0.1:5433/center_test_real (clon de backup, usa update, no borra el backup)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.center.CenterConcurrencyFlowTest") }
+    systemProperty(
+        "center.test.postgres-url",
+        providers.environmentVariable("CENTER_TEST_POSTGRES_URL").orElse("jdbc:postgresql://127.0.0.1:5433/center_test_real").get()
+    )
+    systemProperty(
+        "center.test.postgres-user",
+        providers.environmentVariable("CENTER_TEST_POSTGRES_USER").orElse("postgres").get()
+    )
+    systemProperty(
+        "center.test.postgres-password",
+        providers.environmentVariable("CENTER_TEST_POSTGRES_PASSWORD").orElse("postgres").get()
+    )
+    systemProperty(
+        "center.test.ddl-auto",
+        providers.environmentVariable("CENTER_TEST_DDL_AUTO").orElse("update").get()
+    )
+}
