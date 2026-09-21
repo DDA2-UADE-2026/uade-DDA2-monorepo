@@ -18,11 +18,23 @@ class CenterLifecycleValidator(
     fun validateCenterActivation(centerId: UUID) =
         validate(availabilityRepository.findActiveByCenterId(centerId))
 
-    fun validateServiceActivation(serviceId: UUID) =
-        validate(availabilityRepository.findActiveByServiceId(serviceId))
+    fun lockServiceResources(serviceId: UUID) =
+        lockResources(
+            availabilityRepository.findActiveCenterIdsByServiceId(serviceId),
+            availabilityRepository.findActiveProfessionalIdsByServiceId(serviceId),
+        )
 
-    fun validateCenterServiceActivation(centerServiceId: UUID) =
-        validate(availabilityRepository.findActiveByCenterServiceId(centerServiceId))
+    fun validateServiceActivation(serviceId: UUID, lockResources: Boolean = true) =
+        validate(availabilityRepository.findActiveByServiceId(serviceId), lockResources)
+
+    fun lockCenterServiceResources(centerServiceId: UUID) =
+        lockResources(
+            availabilityRepository.findActiveCenterIdsByCenterServiceId(centerServiceId),
+            availabilityRepository.findActiveProfessionalIdsByCenterServiceId(centerServiceId),
+        )
+
+    fun validateCenterServiceActivation(centerServiceId: UUID, lockResources: Boolean = true) =
+        validate(availabilityRepository.findActiveByCenterServiceId(centerServiceId), lockResources)
 
     fun validateAssignmentActivation(assignmentId: UUID) =
         validate(availabilityRepository.findActiveByAssignmentId(assignmentId))
@@ -57,20 +69,20 @@ class CenterLifecycleValidator(
         availabilities: Collection<ProfessionalAvailability>,
         additionalProfessionalIds: Set<Long> = emptySet(),
     ) {
-        availabilities
-            .map { requireNotNull(it.assignment.centerService.center.id) }
-            .distinct()
-            .sorted()
-            .forEach { centerId ->
-                centerRepository.findByIdForUpdate(centerId) ?: throw CenterErrors.centerNotFound(centerId)
-            }
-        (availabilities.map { requireNotNull(it.assignment.professional.id) } + additionalProfessionalIds)
-            .distinct()
-            .sorted()
-            .forEach { professionalId ->
-                userRepository.findByIdForUpdate(professionalId)
-                    ?: throw CenterErrors.professionalNotFound(professionalId)
-            }
+        lockResources(
+            availabilities.map { requireNotNull(it.assignment.centerService.center.id) },
+            availabilities.map { requireNotNull(it.assignment.professional.id) } + additionalProfessionalIds,
+        )
+    }
+
+    private fun lockResources(centerIds: Collection<UUID>, professionalIds: Collection<Long>) {
+        centerIds.distinct().sorted().forEach { centerId ->
+            centerRepository.findByIdForUpdate(centerId) ?: throw CenterErrors.centerNotFound(centerId)
+        }
+        professionalIds.distinct().sorted().forEach { professionalId ->
+            userRepository.findByIdForUpdate(professionalId)
+                ?: throw CenterErrors.professionalNotFound(professionalId)
+        }
     }
 
     private fun isEffective(availability: ProfessionalAvailability): Boolean {

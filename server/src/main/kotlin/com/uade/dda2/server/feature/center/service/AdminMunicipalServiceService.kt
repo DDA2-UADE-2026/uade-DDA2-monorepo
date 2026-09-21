@@ -51,6 +51,7 @@ class AdminMunicipalServiceService(
 
     @Transactional
     fun update(id: UUID, request: UpdateMunicipalServiceRequest): MunicipalServiceResponse {
+        lifecycleValidator.lockServiceResources(id)
         val service = findForUpdate(id)
         validator.validateName(request.name, id)
         val oldValues = json(service.toAuditSnapshot())
@@ -67,13 +68,14 @@ class AdminMunicipalServiceService(
     fun deactivate(id: UUID): MunicipalServiceResponse = changeStatus(id, false)
 
     private fun changeStatus(id: UUID, active: Boolean): MunicipalServiceResponse {
+        lifecycleValidator.lockServiceResources(id)
         val service = findForUpdate(id)
         if (service.active == active) {
             throw if (active) CenterErrors.serviceAlreadyActive() else CenterErrors.serviceAlreadyInactive()
         }
         val oldValues = json(service.toAuditSnapshot())
         service.active = active
-        if (active) lifecycleValidator.validateServiceActivation(id)
+        if (active) lifecycleValidator.validateServiceActivation(id, lockResources = false)
         repository.saveAndFlush(service)
         record(service, LogAction.UPDATE, oldValues)
         return service.toResponse()

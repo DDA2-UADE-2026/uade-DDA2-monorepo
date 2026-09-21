@@ -77,17 +77,26 @@ class GlobalExceptionHandler {
             )
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleUnreadableBody(request: HttpServletRequest): ResponseEntity<ErrorResponse> =
-        ResponseEntity
+    fun handleUnreadableBody(
+        exception: HttpMessageNotReadableException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> {
+        generateSequence(exception.cause) { it.cause }
+            .filterIsInstance<ApiException>()
+            .firstOrNull()
+            ?.let { return handleApiException(it, request) }
+        val appointmentRequest = request.requestURI == "/api/citizen/appointments"
+        return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
                     message = "El cuerpo de la solicitud es inválido.",
-                    code = "INVALID_REQUEST_BODY",
+                    code = if (appointmentRequest) "APPOINTMENT_INVALID_REQUEST" else "INVALID_REQUEST_BODY",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
                 ),
             )
+    }
 
     @ExceptionHandler(MaxUploadSizeExceededException::class)
     fun handleMaxUploadSize(request: HttpServletRequest): ResponseEntity<ErrorResponse> {
