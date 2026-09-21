@@ -23,6 +23,7 @@ Enum log_entity_type {
   center_opening_hour
   professional_assignment
   professional_availability
+  appointment
 }
 
 Enum day_of_week {
@@ -70,6 +71,10 @@ Enum activity_status {
 Enum activity_attendance_status {
   PRESENT
   ABSENT
+}
+
+Enum appointment_status {
+  CONFIRMED
 }
 
 Enum program_edition_status {
@@ -284,6 +289,32 @@ Table professional_availability {
   }
 
   Note: 'Franja semanal específica de una asignación. La aplicación valida cobertura del centro y ausencia global de superposición para el profesional.'
+}
+
+Table appointment {
+  id uuid [pk]
+  citizen_id bigint [not null, ref: > users.id]
+  professional_assignment_id uuid [not null, ref: > professional_assignment.id]
+  starts_at timestamptz [not null]
+  ends_at timestamptz [not null]
+  status appointment_status [not null, note: 'Persistido como varchar(20). En HU-18 solo admite CONFIRMED.']
+  idempotency_key varchar(128) [not null]
+  request_hash varchar(64) [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  indexes {
+    (citizen_id, idempotency_key) [unique, name: 'uk_appointment_citizen_idempotency']
+    (professional_assignment_id, starts_at) [unique, name: 'uk_appointment_assignment_start']
+    (citizen_id, starts_at, ends_at, status) [name: 'ix_appointment_citizen_time']
+    (professional_assignment_id, starts_at, ends_at, status) [name: 'ix_appointment_assignment_time']
+  }
+
+  checks {
+    `starts_at < ends_at` [name: 'ck_appointment_time_range']
+  }
+
+  Note: 'Turno concreto confirmado. El intervalo es semiabierto [inicio, fin), inmutable y se persiste como instante absoluto.'
 }
 
 Table activity {

@@ -250,3 +250,21 @@ tasks.register<Test>("testCentersPostgres") {
         providers.environmentVariable("CENTER_TEST_DDL_AUTO").orElse("update").get()
     )
 }
+
+tasks.register<Test>("testAppointmentsPostgres") {
+    group = "verification"
+    description =
+        "Prueba concurrencia de turnos contra un PostgreSQL desechable en 127.0.0.1:55439/appointment_test (create-drop)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.appointment.AppointmentConcurrencyFlowTest") }
+    systemProperty("appointment.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/appointment_test")
+    systemProperty(
+        "appointment.test.postgres-user",
+        providers.environmentVariable("APPOINTMENT_TEST_POSTGRES_USER").orElse("appointment_test").get()
+    )
+    systemProperty(
+        "appointment.test.postgres-password",
+        providers.environmentVariable("APPOINTMENT_TEST_POSTGRES_PASSWORD").orElse("").get()
+    )
+}

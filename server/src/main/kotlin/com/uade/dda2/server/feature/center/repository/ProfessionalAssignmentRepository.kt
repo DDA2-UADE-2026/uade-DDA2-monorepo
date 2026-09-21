@@ -9,6 +9,13 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.util.UUID
 
+interface AppointmentAssignmentLockData {
+    val centerId: UUID
+    val centerServiceId: UUID
+    val serviceId: UUID
+    val professionalId: Long
+}
+
 interface ProfessionalAssignmentRepository : JpaRepository<ProfessionalAssignment, UUID> {
     fun findByProfessionalIdAndCenterServiceId(
         professionalId: Long,
@@ -33,6 +40,22 @@ interface ProfessionalAssignmentRepository : JpaRepository<ProfessionalAssignmen
     fun existsByProfessionalIdAndActiveTrue(professionalId: Long): Boolean
 
     fun existsByActiveTrue(): Boolean
+
+    @EntityGraph(attributePaths = ["professional", "professional.roles", "centerService", "centerService.center", "centerService.service"])
+    @Query("select assignment from ProfessionalAssignment assignment where assignment.id = :id")
+    fun findDetailById(@Param("id") id: UUID): ProfessionalAssignment?
+
+    @Query(
+        """
+        select assignment.centerService.center.id as centerId,
+               assignment.centerService.id as centerServiceId,
+               assignment.centerService.service.id as serviceId,
+               assignment.professional.id as professionalId
+        from ProfessionalAssignment assignment
+        where assignment.id = :id
+        """,
+    )
+    fun findAppointmentLockDataById(@Param("id") id: UUID): AppointmentAssignmentLockData?
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(

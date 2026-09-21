@@ -6,11 +6,16 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.Lock
 import jakarta.persistence.LockModeType
+import org.springframework.data.repository.query.Param
 
 interface UserRepository : JpaRepository<User, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from User u where u.id = :id")
     fun findByIdForUpdate(id: Long): User?
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select u from User u where u.id in :ids order by u.id")
+    fun findAllByIdsForUpdate(@Param("ids") ids: Collection<Long>): List<User>
 
     @EntityGraph(attributePaths = ["roles", "roles.permissions"])
     fun findAllByOrderByUsernameAsc(): List<User>

@@ -40,6 +40,8 @@ VALUES ('permissions:view'),
        ('applications:own:view'),
        ('applications:own:documents:view'),
        ('applications:own:documents:manage'),
+       ('appointments:own:view'),
+       ('appointments:own:create'),
        ('applications:management:create'),
        ('applications:management:view'),
        ('applications:management:documents:view'),
@@ -82,7 +84,9 @@ JOIN permissions p ON p.name IN (
     'applications:own:create',
     'applications:own:view',
     'applications:own:documents:view',
-    'applications:own:documents:manage'
+    'applications:own:documents:manage',
+    'appointments:own:view',
+    'appointments:own:create'
 )
 WHERE r.name = 'CIUDADANO'
 ON CONFLICT DO NOTHING;

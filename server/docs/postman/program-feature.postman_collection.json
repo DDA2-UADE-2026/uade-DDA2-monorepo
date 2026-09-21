@@ -4920,7 +4920,180 @@
         }
       ]
     }
-  ],
+  ,
+    {
+      "name": "Turnos ciudadanos",
+      "description": "Consulta de servicios, centros y horarios disponibles y confirmacion de un turno propio. Requiere rol activo CIUDADANO con appointments:own:view y appointments:own:create en citizenAccessToken.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{citizenAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Listar servicios para turnos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/citizen/appointment-services",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "citizen", "appointment-services"]
+            },
+            "description": "Servicios municipales con oferta efectiva para turnos. Guarda el primero en appointmentServiceId."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "pm.test('Lista no vacia', () => pm.expect(list.length).to.be.above(0));",
+                  "if (list.length) { pm.collectionVariables.set('appointmentServiceId', list[0].id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar centros del servicio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/citizen/appointment-services/{{appointmentServiceId}}/centers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "citizen", "appointment-services", "{{appointmentServiceId}}", "centers"]
+            },
+            "description": "Centros efectivos que ofrecen el servicio. Guarda el primero en appointmentCenterServiceId."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "pm.test('Lista no vacia', () => pm.expect(list.length).to.be.above(0));",
+                  "if (list.length) { pm.collectionVariables.set('appointmentCenterServiceId', list[0].centerServiceId); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar horarios disponibles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/citizen/appointment-slots?centerServiceId={{appointmentCenterServiceId}}&date={{appointmentDate}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "citizen", "appointment-slots"],
+              "query": [
+                {"key": "centerServiceId", "value": "{{appointmentCenterServiceId}}"},
+                {"key": "date", "value": "{{appointmentDate}}"}
+              ]
+            },
+            "description": "Horarios otorgables al ciudadano para appointmentDate (YYYY-MM-DD futura). Guarda el primer slot en appointmentAssignmentId, appointmentSlotStart y appointmentSlotEnd."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "const list = pm.response.json();",
+                  "if (list.length) {",
+                  "  pm.collectionVariables.set('appointmentAssignmentId', list[0].professionalAssignmentId);",
+                  "  pm.collectionVariables.set('appointmentSlotStart', list[0].startsAt);",
+                  "  pm.collectionVariables.set('appointmentSlotEnd', list[0].endsAt);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar turno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{appointmentIdempotencyKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/citizen/appointments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "citizen", "appointments"]
+            },
+            "description": "Crea y confirma el turno (201) o reproduce el original ante un reintento (200). Idempotency-Key obligatoria; reutilizarla con otro turno responde 409.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"professionalAssignmentId\": \"{{appointmentAssignmentId}}\",\n  \"startsAt\": \"{{appointmentSlotStart}}\",\n  \"endsAt\": \"{{appointmentSlotEnd}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let key = pm.collectionVariables.get('appointmentIdempotencyKey');",
+                  "if (!key) { key = pm.variables.replaceIn('{{$guid}}'); pm.collectionVariables.set('appointmentIdempotencyKey', key); }",
+                  "pm.variables.set('appointmentIdempotencyKey', key);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 o 200', () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));",
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('appointmentId', body.id);",
+                  "pm.test('Turno confirmado', () => pm.expect(body.status).to.equal('CONFIRMED'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar turno propio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/citizen/appointments/{{appointmentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "citizen", "appointments", "{{appointmentId}}"]
+            },
+            "description": "Detalle del turno confirmado. Un turno ajeno responde 404."
+          }
+        }
+      ]
+    }],
   "auth": {
     "type": "bearer",
     "bearer": [
@@ -5147,5 +5320,37 @@
       "value": "",
       "type": "string"
     }
-  ]
+  ,
+    {
+      "key": "appointmentServiceId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "appointmentCenterServiceId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "appointmentAssignmentId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "appointmentDate",
+      "value": ""
+    },
+    {
+      "key": "appointmentSlotStart",
+      "value": ""
+    },
+    {
+      "key": "appointmentSlotEnd",
+      "value": ""
+    },
+    {
+      "key": "appointmentId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "appointmentIdempotencyKey",
+      "value": ""
+    }]
 }

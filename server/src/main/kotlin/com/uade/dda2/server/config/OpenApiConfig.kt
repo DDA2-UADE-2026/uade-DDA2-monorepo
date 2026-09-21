@@ -28,7 +28,7 @@ class OpenApiConfig {
                 Info()
                     .title("API de Desarrollo Social")
                     .description(
-                        "API REST para administrar autenticación, usuarios, roles, permisos, programas sociales, actividades comunitarias, períodos de inscripción y solicitudes propias y asistidas.",
+                        "API REST para administrar autenticación, usuarios, roles, permisos, programas sociales, actividades comunitarias, períodos de inscripción, solicitudes propias y asistidas, y turnos ciudadanos de salud comunitaria.",
                     )
                     .version("1.0.0")
                     .contact(Contact().name("Equipo de Desarrollo Social")),

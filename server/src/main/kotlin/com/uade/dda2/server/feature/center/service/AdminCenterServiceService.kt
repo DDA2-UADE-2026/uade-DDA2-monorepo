@@ -56,7 +56,7 @@ class AdminCenterServiceService(
 
     @Transactional
     fun activate(id: UUID): CenterServiceResponse {
-        val relation = findForUpdate(id)
+        val relation = lockForUpdate(id)
         if (relation.active) throw CenterErrors.centerServiceAlreadyActive()
         if (!relation.center.active) throw CenterErrors.inactiveDependency("el centro municipal")
         if (!relation.service.active) throw CenterErrors.inactiveDependency("el servicio municipal")
@@ -65,7 +65,7 @@ class AdminCenterServiceService(
 
     @Transactional
     fun deactivate(id: UUID): CenterServiceResponse {
-        val relation = findForUpdate(id)
+        val relation = lockForUpdate(id)
         if (!relation.active) throw CenterErrors.centerServiceAlreadyInactive()
         return changeStatus(relation, false)
     }
@@ -73,14 +73,19 @@ class AdminCenterServiceService(
     private fun changeStatus(relation: CenterService, active: Boolean): CenterServiceResponse {
         val oldValues = json(relation.toAuditSnapshot())
         relation.active = active
-        if (active) lifecycleValidator.validateCenterServiceActivation(requireNotNull(relation.id))
+        if (active) {
+            lifecycleValidator.validateCenterServiceActivation(requireNotNull(relation.id), lockResources = false)
+        }
         centerServiceRepository.saveAndFlush(relation)
         record(relation, LogAction.UPDATE, oldValues)
         return relation.toResponse()
     }
 
-    private fun findForUpdate(id: UUID): CenterService =
-        centerServiceRepository.findByIdForUpdate(id) ?: throw CenterErrors.centerServiceNotFound(id)
+    private fun lockForUpdate(id: UUID): CenterService {
+        if (!centerServiceRepository.existsById(id)) throw CenterErrors.centerServiceNotFound(id)
+        lifecycleValidator.lockCenterServiceResources(id)
+        return centerServiceRepository.findByIdForUpdate(id) ?: throw CenterErrors.centerServiceNotFound(id)
+    }
 
     private fun record(relation: CenterService, action: LogAction, oldValues: String? = null) {
         logService.record(

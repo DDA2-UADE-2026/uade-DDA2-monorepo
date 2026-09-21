@@ -13,6 +13,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cuándo puede volver a solicitar. |
 | [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
+| [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
 
 ## Organización de `/docs`
 

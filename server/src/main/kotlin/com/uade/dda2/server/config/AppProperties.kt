@@ -26,3 +26,10 @@ data class EnrollmentPeriodExpirationProperties(
 ) {
     fun zone(): ZoneId = ZoneId.of(zoneId)
 }
+
+@ConfigurationProperties("app.appointment")
+data class AppointmentProperties(
+    var zoneId: String = "America/Argentina/Buenos_Aires",
+) {
+    fun zone(): ZoneId = ZoneId.of(zoneId)
+}
