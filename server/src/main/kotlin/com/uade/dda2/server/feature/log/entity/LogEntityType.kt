@@ -15,6 +15,7 @@ enum class LogEntityType(val tableName: String) {
     PROFESSIONAL_ASSIGNMENT("professional_assignment"),
     CENTER_OPENING_HOUR("center_opening_hour"),
     PROFESSIONAL_AVAILABILITY("professional_availability"),
+    APPOINTMENT("appointment"),
     PROGRAM("program"),
     PROGRAM_EDITION("program_edition"),
     PROGRAM_BENEFIT("program_benefit"),

@@ -11,6 +11,7 @@ import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
+import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityEnrollmentRepository
 import com.uade.dda2.server.feature.center.repository.ProfessionalAssignmentRepository
@@ -46,6 +47,7 @@ class UserManagementService(
     private val applicationDocumentRepository: ApplicationDocumentRepository,
     private val documentRepository: DocumentRepository,
     private val professionalAssignmentRepository: ProfessionalAssignmentRepository,
+    private val appointmentRepository: AppointmentRepository,
     private val centerLifecycleValidator: CenterLifecycleValidator,
 ) {
     @Transactional(readOnly = true)
@@ -185,6 +187,13 @@ class UserManagementService(
             throw ConflictException(
                 code = "USER_HAS_PROFESSIONAL_ASSIGNMENTS",
                 message = "No se puede eliminar un usuario con asignaciones profesionales.",
+            )
+        }
+
+        if (appointmentRepository.existsByCitizenOrProfessionalId(id)) {
+            throw ConflictException(
+                code = "USER_HAS_APPOINTMENT_REFERENCES",
+                message = "No se puede eliminar un usuario vinculado a turnos.",
             )
         }
 
