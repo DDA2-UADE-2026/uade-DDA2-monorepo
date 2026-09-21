@@ -517,6 +517,33 @@ export const zLoginRequest = z.object({
 });
 
 /**
+ * Solicita un turno propio previamente ofrecido por la consulta de horarios.
+ */
+export const zCreateAppointmentRequest = z.object({
+    professionalAssignmentId: z.uuid(),
+    startsAt: z.iso.datetime(),
+    endsAt: z.iso.datetime()
+});
+
+/**
+ * Detalle de un turno propio confirmado.
+ */
+export const zAppointmentResponse = z.object({
+    id: z.uuid().optional(),
+    status: z.enum(['CONFIRMED']).optional(),
+    serviceId: z.uuid().optional(),
+    serviceName: z.string().optional(),
+    centerId: z.uuid().optional(),
+    centerName: z.string().optional(),
+    centerAddress: z.string().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    createdAt: z.iso.datetime().optional()
+});
+
+/**
  * Presenta una solicitud propia. Solo admite enrollmentPeriodId; el usuario proviene del JWT.
  */
 export const zCreateApplicationRequest = z.object({
@@ -891,6 +918,7 @@ export const zLogResponse = z.object({
         'PROFESSIONAL_ASSIGNMENT',
         'CENTER_OPENING_HOUR',
         'PROFESSIONAL_AVAILABILITY',
+        'APPOINTMENT',
         'PROGRAM',
         'PROGRAM_EDITION',
         'PROGRAM_BENEFIT',
@@ -1055,6 +1083,39 @@ export const zProfessionalActivityEnrollmentListResponse = z.object({
     size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
     totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
     totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Horario actualmente otorgable al ciudadano autenticado.
+ */
+export const zAvailableAppointmentSlotResponse = z.object({
+    professionalAssignmentId: z.uuid().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional()
+});
+
+/**
+ * Servicio municipal habilitado para solicitar turnos.
+ */
+export const zAppointmentServiceResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Centro que ofrece efectivamente el servicio seleccionado.
+ */
+export const zAppointmentCenterResponse = z.object({
+    centerServiceId: z.uuid().optional(),
+    centerId: z.uuid().optional(),
+    name: z.string().optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional()
 });
 
 export const zApplicationListResponse = z.object({
@@ -1735,6 +1796,20 @@ export const zUpdateCenterOpeningHourPath = z.object({
  */
 export const zUpdateCenterOpeningHourResponse = zCenterOpeningHourResponse;
 
+export const zPut1Body = z.object({
+    file: z.string()
+});
+
+export const zPut1Path = z.object({
+    applicationId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * Entrega existente reemplazada.
+ */
+export const zPut1Response = zApplicationDocumentResponse;
+
 export const zGet1Path = z.object({
     id: z.uuid()
 });
@@ -1799,6 +1874,17 @@ export const zLoginBody = zLoginRequestWritable;
  * OK
  */
 export const zLoginResponse2 = zLoginResponse;
+
+export const zCreateCitizenAppointmentBody = zCreateAppointmentRequest;
+
+export const zCreateCitizenAppointmentHeaders = z.object({
+    'Idempotency-Key': z.string()
+});
+
+/**
+ * Reintento idempotente del turno original.
+ */
+export const zCreateCitizenAppointmentResponse = zAppointmentResponse;
 
 export const zListQuery = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
@@ -2408,6 +2494,7 @@ export const zListLogsByEntityPath = z.object({
         'PROFESSIONAL_ASSIGNMENT',
         'CENTER_OPENING_HOUR',
         'PROFESSIONAL_AVAILABILITY',
+        'APPOINTMENT',
         'PROGRAM',
         'PROGRAM_EDITION',
         'PROGRAM_BENEFIT',
@@ -2480,6 +2567,34 @@ export const zGetPublicImagePath = z.object({
  * Contenido de la imagen.
  */
 export const zGetPublicImageResponse = z.string();
+
+export const zGetCitizenAppointmentPath = z.object({
+    appointmentId: z.uuid()
+});
+
+export const zListCitizenAppointmentSlotsQuery = z.object({
+    centerServiceId: z.uuid(),
+    date: z.iso.date()
+});
+
+/**
+ * OK
+ */
+export const zListCitizenAppointmentSlotsResponse = z.array(zAvailableAppointmentSlotResponse);
+
+/**
+ * OK
+ */
+export const zListCitizenAppointmentServicesResponse = z.array(zAppointmentServiceResponse);
+
+export const zListCitizenAppointmentCentersPath = z.object({
+    serviceId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zListCitizenAppointmentCentersResponse = z.array(zAppointmentCenterResponse);
 
 export const zGet2Path = z.object({
     id: z.uuid()
