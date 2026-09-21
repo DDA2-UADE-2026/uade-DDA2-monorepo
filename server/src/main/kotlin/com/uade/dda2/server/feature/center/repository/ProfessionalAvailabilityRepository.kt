@@ -1,0 +1,252 @@
+package com.uade.dda2.server.feature.center.repository
+
+import com.uade.dda2.server.feature.center.entity.ProfessionalAvailability
+import jakarta.persistence.LockModeType
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import java.time.DayOfWeek
+import java.time.LocalTime
+import java.util.UUID
+
+interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailability, UUID> {
+    fun findAllByAssignmentIdAndActiveOrderByDayOfWeekAscStartTimeAsc(
+        assignmentId: UUID,
+        active: Boolean,
+    ): List<ProfessionalAvailability>
+
+    fun findAllByAssignmentIdOrderByDayOfWeekAscStartTimeAsc(assignmentId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join professional.roles professionalRole
+        join fetch assignment.centerService centerService
+        join fetch centerService.center center
+        join fetch centerService.service service
+        where center.id = :centerId
+          and availability.dayOfWeek = :dayOfWeek
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+        order by availability.startTime
+        """,
+    )
+    fun findEffectiveByCenterIdAndDayOfWeek(
+        @Param("centerId") centerId: UUID,
+        @Param("dayOfWeek") dayOfWeek: DayOfWeek,
+    ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join professional.roles professionalRole
+        join fetch assignment.centerService centerService
+        join fetch centerService.center center
+        join fetch centerService.service service
+        where centerService.id = :centerServiceId
+          and availability.dayOfWeek = :dayOfWeek
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+        order by availability.startTime, professional.name
+        """,
+    )
+    fun findEffectiveByCenterServiceIdAndDayOfWeek(
+        @Param("centerServiceId") centerServiceId: UUID,
+        @Param("dayOfWeek") dayOfWeek: DayOfWeek,
+    ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join availability.assignment assignment
+        join assignment.professional professional
+        join professional.roles professionalRole
+        join assignment.centerService centerService
+        join centerService.center center
+        join centerService.service service
+        where professional.id = :professionalId
+          and availability.dayOfWeek = :dayOfWeek
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+          and availability.startTime < :requestedEnd
+          and availability.endTime > :requestedStart
+        order by availability.startTime
+        """,
+    )
+    fun findEffectiveOverlapsByProfessionalId(
+        @Param("professionalId") professionalId: Long,
+        @Param("dayOfWeek") dayOfWeek: DayOfWeek,
+        @Param("requestedStart") requestedStart: LocalTime,
+        @Param("requestedEnd") requestedEnd: LocalTime,
+    ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join availability.assignment assignment
+        join assignment.professional professional
+        join professional.roles professionalRole
+        join assignment.centerService centerService
+        join centerService.center center
+        join centerService.service service
+        where professional.id = :professionalId
+          and availability.dayOfWeek = :dayOfWeek
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+          and availability.id <> :excludedId
+          and availability.startTime < :requestedEnd
+          and availability.endTime > :requestedStart
+        order by availability.startTime
+        """,
+    )
+    fun findEffectiveOverlapsByProfessionalIdExcludingId(
+        @Param("professionalId") professionalId: Long,
+        @Param("dayOfWeek") dayOfWeek: DayOfWeek,
+        @Param("requestedStart") requestedStart: LocalTime,
+        @Param("requestedEnd") requestedEnd: LocalTime,
+        @Param("excludedId") excludedId: UUID,
+    ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.centerService.center.id = :centerId
+        """,
+    )
+    fun findActiveByCenterId(@Param("centerId") centerId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.centerService.service.id = :serviceId
+        """,
+    )
+    fun findActiveByServiceId(@Param("serviceId") serviceId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability.assignment.centerService.center.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.service.id = :serviceId
+        order by availability.assignment.centerService.center.id
+        """,
+    )
+    fun findActiveCenterIdsByServiceId(@Param("serviceId") serviceId: UUID): List<UUID>
+
+    @Query(
+        """
+        select distinct availability.assignment.professional.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.service.id = :serviceId
+        order by availability.assignment.professional.id
+        """,
+    )
+    fun findActiveProfessionalIdsByServiceId(@Param("serviceId") serviceId: UUID): List<Long>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.centerService.id = :centerServiceId
+        """,
+    )
+    fun findActiveByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability.assignment.centerService.center.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.id = :centerServiceId
+        order by availability.assignment.centerService.center.id
+        """,
+    )
+    fun findActiveCenterIdsByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<UUID>
+
+    @Query(
+        """
+        select distinct availability.assignment.professional.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.id = :centerServiceId
+        order by availability.assignment.professional.id
+        """,
+    )
+    fun findActiveProfessionalIdsByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<Long>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.id = :assignmentId
+        """,
+    )
+    fun findActiveByAssignmentId(@Param("assignmentId") assignmentId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join fetch assignment.centerService centerService
+        join fetch centerService.center
+        join fetch centerService.service
+        where availability.active = true
+          and assignment.professional.id = :professionalId
+        """,
+    )
+    fun findActiveByProfessionalId(@Param("professionalId") professionalId: Long): List<ProfessionalAvailability>
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select availability from ProfessionalAvailability availability where availability.id = :id")
+    fun findByIdForUpdate(@Param("id") id: UUID): ProfessionalAvailability?
+}

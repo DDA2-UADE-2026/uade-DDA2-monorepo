@@ -30,16 +30,17 @@ import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
 import { Route as AppPortalPerfilRouteImport } from "./routes/_app/portal/perfil"
 import { Route as AuthGuestLoginRouteImport } from "./routes/_auth/_guest/login"
 import { Route as AuthGuestRegisterRouteImport } from "./routes/_auth/_guest/register"
+import { Route as AppGestionActividadesIndexRouteImport } from "./routes/_app/gestion/actividades/index"
 import { Route as AppGestionAuditoriaIndexRouteImport } from "./routes/_app/gestion/auditoria/index"
 import { Route as AppGestionAuditoriaDlqRouteImport } from "./routes/_app/gestion/auditoria/dlq"
 import { Route as AppGestionAuditoriaEventosRouteImport } from "./routes/_app/gestion/auditoria/eventos"
 import { Route as AppGestionBeneficiosIndexRouteImport } from "./routes/_app/gestion/beneficios/index"
 import { Route as AppGestionBeneficiosBeneficioIdRouteImport } from "./routes/_app/gestion/beneficios/$beneficioId"
-import { Route as AppGestionCampaniasIndexRouteImport } from "./routes/_app/gestion/campanias/index"
 import { Route as AppGestionCasosIndexRouteImport } from "./routes/_app/gestion/casos/index"
 import { Route as AppGestionCasosSolicitudIdRouteRouteImport } from "./routes/_app/gestion/casos/$solicitudId/route"
 import { Route as AppGestionCentrosIndexRouteImport } from "./routes/_app/gestion/centros/index"
 import { Route as AppGestionCentrosCentroIdRouteRouteImport } from "./routes/_app/gestion/centros/$centroId/route"
+import { Route as AppGestionCentrosServiciosRouteImport } from "./routes/_app/gestion/centros/servicios"
 import { Route as AppGestionDebugDocumentacionEventosRouteImport } from "./routes/_app/gestion/debug/documentacion-eventos"
 import { Route as AppGestionDebugDocumentacionLocalRouteImport } from "./routes/_app/gestion/debug/documentacion-local"
 import { Route as AppGestionDebugEstadoRedRouteImport } from "./routes/_app/gestion/debug/estado-red"
@@ -47,22 +48,25 @@ import { Route as AppGestionIntervencionesIndexRouteImport } from "./routes/_app
 import { Route as AppGestionIntervencionesPlanIdRouteImport } from "./routes/_app/gestion/intervenciones/$planId"
 import { Route as AppGestionProgramasIndexRouteImport } from "./routes/_app/gestion/programas/index"
 import { Route as AppGestionProgramasProgramaIdRouteRouteImport } from "./routes/_app/gestion/programas/$programaId/route"
+import { Route as AppGestionSolicitudesIndexRouteImport } from "./routes/_app/gestion/solicitudes/index"
+import { Route as AppGestionSolicitudesSolicitudIdRouteImport } from "./routes/_app/gestion/solicitudes/$solicitudId"
+import { Route as AppGestionSolicitudesAsistidaRouteImport } from "./routes/_app/gestion/solicitudes/asistida"
 import { Route as AppGestionTurnosIndexRouteImport } from "./routes/_app/gestion/turnos/index"
 import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestion/turnos/agenda"
 import { Route as AppGestionTurnosNuevoRouteImport } from "./routes/_app/gestion/turnos/nuevo"
 import { Route as AppGestionUsuariosIndexRouteImport } from "./routes/_app/gestion/usuarios/index"
 import { Route as AppGestionVisitasIndexRouteImport } from "./routes/_app/gestion/visitas/index"
+import { Route as AppPortalActividadesIndexRouteImport } from "./routes/_app/portal/actividades/index"
+import { Route as AppPortalActividadesActividadIdRouteImport } from "./routes/_app/portal/actividades/$actividadId"
 import { Route as AppPortalBeneficiosIndexRouteImport } from "./routes/_app/portal/beneficios/index"
-import { Route as AppPortalCampaniasIndexRouteImport } from "./routes/_app/portal/campanias/index"
-import { Route as AppPortalCampaniasActividadIdRouteImport } from "./routes/_app/portal/campanias/$actividadId"
 import { Route as AppPortalProgramasIndexRouteImport } from "./routes/_app/portal/programas/index"
 import { Route as AppPortalProgramasProgramaIdRouteImport } from "./routes/_app/portal/programas/$programaId"
 import { Route as AppPortalSolicitudesIndexRouteImport } from "./routes/_app/portal/solicitudes/index"
 import { Route as AppPortalSolicitudesNuevaRouteImport } from "./routes/_app/portal/solicitudes/nueva"
 import { Route as AppPortalTurnosIndexRouteImport } from "./routes/_app/portal/turnos/index"
 import { Route as AppPortalTurnosNuevoRouteImport } from "./routes/_app/portal/turnos/nuevo"
-import { Route as AppGestionCampaniasActividadIdIndexRouteImport } from "./routes/_app/gestion/campanias/$actividadId/index"
-import { Route as AppGestionCampaniasActividadIdAsistenciaRouteImport } from "./routes/_app/gestion/campanias/$actividadId/asistencia"
+import { Route as AppGestionActividadesActividadIdIndexRouteImport } from "./routes/_app/gestion/actividades/$actividadId/index"
+import { Route as AppGestionActividadesActividadIdAsistenciaRouteImport } from "./routes/_app/gestion/actividades/$actividadId/asistencia"
 import { Route as AppGestionCasosSolicitudIdIndexRouteImport } from "./routes/_app/gestion/casos/$solicitudId/index"
 import { Route as AppGestionCasosSolicitudIdEvaluacionRouteImport } from "./routes/_app/gestion/casos/$solicitudId/evaluacion"
 import { Route as AppGestionCasosSolicitudIdResolucionRouteImport } from "./routes/_app/gestion/casos/$solicitudId/resolucion"
@@ -184,6 +188,12 @@ const AuthGuestRegisterRoute = AuthGuestRegisterRouteImport.update({
   path: "/register",
   getParentRoute: () => AuthGuestRouteRoute,
 } as any)
+const AppGestionActividadesIndexRoute =
+  AppGestionActividadesIndexRouteImport.update({
+    id: "/actividades/",
+    path: "/actividades/",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
 const AppGestionAuditoriaIndexRoute =
   AppGestionAuditoriaIndexRouteImport.update({
     id: "/",
@@ -213,12 +223,6 @@ const AppGestionBeneficiosBeneficioIdRoute =
     path: "/beneficios/$beneficioId",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
-const AppGestionCampaniasIndexRoute =
-  AppGestionCampaniasIndexRouteImport.update({
-    id: "/campanias/",
-    path: "/campanias/",
-    getParentRoute: () => AppGestionRouteRoute,
-  } as any)
 const AppGestionCasosIndexRoute = AppGestionCasosIndexRouteImport.update({
   id: "/casos/",
   path: "/casos/",
@@ -239,6 +243,12 @@ const AppGestionCentrosCentroIdRouteRoute =
   AppGestionCentrosCentroIdRouteRouteImport.update({
     id: "/centros/$centroId",
     path: "/centros/$centroId",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionCentrosServiciosRoute =
+  AppGestionCentrosServiciosRouteImport.update({
+    id: "/centros/servicios",
+    path: "/centros/servicios",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
 const AppGestionDebugDocumentacionEventosRoute =
@@ -283,6 +293,24 @@ const AppGestionProgramasProgramaIdRouteRoute =
     path: "/programas/$programaId",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
+const AppGestionSolicitudesIndexRoute =
+  AppGestionSolicitudesIndexRouteImport.update({
+    id: "/solicitudes/",
+    path: "/solicitudes/",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionSolicitudesSolicitudIdRoute =
+  AppGestionSolicitudesSolicitudIdRouteImport.update({
+    id: "/solicitudes/$solicitudId",
+    path: "/solicitudes/$solicitudId",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
+const AppGestionSolicitudesAsistidaRoute =
+  AppGestionSolicitudesAsistidaRouteImport.update({
+    id: "/solicitudes/asistida",
+    path: "/solicitudes/asistida",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
 const AppGestionTurnosIndexRoute = AppGestionTurnosIndexRouteImport.update({
   id: "/turnos/",
   path: "/turnos/",
@@ -308,21 +336,22 @@ const AppGestionVisitasIndexRoute = AppGestionVisitasIndexRouteImport.update({
   path: "/visitas/",
   getParentRoute: () => AppGestionRouteRoute,
 } as any)
+const AppPortalActividadesIndexRoute =
+  AppPortalActividadesIndexRouteImport.update({
+    id: "/actividades/",
+    path: "/actividades/",
+    getParentRoute: () => AppPortalRouteRoute,
+  } as any)
+const AppPortalActividadesActividadIdRoute =
+  AppPortalActividadesActividadIdRouteImport.update({
+    id: "/actividades/$actividadId",
+    path: "/actividades/$actividadId",
+    getParentRoute: () => AppPortalRouteRoute,
+  } as any)
 const AppPortalBeneficiosIndexRoute =
   AppPortalBeneficiosIndexRouteImport.update({
     id: "/beneficios/",
     path: "/beneficios/",
-    getParentRoute: () => AppPortalRouteRoute,
-  } as any)
-const AppPortalCampaniasIndexRoute = AppPortalCampaniasIndexRouteImport.update({
-  id: "/campanias/",
-  path: "/campanias/",
-  getParentRoute: () => AppPortalRouteRoute,
-} as any)
-const AppPortalCampaniasActividadIdRoute =
-  AppPortalCampaniasActividadIdRouteImport.update({
-    id: "/campanias/$actividadId",
-    path: "/campanias/$actividadId",
     getParentRoute: () => AppPortalRouteRoute,
   } as any)
 const AppPortalProgramasIndexRoute = AppPortalProgramasIndexRouteImport.update({
@@ -358,16 +387,16 @@ const AppPortalTurnosNuevoRoute = AppPortalTurnosNuevoRouteImport.update({
   path: "/turnos/nuevo",
   getParentRoute: () => AppPortalRouteRoute,
 } as any)
-const AppGestionCampaniasActividadIdIndexRoute =
-  AppGestionCampaniasActividadIdIndexRouteImport.update({
-    id: "/campanias/$actividadId/",
-    path: "/campanias/$actividadId/",
+const AppGestionActividadesActividadIdIndexRoute =
+  AppGestionActividadesActividadIdIndexRouteImport.update({
+    id: "/actividades/$actividadId/",
+    path: "/actividades/$actividadId/",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
-const AppGestionCampaniasActividadIdAsistenciaRoute =
-  AppGestionCampaniasActividadIdAsistenciaRouteImport.update({
-    id: "/campanias/$actividadId/asistencia",
-    path: "/campanias/$actividadId/asistencia",
+const AppGestionActividadesActividadIdAsistenciaRoute =
+  AppGestionActividadesActividadIdAsistenciaRouteImport.update({
+    id: "/actividades/$actividadId/asistencia",
+    path: "/actividades/$actividadId/asistencia",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
 const AppGestionCasosSolicitudIdIndexRoute =
@@ -508,39 +537,43 @@ export interface FileRoutesByFullPath {
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/gestion/centros/servicios": typeof AppGestionCentrosServiciosRoute
   "/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
+  "/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
+  "/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
-  "/portal/campanias/$actividadId": typeof AppPortalCampaniasActividadIdRoute
+  "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
+  "/gestion/actividades/": typeof AppGestionActividadesIndexRoute
   "/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
   "/gestion/beneficios/": typeof AppGestionBeneficiosIndexRoute
-  "/gestion/campanias/": typeof AppGestionCampaniasIndexRoute
   "/gestion/casos/": typeof AppGestionCasosIndexRoute
   "/gestion/centros/": typeof AppGestionCentrosIndexRoute
   "/gestion/intervenciones/": typeof AppGestionIntervencionesIndexRoute
   "/gestion/programas/": typeof AppGestionProgramasIndexRoute
+  "/gestion/solicitudes/": typeof AppGestionSolicitudesIndexRoute
   "/gestion/turnos/": typeof AppGestionTurnosIndexRoute
   "/gestion/usuarios/": typeof AppGestionUsuariosIndexRoute
   "/gestion/visitas/": typeof AppGestionVisitasIndexRoute
+  "/portal/actividades/": typeof AppPortalActividadesIndexRoute
   "/portal/beneficios/": typeof AppPortalBeneficiosIndexRoute
-  "/portal/campanias/": typeof AppPortalCampaniasIndexRoute
   "/portal/programas/": typeof AppPortalProgramasIndexRoute
   "/portal/solicitudes/": typeof AppPortalSolicitudesIndexRoute
   "/portal/turnos/": typeof AppPortalTurnosIndexRoute
-  "/gestion/campanias/$actividadId/asistencia": typeof AppGestionCampaniasActividadIdAsistenciaRoute
+  "/gestion/actividades/$actividadId/asistencia": typeof AppGestionActividadesActividadIdAsistenciaRoute
   "/gestion/casos/$solicitudId/evaluacion": typeof AppGestionCasosSolicitudIdEvaluacionRoute
   "/gestion/casos/$solicitudId/resolucion": typeof AppGestionCasosSolicitudIdResolucionRoute
   "/gestion/casos/$solicitudId/visitas": typeof AppGestionCasosSolicitudIdVisitasRoute
   "/gestion/centros/$centroId/agenda": typeof AppGestionCentrosCentroIdAgendaRoute
   "/gestion/programas/$programaId/incompatibilidades": typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
   "/portal/solicitudes/$solicitudId/documentacion": typeof AppPortalSolicitudesSolicitudIdDocumentacionRoute
-  "/gestion/campanias/$actividadId/": typeof AppGestionCampaniasActividadIdIndexRoute
+  "/gestion/actividades/$actividadId/": typeof AppGestionActividadesActividadIdIndexRoute
   "/gestion/casos/$solicitudId/": typeof AppGestionCasosSolicitudIdIndexRoute
   "/gestion/centros/$centroId/": typeof AppGestionCentrosCentroIdIndexRoute
   "/gestion/programas/$programaId/": typeof AppGestionProgramasProgramaIdIndexRoute
@@ -572,39 +605,43 @@ export interface FileRoutesByTo {
   "/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/gestion/centros/servicios": typeof AppGestionCentrosServiciosRoute
   "/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
   "/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
+  "/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
+  "/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
-  "/portal/campanias/$actividadId": typeof AppPortalCampaniasActividadIdRoute
+  "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
+  "/gestion/actividades": typeof AppGestionActividadesIndexRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaIndexRoute
   "/gestion/beneficios": typeof AppGestionBeneficiosIndexRoute
-  "/gestion/campanias": typeof AppGestionCampaniasIndexRoute
   "/gestion/casos": typeof AppGestionCasosIndexRoute
   "/gestion/centros": typeof AppGestionCentrosIndexRoute
   "/gestion/intervenciones": typeof AppGestionIntervencionesIndexRoute
   "/gestion/programas": typeof AppGestionProgramasIndexRoute
+  "/gestion/solicitudes": typeof AppGestionSolicitudesIndexRoute
   "/gestion/turnos": typeof AppGestionTurnosIndexRoute
   "/gestion/usuarios": typeof AppGestionUsuariosIndexRoute
   "/gestion/visitas": typeof AppGestionVisitasIndexRoute
+  "/portal/actividades": typeof AppPortalActividadesIndexRoute
   "/portal/beneficios": typeof AppPortalBeneficiosIndexRoute
-  "/portal/campanias": typeof AppPortalCampaniasIndexRoute
   "/portal/programas": typeof AppPortalProgramasIndexRoute
   "/portal/solicitudes": typeof AppPortalSolicitudesIndexRoute
   "/portal/turnos": typeof AppPortalTurnosIndexRoute
-  "/gestion/campanias/$actividadId/asistencia": typeof AppGestionCampaniasActividadIdAsistenciaRoute
+  "/gestion/actividades/$actividadId/asistencia": typeof AppGestionActividadesActividadIdAsistenciaRoute
   "/gestion/casos/$solicitudId/evaluacion": typeof AppGestionCasosSolicitudIdEvaluacionRoute
   "/gestion/casos/$solicitudId/resolucion": typeof AppGestionCasosSolicitudIdResolucionRoute
   "/gestion/casos/$solicitudId/visitas": typeof AppGestionCasosSolicitudIdVisitasRoute
   "/gestion/centros/$centroId/agenda": typeof AppGestionCentrosCentroIdAgendaRoute
   "/gestion/programas/$programaId/incompatibilidades": typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
   "/portal/solicitudes/$solicitudId/documentacion": typeof AppPortalSolicitudesSolicitudIdDocumentacionRoute
-  "/gestion/campanias/$actividadId": typeof AppGestionCampaniasActividadIdIndexRoute
+  "/gestion/actividades/$actividadId": typeof AppGestionActividadesActividadIdIndexRoute
   "/gestion/casos/$solicitudId": typeof AppGestionCasosSolicitudIdIndexRoute
   "/gestion/centros/$centroId": typeof AppGestionCentrosCentroIdIndexRoute
   "/gestion/programas/$programaId": typeof AppGestionProgramasProgramaIdIndexRoute
@@ -645,39 +682,43 @@ export interface FileRoutesById {
   "/_app/gestion/auditoria/dlq": typeof AppGestionAuditoriaDlqRoute
   "/_app/gestion/auditoria/eventos": typeof AppGestionAuditoriaEventosRoute
   "/_app/gestion/beneficios/$beneficioId": typeof AppGestionBeneficiosBeneficioIdRoute
+  "/_app/gestion/centros/servicios": typeof AppGestionCentrosServiciosRoute
   "/_app/gestion/debug/documentacion-eventos": typeof AppGestionDebugDocumentacionEventosRoute
   "/_app/gestion/debug/documentacion-local": typeof AppGestionDebugDocumentacionLocalRoute
   "/_app/gestion/debug/estado-red": typeof AppGestionDebugEstadoRedRoute
   "/_app/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
+  "/_app/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
+  "/_app/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
-  "/_app/portal/campanias/$actividadId": typeof AppPortalCampaniasActividadIdRoute
+  "/_app/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/_app/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/_app/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/_app/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
+  "/_app/gestion/actividades/": typeof AppGestionActividadesIndexRoute
   "/_app/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
   "/_app/gestion/beneficios/": typeof AppGestionBeneficiosIndexRoute
-  "/_app/gestion/campanias/": typeof AppGestionCampaniasIndexRoute
   "/_app/gestion/casos/": typeof AppGestionCasosIndexRoute
   "/_app/gestion/centros/": typeof AppGestionCentrosIndexRoute
   "/_app/gestion/intervenciones/": typeof AppGestionIntervencionesIndexRoute
   "/_app/gestion/programas/": typeof AppGestionProgramasIndexRoute
+  "/_app/gestion/solicitudes/": typeof AppGestionSolicitudesIndexRoute
   "/_app/gestion/turnos/": typeof AppGestionTurnosIndexRoute
   "/_app/gestion/usuarios/": typeof AppGestionUsuariosIndexRoute
   "/_app/gestion/visitas/": typeof AppGestionVisitasIndexRoute
+  "/_app/portal/actividades/": typeof AppPortalActividadesIndexRoute
   "/_app/portal/beneficios/": typeof AppPortalBeneficiosIndexRoute
-  "/_app/portal/campanias/": typeof AppPortalCampaniasIndexRoute
   "/_app/portal/programas/": typeof AppPortalProgramasIndexRoute
   "/_app/portal/solicitudes/": typeof AppPortalSolicitudesIndexRoute
   "/_app/portal/turnos/": typeof AppPortalTurnosIndexRoute
-  "/_app/gestion/campanias/$actividadId/asistencia": typeof AppGestionCampaniasActividadIdAsistenciaRoute
+  "/_app/gestion/actividades/$actividadId/asistencia": typeof AppGestionActividadesActividadIdAsistenciaRoute
   "/_app/gestion/casos/$solicitudId/evaluacion": typeof AppGestionCasosSolicitudIdEvaluacionRoute
   "/_app/gestion/casos/$solicitudId/resolucion": typeof AppGestionCasosSolicitudIdResolucionRoute
   "/_app/gestion/casos/$solicitudId/visitas": typeof AppGestionCasosSolicitudIdVisitasRoute
   "/_app/gestion/centros/$centroId/agenda": typeof AppGestionCentrosCentroIdAgendaRoute
   "/_app/gestion/programas/$programaId/incompatibilidades": typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
   "/_app/portal/solicitudes/$solicitudId/documentacion": typeof AppPortalSolicitudesSolicitudIdDocumentacionRoute
-  "/_app/gestion/campanias/$actividadId/": typeof AppGestionCampaniasActividadIdIndexRoute
+  "/_app/gestion/actividades/$actividadId/": typeof AppGestionActividadesActividadIdIndexRoute
   "/_app/gestion/casos/$solicitudId/": typeof AppGestionCasosSolicitudIdIndexRoute
   "/_app/gestion/centros/$centroId/": typeof AppGestionCentrosCentroIdIndexRoute
   "/_app/gestion/programas/$programaId/": typeof AppGestionProgramasProgramaIdIndexRoute
@@ -717,39 +758,43 @@ export interface FileRouteTypes {
     | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/beneficios/$beneficioId"
+    | "/gestion/centros/servicios"
     | "/gestion/debug/documentacion-eventos"
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
+    | "/gestion/solicitudes/$solicitudId"
+    | "/gestion/solicitudes/asistida"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
-    | "/portal/campanias/$actividadId"
+    | "/portal/actividades/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
     | "/portal/turnos/nuevo"
+    | "/gestion/actividades/"
     | "/gestion/auditoria/"
     | "/gestion/beneficios/"
-    | "/gestion/campanias/"
     | "/gestion/casos/"
     | "/gestion/centros/"
     | "/gestion/intervenciones/"
     | "/gestion/programas/"
+    | "/gestion/solicitudes/"
     | "/gestion/turnos/"
     | "/gestion/usuarios/"
     | "/gestion/visitas/"
+    | "/portal/actividades/"
     | "/portal/beneficios/"
-    | "/portal/campanias/"
     | "/portal/programas/"
     | "/portal/solicitudes/"
     | "/portal/turnos/"
-    | "/gestion/campanias/$actividadId/asistencia"
+    | "/gestion/actividades/$actividadId/asistencia"
     | "/gestion/casos/$solicitudId/evaluacion"
     | "/gestion/casos/$solicitudId/resolucion"
     | "/gestion/casos/$solicitudId/visitas"
     | "/gestion/centros/$centroId/agenda"
     | "/gestion/programas/$programaId/incompatibilidades"
     | "/portal/solicitudes/$solicitudId/documentacion"
-    | "/gestion/campanias/$actividadId/"
+    | "/gestion/actividades/$actividadId/"
     | "/gestion/casos/$solicitudId/"
     | "/gestion/centros/$centroId/"
     | "/gestion/programas/$programaId/"
@@ -781,39 +826,43 @@ export interface FileRouteTypes {
     | "/gestion/auditoria/dlq"
     | "/gestion/auditoria/eventos"
     | "/gestion/beneficios/$beneficioId"
+    | "/gestion/centros/servicios"
     | "/gestion/debug/documentacion-eventos"
     | "/gestion/debug/documentacion-local"
     | "/gestion/debug/estado-red"
     | "/gestion/intervenciones/$planId"
+    | "/gestion/solicitudes/$solicitudId"
+    | "/gestion/solicitudes/asistida"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
-    | "/portal/campanias/$actividadId"
+    | "/portal/actividades/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
     | "/portal/turnos/nuevo"
+    | "/gestion/actividades"
     | "/gestion/auditoria"
     | "/gestion/beneficios"
-    | "/gestion/campanias"
     | "/gestion/casos"
     | "/gestion/centros"
     | "/gestion/intervenciones"
     | "/gestion/programas"
+    | "/gestion/solicitudes"
     | "/gestion/turnos"
     | "/gestion/usuarios"
     | "/gestion/visitas"
+    | "/portal/actividades"
     | "/portal/beneficios"
-    | "/portal/campanias"
     | "/portal/programas"
     | "/portal/solicitudes"
     | "/portal/turnos"
-    | "/gestion/campanias/$actividadId/asistencia"
+    | "/gestion/actividades/$actividadId/asistencia"
     | "/gestion/casos/$solicitudId/evaluacion"
     | "/gestion/casos/$solicitudId/resolucion"
     | "/gestion/casos/$solicitudId/visitas"
     | "/gestion/centros/$centroId/agenda"
     | "/gestion/programas/$programaId/incompatibilidades"
     | "/portal/solicitudes/$solicitudId/documentacion"
-    | "/gestion/campanias/$actividadId"
+    | "/gestion/actividades/$actividadId"
     | "/gestion/casos/$solicitudId"
     | "/gestion/centros/$centroId"
     | "/gestion/programas/$programaId"
@@ -853,39 +902,43 @@ export interface FileRouteTypes {
     | "/_app/gestion/auditoria/dlq"
     | "/_app/gestion/auditoria/eventos"
     | "/_app/gestion/beneficios/$beneficioId"
+    | "/_app/gestion/centros/servicios"
     | "/_app/gestion/debug/documentacion-eventos"
     | "/_app/gestion/debug/documentacion-local"
     | "/_app/gestion/debug/estado-red"
     | "/_app/gestion/intervenciones/$planId"
+    | "/_app/gestion/solicitudes/$solicitudId"
+    | "/_app/gestion/solicitudes/asistida"
     | "/_app/gestion/turnos/agenda"
     | "/_app/gestion/turnos/nuevo"
-    | "/_app/portal/campanias/$actividadId"
+    | "/_app/portal/actividades/$actividadId"
     | "/_app/portal/programas/$programaId"
     | "/_app/portal/solicitudes/nueva"
     | "/_app/portal/turnos/nuevo"
+    | "/_app/gestion/actividades/"
     | "/_app/gestion/auditoria/"
     | "/_app/gestion/beneficios/"
-    | "/_app/gestion/campanias/"
     | "/_app/gestion/casos/"
     | "/_app/gestion/centros/"
     | "/_app/gestion/intervenciones/"
     | "/_app/gestion/programas/"
+    | "/_app/gestion/solicitudes/"
     | "/_app/gestion/turnos/"
     | "/_app/gestion/usuarios/"
     | "/_app/gestion/visitas/"
+    | "/_app/portal/actividades/"
     | "/_app/portal/beneficios/"
-    | "/_app/portal/campanias/"
     | "/_app/portal/programas/"
     | "/_app/portal/solicitudes/"
     | "/_app/portal/turnos/"
-    | "/_app/gestion/campanias/$actividadId/asistencia"
+    | "/_app/gestion/actividades/$actividadId/asistencia"
     | "/_app/gestion/casos/$solicitudId/evaluacion"
     | "/_app/gestion/casos/$solicitudId/resolucion"
     | "/_app/gestion/casos/$solicitudId/visitas"
     | "/_app/gestion/centros/$centroId/agenda"
     | "/_app/gestion/programas/$programaId/incompatibilidades"
     | "/_app/portal/solicitudes/$solicitudId/documentacion"
-    | "/_app/gestion/campanias/$actividadId/"
+    | "/_app/gestion/actividades/$actividadId/"
     | "/_app/gestion/casos/$solicitudId/"
     | "/_app/gestion/centros/$centroId/"
     | "/_app/gestion/programas/$programaId/"
@@ -1057,6 +1110,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthGuestRegisterRouteImport
       parentRoute: typeof AuthGuestRouteRoute
     }
+    "/_app/gestion/actividades/": {
+      id: "/_app/gestion/actividades/"
+      path: "/actividades"
+      fullPath: "/gestion/actividades/"
+      preLoaderRoute: typeof AppGestionActividadesIndexRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
     "/_app/gestion/auditoria/": {
       id: "/_app/gestion/auditoria/"
       path: "/"
@@ -1092,13 +1152,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionBeneficiosBeneficioIdRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
-    "/_app/gestion/campanias/": {
-      id: "/_app/gestion/campanias/"
-      path: "/campanias"
-      fullPath: "/gestion/campanias/"
-      preLoaderRoute: typeof AppGestionCampaniasIndexRouteImport
-      parentRoute: typeof AppGestionRouteRoute
-    }
     "/_app/gestion/casos/": {
       id: "/_app/gestion/casos/"
       path: "/casos"
@@ -1125,6 +1178,13 @@ declare module "@tanstack/react-router" {
       path: "/centros/$centroId"
       fullPath: "/gestion/centros/$centroId"
       preLoaderRoute: typeof AppGestionCentrosCentroIdRouteRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/centros/servicios": {
+      id: "/_app/gestion/centros/servicios"
+      path: "/centros/servicios"
+      fullPath: "/gestion/centros/servicios"
+      preLoaderRoute: typeof AppGestionCentrosServiciosRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/debug/documentacion-eventos": {
@@ -1176,6 +1236,27 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionProgramasProgramaIdRouteRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
+    "/_app/gestion/solicitudes/": {
+      id: "/_app/gestion/solicitudes/"
+      path: "/solicitudes"
+      fullPath: "/gestion/solicitudes/"
+      preLoaderRoute: typeof AppGestionSolicitudesIndexRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/solicitudes/$solicitudId": {
+      id: "/_app/gestion/solicitudes/$solicitudId"
+      path: "/solicitudes/$solicitudId"
+      fullPath: "/gestion/solicitudes/$solicitudId"
+      preLoaderRoute: typeof AppGestionSolicitudesSolicitudIdRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/solicitudes/asistida": {
+      id: "/_app/gestion/solicitudes/asistida"
+      path: "/solicitudes/asistida"
+      fullPath: "/gestion/solicitudes/asistida"
+      preLoaderRoute: typeof AppGestionSolicitudesAsistidaRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
     "/_app/gestion/turnos/": {
       id: "/_app/gestion/turnos/"
       path: "/turnos"
@@ -1211,25 +1292,25 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionVisitasIndexRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
+    "/_app/portal/actividades/": {
+      id: "/_app/portal/actividades/"
+      path: "/actividades"
+      fullPath: "/portal/actividades/"
+      preLoaderRoute: typeof AppPortalActividadesIndexRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
+    "/_app/portal/actividades/$actividadId": {
+      id: "/_app/portal/actividades/$actividadId"
+      path: "/actividades/$actividadId"
+      fullPath: "/portal/actividades/$actividadId"
+      preLoaderRoute: typeof AppPortalActividadesActividadIdRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
     "/_app/portal/beneficios/": {
       id: "/_app/portal/beneficios/"
       path: "/beneficios"
       fullPath: "/portal/beneficios/"
       preLoaderRoute: typeof AppPortalBeneficiosIndexRouteImport
-      parentRoute: typeof AppPortalRouteRoute
-    }
-    "/_app/portal/campanias/": {
-      id: "/_app/portal/campanias/"
-      path: "/campanias"
-      fullPath: "/portal/campanias/"
-      preLoaderRoute: typeof AppPortalCampaniasIndexRouteImport
-      parentRoute: typeof AppPortalRouteRoute
-    }
-    "/_app/portal/campanias/$actividadId": {
-      id: "/_app/portal/campanias/$actividadId"
-      path: "/campanias/$actividadId"
-      fullPath: "/portal/campanias/$actividadId"
-      preLoaderRoute: typeof AppPortalCampaniasActividadIdRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
     "/_app/portal/programas/": {
@@ -1274,18 +1355,18 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppPortalTurnosNuevoRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
-    "/_app/gestion/campanias/$actividadId/": {
-      id: "/_app/gestion/campanias/$actividadId/"
-      path: "/campanias/$actividadId"
-      fullPath: "/gestion/campanias/$actividadId/"
-      preLoaderRoute: typeof AppGestionCampaniasActividadIdIndexRouteImport
+    "/_app/gestion/actividades/$actividadId/": {
+      id: "/_app/gestion/actividades/$actividadId/"
+      path: "/actividades/$actividadId"
+      fullPath: "/gestion/actividades/$actividadId/"
+      preLoaderRoute: typeof AppGestionActividadesActividadIdIndexRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
-    "/_app/gestion/campanias/$actividadId/asistencia": {
-      id: "/_app/gestion/campanias/$actividadId/asistencia"
-      path: "/campanias/$actividadId/asistencia"
-      fullPath: "/gestion/campanias/$actividadId/asistencia"
-      preLoaderRoute: typeof AppGestionCampaniasActividadIdAsistenciaRouteImport
+    "/_app/gestion/actividades/$actividadId/asistencia": {
+      id: "/_app/gestion/actividades/$actividadId/asistencia"
+      path: "/actividades/$actividadId/asistencia"
+      fullPath: "/gestion/actividades/$actividadId/asistencia"
+      preLoaderRoute: typeof AppGestionActividadesActividadIdAsistenciaRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/casos/$solicitudId/": {
@@ -1529,23 +1610,27 @@ interface AppGestionRouteRouteChildren {
   AppGestionCentrosCentroIdRouteRoute: typeof AppGestionCentrosCentroIdRouteRouteWithChildren
   AppGestionProgramasProgramaIdRouteRoute: typeof AppGestionProgramasProgramaIdRouteRouteWithChildren
   AppGestionBeneficiosBeneficioIdRoute: typeof AppGestionBeneficiosBeneficioIdRoute
+  AppGestionCentrosServiciosRoute: typeof AppGestionCentrosServiciosRoute
   AppGestionDebugDocumentacionEventosRoute: typeof AppGestionDebugDocumentacionEventosRoute
   AppGestionDebugDocumentacionLocalRoute: typeof AppGestionDebugDocumentacionLocalRoute
   AppGestionDebugEstadoRedRoute: typeof AppGestionDebugEstadoRedRoute
   AppGestionIntervencionesPlanIdRoute: typeof AppGestionIntervencionesPlanIdRoute
+  AppGestionSolicitudesSolicitudIdRoute: typeof AppGestionSolicitudesSolicitudIdRoute
+  AppGestionSolicitudesAsistidaRoute: typeof AppGestionSolicitudesAsistidaRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
   AppGestionTurnosNuevoRoute: typeof AppGestionTurnosNuevoRoute
+  AppGestionActividadesIndexRoute: typeof AppGestionActividadesIndexRoute
   AppGestionBeneficiosIndexRoute: typeof AppGestionBeneficiosIndexRoute
-  AppGestionCampaniasIndexRoute: typeof AppGestionCampaniasIndexRoute
   AppGestionCasosIndexRoute: typeof AppGestionCasosIndexRoute
   AppGestionCentrosIndexRoute: typeof AppGestionCentrosIndexRoute
   AppGestionIntervencionesIndexRoute: typeof AppGestionIntervencionesIndexRoute
   AppGestionProgramasIndexRoute: typeof AppGestionProgramasIndexRoute
+  AppGestionSolicitudesIndexRoute: typeof AppGestionSolicitudesIndexRoute
   AppGestionTurnosIndexRoute: typeof AppGestionTurnosIndexRoute
   AppGestionUsuariosIndexRoute: typeof AppGestionUsuariosIndexRoute
   AppGestionVisitasIndexRoute: typeof AppGestionVisitasIndexRoute
-  AppGestionCampaniasActividadIdAsistenciaRoute: typeof AppGestionCampaniasActividadIdAsistenciaRoute
-  AppGestionCampaniasActividadIdIndexRoute: typeof AppGestionCampaniasActividadIdIndexRoute
+  AppGestionActividadesActividadIdAsistenciaRoute: typeof AppGestionActividadesActividadIdAsistenciaRoute
+  AppGestionActividadesActividadIdIndexRoute: typeof AppGestionActividadesActividadIdIndexRoute
 }
 
 const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
@@ -1562,27 +1647,31 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionProgramasProgramaIdRouteRoute:
     AppGestionProgramasProgramaIdRouteRouteWithChildren,
   AppGestionBeneficiosBeneficioIdRoute: AppGestionBeneficiosBeneficioIdRoute,
+  AppGestionCentrosServiciosRoute: AppGestionCentrosServiciosRoute,
   AppGestionDebugDocumentacionEventosRoute:
     AppGestionDebugDocumentacionEventosRoute,
   AppGestionDebugDocumentacionLocalRoute:
     AppGestionDebugDocumentacionLocalRoute,
   AppGestionDebugEstadoRedRoute: AppGestionDebugEstadoRedRoute,
   AppGestionIntervencionesPlanIdRoute: AppGestionIntervencionesPlanIdRoute,
+  AppGestionSolicitudesSolicitudIdRoute: AppGestionSolicitudesSolicitudIdRoute,
+  AppGestionSolicitudesAsistidaRoute: AppGestionSolicitudesAsistidaRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,
   AppGestionTurnosNuevoRoute: AppGestionTurnosNuevoRoute,
+  AppGestionActividadesIndexRoute: AppGestionActividadesIndexRoute,
   AppGestionBeneficiosIndexRoute: AppGestionBeneficiosIndexRoute,
-  AppGestionCampaniasIndexRoute: AppGestionCampaniasIndexRoute,
   AppGestionCasosIndexRoute: AppGestionCasosIndexRoute,
   AppGestionCentrosIndexRoute: AppGestionCentrosIndexRoute,
   AppGestionIntervencionesIndexRoute: AppGestionIntervencionesIndexRoute,
   AppGestionProgramasIndexRoute: AppGestionProgramasIndexRoute,
+  AppGestionSolicitudesIndexRoute: AppGestionSolicitudesIndexRoute,
   AppGestionTurnosIndexRoute: AppGestionTurnosIndexRoute,
   AppGestionUsuariosIndexRoute: AppGestionUsuariosIndexRoute,
   AppGestionVisitasIndexRoute: AppGestionVisitasIndexRoute,
-  AppGestionCampaniasActividadIdAsistenciaRoute:
-    AppGestionCampaniasActividadIdAsistenciaRoute,
-  AppGestionCampaniasActividadIdIndexRoute:
-    AppGestionCampaniasActividadIdIndexRoute,
+  AppGestionActividadesActividadIdAsistenciaRoute:
+    AppGestionActividadesActividadIdAsistenciaRoute,
+  AppGestionActividadesActividadIdIndexRoute:
+    AppGestionActividadesActividadIdIndexRoute,
 }
 
 const AppGestionRouteRouteWithChildren = AppGestionRouteRoute._addFileChildren(
@@ -1592,12 +1681,12 @@ const AppGestionRouteRouteWithChildren = AppGestionRouteRoute._addFileChildren(
 interface AppPortalRouteRouteChildren {
   AppPortalPerfilRoute: typeof AppPortalPerfilRoute
   AppPortalIndexRoute: typeof AppPortalIndexRoute
-  AppPortalCampaniasActividadIdRoute: typeof AppPortalCampaniasActividadIdRoute
+  AppPortalActividadesActividadIdRoute: typeof AppPortalActividadesActividadIdRoute
   AppPortalProgramasProgramaIdRoute: typeof AppPortalProgramasProgramaIdRoute
   AppPortalSolicitudesNuevaRoute: typeof AppPortalSolicitudesNuevaRoute
   AppPortalTurnosNuevoRoute: typeof AppPortalTurnosNuevoRoute
+  AppPortalActividadesIndexRoute: typeof AppPortalActividadesIndexRoute
   AppPortalBeneficiosIndexRoute: typeof AppPortalBeneficiosIndexRoute
-  AppPortalCampaniasIndexRoute: typeof AppPortalCampaniasIndexRoute
   AppPortalProgramasIndexRoute: typeof AppPortalProgramasIndexRoute
   AppPortalSolicitudesIndexRoute: typeof AppPortalSolicitudesIndexRoute
   AppPortalTurnosIndexRoute: typeof AppPortalTurnosIndexRoute
@@ -1608,12 +1697,12 @@ interface AppPortalRouteRouteChildren {
 const AppPortalRouteRouteChildren: AppPortalRouteRouteChildren = {
   AppPortalPerfilRoute: AppPortalPerfilRoute,
   AppPortalIndexRoute: AppPortalIndexRoute,
-  AppPortalCampaniasActividadIdRoute: AppPortalCampaniasActividadIdRoute,
+  AppPortalActividadesActividadIdRoute: AppPortalActividadesActividadIdRoute,
   AppPortalProgramasProgramaIdRoute: AppPortalProgramasProgramaIdRoute,
   AppPortalSolicitudesNuevaRoute: AppPortalSolicitudesNuevaRoute,
   AppPortalTurnosNuevoRoute: AppPortalTurnosNuevoRoute,
+  AppPortalActividadesIndexRoute: AppPortalActividadesIndexRoute,
   AppPortalBeneficiosIndexRoute: AppPortalBeneficiosIndexRoute,
-  AppPortalCampaniasIndexRoute: AppPortalCampaniasIndexRoute,
   AppPortalProgramasIndexRoute: AppPortalProgramasIndexRoute,
   AppPortalSolicitudesIndexRoute: AppPortalSolicitudesIndexRoute,
   AppPortalTurnosIndexRoute: AppPortalTurnosIndexRoute,

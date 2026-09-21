@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
                   console.log(`[proxy] <- ${proxyRes.statusCode} ${req.method} ${req.url}`)
                 })
                 proxy.on('error', (err, req) => {
-                  console.error(`[proxy] error on ${req.method} ${req.url}:`, err.message)
+                  console.error(`[proxy] error on ${req.method} ${req.url} ${env.VITE_PROXY_URL}:`, err.message)
                 })
               },
             },
@@ -69,6 +69,8 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       environment: 'jsdom',
+      // Node 25+ exposes Web Storage globals that shadow JSDOM's implementation.
+      execArgv: Number(process.versions.node.split('.')[0]) >= 25 ? ['--no-webstorage'] : [],
       setupFiles: './src/test/setup.ts',
     },
   }

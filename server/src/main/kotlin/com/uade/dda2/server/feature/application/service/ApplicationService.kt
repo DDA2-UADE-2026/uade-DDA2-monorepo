@@ -3,11 +3,17 @@ package com.uade.dda2.server.feature.application.service
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateAssistedApplicationRequest
+import com.uade.dda2.server.feature.application.dto.response.AdminApplicationListResponse
+import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationListResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
+import com.uade.dda2.server.feature.program.mapper.toAvailableDocumentRequirementResponse
+import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
 import com.uade.dda2.server.feature.application.error.ApplicationErrors
+import com.uade.dda2.server.feature.application.mapper.toAdminListItemResponse
+import com.uade.dda2.server.feature.application.mapper.toAdminResponse
 import com.uade.dda2.server.feature.application.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.application.mapper.toResponse
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
@@ -44,6 +50,8 @@ class ApplicationService(
     private val logs: LogService,
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
+    private val pendingDocuments: ApplicationPendingDocumentService,
+    private val documentRequirements: ProgramDocumentRequirementRepository,
 ) {
     @Transactional
     fun submit(request: CreateApplicationRequest, idempotencyKey: String?): ApplicationSubmission {
@@ -73,7 +81,7 @@ class ApplicationService(
                 if (existing.requestHash != requestHash || existing.enrollmentPeriod.id != request.enrollmentPeriodId) {
                     throw ApplicationErrors.idempotencyConflict()
                 }
-                return ApplicationSubmission(existing.toResponse(), replayed = true)
+                return ApplicationSubmission(response(existing), replayed = true)
             }
         }
 
@@ -100,25 +108,62 @@ class ApplicationService(
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.APPLICATION,
             entityId = requireNotNull(application.id).toString(),
             newValues = json.writeValueAsString(application.toAuditSnapshot()))
-        return ApplicationSubmission(application.toResponse(), replayed = false)
+        return ApplicationSubmission(response(application), replayed = false)
     }
 
     @Transactional(readOnly = true)
     fun list(page: Int, size: Int): ApplicationListResponse {
         val userId = authorizedUserId()
         val results = applications.findAllByUserId(userId, PageRequest.of(page, size, Sort.by("applicationNumber").descending()))
-        return ApplicationListResponse(results.content.map { it.toResponse() }, results.number, results.size,
+        val pendingByApplication = pendingDocuments.calculate(results.content)
+        val editionIds = results.content.map { requireNotNull(it.programEdition.id) }.distinct()
+        val catalogByEdition = if (editionIds.isEmpty()) emptyMap() else documentRequirements.findAllByProgramEditionIdIn(editionIds)
+            .sortedWith(compareBy({ it.name }, { it.code }))
+            .groupBy { requireNotNull(it.programEdition.id) }
+        return ApplicationListResponse(results.content.map {
+            it.toResponse(pendingByApplication[requireNotNull(it.id)].orEmpty(),
+                catalogByEdition[it.programEdition.id].orEmpty().map { requirement -> requirement.toAvailableDocumentRequirementResponse() })
+        }, results.number, results.size,
             results.totalElements, results.totalPages)
     }
 
     @Transactional(readOnly = true)
     fun get(id: UUID): ApplicationResponse =
-        (applications.findByIdAndUserId(id, authorizedUserId()) ?: throw ApplicationErrors.notFound()).toResponse()
+        (applications.findByIdAndUserId(id, authorizedUserId()) ?: throw ApplicationErrors.notFound()).let {
+            response(it)
+        }
 
-    private fun authorizedUserId(): Long {
+    @Transactional(readOnly = true)
+    fun listAdmin(page: Int, size: Int): AdminApplicationListResponse {
+        authorized("applications:management:view")
+        // Same ordering as the own listing; the page covers every titular, without filters.
+        val results = applications.findAll(PageRequest.of(page, size, Sort.by("applicationNumber").descending()))
+        return AdminApplicationListResponse(results.content.map { it.toAdminListItemResponse() },
+            results.number, results.size, results.totalElements, results.totalPages)
+    }
+
+    @Transactional(readOnly = true)
+    fun getAdmin(id: UUID): AdminApplicationResponse {
+        authorized("applications:management:view")
+        val application = applications.findDetailById(id) ?: throw ApplicationErrors.notFound()
+        return application.toAdminResponse(
+            pendingDocuments.calculate(application),
+            documentRequirements.findAllByProgramEditionIdOrderByNameAsc(requireNotNull(application.programEdition.id))
+                .map { it.toAvailableDocumentRequirementResponse() },
+        )
+    }
+
+    private fun response(application: Application): ApplicationResponse = application.toResponse(
+        pendingDocuments.calculate(application),
+        documentRequirements.findAllByProgramEditionIdOrderByNameAsc(requireNotNull(application.programEdition.id))
+            .map { it.toAvailableDocumentRequirementResponse() },
+    )
+
+    private fun authorizedUserId(): Long = requireNotNull(authorized("applications:own:view").id)
+
+    private fun authorized(permission: String): User {
         val principal = currentUser.principal()
-        validator.validateUser(users.findByIdWithRoles(principal.id), principal, "applications:own:view")
-        return principal.id
+        return validator.validateUser(users.findByIdWithRoles(principal.id), principal, permission)
     }
 
     private fun hashRequest(request: CreateApplicationRequest): String = HexFormat.of().formatHex(

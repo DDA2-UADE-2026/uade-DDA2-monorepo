@@ -32,7 +32,7 @@ function RouteComponent() {
   const editionBase = `${base}/convocatorias/${edicionId}`
   const programTabs = [
     { label: "Datos", to: base },
-    { label: "Convocatorias", to: `${base}/convocatorias` },
+    { label: "Ediciones", to: `${base}/convocatorias` },
     { label: "Incompatibilidades", to: `${base}/incompatibilidades` },
   ]
   const editionTabs = [
@@ -49,8 +49,8 @@ function RouteComponent() {
         <OutletNavBreadcrumbs items={edicionId ? [
           { label: "Programas", to: "/gestion/programas" },
           { label: program.data?.name ?? "Programa", to: base },
-          { label: "Convocatorias", to: `${base}/convocatorias` },
-          { label: edition.data?.name ?? "Convocatoria" },
+          { label: "Ediciones", to: `${base}/convocatorias` },
+          { label: edition.data?.name ?? "Edición" },
         ] : [
           { label: "Programas", to: "/gestion/programas" },
           { label: program.data?.name ?? "Programa" },

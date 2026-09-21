@@ -174,7 +174,7 @@ class AuthFlowTest {
         val token = jwt.createToken(user, auditor)
         val external = User(id = 77, name = "External", email = "external@example.com", externalCitizenId = "citizen-77",
             roles = mutableSetOf(citizen))
-        `when`(users.findByIdWithRoles(77)).thenReturn(external)
+        `when`(users.findByIdForUpdate(77)).thenReturn(external)
         `when`(roles.findByNameIn(setOf("CIUDADANO"))).thenReturn(listOf(citizen))
         val fields = mapOf("name" to "External", "email" to "external@example.com", "roles" to listOf("CIUDADANO"))
         mvc.perform(put("/users/77").header("Authorization", "Bearer $token")
@@ -198,7 +198,7 @@ class AuthFlowTest {
     fun `administracion no permite agregar solo media credencial local`() {
         auditor.permissions.add(Permission(3, "users:edit"))
         val external = User(id = 77, name = "External", email = "external@example.com")
-        `when`(users.findByIdWithRoles(77)).thenReturn(external)
+        `when`(users.findByIdForUpdate(77)).thenReturn(external)
         val fields = mapOf("name" to "External", "email" to "external@example.com")
         for (partial in listOf(mapOf("username" to "external-local"), mapOf("password" to "password123"))) {
             mvc.perform(put("/users/77").header("Authorization", "Bearer ${jwt.createToken(user, auditor)}")

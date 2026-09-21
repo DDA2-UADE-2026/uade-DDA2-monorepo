@@ -7,7 +7,9 @@
             "request": "launch",
             "mainClass": "com.uade.dda2.server.ServerApplicationKt",
             "projectName": "server",
+            "cwd": "${workspaceFolder}",
             "envFile": "${workspaceFolder}/.env",
+            "args": "--spring.config.additional-location=file:./src/main/resources/",
             "vmArgs": "-Duser.timezone=UTC"
         },
         {
@@ -16,8 +18,9 @@
             "request": "launch",
             "mainClass": "com.uade.dda2.server.ServerApplicationKt",
             "projectName": "server",
+            "cwd": "${workspaceFolder}",
             "envFile": "${workspaceFolder}/.env",
-            "args": "--spring.profiles.active=docs"
+            "args": "--spring.profiles.active=docs --spring.config.additional-location=file:./src/main/resources/"
         }
     ]
 }

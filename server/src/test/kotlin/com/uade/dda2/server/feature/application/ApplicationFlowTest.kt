@@ -1,5 +1,7 @@
 package com.uade.dda2.server.feature.application
 
+import com.uade.dda2.server.feature.application.dto.response.AdminApplicationListResponse
+import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
@@ -543,6 +545,114 @@ class ApplicationFlowTest {
         expect(mvc.perform(delete("/users/${admin.id}").header("Authorization", "Bearer ${manager.token}")).andReturn(),
             409, "USER_HAS_APPLICATION_REFERENCES")
         assertTrue(users.existsById(admin.id))
+    }
+
+    private fun consultant(): Administrator = tx {
+        val role = roles.findByNameIn(listOf("CONSULTA")).firstOrNull() ?: roles.save(Role(name = "CONSULTA", permissions =
+            mutableSetOf(permissions.findAll().firstOrNull { it.name == "applications:management:view" }
+                ?: permissions.save(Permission(name = "applications:management:view")))))
+        val citizen = roles.findByNameIn(listOf("CIUDADANO")).single()
+        val user = users.saveAndFlush(User(name = "Consulta", email = "consulta@example.com", roles = mutableSetOf(role, citizen)))
+        Administrator(user.id!!, jwt.createToken(user, role), jwt.createToken(user, citizen))
+    }
+
+    private fun adminListing(token: String?, page: Int = 0, size: Int = 20): MvcResult {
+        val request = get("/api/admin/applications?page=$page&size=$size")
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun adminDetail(id: UUID, token: String?): MvcResult {
+        val request = get("/api/admin/applications/$id")
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
+    @Test
+    fun `listado administrativo pagina solicitudes de todos los titulares e identifica a cada uno`() {
+        val admin = administrator()
+        val consultant = consultant()
+        val own = response(submit())
+        val other = newFixture()
+        val registered = response(assisted(admin, userId = other.userId, periodId = other.periodId))
+        val result = adminListing(consultant.token, size = 2)
+        expect(result, 200)
+        val listing = json.readValue(result.response.contentAsString, AdminApplicationListResponse::class.java)
+        assertEquals(0, listing.page)
+        assertEquals(2, listing.size)
+        assertTrue(listing.totalElements >= 2)
+        // The sequence is global and growing: the two newest applications open the page, most recent first.
+        assertEquals(listOf(registered.id, own.id), listing.content.map { it.id })
+        val newest = listing.content.first()
+        assertEquals(other.userId, newest.userId)
+        assertEquals("Test", newest.userName)
+        assertEquals("test@example.com", newest.userEmail)
+        assertEquals(admin.id, newest.registeredByUserId)
+        assertEquals(ApplicationStatus.SUBMITTED, newest.status)
+        assertNull(newest.assignedWorkerUserId)
+        assertNull(newest.resolvedAt)
+        assertEquals(fixture.userId, listing.content[1].userId)
+        assertEquals(fixture.userId, listing.content[1].registeredByUserId)
+    }
+
+    @Test
+    fun `detalle administrativo devuelve la entidad completa que la vista propia no expone`() {
+        val consultant = consultant()
+        val own = response(submit(key = "admin-detail"))
+        tx {
+            applications.findById(own.id).orElseThrow().apply {
+                originTicketId = "TICKET-1"
+                resolutionReason = "Motivo registrado fuera de este flujo"
+                assignedWorker = users.findById(consultant.id).orElseThrow()
+            }
+        }
+        val result = adminDetail(own.id, consultant.token)
+        expect(result, 200)
+        val detail = json.readValue(result.response.contentAsString, AdminApplicationResponse::class.java)
+        assertEquals(own.applicationNumber, detail.applicationNumber)
+        assertEquals(fixture.userId, detail.userId)
+        assertEquals("Test", detail.userName)
+        assertEquals(fixture.userId, detail.registeredByUserId)
+        assertEquals("TICKET-1", detail.originTicketId)
+        assertEquals("Motivo registrado fuera de este flujo", detail.resolutionReason)
+        assertEquals(consultant.id, detail.assignedWorkerUserId)
+        assertEquals("Consulta", detail.assignedWorkerName)
+        assertEquals("admin-detail", detail.idempotencyKey)
+        assertNotNull(detail.requestHash)
+        assertEquals(own.pendingDocuments, detail.pendingDocuments)
+        val ownDetail = mvc.perform(get("/api/applications/${own.id}").header("Authorization", "Bearer ${fixture.token}")).andReturn()
+        expect(ownDetail, 200)
+        assertFalse(ownDetail.response.contentAsString.contains("admin-detail"))
+    }
+
+    @Test
+    fun `consulta administrativa exige su propio permiso en el rol activo`() {
+        val admin = administrator()
+        val consultant = consultant()
+        val application = response(submit())
+        expect(adminListing(null), 401)
+        expect(adminListing("invalid"), 401)
+        expect(adminListing(consultant.citizenToken), 403)
+        expect(adminListing(fixture.token), 403)
+        // Registering assisted applications does not grant the administrative query.
+        expect(adminListing(admin.token), 403)
+        expect(adminDetail(application.id, admin.token), 403)
+        val selection = tx { jwt.createRoleSelectionToken(users.findById(consultant.id).orElseThrow()) }
+        expect(adminListing(selection), 401)
+        expect(adminDetail(application.id, consultant.token), 200)
+        tx { users.findById(consultant.id).orElseThrow().active = false }
+        expect(adminListing(consultant.token), 401)
+        tx { users.findById(consultant.id).orElseThrow().apply { active = true; roles.clear() } }
+        expect(adminListing(consultant.token), 403)
+    }
+
+    @Test
+    fun `consulta administrativa valida la paginacion y responde inexistente sin filtrar por titular`() {
+        val consultant = consultant()
+        expect(adminListing(consultant.token, page = -1), 400)
+        expect(adminListing(consultant.token, size = 0), 400)
+        expect(adminListing(consultant.token, size = 101), 400)
+        expect(adminDetail(UUID.randomUUID(), consultant.token), 404, "APPLICATION_NOT_FOUND")
     }
 
     @Test

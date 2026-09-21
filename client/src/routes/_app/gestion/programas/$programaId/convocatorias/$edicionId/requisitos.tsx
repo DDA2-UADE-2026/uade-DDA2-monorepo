@@ -13,6 +13,7 @@ import { useState } from "react"
 import { DataPagination } from "@/components/DataPagination"
 import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
 import { DeleteConfirmationButton } from "@/components/programs/DeleteConfirmationButton"
+import { ProgramDocumentRequirements } from "@/components/programs/ProgramDocumentRequirements"
 import { FormField, RoutePanel, requirementLabels } from "@/components/programs/ProgramRouteUi"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -117,9 +118,9 @@ function RouteComponent() {
       {editionClosed && (
         <Alert variant="destructive" className="mb-5">
           <IconAlertTriangle />
-          <AlertTitle>Convocatoria cerrada</AlertTitle>
+          <AlertTitle>Edición cerrada</AlertTitle>
           <AlertDescription>
-            Los requisitos quedan disponibles sólo para consulta.
+            Los requisitos y la documentación quedan disponibles sólo para consulta.
           </AlertDescription>
         </Alert>
       )}
@@ -162,7 +163,7 @@ function RouteComponent() {
             <IconChecklist className="mx-auto size-8 text-muted-foreground" />
             <CardTitle>Sin requisitos configurados</CardTitle>
             <CardDescription>
-              Agregá el primer requisito para esta convocatoria.
+              Agregá el primer requisito para esta edición.
             </CardDescription>
           </CardHeader>
         </Card>
@@ -231,6 +232,8 @@ function RouteComponent() {
           onPageChange={setPage}
         />
       )}
+
+      <ProgramDocumentRequirements key={edicionId} editionId={edicionId} disabled={actionsDisabled} />
 
       {dialogState && (
         <RequirementDialog
@@ -314,7 +317,7 @@ function RequirementDialog({
           <DialogTitle>{isEditing ? "Editar requisito" : "Nuevo requisito"}</DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Modificá la condición requerida para esta convocatoria."
+              ? "Modificá la condición requerida para esta edición."
               : "Definí una nueva condición para las personas postulantes."}
           </DialogDescription>
         </DialogHeader>

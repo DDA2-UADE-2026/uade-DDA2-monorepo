@@ -4,11 +4,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { ProgramDatePicker } from "@/components/programs/ProgramDatePicker"
 import { FormField, RoutePanel, inputClass, parseLocalDate } from "@/components/programs/ProgramRouteUi"
 import { Button } from "@/components/ui/button"
-import { create6Mutation, list2QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create7Mutation, list3QueryKey } from "@/generated/@tanstack/react-query.gen"
 import { zCreateProgramEditionRequest } from "@/generated/zod.gen"
 
 const createEditionSchema = zCreateProgramEditionRequest.required().extend({
-  name: zCreateProgramEditionRequest.shape.name.trim().min(1, "Ingresá el nombre de la convocatoria."),
+  name: zCreateProgramEditionRequest.shape.name.trim().min(1, "Ingresá el nombre de la edición."),
 })
 
 export const Route = createFileRoute(
@@ -21,7 +21,7 @@ function RouteComponent() {
   const { programaId } = Route.useParams()
   const navigate = useNavigate()
   const client = useQueryClient()
-  const create = useMutation({ ...create6Mutation(), onSuccess: (data) => { client.invalidateQueries({ queryKey: list2QueryKey({ path: { programId: programaId } }) }); navigate({ to: "/gestion/programas/$programaId/convocatorias/$edicionId", params: { programaId, edicionId: data.id ?? "" } }) } })
+  const create = useMutation({ ...create7Mutation(), onSuccess: (data) => { client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }); navigate({ to: "/gestion/programas/$programaId/convocatorias/$edicionId", params: { programaId, edicionId: data.id ?? "" } }) } })
   const form = useForm({
     defaultValues: { name: "", startDate: "", endDate: "", maxCapacity: undefined as number | undefined },
     validators: { onChange: createEditionSchema },
@@ -31,7 +31,7 @@ function RouteComponent() {
     }),
   })
 
-  return <RoutePanel><h2 className="mb-5 text-lg font-semibold">Nueva convocatoria</h2><form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
+  return <RoutePanel><h2 className="mb-5 text-lg font-semibold">Nueva edición</h2><form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
     <form.Field name="name" children={(field) => {
       const invalid = field.state.meta.isTouched && !field.state.meta.isValid
       return <FormField label="Nombre" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} value={field.state.value} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value)} aria-invalid={invalid} /></FormField>
@@ -50,6 +50,6 @@ function RouteComponent() {
       const invalid = field.state.meta.isTouched && !field.state.meta.isValid
       return <FormField label="Capacidad máxima" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} type="number" value={field.state.value ?? ""} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value ? Number(event.target.value) : undefined)} aria-invalid={invalid} /></FormField>
     }} />
-    {create.isError && <p className="text-sm text-destructive">No se pudo crear la convocatoria.</p>}<div className="flex justify-end"><Button type="submit" disabled={create.isPending}>{create.isPending ? "Creando…" : "Crear convocatoria"}</Button></div>
+    {create.isError && <p className="text-sm text-destructive">No se pudo crear la edición.</p>}<div className="flex justify-end"><Button type="submit" disabled={create.isPending}>{create.isPending ? "Creando…" : "Crear edición"}</Button></div>
   </form></RoutePanel>
 }

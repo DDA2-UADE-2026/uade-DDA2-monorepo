@@ -48,6 +48,66 @@ export const zRoleResponse = z.object({
 });
 
 /**
+ * Detalle de un campo que no superó la validación.
+ */
+export const zFieldErrorResponse = z.object({
+    field: z.string().optional(),
+    message: z.string().optional()
+});
+
+/**
+ * Respuesta estándar de error de la API.
+ */
+export const zErrorResponse = z.object({
+    message: z.string().optional(),
+    code: z.string().optional(),
+    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    timestamp: z.iso.datetime().optional(),
+    path: z.string().optional(),
+    fields: z.array(zFieldErrorResponse).optional()
+});
+
+/**
+ * Metadatos de un documento entregado; nunca contiene sus bytes.
+ */
+export const zApplicationDocumentResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    requirementId: z.uuid().optional(),
+    requirementCode: z.string().optional(),
+    requirementName: z.string().optional(),
+    required: z.boolean().optional(),
+    documentId: z.uuid().optional(),
+    originalName: z.string().optional(),
+    contentType: z.string().optional(),
+    sizeBytes: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    status: z.enum([
+        'PENDING',
+        'VALID',
+        'OBSERVED'
+    ]).optional(),
+    observation: z.string().optional(),
+    uploadedAt: z.iso.datetime().optional(),
+    reviewedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    reviewedAt: z.iso.datetime().optional(),
+    contentUrl: z.string().optional()
+});
+
+/**
+ * Metadatos de la imagen de portada de un programa; nunca contiene sus bytes.
+ */
+export const zProgramImageResponse = z.object({
+    id: z.uuid().readonly().optional(),
+    programId: z.uuid().readonly().optional(),
+    originalName: z.string().readonly().optional(),
+    contentType: z.string().readonly().optional(),
+    sizeBytes: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).readonly().optional(),
+    url: z.string().readonly().optional(),
+    createdAt: z.iso.datetime().readonly().optional(),
+    updatedAt: z.iso.datetime().readonly().optional()
+});
+
+/**
  * Datos editables de un período de inscripción.
  */
 export const zUpdateEnrollmentPeriodRequest = z.object({
@@ -101,6 +161,7 @@ export const zProgramResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     createdBy: zProgramCreatedByResponse.readonly().optional(),
     createdAt: z.iso.datetime().readonly().optional(),
     updatedAt: z.iso.datetime().readonly().optional()
@@ -170,6 +231,28 @@ export const zProgramRequirementResponse = z.object({
 });
 
 /**
+ * Actualización de un documento solicitado por una edición.
+ */
+export const zUpdateProgramDocumentRequirementRequest = z.object({
+    code: z.string().min(0).max(50).regex(/^[A-Za-z][A-Za-z0-9_]*$/),
+    name: z.string().min(0).max(150),
+    description: z.string().min(0).max(500).optional(),
+    required: z.boolean().optional()
+});
+
+/**
+ * Documento que una edición solicita a sus postulantes.
+ */
+export const zProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    programEditionId: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
+});
+
+/**
  * Datos requeridos para actualizar un beneficio.
  */
 export const zUpdateProgramBenefitRequest = z.object({
@@ -197,6 +280,175 @@ export const zProgramBenefitResponse = z.object({
     ]).readonly().optional(),
     description: z.string().readonly().optional(),
     amount: z.number().gte(0).readonly().optional()
+});
+
+/**
+ * Datos editables de una disponibilidad profesional.
+ */
+export const zUpdateProfessionalAvailabilityRequest = z.object({
+    dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Disponibilidad semanal para una asignación profesional y servicio.
+ */
+export const zProfessionalAvailabilityResponse = z.object({
+    id: z.uuid().optional(),
+    assignmentId: z.uuid().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    centerId: z.uuid().optional(),
+    serviceId: z.uuid().optional(),
+    serviceName: z.string().optional(),
+    dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
+    active: z.boolean().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Datos editables de un servicio municipal.
+ */
+export const zUpdateMunicipalServiceRequest = z.object({
+    name: z.string().min(0).max(150),
+    description: z.string().min(0).max(1000),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Detalle de un servicio municipal compartido.
+ */
+export const zMunicipalServiceResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    active: z.boolean().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Datos editables de un centro municipal.
+ */
+export const zUpdateMunicipalCenterRequest = z.object({
+    name: z.string().min(0).max(150),
+    address: z.string().min(0).max(255),
+    phone: z.string().min(0).max(30).optional(),
+    email: z.email().min(0).max(180).optional()
+});
+
+/**
+ * Detalle de un centro municipal.
+ */
+export const zMunicipalCenterResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    active: z.boolean().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Datos editables de una franja semanal de apertura.
+ */
+export const zUpdateCenterOpeningHourRequest = z.object({
+    dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Franja semanal de apertura de un centro.
+ */
+export const zCenterOpeningHourResponse = z.object({
+    id: z.uuid().optional(),
+    centerId: z.uuid().optional(),
+    dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
+    active: z.boolean().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Datos requeridos para actualizar una actividad comunitaria en borrador.
+ */
+export const zUpdateActivityRequest = z.object({
+    name: z.string().min(0).max(200),
+    description: z.string().min(1),
+    location: z.string().min(0).max(300),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    capacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Usuario que creó la actividad.
+ */
+export const zActivityCreatedByResponse = z.object({
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    name: z.string().optional()
+});
+
+/**
+ * Detalle de una actividad comunitaria.
+ */
+export const zActivityResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    location: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    capacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    status: z.enum([
+        'DRAFT',
+        'OPEN',
+        'CLOSED'
+    ]).optional(),
+    createdBy: zActivityCreatedByResponse.optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
 });
 
 /**
@@ -272,23 +524,22 @@ export const zCreateApplicationRequest = z.object({
 });
 
 /**
- * Detalle de un campo que no superó la validación.
+ * Documento solicitado por una edición disponible.
  */
-export const zFieldErrorResponse = z.object({
-    field: z.string().optional(),
-    message: z.string().optional()
+export const zAvailableProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
 });
 
-/**
- * Respuesta estándar de error de la API.
- */
-export const zErrorResponse = z.object({
-    message: z.string().optional(),
+export const zPendingApplicationDocumentResponse = z.object({
+    requirementId: z.uuid().optional(),
     code: z.string().optional(),
-    status: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
-    timestamp: z.iso.datetime().optional(),
-    path: z.string().optional(),
-    fields: z.array(zFieldErrorResponse).optional()
+    name: z.string().optional(),
+    reason: z.enum(['MISSING', 'OBSERVED']).optional(),
+    observation: z.string().optional()
 });
 
 /**
@@ -315,7 +566,12 @@ export const zApplicationResponse = z.object({
     ]).optional(),
     submittedAt: z.iso.datetime().optional(),
     createdAt: z.iso.datetime().optional(),
-    updatedAt: z.iso.datetime().optional()
+    updatedAt: z.iso.datetime().optional(),
+    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionName: z.string().optional(),
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
 });
 
 /**
@@ -360,6 +616,16 @@ export const zCreateProgramRequirementRequest = z.object({
 });
 
 /**
+ * Configuración de un documento solicitado por una edición.
+ */
+export const zCreateProgramDocumentRequirementRequest = z.object({
+    code: z.string().min(0).max(50).regex(/^[A-Za-z][A-Za-z0-9_]*$/),
+    name: z.string().min(0).max(150),
+    description: z.string().min(0).max(500).optional(),
+    required: z.boolean().optional()
+});
+
+/**
  * Datos requeridos para crear un beneficio.
  */
 export const zCreateProgramBenefitRequest = z.object({
@@ -384,11 +650,201 @@ export const zCreateProgramEditionRequest = z.object({
 });
 
 /**
+ * Franja semanal de disponibilidad profesional.
+ */
+export const zCreateProfessionalAvailabilityRequest = z.object({
+    dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Misma disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
+ */
+export const zCreateProfessionalAvailabilitiesRequest = z.object({
+    days: z.array(z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ])).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Datos requeridos para crear un servicio municipal.
+ */
+export const zCreateMunicipalServiceRequest = z.object({
+    name: z.string().min(0).max(150),
+    description: z.string().min(0).max(1000),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Datos requeridos para crear un centro municipal.
+ */
+export const zCreateMunicipalCenterRequest = z.object({
+    name: z.string().min(0).max(150),
+    address: z.string().min(0).max(255),
+    phone: z.string().min(0).max(30).optional(),
+    email: z.email().min(0).max(180).optional()
+});
+
+/**
+ * Servicio del catálogo que se asignará al centro.
+ */
+export const zAssignCenterServiceRequest = z.object({
+    serviceId: z.uuid().optional()
+});
+
+/**
+ * Servicio del catálogo asignado a un centro municipal.
+ */
+export const zCenterServiceResponse = z.object({
+    id: z.uuid().optional(),
+    centerId: z.uuid().optional(),
+    service: zMunicipalServiceResponse.optional(),
+    active: z.boolean().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Franja semanal de apertura de un centro.
+ */
+export const zCreateCenterOpeningHourRequest = z.object({
+    dayOfWeek: z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ]).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Misma franja de apertura replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
+ */
+export const zCreateCenterOpeningHoursRequest = z.object({
+    days: z.array(z.enum([
+        'MONDAY',
+        'TUESDAY',
+        'WEDNESDAY',
+        'THURSDAY',
+        'FRIDAY',
+        'SATURDAY',
+        'SUNDAY'
+    ])).optional(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional()
+});
+
+/**
+ * Profesional que se asignará al servicio del centro.
+ */
+export const zAssignProfessionalRequest = z.object({
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+/**
+ * Profesional asignado a un servicio específico de un centro.
+ */
+export const zProfessionalAssignmentResponse = z.object({
+    id: z.uuid().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    professionalEmail: z.string().optional(),
+    centerServiceId: z.uuid().optional(),
+    centerId: z.uuid().optional(),
+    serviceId: z.uuid().optional(),
+    serviceName: z.string().optional(),
+    active: z.boolean().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
  * Presentación asistida para un usuario existente. Quien registra se obtiene exclusivamente del JWT.
  */
 export const zCreateAssistedApplicationRequest = z.object({
     userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     enrollmentPeriodId: z.uuid()
+});
+
+/**
+ * Datos requeridos para crear una actividad comunitaria.
+ */
+export const zCreateActivityRequest = z.object({
+    name: z.string().min(0).max(200),
+    description: z.string().min(1),
+    location: z.string().min(0).max(300),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    capacity: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Confirmación de inscripción a una actividad.
+ */
+export const zActivityEnrollmentResponse = z.object({
+    id: z.uuid().optional(),
+    activityId: z.uuid().optional(),
+    citizenId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    enrolledAt: z.iso.datetime().optional(),
+    confirmation: z.string().optional()
+});
+
+/**
+ * Asistencia de un ciudadano inscripto en una actividad.
+ */
+export const zUpdateActivityAttendanceRequest = z.object({
+    attendance: z.enum(['PRESENT', 'ABSENT'])
+});
+
+/**
+ * Usuario que registró la asistencia.
+ */
+export const zAttendanceRecordedByResponse = z.object({
+    id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    name: z.string().optional()
+});
+
+/**
+ * Inscripción visible para un profesional de centro.
+ */
+export const zProfessionalActivityEnrollmentResponse = z.object({
+    id: z.uuid().optional(),
+    activityId: z.uuid().optional(),
+    citizenId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    citizenName: z.string().optional(),
+    enrolledAt: z.iso.datetime().optional(),
+    attendance: z.enum(['PRESENT', 'ABSENT']).optional(),
+    attendanceRecordedBy: zAttendanceRecordedByResponse.optional(),
+    attendanceRecordedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Resultado de la revisión administrativa de un documento pendiente.
+ */
+export const zReviewApplicationDocumentRequest = z.object({
+    status: z.enum(['VALID', 'OBSERVED']).optional(),
+    observation: z.string().min(0).max(1000).optional()
 });
 
 /**
@@ -425,7 +881,23 @@ export const zLogResponse = z.object({
         'ROLE',
         'USER',
         'ENROLLMENT_PERIOD',
-        'APPLICATION'
+        'APPLICATION',
+        'APPLICATION_DOCUMENT',
+        'ACTIVITY',
+        'ACTIVITY_ENROLLMENT',
+        'MUNICIPAL_CENTER',
+        'MUNICIPAL_SERVICE',
+        'CENTER_SERVICE',
+        'PROFESSIONAL_ASSIGNMENT',
+        'CENTER_OPENING_HOUR',
+        'PROFESSIONAL_AVAILABILITY',
+        'PROGRAM',
+        'PROGRAM_EDITION',
+        'PROGRAM_BENEFIT',
+        'PROGRAM_REQUIREMENT',
+        'PROGRAM_DOCUMENT_REQUIREMENT',
+        'PROGRAM_IMAGE',
+        'PROGRAM_INCOMPATIBILITY'
     ]).readonly().optional(),
     entityId: z.string().readonly().optional(),
     oldValues: z.string().readonly().optional(),
@@ -447,6 +919,7 @@ export const zAvailableProgramListItemResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     availableEditions: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).readonly().optional(),
     nextEditionStartDate: z.iso.date().readonly().optional(),
     nextEditionEndDate: z.iso.date().readonly().optional()
@@ -464,12 +937,18 @@ export const zAvailableProgramListResponse = z.object({
 });
 
 /**
- * Período en el que una edición se encuentra abierta para recibir solicitudes.
+ * Período de inscripción configurado para una edición.
  */
 export const zAvailableEnrollmentPeriodResponse = z.object({
     id: z.uuid().readonly().optional(),
     openDate: z.iso.date().readonly().optional(),
-    closeDate: z.iso.date().readonly().optional()
+    closeDate: z.iso.date().readonly().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'OPEN',
+        'SUSPENDED',
+        'CLOSED'
+    ]).readonly().optional()
 });
 
 /**
@@ -529,6 +1008,7 @@ export const zAvailableProgramEditionResponse = z.object({
     ]).readonly().optional(),
     benefits: z.array(zAvailableProgramBenefitResponse).readonly().optional(),
     requirements: z.array(zAvailableProgramRequirementResponse).readonly().optional(),
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).readonly().optional(),
     enrollmentPeriods: z.array(zAvailableEnrollmentPeriodResponse).readonly().optional()
 });
 
@@ -539,8 +1019,42 @@ export const zAvailableProgramDetailResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
     editions: z.array(zAvailableProgramEditionResponse).readonly().optional(),
     incompatibilities: z.array(zAvailableProgramIncompatibilityResponse).readonly().optional()
+});
+
+/**
+ * Actividad disponible para el registro profesional de asistencia.
+ */
+export const zProfessionalActivityResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    location: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    status: z.enum([
+        'DRAFT',
+        'OPEN',
+        'CLOSED'
+    ]).optional(),
+    enrolledCount: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+export const zProfessionalActivityListResponse = z.object({
+    content: z.array(zProfessionalActivityResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+export const zProfessionalActivityEnrollmentListResponse = z.object({
+    content: z.array(zProfessionalActivityEnrollmentResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
 });
 
 export const zApplicationListResponse = z.object({
@@ -558,6 +1072,8 @@ export const zProgramListItemResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional(),
     objective: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional(),
+    active: z.boolean().readonly().optional(),
     createdAt: z.iso.datetime().readonly().optional(),
     updatedAt: z.iso.datetime().readonly().optional()
 });
@@ -607,7 +1123,8 @@ export const zEnrollmentPeriodListResponse = z.object({
  */
 export const zProgramOptionResponse = z.object({
     id: z.uuid().readonly().optional(),
-    name: z.string().readonly().optional()
+    name: z.string().readonly().optional(),
+    imageUrl: z.string().readonly().optional()
 });
 
 /**
@@ -649,6 +1166,171 @@ export const zProgramEditionListResponse = z.object({
 export const zProgramEditionOptionResponse = z.object({
     id: z.uuid().readonly().optional(),
     name: z.string().readonly().optional()
+});
+
+/**
+ * Página de servicios municipales.
+ */
+export const zMunicipalServiceListResponse = z.object({
+    content: z.array(zMunicipalServiceResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Página de centros municipales.
+ */
+export const zMunicipalCenterListResponse = z.object({
+    content: z.array(zMunicipalCenterResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Resumen de una solicitud en el listado administrativo. No incluye documentos ni campos internos de idempotencia.
+ */
+export const zAdminApplicationListItemResponse = z.object({
+    id: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userName: z.string().optional(),
+    userEmail: z.string().optional(),
+    registeredByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    enrollmentPeriodId: z.uuid().optional(),
+    status: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    assignedWorkerUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    submittedAt: z.iso.datetime().optional(),
+    resolvedAt: z.iso.datetime().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Página de solicitudes de todos los titulares, ordenadas por número descendente.
+ */
+export const zAdminApplicationListResponse = z.object({
+    content: z.array(zAdminApplicationListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
+ */
+export const zAdminApplicationResponse = z.object({
+    id: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userName: z.string().optional(),
+    userEmail: z.string().optional(),
+    registeredByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    registeredByUserName: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    enrollmentPeriodId: z.uuid().optional(),
+    status: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    originTicketId: z.string().optional(),
+    resolutionReason: z.string().optional(),
+    assignedWorkerUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    assignedWorkerName: z.string().optional(),
+    submittedAt: z.iso.datetime().optional(),
+    resolvedAt: z.iso.datetime().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional(),
+    idempotencyKey: z.string().optional(),
+    requestHash: z.string().optional(),
+    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional(),
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
+});
+
+/**
+ * Actividad incluida en un listado administrativo.
+ */
+export const zActivityListItemResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    location: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    capacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    status: z.enum([
+        'DRAFT',
+        'OPEN',
+        'CLOSED'
+    ]).optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Página de actividades comunitarias.
+ */
+export const zActivityListResponse = z.object({
+    content: z.array(zActivityListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Actividad abierta disponible para la comunidad.
+ */
+export const zCitizenActivityResponse = z.object({
+    id: z.uuid().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    location: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    capacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    enrolledCount: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    availableCapacity: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+/**
+ * Página de actividades abiertas disponibles para la comunidad.
+ */
+export const zCitizenActivityListResponse = z.object({
+    content: z.array(zCitizenActivityResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
 });
 
 export const zLink = z.object({
@@ -695,6 +1377,16 @@ export const zLoginRequestWritable = z.object({
     username: z.string().min(1),
     password: z.string().min(1)
 });
+
+/**
+ * Detalle de un programa disponible para ciudadanos.
+ */
+export const zAvailableProgramDetailResponseWritable = z.record(z.string(), z.unknown());
+
+/**
+ * Edición disponible de un programa, con sus beneficios y requisitos.
+ */
+export const zAvailableProgramEditionResponseWritable = z.record(z.string(), z.unknown());
 
 export const zDeletePath = z.object({
     id: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
@@ -753,6 +1445,55 @@ export const zUpdate1Path = z.object({
  * OK
  */
 export const zUpdate1Response = zRoleResponse;
+
+export const zPutBody = z.object({
+    file: z.string()
+});
+
+export const zPutPath = z.object({
+    applicationId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * Entrega existente reemplazada.
+ */
+export const zPutResponse = zApplicationDocumentResponse;
+
+export const zDeleteProgramImagePath = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Imagen eliminada.
+ */
+export const zDeleteProgramImageResponse = z.void();
+
+export const zCreateProgramImageBody = z.object({
+    file: z.string()
+});
+
+export const zCreateProgramImagePath = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Imagen creada.
+ */
+export const zCreateProgramImageResponse = zProgramImageResponse;
+
+export const zUpdateProgramImageBody = z.object({
+    file: z.string()
+});
+
+export const zUpdateProgramImagePath = z.object({
+    programId: z.uuid()
+});
+
+/**
+ * Imagen reemplazada.
+ */
+export const zUpdateProgramImageResponse = zProgramImageResponse;
 
 export const zGetEnrollmentPeriodPath = z.object({
     programId: z.uuid(),
@@ -870,13 +1611,45 @@ export const zUpdate4Response = zProgramRequirementResponse;
 
 export const zDelete5Path = z.object({
     editionId: z.uuid(),
-    benefitId: z.uuid()
+    requirementId: z.uuid()
 });
 
 /**
  * No Content
  */
 export const zDelete5Response = z.void();
+
+export const zGetPath = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetResponse = zProgramDocumentRequirementResponse;
+
+export const zUpdate5Body = zUpdateProgramDocumentRequirementRequest;
+
+export const zUpdate5Path = z.object({
+    editionId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * Requisito documental actualizado.
+ */
+export const zUpdate5Response = zProgramDocumentRequirementResponse;
+
+export const zDelete6Path = z.object({
+    editionId: z.uuid(),
+    benefitId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete6Response = z.void();
 
 export const zFindById5Path = z.object({
     editionId: z.uuid(),
@@ -888,9 +1661,9 @@ export const zFindById5Path = z.object({
  */
 export const zFindById5Response = zProgramBenefitResponse;
 
-export const zUpdate5Body = zUpdateProgramBenefitRequest;
+export const zUpdate6Body = zUpdateProgramBenefitRequest;
 
-export const zUpdate5Path = z.object({
+export const zUpdate6Path = z.object({
     editionId: z.uuid(),
     benefitId: z.uuid()
 });
@@ -898,7 +1671,103 @@ export const zUpdate5Path = z.object({
 /**
  * OK
  */
-export const zUpdate5Response = zProgramBenefitResponse;
+export const zUpdate6Response = zProgramBenefitResponse;
+
+export const zUpdateProfessionalAvailabilityBody = zUpdateProfessionalAvailabilityRequest;
+
+export const zUpdateProfessionalAvailabilityPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdateProfessionalAvailabilityResponse = zProfessionalAvailabilityResponse;
+
+export const zGetMunicipalServicePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetMunicipalServiceResponse = zMunicipalServiceResponse;
+
+export const zUpdateMunicipalServiceBody = zUpdateMunicipalServiceRequest;
+
+export const zUpdateMunicipalServicePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdateMunicipalServiceResponse = zMunicipalServiceResponse;
+
+export const zGetMunicipalCenterPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetMunicipalCenterResponse = zMunicipalCenterResponse;
+
+export const zUpdateMunicipalCenterBody = zUpdateMunicipalCenterRequest;
+
+export const zUpdateMunicipalCenterPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdateMunicipalCenterResponse = zMunicipalCenterResponse;
+
+export const zUpdateCenterOpeningHourBody = zUpdateCenterOpeningHourRequest;
+
+export const zUpdateCenterOpeningHourPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zPut1Body = z.object({
+    file: z.string()
+});
+
+export const zPut1Path = z.object({
+    applicationId: z.uuid(),
+    requirementId: z.uuid()
+});
+
+/**
+ * Entrega existente reemplazada.
+ */
+export const zPut1Response = zApplicationDocumentResponse;
+
+export const zGet1Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGet1Response = zActivityResponse;
+
+export const zUpdate7Body = zUpdateActivityRequest;
+
+export const zUpdate7Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdate7Response = zActivityResponse;
 
 /**
  * OK
@@ -983,7 +1852,7 @@ export const zCreate2Body = zCreateProgramRequest;
  */
 export const zCreate2Response = zProgramResponse;
 
-export const zDelete6Path = z.object({
+export const zDelete7Path = z.object({
     programId: z.uuid(),
     incompatibleProgramId: z.uuid()
 });
@@ -991,7 +1860,7 @@ export const zDelete6Path = z.object({
 /**
  * No Content
  */
-export const zDelete6Response = z.void();
+export const zDelete7Response = z.void();
 
 export const zCreate3Path = z.object({
     programId: z.uuid(),
@@ -1094,6 +1963,26 @@ export const zCreate4Path = z.object({
  */
 export const zCreate4Response = zProgramRequirementResponse;
 
+export const zList2Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zList2Response = z.array(zProgramDocumentRequirementResponse);
+
+export const zCreate5Body = zCreateProgramDocumentRequirementRequest;
+
+export const zCreate5Path = z.object({
+    editionId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreate5Response = zProgramDocumentRequirementResponse;
+
 export const zFindAll3Path = z.object({
     editionId: z.uuid()
 });
@@ -1103,22 +1992,22 @@ export const zFindAll3Path = z.object({
  */
 export const zFindAll3Response = z.array(zProgramBenefitResponse);
 
-export const zCreate5Body = zCreateProgramBenefitRequest;
+export const zCreate6Body = zCreateProgramBenefitRequest;
 
-export const zCreate5Path = z.object({
+export const zCreate6Path = z.object({
     editionId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate5Response = zProgramBenefitResponse;
+export const zCreate6Response = zProgramBenefitResponse;
 
-export const zList2Path = z.object({
+export const zList3Path = z.object({
     programId: z.uuid()
 });
 
-export const zList2Query = z.object({
+export const zList3Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
     size: z.int().gte(1).lte(100).optional().default(20)
 });
@@ -1126,18 +2015,168 @@ export const zList2Query = z.object({
 /**
  * OK
  */
-export const zList2Response = zProgramEditionListResponse;
+export const zList3Response = zProgramEditionListResponse;
 
-export const zCreate6Body = zCreateProgramEditionRequest;
+export const zCreate7Body = zCreateProgramEditionRequest;
 
-export const zCreate6Path = z.object({
+export const zCreate7Path = z.object({
     programId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate6Response = zProgramEditionResponse;
+export const zCreate7Response = zProgramEditionResponse;
+
+export const zListProfessionalAvailabilityPath = z.object({
+    assignmentId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zListProfessionalAvailabilityResponse = z.array(zProfessionalAvailabilityResponse);
+
+export const zCreateProfessionalAvailabilityBody = zCreateProfessionalAvailabilityRequest;
+
+export const zCreateProfessionalAvailabilityPath = z.object({
+    assignmentId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateProfessionalAvailabilityResponse = zProfessionalAvailabilityResponse;
+
+export const zCreateProfessionalAvailabilitiesBatchBody = zCreateProfessionalAvailabilitiesRequest;
+
+export const zCreateProfessionalAvailabilitiesBatchPath = z.object({
+    assignmentId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateProfessionalAvailabilitiesBatchResponse = z.array(zProfessionalAvailabilityResponse);
+
+export const zListMunicipalServicesQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    search: z.string().optional(),
+    active: z.boolean().optional()
+});
+
+/**
+ * OK
+ */
+export const zListMunicipalServicesResponse = zMunicipalServiceListResponse;
+
+export const zCreateMunicipalServiceBody = zCreateMunicipalServiceRequest;
+
+/**
+ * Created
+ */
+export const zCreateMunicipalServiceResponse = zMunicipalServiceResponse;
+
+export const zListMunicipalCentersQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    search: z.string().optional(),
+    active: z.boolean().optional()
+});
+
+/**
+ * OK
+ */
+export const zListMunicipalCentersResponse = zMunicipalCenterListResponse;
+
+export const zCreateMunicipalCenterBody = zCreateMunicipalCenterRequest;
+
+/**
+ * Created
+ */
+export const zCreateMunicipalCenterResponse = zMunicipalCenterResponse;
+
+export const zListCenterServicesPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zListCenterServicesResponse = z.array(zCenterServiceResponse);
+
+export const zAssignServiceToCenterBody = zAssignCenterServiceRequest;
+
+export const zAssignServiceToCenterPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zAssignServiceToCenterResponse = zCenterServiceResponse;
+
+export const zListCenterOpeningHoursPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zListCenterOpeningHoursResponse = z.array(zCenterOpeningHourResponse);
+
+export const zCreateCenterOpeningHourBody = zCreateCenterOpeningHourRequest;
+
+export const zCreateCenterOpeningHourPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zCreateCenterOpeningHoursBatchBody = zCreateCenterOpeningHoursRequest;
+
+export const zCreateCenterOpeningHoursBatchPath = z.object({
+    centerId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zCreateCenterOpeningHoursBatchResponse = z.array(zCenterOpeningHourResponse);
+
+export const zListProfessionalAssignmentsPath = z.object({
+    centerServiceId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zListProfessionalAssignmentsResponse = z.array(zProfessionalAssignmentResponse);
+
+export const zAssignProfessionalBody = zAssignProfessionalRequest;
+
+export const zAssignProfessionalPath = z.object({
+    centerServiceId: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zAssignProfessionalResponse = zProfessionalAssignmentResponse;
+
+export const zList4Query = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Página de solicitudes.
+ */
+export const zList4Response = zAdminApplicationListResponse;
 
 export const zSubmit1Body = zCreateAssistedApplicationRequest;
 
@@ -1149,6 +2188,44 @@ export const zSubmit1Headers = z.object({
  * Reintento: devuelve la solicitud existente y conserva al registrante original.
  */
 export const zSubmit1Response = zApplicationResponse;
+
+export const zList5Query = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * OK
+ */
+export const zList5Response = zActivityListResponse;
+
+export const zCreate8Body = zCreateActivityRequest;
+
+/**
+ * Created
+ */
+export const zCreate8Response = zActivityResponse;
+
+export const zEnrollPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zEnrollResponse = zActivityEnrollmentResponse;
+
+export const zUpdateAttendanceBody = zUpdateActivityAttendanceRequest;
+
+export const zUpdateAttendancePath = z.object({
+    activityId: z.uuid(),
+    enrollmentId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zUpdateAttendanceResponse = zProfessionalActivityEnrollmentResponse;
 
 export const zSuspendPath = z.object({
     id: z.uuid()
@@ -1177,6 +2254,139 @@ export const zActivatePath = z.object({
  */
 export const zActivateResponse = zProgramEditionResponse;
 
+export const zDeactivateProfessionalAvailabilityPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zDeactivateProfessionalAvailabilityResponse = zProfessionalAvailabilityResponse;
+
+export const zActivateProfessionalAvailabilityPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateProfessionalAvailabilityResponse = zProfessionalAvailabilityResponse;
+
+export const zDeactivateProfessionalAssignmentPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zDeactivateProfessionalAssignmentResponse = zProfessionalAssignmentResponse;
+
+export const zActivateProfessionalAssignmentPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateProfessionalAssignmentResponse = zProfessionalAssignmentResponse;
+
+export const zDeactivateMunicipalServicePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zDeactivateMunicipalServiceResponse = zMunicipalServiceResponse;
+
+export const zActivateMunicipalServicePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateMunicipalServiceResponse = zMunicipalServiceResponse;
+
+export const zDeactivateMunicipalCenterPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zDeactivateMunicipalCenterResponse = zMunicipalCenterResponse;
+
+export const zActivateMunicipalCenterPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateMunicipalCenterResponse = zMunicipalCenterResponse;
+
+export const zDeactivateCenterServicePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zDeactivateCenterServiceResponse = zCenterServiceResponse;
+
+export const zActivateCenterServicePath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateCenterServiceResponse = zCenterServiceResponse;
+
+export const zDeactivateCenterOpeningHourPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zDeactivateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zActivateCenterOpeningHourPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zActivateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zReviewBody = zReviewApplicationDocumentRequest;
+
+export const zReviewPath = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+export const zPublishPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zPublishResponse = zActivityResponse;
+
+export const zClose1Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zClose1Response = zActivityResponse;
+
 /**
  * OK
  */
@@ -1202,7 +2412,23 @@ export const zListLogsByEntityPath = z.object({
         'ROLE',
         'USER',
         'ENROLLMENT_PERIOD',
-        'APPLICATION'
+        'APPLICATION',
+        'APPLICATION_DOCUMENT',
+        'ACTIVITY',
+        'ACTIVITY_ENROLLMENT',
+        'MUNICIPAL_CENTER',
+        'MUNICIPAL_SERVICE',
+        'CENTER_SERVICE',
+        'PROFESSIONAL_ASSIGNMENT',
+        'CENTER_OPENING_HOUR',
+        'PROFESSIONAL_AVAILABILITY',
+        'PROGRAM',
+        'PROGRAM_EDITION',
+        'PROGRAM_BENEFIT',
+        'PROGRAM_REQUIREMENT',
+        'PROGRAM_DOCUMENT_REQUIREMENT',
+        'PROGRAM_IMAGE',
+        'PROGRAM_INCOMPATIBILITY'
     ]),
     entityId: z.string().min(1)
 });
@@ -1236,9 +2462,66 @@ export const zGetAvailableProgramPath = z.object({
  */
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
 
-export const zGetPath = z.object({
+export const zListActivitiesQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * OK
+ */
+export const zListActivitiesResponse = zProfessionalActivityListResponse;
+
+export const zListEnrollmentsPath = z.object({
+    activityId: z.uuid()
+});
+
+export const zListEnrollmentsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * OK
+ */
+export const zListEnrollmentsResponse = zProfessionalActivityEnrollmentListResponse;
+
+export const zGetPublicImagePath = z.object({
+    imageId: z.uuid()
+});
+
+/**
+ * Contenido de la imagen.
+ */
+export const zGetPublicImageResponse = z.string();
+
+export const zGet2Path = z.object({
     id: z.uuid()
 });
+
+/**
+ * Detalle de la solicitud propia.
+ */
+export const zGet2Response = zApplicationResponse;
+
+export const zList6Path = z.object({
+    applicationId: z.uuid()
+});
+
+/**
+ * Documentos entregados en la solicitud propia.
+ */
+export const zList6Response = z.array(zApplicationDocumentResponse);
+
+export const zContentPath = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+/**
+ * Contenido del archivo.
+ */
+export const zContentResponse = z.string();
 
 export const zFindAll5Path = z.object({
     programId: z.uuid()
@@ -1263,6 +2546,53 @@ export const zListProgramEditionOptionsPath = z.object({
  */
 export const zListProgramEditionOptionsResponse = z.array(zProgramEditionOptionResponse);
 
+export const zGet3Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Detalle completo de la solicitud.
+ */
+export const zGet3Response = zAdminApplicationResponse;
+
+export const zList7Path = z.object({
+    applicationId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zList7Response = z.array(zApplicationDocumentResponse);
+
+export const zContent1Path = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+/**
+ * Contenido del archivo.
+ */
+export const zContent1Response = z.string();
+
+export const zList8Query = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * OK
+ */
+export const zList8Response = zCitizenActivityListResponse;
+
+export const zGet4Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGet4Response = zCitizenActivityResponse;
+
 /**
  * OK
  */
@@ -1277,3 +2607,13 @@ export const zInfoResponse = z.record(z.string(), z.unknown());
  * OK
  */
 export const zHealthResponse = z.record(z.string(), z.unknown());
+
+export const zDelete8Path = z.object({
+    applicationId: z.uuid(),
+    applicationDocumentId: z.uuid()
+});
+
+/**
+ * No Content
+ */
+export const zDelete8Response = z.void();

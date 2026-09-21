@@ -4,17 +4,19 @@ import {
   IconCalendarEvent,
   IconChartBar,
   IconClipboardHeart,
+  IconFileCheck,
   IconFileText,
-  IconFolders,
   IconGift,
   IconHeartHandshake,
   IconHome2,
   IconHomeCheck,
+  IconLibrary,
   IconNetwork,
   IconRoute,
   IconShieldCheck,
   IconShieldLock,
   IconSpeakerphone,
+  IconTimelineEventText,
   IconUsers,
 } from "@tabler/icons-react"
 
@@ -30,16 +32,14 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
     title: "Mis solicitudes",
     url: "/portal/solicitudes",
     icon: IconFileText,
-    items: [{ title: "Nueva solicitud", url: "/portal/solicitudes/nueva" }],
   },
   { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift },
   {
     title: "Mis turnos",
     url: "/portal/turnos",
     icon: IconCalendarEvent,
-    items: [{ title: "Reservar turno", url: "/portal/turnos/nuevo" }],
   },
-  { title: "Campañas", url: "/portal/campanias", icon: IconSpeakerphone },
+  { title: "Actividades", url: "/portal/actividades", icon: IconSpeakerphone },
 ]
 
 // Superset de ítems de las 5 matrices de rol (ver notes/routes.md #7) — falta filtrar por
@@ -48,46 +48,57 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
 // Rutas todavía sin implementar como Route: anchors simples hasta que existan.
 export const OPERACION_NAV: readonly SidebarNavItem[] = [
   { title: "Inicio", url: "/gestion", icon: IconHome2 },
-  { title: "Casos", url: "/gestion/casos", icon: IconFolders },
-  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
-  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift },
-  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart },
+  {
+    title: "Centros",
+    url: "/gestion/centros",
+    icon: IconBuilding,
+    items: [
+      { title: "Servicios ofrecidos", url: "/gestion/centros/servicios", icon: IconLibrary },
+    ]
+  },
   {
     title: "Programas",
     url: "/gestion/programas",
     icon: IconHeartHandshake,
+    items: [
+      {
+        title: "Solicitudes",
+        url: "/gestion/solicitudes",
+        icon: IconFileText,
+      },
+      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
+    ]
   },
-  { title: "Centros", url: "/gestion/centros", icon: IconBuilding },
+  { title: "Actividades", url: "/gestion/actividades", icon: IconSpeakerphone },
+  // { 
+  //   title: "Solicitudes",
+  //   url: "/gestion/solicitudes",
+  //   icon: IconFileText,
+  //   items: [
+  //     { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
+  //   ]
+  // },
+  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
+  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift },
+  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart },
+
   {
     title: "Turnos",
     url: "/gestion/turnos",
     icon: IconCalendarEvent,
-    items: [
-      { title: "Nuevo turno", url: "/gestion/turnos/nuevo" },
-      { title: "Mi agenda", url: "/gestion/turnos/agenda" },
-    ],
   },
-  { title: "Campañas", url: "/gestion/campanias", icon: IconSpeakerphone },
-  { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
-  { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },
 ]
 
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [
+  { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
+  { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },
   { title: "Indicadores", url: "/gestion/indicadores", icon: IconChartBar },
-  {
-    title: "Auditoría",
-    url: "/gestion/auditoria",
-    icon: IconShieldCheck,
-    items: [
-      { title: "Cambios", url: "/gestion/auditoria" },
-      { title: "Eventos", url: "/gestion/auditoria/eventos" },
-      { title: "DLQ", url: "/gestion/auditoria/dlq" },
-    ],
-  },
+  { title: "Auditoría", url: "/gestion/auditoria", icon: IconShieldCheck },
+  { title: "Eventos", url: "/gestion/eventos", icon: IconTimelineEventText },
 ]
 
 export const DEBUG_NAV: readonly SidebarNavItem[] = [
-  { title: "Documentación local", url: "/gestion/debug/documentacion-local", icon: IconApi },
-  { title: "Documentación eventos", url: "/gestion/debug/documentacion-eventos", icon: IconRoute },
+  { title: "API local (Autogen)", url: "/gestion/debug/documentacion-local", icon: IconApi },
+  { title: "Eventos Async (Autogen)", url: "/gestion/debug/documentacion-eventos", icon: IconRoute },
   { title: "Estado de red", url: "/gestion/debug/estado-red", icon: IconNetwork },
 ]

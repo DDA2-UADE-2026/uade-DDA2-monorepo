@@ -37,6 +37,19 @@ interface ProgramEditionRepository : JpaRepository<ProgramEdition, UUID> {
         status: ProgramEditionStatus,
     ): List<ProgramEdition>
 
+    @Query(
+        """
+            SELECT DISTINCT e.program.id
+            FROM ProgramEdition e
+            WHERE e.program.id IN :programIds
+              AND e.status = :status
+        """,
+    )
+    fun findProgramIdsByStatus(
+        @Param("programIds") programIds: Collection<UUID>,
+        @Param("status") status: ProgramEditionStatus,
+    ): List<UUID>
+
     fun findAllByProgramIdInAndStatusAndEndDateGreaterThanEqualOrderByStartDateAsc(
         programIds: Collection<UUID>,
         status: ProgramEditionStatus,

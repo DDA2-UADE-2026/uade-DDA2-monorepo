@@ -44,8 +44,8 @@ Layout/route-group structure:
 - `routes/__root.tsx` — root shell: loading bar, command palette (`AppCommandShortcut`, lazy), `Toaster`, devtools. Root-level `errorComponent`.
 - `routes/_auth/` — unauthenticated flow: `login`, `register`, `callback`, `seleccionar-rol` (role picker for multi-role accounts). Split-screen layout with a lazy map/visual panel shown only ≥768px.
 - `routes/_app/` — authenticated shell, split into two independent sections with their own sidebar + layout:
-  - `_app/gestion/` — internal municipal management/back-office (auditoría, beneficios, campañas, casos, centros, indicadores, intervenciones, programas, turnos, visitas…), sidebar via `GestionSidebar`.
-  - `_app/portal/` — citizen-facing portal (beneficios, campañas, programas, solicitudes, turnos…), sidebar via `PortalSidebar`.
+  - `_app/gestion/` — internal municipal management/back-office (actividades, auditoría, beneficios, casos, centros, indicadores, intervenciones, programas, turnos, visitas…), sidebar via `GestionSidebar`.
+  - `_app/portal/` — citizen-facing portal (actividades, beneficios, programas, solicitudes, turnos…), sidebar via `PortalSidebar`.
 - Errors are handled at two levels: the root route's `errorComponent` (`RouteErrorPage`), and a `CatchBoundary` wrapping just the `<Outlet/>` inside each `_app/*` layout (`SectionErrorFallback`) so a crash in one page doesn't take down that section's sidebar.
 
 The router is created in `src/main.tsx` with `context: { queryClient }` — loaders/route contexts can access the shared `QueryClient` through TanStack Router's typed router context.

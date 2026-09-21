@@ -10,6 +10,7 @@ import com.uade.dda2.server.feature.program.dto.admin.response.ProgramOptionResp
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramResponse
 import com.uade.dda2.server.feature.program.entity.Program
 import org.springframework.data.domain.Page
+import java.util.UUID
 
 fun CreateProgramRequest.toEntity(
     createdBy: User,
@@ -29,28 +30,43 @@ fun Program.updateFrom(
     objective = request.objective?.trim()
 }
 
-fun Program.toResponse(): ProgramResponse =
+fun Program.toResponse(imageId: UUID? = null): ProgramResponse =
     ProgramResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        imageUrl = programImageUrl(imageId),
         createdBy = createdBy.toProgramCreatedByResponse(),
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
 
-fun Program.toListItemResponse(): ProgramListItemResponse =
+fun Program.toListItemResponse(
+    active: Boolean,
+    imageId: UUID? = null,
+): ProgramListItemResponse =
     ProgramListItemResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        imageUrl = programImageUrl(imageId),
+        active = active,
         createdAt = createdAt,
         updatedAt = updatedAt,
     )
 
-fun Page<Program>.toListResponse(): ProgramListResponse =
+fun Page<Program>.toListResponse(
+    activeProgramIds: Set<UUID>,
+    imageIdsByProgram: Map<UUID, UUID> = emptyMap(),
+): ProgramListResponse =
     ProgramListResponse(
-        content = content.map { it.toListItemResponse() },
+        content = content.map { program ->
+            val programId = requireNotNull(program.id)
+            program.toListItemResponse(
+                active = programId in activeProgramIds,
+                imageId = imageIdsByProgram[programId],
+            )
+        },
         page = number,
         size = size,
         totalElements = totalElements,
@@ -63,8 +79,19 @@ fun User.toProgramCreatedByResponse(): ProgramCreatedByResponse =
         name = name,
     )
 
-fun Program.toOptionResponse(): ProgramOptionResponse =
+fun Program.toOptionResponse(imageId: UUID? = null): ProgramOptionResponse =
     ProgramOptionResponse(
         id = requireNotNull(id),
         name = name,
+        imageUrl = programImageUrl(imageId),
+    )
+
+fun Program.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "name" to name,
+        "objective" to objective,
+        "createdBy" to createdBy.id,
+        "createdAt" to createdAt.toString(),
+        "updatedAt" to updatedAt.toString(),
     )

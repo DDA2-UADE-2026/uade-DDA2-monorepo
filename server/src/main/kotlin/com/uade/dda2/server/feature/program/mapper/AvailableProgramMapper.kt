@@ -17,6 +17,7 @@ import java.util.UUID
 
 fun Program.toAvailableListItemResponse(
     editions: List<ProgramEdition>,
+    imageId: UUID? = null,
 ): AvailableProgramListItemResponse {
     val nearestEdition = editions.first()
 
@@ -24,6 +25,7 @@ fun Program.toAvailableListItemResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        imageUrl = programImageUrl(imageId),
         availableEditions = editions.size,
         nextEditionStartDate = nearestEdition.startDate,
         nextEditionEndDate = nearestEdition.endDate,
@@ -33,11 +35,13 @@ fun Program.toAvailableListItemResponse(
 fun Program.toAvailableDetailResponse(
     editions: List<AvailableProgramEditionResponse>,
     incompatibilities: List<AvailableProgramIncompatibilityResponse>,
+    imageId: UUID? = null,
 ): AvailableProgramDetailResponse =
     AvailableProgramDetailResponse(
         id = requireNotNull(id),
         name = name,
         objective = objective,
+        imageUrl = programImageUrl(imageId),
         editions = editions,
         incompatibilities = incompatibilities,
     )
@@ -45,6 +49,7 @@ fun Program.toAvailableDetailResponse(
 fun ProgramEdition.toAvailableResponse(
     benefits: List<AvailableProgramBenefitResponse>,
     requirements: List<AvailableProgramRequirementResponse>,
+    documentRequirements: List<com.uade.dda2.server.feature.program.dto.available.response.AvailableProgramDocumentRequirementResponse>,
     enrollmentPeriods: List<AvailableEnrollmentPeriodResponse>,
 ): AvailableProgramEditionResponse =
     AvailableProgramEditionResponse(
@@ -58,6 +63,7 @@ fun ProgramEdition.toAvailableResponse(
         status = status,
         benefits = benefits,
         requirements = requirements,
+        documentRequirements = documentRequirements,
         enrollmentPeriods = enrollmentPeriods,
     )
 
@@ -66,6 +72,7 @@ fun EnrollmentPeriod.toAvailableResponse(): AvailableEnrollmentPeriodResponse =
         id = requireNotNull(id),
         openDate = openDate,
         closeDate = closeDate,
+        status = status,
     )
 
 fun ProgramBenefit.toAvailableResponse(): AvailableProgramBenefitResponse =

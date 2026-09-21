@@ -11,6 +11,7 @@ import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.repository.PermissionRepository
 import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
+import com.uade.dda2.server.feature.center.repository.ProfessionalAssignmentRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
@@ -26,6 +27,7 @@ class RoleService(
     private val currentUserService: CurrentUserService,
     private val logService: LogService,
     private val jsonMapper: JsonMapper,
+    private val professionalAssignmentRepository: ProfessionalAssignmentRepository,
 ) {
     @Transactional(readOnly = true)
     fun findAll(): List<RoleResponse> =
@@ -64,6 +66,7 @@ class RoleService(
     fun update(id: Long, request: UpdateRoleRequest): RoleResponse {
         val role = findRole(id)
         val name = normalizeRoleName(request.name)
+        rejectProfessionalRoleRemoval(role, name)
         if (roleRepository.existsByNameIgnoreCaseAndIdNot(name, id)) {
             throw roleNameConflict(name)
         }
@@ -89,6 +92,7 @@ class RoleService(
     @Transactional
     fun delete(id: Long) {
         val role = findRole(id)
+        rejectProfessionalRoleRemoval(role, null)
         val oldValues = json(roleSnapshot(role))
 
         userRepository.findByRolesId(id).forEach { user ->
@@ -145,6 +149,19 @@ class RoleService(
             code = "ROLE_NAME_ALREADY_EXISTS",
             message = "Role already exists: $name.",
         )
+
+    private fun rejectProfessionalRoleRemoval(role: Role, replacementName: String?) {
+        if (
+            role.name.equals("PROFESIONAL_CENTRO", ignoreCase = true) &&
+            replacementName?.equals("PROFESIONAL_CENTRO", ignoreCase = true) != true &&
+            professionalAssignmentRepository.existsByActiveTrue()
+        ) {
+            throw ConflictException(
+                code = "PROFESSIONAL_ROLE_HAS_ACTIVE_ASSIGNMENTS",
+                message = "No se puede renombrar ni eliminar PROFESIONAL_CENTRO mientras existan asignaciones activas.",
+            )
+        }
+    }
 
     private fun toResponse(role: Role): RoleResponse =
         RoleResponse(

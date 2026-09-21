@@ -43,6 +43,7 @@ type UserSelectionDialogProps = {
   onOpenChange: (open: boolean) => void
   onSelect: (user: UserManagementResponse) => void
   selectedUserId?: number
+  excludeUserId?: number
   title?: string
   description?: string
 }
@@ -52,6 +53,7 @@ export function UserSelectionDialog({
   onOpenChange,
   onSelect,
   selectedUserId,
+  excludeUserId,
   title = "Seleccionar usuario",
   description = "Buscá por nombre, usuario o correo electrónico.",
 }: UserSelectionDialogProps) {
@@ -64,6 +66,7 @@ export function UserSelectionDialog({
 
   const normalizedSearch = search.trim().toLocaleLowerCase("es-AR")
   const users = (query.data ?? []).filter((user) => {
+    if (excludeUserId !== undefined && user.id === excludeUserId) return false
     if (!normalizedSearch) return true
 
     return [user.name, user.username, user.email]

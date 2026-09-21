@@ -1,6 +1,9 @@
 package com.uade.dda2.server.feature.program.service
 
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.feature.log.entity.LogAction
+import com.uade.dda2.server.feature.log.entity.LogEntityType
+import com.uade.dda2.server.feature.log.service.LogService
 import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramEditionRequest
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionListResponse
@@ -11,6 +14,7 @@ import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
 import com.uade.dda2.server.feature.program.error.ProgramEditionErrors
 import com.uade.dda2.server.feature.program.error.ProgramErrors
+import com.uade.dda2.server.feature.program.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.program.mapper.toEntity
 import com.uade.dda2.server.feature.program.mapper.toListResponse
 import com.uade.dda2.server.feature.program.mapper.toOptionResponse
@@ -23,6 +27,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.json.JsonMapper
 import java.util.*
 
 @Service
@@ -31,6 +36,8 @@ class AdminProgramEditionService(
     private val programEditionRepository: ProgramEditionRepository,
     private val adminProgramEditionValidator: AdminProgramEditionValidator,
     private val currentUserService: CurrentUserService,
+    private val logService: LogService,
+    private val jsonMapper: JsonMapper,
 ) {
 
     @Transactional(readOnly = true)
@@ -84,16 +91,17 @@ class AdminProgramEditionService(
             createdBy = currentUserService.userReference(),
         )
 
-        return try {
-            programEditionRepository
-                .saveAndFlush(edition)
-                .toResponse()
+        val saved = try {
+            programEditionRepository.saveAndFlush(edition)
         } catch (_: DataIntegrityViolationException) {
             throw ProgramEditionErrors.nameAlreadyExists(
                 programId = programId,
                 name = edition.name,
             )
         }
+        recordCreate(saved)
+
+        return saved.toResponse()
     }
 
     @Transactional
@@ -108,18 +116,23 @@ class AdminProgramEditionService(
             request = request,
         )
 
+        val oldValues = json(edition.toAuditSnapshot())
         edition.updateFrom(request)
 
-        return try {
-            programEditionRepository
-                .saveAndFlush(edition)
-                .toResponse()
+        val saved = try {
+            programEditionRepository.saveAndFlush(edition)
         } catch (_: DataIntegrityViolationException) {
             throw ProgramEditionErrors.nameAlreadyExists(
                 programId = requireNotNull(edition.program.id),
                 name = edition.name,
             )
         }
+        recordUpdate(
+            edition = saved,
+            oldValues = oldValues,
+        )
+
+        return saved.toResponse()
     }
 
     @Transactional
@@ -149,7 +162,17 @@ class AdminProgramEditionService(
 
         adminProgramEditionValidator.validateDelete(edition)
 
+        val oldValues = json(edition.toAuditSnapshot())
+
         programEditionRepository.delete(edition)
+
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.DELETE,
+            entityType = LogEntityType.PROGRAM_EDITION,
+            entityId = id.toString(),
+            oldValues = oldValues,
+        )
     }
 
     private fun changeStatus(
@@ -163,11 +186,16 @@ class AdminProgramEditionService(
             newStatus = status,
         )
 
+        val oldValues = json(edition.toAuditSnapshot())
         edition.status = status
 
-        return programEditionRepository
-            .save(edition)
-            .toResponse()
+        val saved = programEditionRepository.save(edition)
+        recordUpdate(
+            edition = saved,
+            oldValues = oldValues,
+        )
+
+        return saved.toResponse()
     }
 
     private fun findProgram(id: UUID): Program =
@@ -187,4 +215,31 @@ class AdminProgramEditionService(
     private fun findEditionForUpdate(id: UUID): ProgramEdition =
         programEditionRepository.findByIdForUpdate(id)
             ?: throw ProgramEditionErrors.notFound(id)
+
+    private fun recordCreate(edition: ProgramEdition) {
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.CREATE,
+            entityType = LogEntityType.PROGRAM_EDITION,
+            entityId = requireNotNull(edition.id).toString(),
+            newValues = json(edition.toAuditSnapshot()),
+        )
+    }
+
+    private fun recordUpdate(
+        edition: ProgramEdition,
+        oldValues: String,
+    ) {
+        logService.record(
+            user = currentUserService.userReference(),
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.PROGRAM_EDITION,
+            entityId = requireNotNull(edition.id).toString(),
+            oldValues = oldValues,
+            newValues = json(edition.toAuditSnapshot()),
+        )
+    }
+
+    private fun json(value: Any): String =
+        requireNotNull(jsonMapper.writeValueAsString(value))
 }

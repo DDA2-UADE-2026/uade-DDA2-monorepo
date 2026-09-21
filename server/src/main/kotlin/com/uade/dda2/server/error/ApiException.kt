@@ -32,3 +32,8 @@ class ConflictException(
     code: String,
     message: String,
 ) : ApiException(HttpStatus.CONFLICT, code, message)
+
+class PayloadTooLargeException(
+    code: String,
+    message: String,
+) : ApiException(HttpStatus.PAYLOAD_TOO_LARGE, code, message)

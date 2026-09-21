@@ -11,6 +11,7 @@ import com.uade.dda2.server.feature.program.error.ProgramEditionErrors
 import com.uade.dda2.server.feature.program.repository.ProgramBenefitRepository
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRequirementRepository
+import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.UUID
@@ -20,6 +21,7 @@ class AdminProgramEditionValidator(
     private val programEditionRepository: ProgramEditionRepository,
     private val programBenefitRepository: ProgramBenefitRepository,
     private val programRequirementRepository: ProgramRequirementRepository,
+    private val programDocumentRequirementRepository: ProgramDocumentRequirementRepository,
     private val enrollmentPeriodRepository: EnrollmentPeriodRepository,
 ) {
 
@@ -128,6 +130,7 @@ class AdminProgramEditionValidator(
         if (
             programBenefitRepository.existsByProgramEditionId(editionId) ||
             programRequirementRepository.existsByProgramEditionId(editionId) ||
+            programDocumentRequirementRepository.existsByProgramEditionId(editionId) ||
             enrollmentPeriodRepository.existsByProgramEditionId(editionId)
         ) {
             throw ProgramEditionErrors.hasConfiguration(editionId)

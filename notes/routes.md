@@ -26,7 +26,7 @@ El árbol se divide en dos ramas según `ROL_ACTUAL`:
 
 | Rama | Rol actual | Qué contiene |
 |---|---|---|
-| `/portal` | `CIUDADANO` | Autogestión: catálogo, solicitudes propias, beneficios propios, turnos propios, campañas |
+| `/portal` | `CIUDADANO` | Autogestión: catálogo, solicitudes propias, beneficios propios, turnos propios, actividades |
 | `/gestion` | Cualquier rol municipal | Operación: bandeja de casos, evaluación, resolución, ABM, agendas, indicadores, auditoría |
 
 **Por qué separarlas.** Si ambos modos compartieran rutas, cada pantalla tendría que decidir internamente qué mostrar y qué datos pedir. Separándolas, el guard vive una sola vez en el layout de cada rama y las pantallas quedan limpias. Además el sidebar cambia por completo al conmutar de rol, y con esta estructura eso sale gratis: cada layout renderiza su propio menú.
@@ -82,9 +82,9 @@ src/routes/
     │   ├── turnos/
     │   │   ├── index.tsx            →  /portal/turnos                      mis turnos
     │   │   └── nuevo.tsx            →  /portal/turnos/nuevo           P14  reserva de turno
-    │   └── campanias/
-    │       ├── index.tsx            →  /portal/campanias              P16  actividades vigentes
-    │       └── $actividadId.tsx     →  /portal/campanias/:id               detalle + inscripción
+    │   └── actividades/
+    │       ├── index.tsx            →  /portal/actividades            P16  actividades vigentes
+    │       └── $actividadId.tsx     →  /portal/actividades/:id             detalle + inscripción
     │
     └── gestion/
         ├── route.tsx                     guard nivel 2: ROL_ACTUAL distinto de CIUDADANO
@@ -123,6 +123,7 @@ src/routes/
         │               └── beneficios.tsx →  .../:edicionId/beneficios                  beneficios de la convocatoria
         ├── centros/
         │   ├── index.tsx            →  /gestion/centros               P13  listado
+        │   ├── servicios.tsx        →  /gestion/centros/servicios     P13  catálogo central de servicios
         │   └── $centroId/
         │       ├── route.tsx              layout del centro
         │       ├── index.tsx        →  .../:id                             servicios y profesionales
@@ -131,8 +132,8 @@ src/routes/
         │   ├── index.tsx            →  /gestion/turnos                     turnos del centro
         │   ├── nuevo.tsx            →  /gestion/turnos/nuevo          P14  reserva por administrativo
         │   └── agenda.tsx           →  /gestion/turnos/agenda         P15  agenda del profesional
-        ├── campanias/
-        │   ├── index.tsx            →  /gestion/campanias             P16  ABM de actividades
+        ├── actividades/
+        │   ├── index.tsx            →  /gestion/actividades           P16  ABM de actividades
         │   └── $actividadId/
         │       ├── index.tsx        →  .../:id                             edición
         │       └── asistencia.tsx   →  .../:id/asistencia                  inscriptos y presentismo
@@ -269,7 +270,7 @@ Con eso, `index.tsx`, `eventos.tsx` y `dlq.tsx` quedan sin `beforeLoad` propio.
 | `/gestion/programas/$id/convocatorias` | Coordinador |
 | `/gestion/centros` | Administrativo |
 | `/gestion/turnos/agenda` | Profesional de centro |
-| `/gestion/campanias` | Administrativo |
+| `/gestion/actividades` | Administrativo |
 | `/gestion/indicadores` | Coordinador, auditor |
 | `/gestion/auditoria` | Auditor |
 
@@ -430,14 +431,14 @@ Un check de CI que regenere y falle si la salida difiere de lo commiteado. Con n
 
 Cada layout de rama arma su propio menú, así que el sidebar cambia entero al conmutar de rol.
 
-**Portal (ciudadano)** — Inicio · Programas · Mis solicitudes · Mis beneficios · Mis turnos · Campañas
+**Portal (ciudadano)** — Inicio · Programas · Mis solicitudes · Mis beneficios · Mis turnos · Actividades
 
 **Gestión (municipal)** — depende del rol:
 
 | Rol | Ítems del sidebar |
 |---|---|
 | Trabajador social | Inicio, Casos, Visitas, Intervenciones |
-| Administrativo | Inicio, Casos, Beneficios, Programas, Centros, Turnos, Campañas |
+| Administrativo | Inicio, Casos, Beneficios, Programas, Centros, Turnos, Actividades |
 | Coordinador | Inicio, Casos, Visitas, Beneficios, Programas, Indicadores |
 | Profesional de centro | Inicio, Mi agenda |
 | Auditor | Inicio, Casos (lectura), Indicadores, Auditoría |
@@ -504,6 +505,6 @@ Deliberadamente **no** existen: gestión de usuarios (la identidad vive en Ciuda
 | P13 Centros y agendas | `/gestion/centros` | 4 |
 | P14 Reserva de turno | `/portal/turnos/nuevo` · `/gestion/turnos/nuevo` | 4 |
 | P15 Agenda del profesional | `/gestion/turnos/agenda` | 4 |
-| P16 Campañas y actividades | `/portal/campanias` · `/gestion/campanias` | 5 |
+| P16 Actividades comunitarias | `/portal/actividades` · `/gestion/actividades` | 5 |
 | P17 Indicadores | `/gestion/indicadores` | 5 |
 | P18 Auditoría y eventos | `/gestion/auditoria` | Transversal |

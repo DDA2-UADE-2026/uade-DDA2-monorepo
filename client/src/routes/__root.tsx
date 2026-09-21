@@ -6,6 +6,7 @@ import { FormDevtoolsPanel } from "@tanstack/react-form-devtools"
 import type { QueryClient } from '@tanstack/react-query'
 import { AppLoadingBar } from '@/components/AppLoadingBar'
 import { RouteErrorPage } from '@/components/errors/RouteErrorPage'
+import { RouteNotFoundPage } from '@/components/errors/RouteNotFoundPage'
 import { Toaster } from '@/components/ui/sonner'
 import { Fragment, Suspense, lazy } from 'react'
 const AppCommandShortcut = lazy(() => import('@/components/AppCommandShortcut'))
@@ -16,6 +17,7 @@ interface RouterContext {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   errorComponent: RouteErrorPage,
+  notFoundComponent: () => <RouteNotFoundPage />,
   component: () => (
     <Fragment>
       <AppLoadingBar />

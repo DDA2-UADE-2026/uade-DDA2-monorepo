@@ -65,6 +65,7 @@ class ApplicationController(private val service: ApplicationService) {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('applications:own:view')")
     @Operation(summary = "Consultar una solicitud propia", description = "Requiere applications:own:view. Una solicitud ajena se responde como inexistente.")
+    @ApiResponse(responseCode = "200", description = "Detalle de la solicitud propia.", useReturnTypeSchema = true)
     @ApiResponse(responseCode = "404", description = "Solicitud inexistente o perteneciente a otro usuario.", content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))])
     fun get(@PathVariable id: UUID): ApplicationResponse = service.get(id)
 }

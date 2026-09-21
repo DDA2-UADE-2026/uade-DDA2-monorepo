@@ -6,6 +6,7 @@ import {
   IconCalendarEvent,
   IconChecklist,
   IconClock,
+  IconFileDescription,
   IconGift,
   IconHeartHandshake,
   IconUsers,
@@ -43,8 +44,11 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { getAvailableProgramOptions } from "@/generated/@tanstack/react-query.gen"
+import { applicationPeriodUnavailableReason, enrollmentStatusLabels } from "@/lib/application-flow"
+import { programImageSource } from "@/lib/program-images"
 import type {
   AvailableProgramBenefitResponse,
+  AvailableProgramDocumentRequirementResponse,
   AvailableProgramEditionResponse,
   AvailableProgramRequirementResponse,
 } from "@/generated/types.gen"
@@ -54,8 +58,7 @@ type RequirementType = NonNullable<AvailableProgramRequirementResponse["type"]>
 type EditionStatus = NonNullable<AvailableProgramEditionResponse["status"]>
 
 const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
-const PROGRAM_DESCRIPTION =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Conocé las oportunidades y el acompañamiento que ofrece este programa."
+const PROGRAM_DESCRIPTION_FALLBACK = "El objetivo de este programa se informará próximamente."
 
 const benefitLabels: Record<BenefitType, string> = {
   TAX_EXEMPTION: "Exención impositiva",
@@ -158,7 +161,7 @@ function RouteComponent() {
               <>
                 <Card className="gap-0 overflow-hidden py-0 lg:grid lg:grid-cols-[minmax(18rem,0.8fr)_minmax(0,1.2fr)]">
                   <img
-                    src={PROGRAM_IMAGE}
+                    src={programImageSource(program.imageUrl) ?? PROGRAM_IMAGE}
                     alt=""
                     className="aspect-[1.91/1] size-full max-h-96 object-cover lg:aspect-auto lg:min-h-80"
                   />
@@ -172,23 +175,15 @@ function RouteComponent() {
                         {program.name || "Programa sin nombre"}
                       </CardTitle>
                       <CardDescription className="max-w-2xl text-sm leading-6">
-                        {PROGRAM_DESCRIPTION}
+                        {program.objective || PROGRAM_DESCRIPTION_FALLBACK}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          Objetivo
-                        </p>
-                        <p className="mt-1 text-sm leading-6">
-                          {program.objective || "El objetivo de este programa se informará próximamente."}
-                        </p>
-                      </div>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="hidden">
                         {(program.editions ?? []).length}{" "}
                         {(program.editions ?? []).length === 1
-                          ? "convocatoria disponible"
-                          : "convocatorias disponibles"}
+                          ? "edición disponible"
+                          : "ediciones disponibles"}
                       </Badge>
                     </CardContent>
                   </div>
@@ -197,23 +192,23 @@ function RouteComponent() {
                 <section className="space-y-4" aria-labelledby="available-editions-title">
                   <div>
                     <h2 id="available-editions-title" className="font-heading text-xl font-medium">
-                      Convocatorias disponibles
+                      Ediciones disponibles
                     </h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Revisá las fechas, los cupos y las condiciones de cada convocatoria.
+                      Revisá las fechas, los cupos y las condiciones de cada edición.
                     </p>
                   </div>
 
                   {(program.editions ?? []).length === 0 ? (
                     <Card>
                       <CardContent className="text-sm text-muted-foreground">
-                        No hay convocatorias disponibles en este momento.
+                        No hay ediciones disponibles en este momento.
                       </CardContent>
                     </Card>
                   ) : (
                     <div className="grid gap-5">
                       {(program.editions ?? []).map((edition) => (
-                        <EditionCard key={edition.id ?? edition.name} edition={edition} />
+                        <EditionCard key={edition.id ?? edition.name} edition={edition} programaId={programaId} />
                       ))}
                     </div>
                   )}
@@ -224,7 +219,7 @@ function RouteComponent() {
                     <Card>
                       <CardHeader>
                         <CardTitle id="incompatibilities-title" className="flex items-center gap-2">
-                          <IconBan className="size-5 text-muted-foreground" />
+                          <IconBan className="size-5 text-destructive" />
                           Programas incompatibles
                         </CardTitle>
                         <CardDescription>
@@ -235,7 +230,7 @@ function RouteComponent() {
                         {(program.incompatibilities ?? []).map((incompatibility) => (
                           <Button
                             key={incompatibility.id ?? incompatibility.name}
-                            variant="outline"
+                            variant="destructive"
                             size="sm"
                             render={
                               <Link
@@ -261,7 +256,7 @@ function RouteComponent() {
   )
 }
 
-function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) {
+function EditionCard({ edition, programaId }: { edition: AvailableProgramEditionResponse; programaId: string }) {
   const currentEnrollment = edition.currentEnrollment ?? 0
   const maxCapacity = edition.maxCapacity ?? 0
   const availableCapacity = edition.availableCapacity ?? Math.max(0, maxCapacity - currentEnrollment)
@@ -269,7 +264,7 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{edition.name || "Convocatoria sin nombre"}</CardTitle>
+        <CardTitle className="text-lg">{edition.name || "Edición sin nombre"}</CardTitle>
         <CardDescription>
           Del {formatProgramDate(edition.startDate)} al {formatProgramDate(edition.endDate)}
         </CardDescription>
@@ -297,33 +292,50 @@ function EditionCard({ edition }: { edition: AvailableProgramEditionResponse }) 
 
         <Separator />
 
+        <EditionDocumentRequirements requirements={edition.documentRequirements ?? []} />
+
+        <Separator />
+
         <div className="space-y-3">
           <div>
             <h3 className="font-heading font-medium">Períodos de inscripción</h3>
             <p className="text-sm text-muted-foreground">
-              Fechas habilitadas actualmente para presentar una solicitud.
+              Consultá las fechas y el estado de cada período para presentar una solicitud.
             </p>
           </div>
           {(edition.enrollmentPeriods ?? []).length === 0 ? (
             <p className="rounded-lg bg-muted/50 p-4 text-sm text-muted-foreground">
-              No hay un período de inscripción abierto para esta convocatoria.
+              No hay un período de inscripción abierto para esta edición.
             </p>
           ) : (
             <ItemGroup className="grid gap-3 md:grid-cols-2">
-              {(edition.enrollmentPeriods ?? []).map((period) => (
+              {(edition.enrollmentPeriods ?? []).map((period) => {
+                const unavailableReason = applicationPeriodUnavailableReason(edition, period)
+                return (
                 <Item key={period.id} variant="outline">
                   <ItemMedia variant="icon">
                     <IconClock className="text-primary" />
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle>Inscripción abierta</ItemTitle>
+                    <ItemTitle>Período de inscripción</ItemTitle>
                     <ItemDescription>
                       Del {formatProgramDate(period.openDate)} al {formatProgramDate(period.closeDate)}
                     </ItemDescription>
                   </ItemContent>
-                  <Badge variant="secondary">Abierta</Badge>
+                  <Badge variant="secondary">{period.status ? enrollmentStatusLabels[period.status] : "Sin estado"}</Badge>
+                  {!unavailableReason && period.id ? (
+                    <Button className="w-full animate-pulse" render={<Link to="/portal/solicitudes/nueva" search={{ programaId, periodoId: period.id }} />}>
+                      Solicitar este programa
+                    </Button>
+                  ) : (
+                    <div className="w-full space-y-2">
+                      <Button className="w-full" disabled>Solicitar este programa</Button>
+                      <p className="text-sm text-muted-foreground">{unavailableReason}</p>
+                    </div>
+                  )}
                 </Item>
-              ))}
+                )
+              })}
             </ItemGroup>
           )}
         </div>
@@ -351,7 +363,7 @@ function EditionBenefits({ benefits }: { benefits: AvailableProgramBenefitRespon
     <div className="space-y-3">
       <div>
         <h3 className="font-heading font-medium">Beneficios</h3>
-        <p className="text-sm text-muted-foreground">Qué ofrece esta convocatoria.</p>
+        <p className="text-sm text-muted-foreground">Qué ofrece esta edición.</p>
       </div>
       {benefits.length === 0 ? (
         <p className="text-sm text-muted-foreground">No hay beneficios informados.</p>
@@ -367,7 +379,7 @@ function EditionBenefits({ benefits }: { benefits: AvailableProgramBenefitRespon
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>{benefit.type ? benefitLabels[benefit.type] : "Beneficio"}</ItemTitle>
-                  <ItemDescription>{details || "Beneficio incluido en la convocatoria."}</ItemDescription>
+                  <ItemDescription>{details || "Beneficio incluido en la edición."}</ItemDescription>
                 </ItemContent>
               </Item>
             )
@@ -409,6 +421,41 @@ function EditionRequirements({ requirements }: { requirements: AvailableProgramR
               </Item>
             )
           })}
+        </ItemGroup>
+      )}
+    </div>
+  )
+}
+
+function EditionDocumentRequirements({ requirements }: { requirements: AvailableProgramDocumentRequirementResponse[] }) {
+  return (
+    <div className="space-y-3">
+      <div>
+        <h3 className="font-heading font-medium">Documentación requerida</h3>
+        <p className="text-sm text-muted-foreground">Documentos solicitados para esta edición.</p>
+      </div>
+      {requirements.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No hay documentos requeridos para esta edición.</p>
+      ) : (
+        <ItemGroup className="grid gap-3 md:grid-cols-2">
+          {requirements.map((requirement) => (
+            <Item key={requirement.id ?? requirement.code} variant="outline" role="listitem">
+              <ItemMedia variant="icon">
+                <IconFileDescription className="text-primary" />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{requirement.name || "Documento sin nombre"}</ItemTitle>
+                {requirement.description && (
+                  <ItemDescription className="line-clamp-none whitespace-pre-line">
+                    {requirement.description}
+                  </ItemDescription>
+                )}
+              </ItemContent>
+              <Badge variant={requirement.required ? "default" : "secondary"}>
+                {requirement.required ? "Obligatorio" : "Opcional"}
+              </Badge>
+            </Item>
+          ))}
         </ItemGroup>
       )}
     </div>

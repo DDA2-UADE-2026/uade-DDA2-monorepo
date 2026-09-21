@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -76,17 +77,42 @@ class GlobalExceptionHandler {
             )
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleUnreadableBody(request: HttpServletRequest): ResponseEntity<ErrorResponse> =
-        ResponseEntity
+    fun handleUnreadableBody(
+        exception: HttpMessageNotReadableException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ErrorResponse> {
+        generateSequence(exception.cause) { it.cause }
+            .filterIsInstance<ApiException>()
+            .firstOrNull()
+            ?.let { return handleApiException(it, request) }
+        val appointmentRequest = request.requestURI == "/api/citizen/appointments"
+        return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
                     message = "El cuerpo de la solicitud es inválido.",
-                    code = "INVALID_REQUEST_BODY",
+                    code = if (appointmentRequest) "APPOINTMENT_INVALID_REQUEST" else "INVALID_REQUEST_BODY",
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
                 ),
             )
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException::class)
+    fun handleMaxUploadSize(request: HttpServletRequest): ResponseEntity<ErrorResponse> {
+        val isProgramImage = request.requestURI.matches(Regex("/api/admin/programs/[^/]+/image"))
+
+        return ResponseEntity
+            .status(HttpStatus.PAYLOAD_TOO_LARGE)
+            .body(
+                ErrorResponse(
+                    message = if (isProgramImage) "La imagen no puede superar 10 MB." else "El archivo no puede superar 10 MB.",
+                    code = if (isProgramImage) "PROGRAM_IMAGE_FILE_TOO_LARGE" else "APPLICATION_DOCUMENT_FILE_TOO_LARGE",
+                    status = HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                    path = request.requestURI,
+                ),
+            )
+    }
 
     @ExceptionHandler(BadCredentialsException::class, AuthenticationException::class)
     fun handleAuthentication(

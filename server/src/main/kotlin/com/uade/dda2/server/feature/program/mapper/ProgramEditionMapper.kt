@@ -83,3 +83,18 @@ fun ProgramEdition.toOptionResponse(): ProgramEditionOptionResponse =
         id = requireNotNull(id),
         name = name,
     )
+
+fun ProgramEdition.toAuditSnapshot(): Map<String, Any?> =
+    mapOf(
+        "id" to id,
+        "programId" to program.id,
+        "name" to name,
+        "startDate" to startDate.toString(),
+        "endDate" to endDate.toString(),
+        "maxCapacity" to maxCapacity,
+        "currentEnrollment" to currentEnrollment,
+        "status" to status.name,
+        "createdBy" to createdBy.id,
+        "createdAt" to createdAt.toString(),
+        "updatedAt" to updatedAt.toString(),
+    )

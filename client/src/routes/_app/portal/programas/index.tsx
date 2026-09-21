@@ -37,11 +37,11 @@ import {
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.gen"
+import { formatProgramDate } from "@/lib/program-dates"
+import { PROGRAM_IMAGE_FALLBACK, programImageSource } from "@/lib/program-images"
 
 const PAGE_SIZE = 9
-const PROGRAM_IMAGE = `${import.meta.env.BASE_URL}brand/og.png`
-const PROGRAM_DESCRIPTION =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Conocé los detalles y requisitos del programa."
+const PROGRAM_DESCRIPTION_FALLBACK = "El objetivo de este programa se informará próximamente."
 
 const searchSchema = z.object({
   page: z.coerce.number().int().positive().catch(1).default(1),
@@ -51,17 +51,6 @@ export const Route = createFileRoute("/_app/portal/programas/")({
   validateSearch: searchSchema,
   component: RouteComponent,
 })
-
-function formatProgramDate(value?: string): string {
-  if (!value) return "A confirmar"
-
-  const [year, month, day] = value.split("-").map(Number)
-  return new Intl.DateTimeFormat("es-AR", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(year, month - 1, day))
-}
 
 function RouteComponent() {
   const { page } = Route.useSearch()
@@ -135,7 +124,7 @@ function RouteComponent() {
                   return (
                     <Card key={program.id ?? program.name} className="h-full transition-shadow hover:shadow-md">
                       <img
-                        src={PROGRAM_IMAGE}
+                        src={programImageSource(program.imageUrl) ?? PROGRAM_IMAGE_FALLBACK}
                         alt=""
                         className="aspect-[1.91/1] w-full object-cover"
                         loading="lazy"
@@ -143,7 +132,7 @@ function RouteComponent() {
                       <CardHeader>
                         <CardTitle className="text-lg">{program.name || "Programa sin nombre"}</CardTitle>
                         <CardDescription className="line-clamp-2">
-                          {PROGRAM_DESCRIPTION}
+                          {program.objective || PROGRAM_DESCRIPTION_FALLBACK}
                         </CardDescription>
                         <CardAction>
                           <Badge variant="secondary">
