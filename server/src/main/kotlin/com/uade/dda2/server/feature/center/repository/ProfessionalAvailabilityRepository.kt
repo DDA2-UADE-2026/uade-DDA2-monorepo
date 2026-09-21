@@ -47,6 +47,32 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
     @Query(
         """
         select distinct availability from ProfessionalAvailability availability
+        join fetch availability.assignment assignment
+        join fetch assignment.professional professional
+        join professional.roles professionalRole
+        join fetch assignment.centerService centerService
+        join fetch centerService.center center
+        join fetch centerService.service service
+        where centerService.id = :centerServiceId
+          and availability.dayOfWeek = :dayOfWeek
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+        order by availability.startTime, professional.name
+        """,
+    )
+    fun findEffectiveByCenterServiceIdAndDayOfWeek(
+        @Param("centerServiceId") centerServiceId: UUID,
+        @Param("dayOfWeek") dayOfWeek: DayOfWeek,
+    ): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability from ProfessionalAvailability availability
         join availability.assignment assignment
         join assignment.professional professional
         join professional.roles professionalRole
@@ -136,6 +162,28 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
 
     @Query(
         """
+        select distinct availability.assignment.centerService.center.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.service.id = :serviceId
+        order by availability.assignment.centerService.center.id
+        """,
+    )
+    fun findActiveCenterIdsByServiceId(@Param("serviceId") serviceId: UUID): List<UUID>
+
+    @Query(
+        """
+        select distinct availability.assignment.professional.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.service.id = :serviceId
+        order by availability.assignment.professional.id
+        """,
+    )
+    fun findActiveProfessionalIdsByServiceId(@Param("serviceId") serviceId: UUID): List<Long>
+
+    @Query(
+        """
         select distinct availability from ProfessionalAvailability availability
         join fetch availability.assignment assignment
         join fetch assignment.professional professional
@@ -147,6 +195,28 @@ interface ProfessionalAvailabilityRepository : JpaRepository<ProfessionalAvailab
         """,
     )
     fun findActiveByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<ProfessionalAvailability>
+
+    @Query(
+        """
+        select distinct availability.assignment.centerService.center.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.id = :centerServiceId
+        order by availability.assignment.centerService.center.id
+        """,
+    )
+    fun findActiveCenterIdsByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<UUID>
+
+    @Query(
+        """
+        select distinct availability.assignment.professional.id
+        from ProfessionalAvailability availability
+        where availability.active = true
+          and availability.assignment.centerService.id = :centerServiceId
+        order by availability.assignment.professional.id
+        """,
+    )
+    fun findActiveProfessionalIdsByCenterServiceId(@Param("centerServiceId") centerServiceId: UUID): List<Long>
 
     @Query(
         """

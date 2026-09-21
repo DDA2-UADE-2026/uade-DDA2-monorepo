@@ -16,6 +16,28 @@ interface CenterServiceRepository : JpaRepository<CenterService, UUID> {
 
     fun findAllByServiceIdAndActive(serviceId: UUID, active: Boolean): List<CenterService>
 
+    @Query(
+        """
+        select distinct centerService from ProfessionalAvailability availability
+        join availability.assignment assignment
+        join assignment.professional professional
+        join professional.roles professionalRole
+        join assignment.centerService centerService
+        join fetch centerService.center center
+        join fetch centerService.service service
+        where service.id = :serviceId
+          and availability.active = true
+          and assignment.active = true
+          and professional.active = true
+          and upper(professionalRole.name) = 'PROFESIONAL_CENTRO'
+          and centerService.active = true
+          and center.active = true
+          and service.active = true
+        order by center.name
+        """,
+    )
+    fun findEffectiveByServiceId(@Param("serviceId") serviceId: UUID): List<CenterService>
+
     @EntityGraph(attributePaths = ["center", "service"])
     fun findAllByCenterIdOrderByServiceNameAsc(centerId: UUID): List<CenterService>
 
