@@ -52,6 +52,7 @@ import { Route as AppGestionSolicitudesIndexRouteImport } from "./routes/_app/ge
 import { Route as AppGestionSolicitudesSolicitudIdRouteImport } from "./routes/_app/gestion/solicitudes/$solicitudId"
 import { Route as AppGestionSolicitudesAsistidaRouteImport } from "./routes/_app/gestion/solicitudes/asistida"
 import { Route as AppGestionTurnosIndexRouteImport } from "./routes/_app/gestion/turnos/index"
+import { Route as AppGestionTurnosTurnoIdRouteImport } from "./routes/_app/gestion/turnos/$turnoId"
 import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestion/turnos/agenda"
 import { Route as AppGestionTurnosNuevoRouteImport } from "./routes/_app/gestion/turnos/nuevo"
 import { Route as AppGestionUsuariosIndexRouteImport } from "./routes/_app/gestion/usuarios/index"
@@ -317,6 +318,11 @@ const AppGestionTurnosIndexRoute = AppGestionTurnosIndexRouteImport.update({
   path: "/turnos/",
   getParentRoute: () => AppGestionRouteRoute,
 } as any)
+const AppGestionTurnosTurnoIdRoute = AppGestionTurnosTurnoIdRouteImport.update({
+  id: "/turnos/$turnoId",
+  path: "/turnos/$turnoId",
+  getParentRoute: () => AppGestionRouteRoute,
+} as any)
 const AppGestionTurnosAgendaRoute = AppGestionTurnosAgendaRouteImport.update({
   id: "/turnos/agenda",
   path: "/turnos/agenda",
@@ -550,6 +556,7 @@ export interface FileRoutesByFullPath {
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
   "/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
+  "/gestion/turnos/$turnoId": typeof AppGestionTurnosTurnoIdRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
@@ -619,6 +626,7 @@ export interface FileRoutesByTo {
   "/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
   "/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
+  "/gestion/turnos/$turnoId": typeof AppGestionTurnosTurnoIdRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
@@ -697,6 +705,7 @@ export interface FileRoutesById {
   "/_app/gestion/intervenciones/$planId": typeof AppGestionIntervencionesPlanIdRoute
   "/_app/gestion/solicitudes/$solicitudId": typeof AppGestionSolicitudesSolicitudIdRoute
   "/_app/gestion/solicitudes/asistida": typeof AppGestionSolicitudesAsistidaRoute
+  "/_app/gestion/turnos/$turnoId": typeof AppGestionTurnosTurnoIdRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/_app/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
@@ -774,6 +783,7 @@ export interface FileRouteTypes {
     | "/gestion/intervenciones/$planId"
     | "/gestion/solicitudes/$solicitudId"
     | "/gestion/solicitudes/asistida"
+    | "/gestion/turnos/$turnoId"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
     | "/portal/actividades/$actividadId"
@@ -843,6 +853,7 @@ export interface FileRouteTypes {
     | "/gestion/intervenciones/$planId"
     | "/gestion/solicitudes/$solicitudId"
     | "/gestion/solicitudes/asistida"
+    | "/gestion/turnos/$turnoId"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
     | "/portal/actividades/$actividadId"
@@ -920,6 +931,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/intervenciones/$planId"
     | "/_app/gestion/solicitudes/$solicitudId"
     | "/_app/gestion/solicitudes/asistida"
+    | "/_app/gestion/turnos/$turnoId"
     | "/_app/gestion/turnos/agenda"
     | "/_app/gestion/turnos/nuevo"
     | "/_app/portal/actividades/$actividadId"
@@ -1274,6 +1286,13 @@ declare module "@tanstack/react-router" {
       path: "/turnos"
       fullPath: "/gestion/turnos/"
       preLoaderRoute: typeof AppGestionTurnosIndexRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/turnos/$turnoId": {
+      id: "/_app/gestion/turnos/$turnoId"
+      path: "/turnos/$turnoId"
+      fullPath: "/gestion/turnos/$turnoId"
+      preLoaderRoute: typeof AppGestionTurnosTurnoIdRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/turnos/agenda": {
@@ -1636,6 +1655,7 @@ interface AppGestionRouteRouteChildren {
   AppGestionIntervencionesPlanIdRoute: typeof AppGestionIntervencionesPlanIdRoute
   AppGestionSolicitudesSolicitudIdRoute: typeof AppGestionSolicitudesSolicitudIdRoute
   AppGestionSolicitudesAsistidaRoute: typeof AppGestionSolicitudesAsistidaRoute
+  AppGestionTurnosTurnoIdRoute: typeof AppGestionTurnosTurnoIdRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
   AppGestionTurnosNuevoRoute: typeof AppGestionTurnosNuevoRoute
   AppGestionActividadesIndexRoute: typeof AppGestionActividadesIndexRoute
@@ -1675,6 +1695,7 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionIntervencionesPlanIdRoute: AppGestionIntervencionesPlanIdRoute,
   AppGestionSolicitudesSolicitudIdRoute: AppGestionSolicitudesSolicitudIdRoute,
   AppGestionSolicitudesAsistidaRoute: AppGestionSolicitudesAsistidaRoute,
+  AppGestionTurnosTurnoIdRoute: AppGestionTurnosTurnoIdRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,
   AppGestionTurnosNuevoRoute: AppGestionTurnosNuevoRoute,
   AppGestionActividadesIndexRoute: AppGestionActividadesIndexRoute,
