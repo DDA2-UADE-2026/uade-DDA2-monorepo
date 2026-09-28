@@ -4,6 +4,8 @@ import com.uade.dda2.server.config.AppointmentProperties
 import com.uade.dda2.server.feature.appointment.dto.response.AppointmentResponse
 import com.uade.dda2.server.feature.appointment.dto.response.AdminAppointmentResponse
 import com.uade.dda2.server.feature.appointment.dto.request.RescheduleAppointmentRequest
+import com.uade.dda2.server.feature.appointment.dto.response.AdminDaySummaryResponse
+import com.uade.dda2.server.feature.appointment.dto.response.AdminFreeSlotResponse
 import com.uade.dda2.server.feature.appointment.dto.response.AvailableAppointmentSlotResponse
 import com.uade.dda2.server.feature.appointment.entity.Appointment
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
@@ -15,10 +17,13 @@ import com.uade.dda2.server.feature.appointment.validator.AppointmentValidator
 import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.feature.center.entity.CenterService
+import com.uade.dda2.server.feature.center.entity.ProfessionalAvailability
 import com.uade.dda2.server.feature.center.repository.MunicipalCenterRepository
 import com.uade.dda2.server.feature.center.repository.CenterServiceRepository
 import com.uade.dda2.server.feature.center.repository.MunicipalServiceRepository
 import com.uade.dda2.server.feature.center.repository.ProfessionalAssignmentRepository
+import com.uade.dda2.server.feature.center.repository.ProfessionalAvailabilityRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
@@ -39,6 +44,8 @@ class AdminAppointmentService(
     private val centerServices: CenterServiceRepository,
     private val municipalServices: MunicipalServiceRepository,
     private val assignments: ProfessionalAssignmentRepository,
+    private val availabilities: ProfessionalAvailabilityRepository,
+    private val generator: AppointmentSlotGenerator,
     private val slots: AppointmentSlotService,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
@@ -60,6 +67,99 @@ class AdminAppointmentService(
         val start = date.atStartOfDay(properties.zone()).toOffsetDateTime()
         val end = date.plusDays(1).atStartOfDay(properties.zone()).toOffsetDateTime()
         return appointments.findByCenterIdInRange(centerId, start, end).map { it.toAdminResponse() }
+    }
+
+    @Transactional(readOnly = true)
+    fun monthlySummary(centerId: UUID, year: Int, month: Int, serviceId: UUID?): List<AdminDaySummaryResponse> {
+        admin("appointments:management:view")
+        if (centers.findById(centerId).isEmpty) throw AppointmentErrors.resourceNotFound()
+        val relevantServices = relevantCenterServices(centerId, serviceId)
+        val firstDay = LocalDate.of(year, month, 1)
+        val zone = properties.zone()
+        val now = OffsetDateTime.now(zone)
+        val today = now.atZoneSameInstant(zone).toLocalDate()
+        val monthAppointments = appointments.findByCenterIdInRange(
+            centerId,
+            firstDay.atStartOfDay(zone).toOffsetDateTime(),
+            firstDay.plusMonths(1).atStartOfDay(zone).toOffsetDateTime(),
+        )
+        val availabilitiesByService = mutableMapOf<UUID, MutableMap<java.time.DayOfWeek, List<ProfessionalAvailability>>>()
+        return (1..firstDay.lengthOfMonth()).map { dayOfMonth ->
+            val date = firstDay.withDayOfMonth(dayOfMonth)
+            val dayStart = date.atStartOfDay(zone).toOffsetDateTime()
+            val dayEnd = date.plusDays(1).atStartOfDay(zone).toOffsetDateTime()
+            val dayAppointments = monthAppointments.filter { overlaps(it, dayStart, dayEnd) && matchesService(it, serviceId) }
+            val blocking = dayAppointments.filter { blocksProfessional(it) }
+            var hasAgenda = false
+            var free = 0
+            if (!date.isBefore(today)) {
+                for (centerService in relevantServices) {
+                    val dayAvailabilities = availabilitiesByService
+                        .getOrPut(requireNotNull(centerService.id)) { mutableMapOf() }
+                        .getOrPut(date.dayOfWeek) {
+                            availabilities.findEffectiveByCenterServiceIdAndDayOfWeek(
+                                requireNotNull(centerService.id),
+                                date.dayOfWeek,
+                            )
+                        }
+                    if (dayAvailabilities.isEmpty()) continue
+                    hasAgenda = true
+                    free += generator.generate(
+                        date = date,
+                        durationMinutes = centerService.service.durationMinutes,
+                        availabilities = dayAvailabilities,
+                        professionalAppointments = blocking,
+                        citizenAppointments = emptyList(),
+                        zone = zone,
+                        now = now,
+                    ).size
+                }
+            }
+            AdminDaySummaryResponse(
+                date = date,
+                confirmed = dayAppointments.count { it.status == AppointmentStatus.CONFIRMED },
+                free = free,
+                retained = dayAppointments.count { it.status == AppointmentStatus.CANCELLED && it.slotReleasedAt == null },
+                hasAgenda = hasAgenda,
+            )
+        }
+    }
+
+    @Transactional(readOnly = true)
+    fun dayAvailability(centerId: UUID, date: LocalDate, serviceId: UUID?): List<AdminFreeSlotResponse> {
+        admin("appointments:management:view")
+        if (centers.findById(centerId).isEmpty) throw AppointmentErrors.resourceNotFound()
+        val zone = properties.zone()
+        val now = OffsetDateTime.now(zone)
+        if (date.isBefore(now.atZoneSameInstant(zone).toLocalDate())) return emptyList()
+        val dayStart = date.atStartOfDay(zone).toOffsetDateTime()
+        val dayEnd = date.plusDays(1).atStartOfDay(zone).toOffsetDateTime()
+        val blocking = appointments.findByCenterIdInRange(centerId, dayStart, dayEnd).filter { blocksProfessional(it) }
+        return relevantCenterServices(centerId, serviceId).flatMap { centerService ->
+            val centerServiceId = requireNotNull(centerService.id)
+            val dayAvailabilities = availabilities.findEffectiveByCenterServiceIdAndDayOfWeek(centerServiceId, date.dayOfWeek)
+            if (dayAvailabilities.isEmpty()) return@flatMap emptyList()
+            generator.generate(
+                date = date,
+                durationMinutes = centerService.service.durationMinutes,
+                availabilities = dayAvailabilities,
+                professionalAppointments = blocking,
+                citizenAppointments = emptyList(),
+                zone = zone,
+                now = now,
+            ).map { slot ->
+                AdminFreeSlotResponse(
+                    centerServiceId = centerServiceId,
+                    serviceId = requireNotNull(centerService.service.id),
+                    serviceName = centerService.service.name,
+                    professionalAssignmentId = slot.professionalAssignmentId,
+                    professionalId = slot.professionalId,
+                    professionalName = slot.professionalName,
+                    startsAt = slot.startsAt,
+                    endsAt = slot.endsAt,
+                )
+            }
+        }.sortedWith(compareBy({ it.startsAt }, { it.serviceName }, { it.professionalName }))
     }
 
     @Transactional(readOnly = true)
@@ -198,6 +298,26 @@ class AdminAppointmentService(
         val principal = currentUser.principal()
         return validator.validateAdmin(users.findByIdWithRoles(principal.id), principal, permission)
     }
+
+    private fun relevantCenterServices(centerId: UUID, serviceId: UUID?): List<CenterService> {
+        if (serviceId != null) {
+            return listOf(
+                centerServices.findByCenterIdAndServiceId(centerId, serviceId)
+                    ?: throw AppointmentErrors.resourceNotFound(),
+            )
+        }
+        return centerServices.findAllByCenterIdOrderByServiceNameAsc(centerId)
+    }
+
+    private fun matchesService(appointment: Appointment, serviceId: UUID?): Boolean =
+        serviceId == null || appointment.professionalAssignment.centerService.service.id == serviceId
+
+    private fun blocksProfessional(appointment: Appointment): Boolean =
+        appointment.status == AppointmentStatus.CONFIRMED ||
+            (appointment.status == AppointmentStatus.CANCELLED && appointment.slotReleasedAt == null)
+
+    private fun overlaps(appointment: Appointment, start: OffsetDateTime, end: OffsetDateTime): Boolean =
+        appointment.startsAt.isBefore(end) && appointment.endsAt.isAfter(start)
 
     private fun Appointment.toAdminResponse(): AdminAppointmentResponse = AdminAppointmentResponse(
         appointment = toResponse(properties.zone()),

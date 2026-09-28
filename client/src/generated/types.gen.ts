@@ -1846,6 +1846,31 @@ export type MunicipalCenterListResponse = {
 };
 
 /**
+ * Ocupación de un centro en un día para el calendario administrativo.
+ */
+export type AdminDaySummaryResponse = {
+    date?: string;
+    confirmed?: number;
+    free?: number;
+    retained?: number;
+    hasAgenda?: boolean;
+};
+
+/**
+ * Horario libre de un centro en una fecha, con servicio y profesional.
+ */
+export type AdminFreeSlotResponse = {
+    centerServiceId?: string;
+    serviceId?: string;
+    serviceName?: string;
+    professionalAssignmentId?: string;
+    professionalId?: number;
+    professionalName?: string;
+    startsAt?: string;
+    endsAt?: string;
+};
+
+/**
  * Resumen de una solicitud en el listado administrativo. No incluye documentos ni campos internos de idempotencia.
  */
 export type AdminApplicationListItemResponse = {
@@ -8137,6 +8162,89 @@ export type ListAdminAppointmentSlotsResponses = {
 };
 
 export type ListAdminAppointmentSlotsResponse = ListAdminAppointmentSlotsResponses[keyof ListAdminAppointmentSlotsResponses];
+
+export type ListAdminAppointmentMonthlySummaryData = {
+    body?: never;
+    path?: never;
+    query: {
+        centerId: string;
+        year: number;
+        month: number;
+        serviceId?: string;
+    };
+    url: '/api/admin/appointments/monthly-summary';
+};
+
+export type ListAdminAppointmentMonthlySummaryErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAdminAppointmentMonthlySummaryError = ListAdminAppointmentMonthlySummaryErrors[keyof ListAdminAppointmentMonthlySummaryErrors];
+
+export type ListAdminAppointmentMonthlySummaryResponses = {
+    /**
+     * OK
+     */
+    200: Array<AdminDaySummaryResponse>;
+};
+
+export type ListAdminAppointmentMonthlySummaryResponse = ListAdminAppointmentMonthlySummaryResponses[keyof ListAdminAppointmentMonthlySummaryResponses];
+
+export type ListAdminAppointmentDayAvailabilityData = {
+    body?: never;
+    path?: never;
+    query: {
+        centerId: string;
+        date: string;
+        serviceId?: string;
+    };
+    url: '/api/admin/appointments/day-availability';
+};
+
+export type ListAdminAppointmentDayAvailabilityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAdminAppointmentDayAvailabilityError = ListAdminAppointmentDayAvailabilityErrors[keyof ListAdminAppointmentDayAvailabilityErrors];
+
+export type ListAdminAppointmentDayAvailabilityResponses = {
+    /**
+     * OK
+     */
+    200: Array<AdminFreeSlotResponse>;
+};
+
+export type ListAdminAppointmentDayAvailabilityResponse = ListAdminAppointmentDayAvailabilityResponses[keyof ListAdminAppointmentDayAvailabilityResponses];
 
 export type Get3Data = {
     body?: never;

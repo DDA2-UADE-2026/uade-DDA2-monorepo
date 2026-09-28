@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.appointment.dto.response
 
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -54,4 +55,25 @@ data class AdminAppointmentResponse(
     val citizenId: Long,
     val citizenName: String,
     val slotRetained: Boolean,
+)
+
+@Schema(description = "Ocupación de un centro en un día para el calendario administrativo.")
+data class AdminDaySummaryResponse(
+    val date: LocalDate,
+    val confirmed: Int,
+    val free: Int,
+    val retained: Int,
+    val hasAgenda: Boolean,
+)
+
+@Schema(description = "Horario libre de un centro en una fecha, con servicio y profesional.")
+data class AdminFreeSlotResponse(
+    val centerServiceId: UUID,
+    val serviceId: UUID,
+    val serviceName: String,
+    val professionalAssignmentId: UUID,
+    val professionalId: Long,
+    val professionalName: String,
+    val startsAt: OffsetDateTime,
+    val endsAt: OffsetDateTime,
 )
