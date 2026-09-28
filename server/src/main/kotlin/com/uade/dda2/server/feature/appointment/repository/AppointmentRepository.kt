@@ -51,7 +51,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         select appointment from Appointment appointment
         join appointment.professionalAssignment assignment
         where assignment.professional.id = :professionalId
-          and appointment.status = :status
+           and (appointment.status = :confirmed
+                or (appointment.status = :cancelled and appointment.slotReleasedAt is null))
           and appointment.startsAt < :endsAt
           and appointment.endsAt > :startsAt
         """,
@@ -60,7 +61,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         @Param("professionalId") professionalId: Long,
         @Param("startsAt") startsAt: OffsetDateTime,
         @Param("endsAt") endsAt: OffsetDateTime,
-        @Param("status") status: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("confirmed") confirmed: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("cancelled") cancelled: AppointmentStatus = AppointmentStatus.CANCELLED,
     ): List<Appointment>
 
     @Query(
@@ -69,7 +71,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         join fetch appointment.professionalAssignment assignment
         join fetch assignment.professional professional
         where professional.id in :professionalIds
-          and appointment.status = :status
+           and (appointment.status = :confirmed
+                or (appointment.status = :cancelled and appointment.slotReleasedAt is null))
           and appointment.startsAt < :rangeEnd
           and appointment.endsAt > :rangeStart
         """,
@@ -78,7 +81,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         @Param("professionalIds") professionalIds: Collection<Long>,
         @Param("rangeStart") rangeStart: OffsetDateTime,
         @Param("rangeEnd") rangeEnd: OffsetDateTime,
-        @Param("status") status: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("confirmed") confirmed: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("cancelled") cancelled: AppointmentStatus = AppointmentStatus.CANCELLED,
     ): List<Appointment>
 
     @Query(

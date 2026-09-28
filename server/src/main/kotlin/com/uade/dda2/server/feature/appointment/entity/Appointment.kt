@@ -30,10 +30,6 @@ import java.util.UUID
             name = "uk_appointment_citizen_idempotency",
             columnNames = ["citizen_id", "idempotency_key"],
         ),
-        UniqueConstraint(
-            name = "uk_appointment_assignment_start",
-            columnNames = ["professional_assignment_id", "starts_at"],
-        ),
     ],
     indexes = [
         Index(name = "ix_appointment_citizen_time", columnList = "citizen_id, starts_at, ends_at, status"),
@@ -59,18 +55,22 @@ class Appointment(
     var citizen: User,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "professional_assignment_id", nullable = false, updatable = false)
+    @JoinColumn(name = "professional_assignment_id", nullable = false)
     var professionalAssignment: ProfessionalAssignment,
 
-    @Column(name = "starts_at", nullable = false, updatable = false)
+    @Column(name = "starts_at", nullable = false)
     var startsAt: OffsetDateTime,
 
-    @Column(name = "ends_at", nullable = false, updatable = false)
+    @Column(name = "ends_at", nullable = false)
     var endsAt: OffsetDateTime,
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20, updatable = false)
+    @Column(nullable = false, length = 20)
     var status: AppointmentStatus = AppointmentStatus.CONFIRMED,
+
+    // Null on a cancelled appointment means its professional interval remains blocked.
+    @Column(name = "slot_released_at")
+    var slotReleasedAt: OffsetDateTime? = null,
 
     @Column(name = "idempotency_key", nullable = false, length = 128, updatable = false)
     var idempotencyKey: String,

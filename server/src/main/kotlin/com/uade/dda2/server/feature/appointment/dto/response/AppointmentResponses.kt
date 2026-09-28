@@ -32,7 +32,7 @@ data class AvailableAppointmentSlotResponse(
     val endsAt: OffsetDateTime,
 )
 
-@Schema(description = "Detalle de un turno propio confirmado.")
+@Schema(description = "Detalle vigente de un turno propio, confirmado o cancelado.")
 data class AppointmentResponse(
     val id: UUID,
     val status: AppointmentStatus,

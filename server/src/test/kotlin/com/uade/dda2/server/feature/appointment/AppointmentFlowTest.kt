@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.appointment
 
 import com.uade.dda2.server.feature.appointment.dto.response.AppointmentResponse
 import com.uade.dda2.server.feature.appointment.entity.Appointment
+import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.auth.entity.Permission
 import com.uade.dda2.server.feature.auth.entity.Role
@@ -280,6 +281,36 @@ class AppointmentFlowTest {
         expect(replay, 200)
         assertEquals(storedId, response(replay).id)
         assertEquals("true", replay.response.getHeader("Idempotency-Replayed"))
+    }
+
+    @Test
+    fun `un turno cancelado retiene el horario profesional hasta su liberacion sin bloquear al ciudadano`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        tx {
+            val appointment = appointments.findById(created.id).orElseThrow()
+            appointment.status = AppointmentStatus.CANCELLED
+            appointments.saveAndFlush(appointment)
+        }
+
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        assertFalse(json.readTree(slots(fixture.secondCitizenToken).response.contentAsString).any {
+            it.get("professionalAssignmentId").asText() == fixture.firstAssignmentId.toString() &&
+                it.get("startsAt").asText().contains("T09:00")
+        })
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken),
+            409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        expect(create(fixture.secondAssignmentId, 9, 10, UUID.randomUUID().toString()), 201)
+
+        tx {
+            val appointment = appointments.findById(created.id).orElseThrow()
+            appointment.slotReleasedAt = OffsetDateTime.now(ZoneOffset.UTC)
+            appointments.saveAndFlush(appointment)
+        }
+        assertTrue(json.readTree(slots(fixture.secondCitizenToken).response.contentAsString).any {
+            it.get("professionalAssignmentId").asText() == fixture.firstAssignmentId.toString() &&
+                it.get("startsAt").asText().contains("T09:00")
+        })
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
     }
 
     private fun createFixture(): Fixture = tx {
