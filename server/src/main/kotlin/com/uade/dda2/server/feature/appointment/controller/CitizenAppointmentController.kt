@@ -81,6 +81,11 @@ class CitizenAppointmentController(
             .body(result.appointment)
     }
 
+    @GetMapping("/appointments")
+    @PreAuthorize("hasRole('CIUDADANO') and hasAuthority('appointments:own:view')")
+    @Operation(operationId = "listCitizenAppointments", summary = "Listar turnos propios con su estado")
+    fun list(): List<AppointmentResponse> = appointmentService.list()
+
     @GetMapping("/appointments/{appointmentId}")
     @PreAuthorize("hasRole('CIUDADANO') and hasAuthority('appointments:own:view')")
     @Operation(operationId = "getCitizenAppointment", summary = "Consultar el estado de un turno propio")

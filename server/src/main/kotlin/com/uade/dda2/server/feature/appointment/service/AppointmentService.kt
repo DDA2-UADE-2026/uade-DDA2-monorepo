@@ -119,6 +119,13 @@ class AppointmentService(
         return appointment.toResponse(properties.zone())
     }
 
+    @Transactional(readOnly = true)
+    fun list(): List<AppointmentResponse> {
+        val citizen = authorizedCitizen("appointments:own:view")
+        return appointments.findAllByCitizenIdOrderByStartsAtDesc(requireNotNull(citizen.id))
+            .map { it.toResponse(properties.zone()) }
+    }
+
     private fun authorizedCitizen(permission: String): User {
         val principal = currentUser.principal()
         return validator.validateCitizen(users.findByIdWithRoles(principal.id), principal, permission)

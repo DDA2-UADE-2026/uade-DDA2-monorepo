@@ -79,3 +79,18 @@ export function clearAppointmentAttemptKey(userId: number, assignmentId: string,
 export function slotFingerprint(slot: Pick<AvailableAppointmentSlotResponse, "professionalAssignmentId" | "startsAt" | "endsAt">) {
   return `${slot.professionalAssignmentId ?? ""}|${slot.startsAt ?? ""}|${slot.endsAt ?? ""}`
 }
+
+export function splitAppointments(appointments: AppointmentResponse[], now = new Date()) {
+  const upcoming = appointments
+    .filter((appointment) =>
+      appointment.status === "CONFIRMED" &&
+      appointment.startsAt !== undefined &&
+      new Date(appointment.startsAt).getTime() >= now.getTime(),
+    )
+    .sort((a, b) => (a.startsAt ?? "").localeCompare(b.startsAt ?? ""))
+  const upcomingIds = new Set(upcoming.map((appointment) => appointment.id))
+  const history = appointments
+    .filter((appointment) => !upcomingIds.has(appointment.id))
+    .sort((a, b) => (b.startsAt ?? "").localeCompare(a.startsAt ?? ""))
+  return { upcoming, history }
+}

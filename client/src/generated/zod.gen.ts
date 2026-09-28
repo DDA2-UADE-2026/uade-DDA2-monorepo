@@ -1930,6 +1930,11 @@ export const zLoginBody = zLoginRequestWritable;
  */
 export const zLoginResponse2 = zLoginResponse;
 
+/**
+ * OK
+ */
+export const zListCitizenAppointmentsResponse = z.array(zAppointmentResponse);
+
 export const zCreateCitizenAppointmentBody = zCreateAppointmentRequest;
 
 export const zCreateCitizenAppointmentHeaders = z.object({

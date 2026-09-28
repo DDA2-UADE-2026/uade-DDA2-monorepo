@@ -4266,6 +4266,39 @@ export type LoginResponses = {
 
 export type LoginResponse2 = LoginResponses[keyof LoginResponses];
 
+export type ListCitizenAppointmentsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/citizen/appointments';
+};
+
+export type ListCitizenAppointmentsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListCitizenAppointmentsError = ListCitizenAppointmentsErrors[keyof ListCitizenAppointmentsErrors];
+
+export type ListCitizenAppointmentsResponses = {
+    /**
+     * OK
+     */
+    200: Array<AppointmentResponse>;
+};
+
+export type ListCitizenAppointmentsResponse = ListCitizenAppointmentsResponses[keyof ListCitizenAppointmentsResponses];
+
 export type CreateCitizenAppointmentData = {
     body: CreateAppointmentRequest;
     headers: {

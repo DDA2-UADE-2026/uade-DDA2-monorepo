@@ -207,6 +207,33 @@ class AppointmentFlowTest {
     }
 
     @Test
+    fun `lista turnos propios con su estado sin exponer turnos ajenos`() {
+        val first = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val second = response(create(fixture.firstAssignmentId, 10, 11, UUID.randomUUID().toString()))
+        expect(adminPatch(first.id, "cancel"), 200)
+
+        val listed = authorizedGet("/api/citizen/appointments")
+        expect(listed, 200)
+        val entries = json.readTree(listed.response.contentAsString)
+        assertEquals(listOf(second.id.toString(), first.id.toString()), entries.toList().map { it.get("id").asText() })
+        assertEquals("CONFIRMED", entries[0].get("status").asText())
+        assertEquals("CANCELLED", entries[1].get("status").asText())
+
+        val foreign = mvc.perform(
+            get("/api/citizen/appointments")
+                .header("Authorization", "Bearer ${fixture.secondCitizenToken}"),
+        ).andReturn()
+        expect(foreign, 200)
+        assertEquals(0, json.readTree(foreign.response.contentAsString).size())
+
+        val forbidden = mvc.perform(
+            get("/api/citizen/appointments")
+                .header("Authorization", "Bearer ${fixture.wrongRoleToken}"),
+        ).andReturn()
+        expect(forbidden, 403)
+    }
+
+    @Test
     fun `serializa reservas concurrentes por profesional y ciudadano`() {
         val sameProfessional = concurrently(
             {

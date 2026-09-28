@@ -12,7 +12,9 @@ import {
   getAppointmentAttemptKey,
   isUuid,
   slotFingerprint,
+  splitAppointments,
 } from "@/lib/appointment-flow"
+import type { AppointmentResponse } from "@/generated/types.gen"
 
 describe("appointment-flow", () => {
   it("usa la zona municipal como fecha actual", () => {
@@ -56,5 +58,20 @@ describe("appointment-flow", () => {
     const slot = { professionalAssignmentId: "a1", startsAt: "s", endsAt: "e" }
     expect(slotFingerprint(slot)).toBe("a1|s|e")
     expect(slotFingerprint({ ...slot, startsAt: "otro" })).not.toBe(slotFingerprint(slot))
+  })
+
+  it("separa próximos de historial incluyendo cancelados", () => {
+    const now = new Date("2026-09-28T12:00:00Z")
+    const turno = (id: string, status: "CONFIRMED" | "CANCELLED", startsAt?: string): AppointmentResponse => ({
+      id, status, startsAt,
+    })
+    const { upcoming, history } = splitAppointments([
+      turno("pasado", "CONFIRMED", "2026-09-20T12:00:00Z"),
+      turno("cancelado-futuro", "CANCELLED", "2026-10-05T12:00:00Z"),
+      turno("proximo-2", "CONFIRMED", "2026-10-05T12:00:00Z"),
+      turno("proximo-1", "CONFIRMED", "2026-09-29T12:00:00Z"),
+    ], now)
+    expect(upcoming.map((appointment) => appointment.id)).toEqual(["proximo-1", "proximo-2"])
+    expect(history.map((appointment) => appointment.id)).toEqual(["cancelado-futuro", "pasado"])
   })
 })
