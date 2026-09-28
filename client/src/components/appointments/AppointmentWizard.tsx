@@ -250,19 +250,19 @@ export function AppointmentConfirmation({ userId, service, center, date, slot, o
   }
 
   return (
-    <section aria-label="Revisión y confirmación">
-      <h2 className="mb-3 font-medium">5. Revisión y confirmación</h2>
+    <section aria-label="Revisión y confirmación" className="space-y-5">
+      <h2 className="font-medium">5. Revisión y confirmación</h2>
       <Card>
         <CardHeader>
           <Badge variant="secondary" className="w-fit">{service.name}</Badge>
           <CardTitle className="font-heading text-xl">{center.name}</CardTitle>
           <CardDescription>{center.address}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+        <CardContent className="space-y-3 text-sm">
           <p><span className="font-medium">Fecha:</span> {formatAppointmentDate(date)}</p>
           <p><span className="font-medium">Horario:</span> {formatAppointmentRange(slot.startsAt, slot.endsAt)}</p>
           <p><span className="font-medium">Profesional:</span> {slot.professionalName}</p>
-          <p className="text-muted-foreground">Los horarios se muestran en hora de Buenos Aires.</p>
+          <p className="pt-2 text-muted-foreground">Los horarios se muestran en hora de Buenos Aires.</p>
         </CardContent>
       </Card>
       <Alert><IconCheck /><AlertTitle>Vas a solicitar este turno a tu nombre</AlertTitle><AlertDescription>El turno queda confirmado de inmediato y no se puede cancelar desde esta historia.</AlertDescription></Alert>
