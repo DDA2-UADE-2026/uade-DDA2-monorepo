@@ -1,6 +1,6 @@
 package com.uade.dda2.server.feature.appointment.controller
 
-import com.uade.dda2.server.feature.appointment.dto.response.AppointmentResponse
+import com.uade.dda2.server.feature.appointment.dto.response.AdminAppointmentResponse
 import com.uade.dda2.server.feature.appointment.dto.request.RescheduleAppointmentRequest
 import com.uade.dda2.server.feature.appointment.dto.response.AvailableAppointmentSlotResponse
 import com.uade.dda2.server.feature.appointment.service.AdminAppointmentService
@@ -24,10 +24,18 @@ import java.time.LocalDate
 @RequestMapping("/api/admin/appointments", produces = ["application/json"])
 @Tag(name = "Gestión de turnos", description = "Gestión de turnos de todos los centros municipales.")
 class AdminAppointmentController(private val service: AdminAppointmentService) {
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') and hasAuthority('appointments:management:view')")
+    @Operation(operationId = "listAdminAppointments", summary = "Buscar turnos por centro y fecha")
+    fun list(
+        @RequestParam centerId: UUID,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate,
+    ): List<AdminAppointmentResponse> = service.list(centerId, date)
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('appointments:management:view')")
     @Operation(operationId = "getAdminAppointment", summary = "Consultar un turno para su gestión")
-    fun get(@PathVariable id: UUID): AppointmentResponse = service.get(id)
+    fun get(@PathVariable id: UUID): AdminAppointmentResponse = service.get(id)
 
     @GetMapping("/{id}/slots")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('appointments:management:view')")
@@ -40,16 +48,16 @@ class AdminAppointmentController(private val service: AdminAppointmentService) {
     @PutMapping("/{id}/schedule")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('appointments:management:manage')")
     @Operation(operationId = "rescheduleAdminAppointment", summary = "Reprogramar un turno pendiente")
-    fun reschedule(@PathVariable id: UUID, @Valid @RequestBody request: RescheduleAppointmentRequest): AppointmentResponse =
+    fun reschedule(@PathVariable id: UUID, @Valid @RequestBody request: RescheduleAppointmentRequest): AdminAppointmentResponse =
         service.reschedule(id, request)
 
     @PatchMapping("/{id}/cancel")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('appointments:management:manage')")
     @Operation(operationId = "cancelAdminAppointment", summary = "Cancelar un turno pendiente y retener su horario")
-    fun cancel(@PathVariable id: UUID): AppointmentResponse = service.cancel(id)
+    fun cancel(@PathVariable id: UUID): AdminAppointmentResponse = service.cancel(id)
 
     @PatchMapping("/{id}/release-slot")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('appointments:management:manage')")
     @Operation(operationId = "releaseAdminAppointmentSlot", summary = "Habilitar el horario de un turno cancelado")
-    fun release(@PathVariable id: UUID): AppointmentResponse = service.release(id)
+    fun release(@PathVariable id: UUID): AdminAppointmentResponse = service.release(id)
 }

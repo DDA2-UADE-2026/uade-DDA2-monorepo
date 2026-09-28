@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.appointment.service
 
 import com.uade.dda2.server.config.AppointmentProperties
 import com.uade.dda2.server.feature.appointment.dto.response.AppointmentResponse
+import com.uade.dda2.server.feature.appointment.dto.response.AdminAppointmentResponse
 import com.uade.dda2.server.feature.appointment.dto.request.RescheduleAppointmentRequest
 import com.uade.dda2.server.feature.appointment.dto.response.AvailableAppointmentSlotResponse
 import com.uade.dda2.server.feature.appointment.entity.Appointment
@@ -48,9 +49,17 @@ class AdminAppointmentService(
     private val entityManager: EntityManager,
 ) {
     @Transactional(readOnly = true)
-    fun get(id: UUID): AppointmentResponse {
+    fun get(id: UUID): AdminAppointmentResponse {
         admin("appointments:management:view")
-        return (appointments.findDetailById(id) ?: throw AppointmentErrors.resourceNotFound()).toResponse(properties.zone())
+        return (appointments.findDetailById(id) ?: throw AppointmentErrors.resourceNotFound()).toAdminResponse()
+    }
+
+    @Transactional(readOnly = true)
+    fun list(centerId: UUID, date: LocalDate): List<AdminAppointmentResponse> {
+        admin("appointments:management:view")
+        val start = date.atStartOfDay(properties.zone()).toOffsetDateTime()
+        val end = date.plusDays(1).atStartOfDay(properties.zone()).toOffsetDateTime()
+        return appointments.findByCenterIdInRange(centerId, start, end).map { it.toAdminResponse() }
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +80,7 @@ class AdminAppointmentService(
     }
 
     @Transactional
-    fun reschedule(id: UUID, request: RescheduleAppointmentRequest): AppointmentResponse {
+    fun reschedule(id: UUID, request: RescheduleAppointmentRequest): AdminAppointmentResponse {
         val target = assignments.findAppointmentLockDataById(request.professionalAssignmentId)
             ?: throw AppointmentErrors.slotUnavailable()
         val locked = lockAppointment(id, target.professionalId)
@@ -115,22 +124,22 @@ class AdminAppointmentService(
         appointment.endsAt = endsAt
         appointments.saveAndFlush(appointment)
         record(locked.actor, appointment, "RESCHEDULE", old)
-        return appointment.toResponse(properties.zone())
+        return appointment.toAdminResponse()
     }
 
     @Transactional
-    fun cancel(id: UUID): AppointmentResponse {
+    fun cancel(id: UUID): AdminAppointmentResponse {
         val locked = lockAppointment(id)
         validator.validateManageable(locked.appointment, OffsetDateTime.now(properties.zone()))
         val old = json.writeValueAsString(locked.appointment.toAuditSnapshot())
         locked.appointment.status = AppointmentStatus.CANCELLED
         appointments.saveAndFlush(locked.appointment)
         record(locked.actor, locked.appointment, "CANCEL", old)
-        return locked.appointment.toResponse(properties.zone())
+        return locked.appointment.toAdminResponse()
     }
 
     @Transactional
-    fun release(id: UUID): AppointmentResponse {
+    fun release(id: UUID): AdminAppointmentResponse {
         val locked = lockAppointment(id)
         if (locked.appointment.status != AppointmentStatus.CANCELLED) throw AppointmentErrors.notManageable()
         if (locked.appointment.slotReleasedAt != null) throw AppointmentErrors.slotAlreadyReleased()
@@ -138,7 +147,7 @@ class AdminAppointmentService(
         locked.appointment.slotReleasedAt = OffsetDateTime.now(properties.zone())
         appointments.saveAndFlush(locked.appointment)
         record(locked.actor, locked.appointment, "RELEASE", old)
-        return locked.appointment.toResponse(properties.zone())
+        return locked.appointment.toAdminResponse()
     }
 
     internal data class LockedAppointment(val appointment: Appointment, val actor: User)
@@ -151,6 +160,10 @@ class AdminAppointmentService(
         val assignmentId = requireNotNull(snapshot.professionalAssignment.id)
         val citizenId = requireNotNull(snapshot.citizen.id)
         val professionalId = requireNotNull(snapshot.professionalAssignment.professional.id)
+        val previousStart = snapshot.startsAt.toInstant()
+        val previousEnd = snapshot.endsAt.toInstant()
+        val previousStatus = snapshot.status
+        val previousRelease = snapshot.slotReleasedAt
         centers.findByIdForUpdate(centerId) ?: throw AppointmentErrors.resourceNotFound()
         val lockedUsers = users.findAllByIdsForUpdate(
             listOfNotNull(principal.id, citizenId, professionalId, additionalProfessionalId).distinct().sorted(),
@@ -160,6 +173,9 @@ class AdminAppointmentService(
         entityManager.refresh(appointment)
         if (appointment.professionalAssignment.id != assignmentId ||
             appointment.citizen.id != citizenId ||
+            appointment.startsAt.toInstant() != previousStart ||
+            appointment.endsAt.toInstant() != previousEnd ||
+            appointment.status != previousStatus || appointment.slotReleasedAt != previousRelease ||
             lockedUsers[professionalId] == null || lockedUsers[citizenId] == null ||
             (additionalProfessionalId != null && lockedUsers[additionalProfessionalId] == null)) {
             throw AppointmentErrors.notManageable()
@@ -182,4 +198,11 @@ class AdminAppointmentService(
         val principal = currentUser.principal()
         return validator.validateAdmin(users.findByIdWithRoles(principal.id), principal, permission)
     }
+
+    private fun Appointment.toAdminResponse(): AdminAppointmentResponse = AdminAppointmentResponse(
+        appointment = toResponse(properties.zone()),
+        citizenId = requireNotNull(citizen.id),
+        citizenName = citizen.name,
+        slotRetained = status == AppointmentStatus.CANCELLED && slotReleasedAt == null,
+    )
 }

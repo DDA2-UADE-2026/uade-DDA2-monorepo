@@ -93,6 +93,7 @@ class AppointmentFlowTest {
         val secondCitizenToken: String,
         val adminToken: String,
         val serviceId: UUID,
+        val centerId: UUID,
         val centerServiceId: UUID,
         val firstAssignmentId: UUID,
         val secondAssignmentId: UUID,
@@ -284,6 +285,8 @@ class AppointmentFlowTest {
         expect(replay, 200)
         assertEquals(storedId, response(replay).id)
         assertEquals("true", replay.response.getHeader("Idempotency-Replayed"))
+        expect(adminPatch(storedId, "cancel"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+        expect(reschedule(storedId, fixture.secondAssignmentId, 10, 11), 409, "APPOINTMENT_NOT_MANAGEABLE")
     }
 
     @Test
@@ -320,18 +323,26 @@ class AppointmentFlowTest {
     fun `administrativo cancela y habilita manualmente el horario mientras ciudadano consulta su estado`() {
         val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
         expect(adminGet(created.id), 200)
+        val listed = json.readTree(adminList().response.contentAsString)
+        assertTrue(listed.any { it.get("appointment").get("id").asText() == created.id.toString() })
+        assertEquals(false, json.readTree(adminGet(created.id).response.contentAsString).get("slotRetained").asBoolean())
+        expect(mvc.perform(get("/api/admin/appointments/${created.id}")
+            .header("Authorization", "Bearer ${fixture.token}")).andReturn(), 403)
         expect(adminPatch(created.id, "cancel", fixture.token), 403)
         expect(adminPatch(created.id, "release-slot"), 409, "APPOINTMENT_NOT_MANAGEABLE")
 
         val cancelled = adminPatch(created.id, "cancel")
         expect(cancelled, 200)
-        assertEquals("CANCELLED", response(cancelled).status.name)
+        assertEquals("CANCELLED", adminResponse(cancelled).status.name)
+        assertTrue(json.readTree(cancelled.response.contentAsString).get("slotRetained").asBoolean())
         assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
         expect(adminPatch(created.id, "cancel"), 409, "APPOINTMENT_NOT_MANAGEABLE")
         expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken),
             409, "APPOINTMENT_SLOT_UNAVAILABLE")
 
-        expect(adminPatch(created.id, "release-slot"), 200)
+        val released = adminPatch(created.id, "release-slot")
+        expect(released, 200)
+        assertFalse(json.readTree(released.response.contentAsString).get("slotRetained").asBoolean())
         expect(adminPatch(created.id, "release-slot"), 409, "APPOINTMENT_SLOT_ALREADY_RELEASED")
         expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
         assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
@@ -352,7 +363,7 @@ class AppointmentFlowTest {
 
         val result = reschedule(created.id, fixture.secondAssignmentId, 10, 11)
         expect(result, 200)
-        val updated = response(result)
+        val updated = adminResponse(result)
         assertEquals(created.id, updated.id)
         assertEquals(created.serviceId, updated.serviceId)
         assertEquals(created.centerId, updated.centerId)
@@ -376,6 +387,40 @@ class AppointmentFlowTest {
         assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
         expect(reschedule(created.id, fixture.firstAssignmentId, 9, 10), 400, "APPOINTMENT_INVALID_REQUEST")
         assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+    }
+
+    @Test
+    fun `no cambia centro ni servicio y rechaza superposicion del ciudadano`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(create(fixture.secondAssignmentId, 10, 11, UUID.randomUUID().toString()), 201)
+        expect(reschedule(created.id, fixture.firstAssignmentId, 10, 11), 409, "APPOINTMENT_CITIZEN_OVERLAP")
+
+        val anotherCenterAssignment = tx {
+            val service = services.findById(fixture.serviceId).orElseThrow()
+            val center = centers.saveAndFlush(MunicipalCenter(name = "Otro centro ${UUID.randomUUID()}", address = "Calle 2"))
+            val centerService = centerServices.saveAndFlush(CenterService(center = center, service = service))
+            assignments.saveAndFlush(ProfessionalAssignment(
+                professional = assignments.findById(fixture.firstAssignmentId).orElseThrow().professional,
+                centerService = centerService,
+            )).id!!
+        }
+        expect(reschedule(created.id, anotherCenterAssignment, 11, 12), 409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+    }
+
+    @Test
+    fun `dos cancelaciones simultaneas no modifican el turno dos veces`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val results = concurrently(
+            { adminPatch(created.id, "cancel") },
+            { adminPatch(created.id, "cancel") },
+        )
+        assertEquals(listOf(200, 409), results.map { it.response.status }.sorted())
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        assertEquals(1, jdbc.queryForObject(
+            "select count(*) from logs where entity_type = 'appointment' and entity_id = ? and action = 'update'",
+            Long::class.java, created.id.toString(),
+        ))
     }
 
     private fun createFixture(): Fixture = tx {
@@ -452,6 +497,7 @@ class AppointmentFlowTest {
             secondCitizenToken = jwt.createToken(secondCitizen, citizenRole),
             adminToken = jwt.createToken(admin, adminRole),
             serviceId = requireNotNull(service.id),
+            centerId = requireNotNull(center.id),
             centerServiceId = requireNotNull(centerService.id),
             firstAssignmentId = requireNotNull(firstAssignment.id),
             secondAssignmentId = requireNotNull(secondAssignment.id),
@@ -477,6 +523,13 @@ class AppointmentFlowTest {
 
     private fun adminGet(id: UUID): MvcResult = mvc.perform(
         get("/api/admin/appointments/$id").header("Authorization", "Bearer ${fixture.adminToken}"),
+    ).andReturn()
+
+    private fun adminList(): MvcResult = mvc.perform(
+        get("/api/admin/appointments")
+            .header("Authorization", "Bearer ${fixture.adminToken}")
+            .queryParam("centerId", fixture.centerId.toString())
+            .queryParam("date", fixture.date.toString()),
     ).andReturn()
 
     private fun adminPatch(id: UUID, action: String, token: String = fixture.adminToken): MvcResult = mvc.perform(
@@ -523,6 +576,9 @@ class AppointmentFlowTest {
 
     private fun response(result: MvcResult): AppointmentResponse =
         json.readValue(result.response.contentAsString, AppointmentResponse::class.java)
+
+    private fun adminResponse(result: MvcResult): AppointmentResponse =
+        json.readValue(json.readTree(result.response.contentAsString).get("appointment").toString(), AppointmentResponse::class.java)
 
     private fun expect(result: MvcResult, status: Int, code: String? = null) {
         assertEquals(status, result.response.status, result.response.contentAsString)

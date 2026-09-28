@@ -47,3 +47,11 @@ data class AppointmentResponse(
     val endsAt: OffsetDateTime,
     val createdAt: OffsetDateTime,
 )
+
+@Schema(description = "Detalle administrativo del turno y estado de retención de su horario.")
+data class AdminAppointmentResponse(
+    val appointment: AppointmentResponse,
+    val citizenId: Long,
+    val citizenName: String,
+    val slotRetained: Boolean,
+)

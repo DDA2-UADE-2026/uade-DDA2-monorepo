@@ -16,6 +16,21 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
     @Query("select a from Appointment a where a.id = :id")
     fun findDetailById(@Param("id") id: UUID): Appointment?
 
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional", "professionalAssignment.centerService.center", "professionalAssignment.centerService.service"])
+    @Query(
+        """
+        select a from Appointment a
+        where a.professionalAssignment.centerService.center.id = :centerId
+          and a.startsAt < :rangeEnd and a.endsAt > :rangeStart
+        order by a.startsAt asc
+        """,
+    )
+    fun findByCenterIdInRange(
+        @Param("centerId") centerId: UUID,
+        @Param("rangeStart") rangeStart: OffsetDateTime,
+        @Param("rangeEnd") rangeEnd: OffsetDateTime,
+    ): List<Appointment>
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Appointment a where a.id = :id")
     fun findByIdForUpdate(@Param("id") id: UUID): Appointment?

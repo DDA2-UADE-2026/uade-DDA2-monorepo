@@ -1,4 +1,4 @@
-# Appointment — Turnos de salud comunitaria (HU-18)
+# Appointment — Turnos de salud comunitaria (HU-18 y HU-19)
 
 Esta guía explica cómo un ciudadano solicita un turno de salud comunitaria. Está pensada para alguien que no conoce el proyecto y no requiere conocimientos técnicos.
 
@@ -24,12 +24,22 @@ Esta guía explica cómo un ciudadano solicita un turno de salud comunitaria. Es
 | El ciudadano ya tiene un turno superpuesto | La solicitud se rechaza, aunque sea otro servicio, centro o profesional. |
 | Dos horarios seguidos (por ejemplo 09:00–10:00 y 10:00–11:00) | Se permiten; no se consideran superpuestos. |
 | Se reintenta la misma solicitud (doble clic, error de red) | No se duplica: con la misma clave de idempotencia se devuelve el turno original. |
-| Cambia la agenda o la duración del servicio después | El turno confirmado conserva su fecha y horario; el cambio solo afecta nuevas consultas. |
+| Cambia la agenda o la duración del servicio después | El turno conserva su fecha y horario; el cambio solo afecta nuevas consultas, salvo reprogramación administrativa posterior (HU-19). |
 | Se consulta un turno de otra persona | Se responde como inexistente, sin revelar datos. |
 
-## Qué no incluye esta historia
+## Qué no incluye HU-18
 
 Solicitar turnos para terceros, listado de "Mis turnos", cancelación, reprogramación, registro de asistencia o resultado de la atención, notificaciones externas y sincronización con calendarios.
+
+## Gestión administrativa posterior (HU-19)
+
+Un `ADMIN` con permisos `appointments:management:view` y `appointments:management:manage` gestiona turnos de cualquier centro. Se considera pendiente de atención un turno `CONFIRMED` cuyo inicio todavía no llegó. Puede buscar turnos por centro y fecha, consultar su detalle, reprogramarlos dentro del mismo centro y servicio a un horario vigente (con otro profesional si corresponde) o cancelarlos.
+
+El turno reprogramado conserva identificador y titular; su horario anterior vuelve a la oferta si sigue siendo válido. Un turno cancelado muestra `CANCELLED` en el detalle propio del ciudadano, pero **retiene** el intervalo del profesional hasta que un administrativo lo habilita manualmente. El turno cancelado no bloquea otros turnos del ciudadano. La habilitación solo quita la retención: la agenda vigente decide si el horario vuelve a ofrecerse.
+
+Contrato administrativo: `GET /api/admin/appointments?centerId={id}&date={YYYY-MM-DD}`, `GET /api/admin/appointments/{id}`, `GET /api/admin/appointments/{id}/slots?date={YYYY-MM-DD}`, `PUT /api/admin/appointments/{id}/schedule`, `PATCH /api/admin/appointments/{id}/cancel`, `PATCH /api/admin/appointments/{id}/release-slot`. La respuesta administrativa incluye titular y `slotRetained`; las consultas ciudadanas siguen limitadas al titular.
+
+En bases PostgreSQL existentes se debe aplicar `server/docs/database/migrations/2026-09-28-hu19-appointment-cancellation.sql` antes de habilitar cancelaciones: `ddl-auto=update` no elimina la unicidad anterior de `(professional_assignment_id, starts_at)`, que impediría reservar un horario liberado, ni corrige un posible check antiguo que solo permita `CONFIRMED`. El script incorpora la columna nullable `slot_released_at`, admite ambos estados y agrega los permisos de gestión al rol `ADMIN` de manera aditiva. En bases nuevas, `server/docs/database/init.sql` carga esos permisos junto con el resto de los datos iniciales de prueba.
 
 ## Referencia técnica
 
