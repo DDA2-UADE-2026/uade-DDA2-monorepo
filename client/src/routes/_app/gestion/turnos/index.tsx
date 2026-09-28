@@ -1,8 +1,10 @@
 import { IconCalendarEvent, IconRefresh } from "@tabler/icons-react"
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 
 import { adminAppointmentSearchSchema } from "@/components/turnos/adminAppointmentFilters"
+import { adminCenterOptions } from "@/components/turnos/adminCenterOptions"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Badge } from "@/components/ui/badge"
@@ -11,8 +13,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { listAdminAppointmentsOptions, listMunicipalCentersOptions } from "@/generated/@tanstack/react-query.gen"
-import { appointmentStatusLabels, formatAppointmentRange } from "@/lib/appointment-flow"
+import { getMunicipalCenterOptions, listAdminAppointmentsOptions } from "@/generated/@tanstack/react-query.gen"
+import { appointmentStatusLabels, formatAppointmentRange, isUuid } from "@/lib/appointment-flow"
 
 export const Route = createFileRoute("/_app/gestion/turnos/")({
   validateSearch: adminAppointmentSearchSchema,
@@ -28,10 +30,21 @@ function RouteComponent() {
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const setSearch = (patch: Partial<typeof search>) => navigate({ search: { ...search, ...patch } })
+  const [centerSearchInput, setCenterSearchInput] = useState("")
+  const [centerSearch, setCenterSearch] = useState("")
 
-  const centers = useQuery(listMunicipalCentersOptions({ query: { active: true, size: 200 } }))
-  const centerOptions = centers.data?.content ?? []
-  const selectedCenter = centerOptions.find((center) => center.id === search.centro)
+  const centers = useInfiniteQuery(adminCenterOptions(centerSearch))
+  const centerOptions = Array.from(
+    new Map(centers.data?.pages.flatMap((page) => page.content ?? []).map((center) => [center.id, center]) ?? []).values(),
+  )
+  const selectedCenterDetail = useQuery({
+    ...getMunicipalCenterOptions({ path: { id: search.centro } }),
+    enabled: isUuid(search.centro),
+  })
+  const selectedCenter = centerOptions.find((center) => center.id === search.centro) ?? selectedCenterDetail.data
+  const selectOptions = selectedCenter && !centerOptions.some((center) => center.id === selectedCenter.id)
+    ? [selectedCenter, ...centerOptions]
+    : centerOptions
 
   const appointments = useQuery({
     ...listAdminAppointmentsOptions({ query: { centerId: search.centro, date: search.fecha } }),
@@ -51,10 +64,22 @@ function RouteComponent() {
             <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
               <div className="space-y-1.5">
                 <Label htmlFor="turnos-centro">Centro</Label>
+                <div className="flex gap-2">
+                  <Input
+                    aria-label="Buscar centro por nombre"
+                    placeholder="Buscar centro por nombre…"
+                    value={centerSearchInput}
+                    onChange={(event) => setCenterSearchInput(event.target.value)}
+                    onKeyDown={(event) => { if (event.key === "Enter") setCenterSearch(centerSearchInput.trim()) }}
+                  />
+                  <Button type="button" variant="outline" onClick={() => setCenterSearch(centerSearchInput.trim())}>
+                    Buscar
+                  </Button>
+                </div>
                 <Select
                   value={search.centro}
                   onValueChange={(value) => setSearch({ centro: value ?? "" })}
-                  disabled={centers.isPending}
+                  disabled={centers.isPending && !selectedCenter}
                 >
                   <SelectTrigger id="turnos-centro" aria-label="Centro">
                     <SelectValue placeholder="Seleccioná un centro">
@@ -62,12 +87,26 @@ function RouteComponent() {
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {centerOptions.map((center) => (
+                    {selectOptions.map((center) => (
                       <SelectItem key={center.id} value={center.id ?? ""}>{center.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                {centers.isError && (
+                {!centers.isPending && !centers.isError && centerOptions.length === 0 && (
+                  <p className="text-xs text-muted-foreground">No hay centros con ese criterio.</p>
+                )}
+                {centers.hasNextPage && (
+                  <Button type="button" size="sm" variant="ghost" disabled={centers.isFetchingNextPage} onClick={() => centers.fetchNextPage()}>
+                    {centers.isFetchingNextPage ? "Cargando centros…" : "Cargar más centros"}
+                  </Button>
+                )}
+                {centers.isFetchNextPageError && (
+                  <p className="text-xs text-destructive">
+                    No se pudieron cargar más centros.{" "}
+                    <button type="button" className="underline" onClick={() => centers.fetchNextPage()}>Reintentar</button>
+                  </p>
+                )}
+                {centers.isError && !centers.isFetchNextPageError && (
                   <p className="text-xs text-destructive">
                     No se pudieron cargar los centros.{" "}
                     <button type="button" className="underline" onClick={() => centers.refetch()}>Reintentar</button>
