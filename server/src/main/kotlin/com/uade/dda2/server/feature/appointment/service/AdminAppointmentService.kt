@@ -2,6 +2,8 @@ package com.uade.dda2.server.feature.appointment.service
 
 import com.uade.dda2.server.config.AppointmentProperties
 import com.uade.dda2.server.feature.appointment.dto.response.AppointmentResponse
+import com.uade.dda2.server.feature.appointment.dto.request.RescheduleAppointmentRequest
+import com.uade.dda2.server.feature.appointment.dto.response.AvailableAppointmentSlotResponse
 import com.uade.dda2.server.feature.appointment.entity.Appointment
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
 import com.uade.dda2.server.feature.appointment.error.AppointmentErrors
@@ -13,6 +15,9 @@ import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.center.repository.MunicipalCenterRepository
+import com.uade.dda2.server.feature.center.repository.CenterServiceRepository
+import com.uade.dda2.server.feature.center.repository.MunicipalServiceRepository
+import com.uade.dda2.server.feature.center.repository.ProfessionalAssignmentRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
@@ -21,12 +26,19 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.json.JsonMapper
 import java.time.OffsetDateTime
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Service
 class AdminAppointmentService(
     private val appointments: AppointmentRepository,
     private val centers: MunicipalCenterRepository,
+    private val centerServices: CenterServiceRepository,
+    private val municipalServices: MunicipalServiceRepository,
+    private val assignments: ProfessionalAssignmentRepository,
+    private val slots: AppointmentSlotService,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
     private val validator: AppointmentValidator,
@@ -39,6 +51,71 @@ class AdminAppointmentService(
     fun get(id: UUID): AppointmentResponse {
         admin("appointments:management:view")
         return (appointments.findDetailById(id) ?: throw AppointmentErrors.resourceNotFound()).toResponse(properties.zone())
+    }
+
+    @Transactional(readOnly = true)
+    fun listSlots(id: UUID, date: LocalDate): List<AvailableAppointmentSlotResponse> {
+        admin("appointments:management:view")
+        val appointment = appointments.findDetailById(id) ?: throw AppointmentErrors.resourceNotFound()
+        val now = OffsetDateTime.now(properties.zone())
+        validator.validateManageable(appointment, now)
+        return slots.availableSlots(
+            centerServiceId = requireNotNull(appointment.professionalAssignment.centerService.id),
+            date = date,
+            citizenId = requireNotNull(appointment.citizen.id),
+            now = now,
+            excludeAppointmentId = id,
+        ).filterNot { it.professionalAssignmentId == appointment.professionalAssignment.id &&
+            it.startsAt.toInstant() == appointment.startsAt.toInstant() &&
+            it.endsAt.toInstant() == appointment.endsAt.toInstant() }
+    }
+
+    @Transactional
+    fun reschedule(id: UUID, request: RescheduleAppointmentRequest): AppointmentResponse {
+        val target = assignments.findAppointmentLockDataById(request.professionalAssignmentId)
+            ?: throw AppointmentErrors.slotUnavailable()
+        val locked = lockAppointment(id, target.professionalId)
+        val appointment = locked.appointment
+        val now = OffsetDateTime.now(properties.zone()).truncatedTo(ChronoUnit.MICROS)
+        validator.validateManageable(appointment, now)
+        val currentAssignment = appointment.professionalAssignment
+        if (target.centerServiceId != currentAssignment.centerService.id ||
+            target.centerId != currentAssignment.centerService.center.id ||
+            target.serviceId != currentAssignment.centerService.service.id) throw AppointmentErrors.slotUnavailable()
+        val startsAt = request.startsAt.toInstant().truncatedTo(ChronoUnit.MICROS).atOffset(ZoneOffset.UTC)
+        val endsAt = request.endsAt.toInstant().truncatedTo(ChronoUnit.MICROS).atOffset(ZoneOffset.UTC)
+        validator.validateRequestedRange(startsAt, endsAt, now)
+        if (currentAssignment.id == request.professionalAssignmentId &&
+            appointment.startsAt.toInstant() == startsAt.toInstant() &&
+            appointment.endsAt.toInstant() == endsAt.toInstant()) {
+            throw AppointmentErrors.invalidRequest("El nuevo horario debe ser diferente del horario actual.")
+        }
+        municipalServices.findByIdForUpdate(target.serviceId) ?: throw AppointmentErrors.slotUnavailable()
+        centerServices.findByIdForUpdate(target.centerServiceId) ?: throw AppointmentErrors.slotUnavailable()
+        val assignment = assignments.findByIdForUpdate(request.professionalAssignmentId)
+            ?: throw AppointmentErrors.slotUnavailable()
+        val date = startsAt.atZoneSameInstant(properties.zone()).toLocalDate()
+        val onGrid = slots.availableSlots(
+            centerServiceId = target.centerServiceId,
+            date = date,
+            citizenId = requireNotNull(appointment.citizen.id),
+            now = now,
+            includeOccupancy = false,
+        ).any { it.professionalAssignmentId == request.professionalAssignmentId &&
+            it.startsAt.toInstant() == startsAt.toInstant() && it.endsAt.toInstant() == endsAt.toInstant() }
+        if (!onGrid) throw AppointmentErrors.slotUnavailable()
+        if (appointments.findOverlapsByCitizenId(requireNotNull(appointment.citizen.id), startsAt, endsAt)
+                .any { it.id != id }) throw AppointmentErrors.citizenOverlap()
+        if (appointments.findOverlapsByProfessionalId(target.professionalId, startsAt, endsAt)
+                .any { it.id != id }) throw AppointmentErrors.slotUnavailable()
+
+        val old = json.writeValueAsString(appointment.toAuditSnapshot())
+        appointment.professionalAssignment = assignment
+        appointment.startsAt = startsAt
+        appointment.endsAt = endsAt
+        appointments.saveAndFlush(appointment)
+        record(locked.actor, appointment, "RESCHEDULE", old)
+        return appointment.toResponse(properties.zone())
     }
 
     @Transactional
@@ -83,7 +160,8 @@ class AdminAppointmentService(
         entityManager.refresh(appointment)
         if (appointment.professionalAssignment.id != assignmentId ||
             appointment.citizen.id != citizenId ||
-            lockedUsers[professionalId] == null || lockedUsers[citizenId] == null) {
+            lockedUsers[professionalId] == null || lockedUsers[citizenId] == null ||
+            (additionalProfessionalId != null && lockedUsers[additionalProfessionalId] == null)) {
             throw AppointmentErrors.notManageable()
         }
         return LockedAppointment(appointment, actor)

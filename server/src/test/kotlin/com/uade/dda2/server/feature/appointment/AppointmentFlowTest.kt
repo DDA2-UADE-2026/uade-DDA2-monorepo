@@ -35,6 +35,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -340,6 +341,43 @@ class AppointmentFlowTest {
         ))
     }
 
+    @Test
+    fun `reprograma en el mismo centro hacia otro profesional sin cambiar titular ni identificador`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val options = json.readTree(adminSlots(created.id).response.contentAsString)
+        assertTrue(options.any { it.get("professionalAssignmentId").asText() == fixture.secondAssignmentId.toString() &&
+            it.get("startsAt").asText().contains("T10:00") })
+        assertFalse(options.any { it.get("professionalAssignmentId").asText() == fixture.firstAssignmentId.toString() &&
+            it.get("startsAt").asText().contains("T09:00") })
+
+        val result = reschedule(created.id, fixture.secondAssignmentId, 10, 11)
+        expect(result, 200)
+        val updated = response(result)
+        assertEquals(created.id, updated.id)
+        assertEquals(created.serviceId, updated.serviceId)
+        assertEquals(created.centerId, updated.centerId)
+        assertEquals("CONFIRMED", updated.status.name)
+        assertEquals("Profesional Dos", updated.professionalName)
+        assertEquals(at(10).toInstant(), updated.startsAt.toInstant())
+        assertEquals(updated, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+        assertEquals(200, adminGet(created.id).response.status)
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+        assertEquals(1, jdbc.queryForObject(
+            "select count(*) from logs where entity_type = 'appointment' and entity_id = ? and action = 'update'",
+            Long::class.java, created.id.toString(),
+        ))
+    }
+
+    @Test
+    fun `reprogramacion rechaza horario ocupado y conserva los datos originales`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(create(fixture.secondAssignmentId, 10, 11, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+        expect(reschedule(created.id, fixture.secondAssignmentId, 10, 11), 409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+        expect(reschedule(created.id, fixture.firstAssignmentId, 9, 10), 400, "APPOINTMENT_INVALID_REQUEST")
+        assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+    }
+
     private fun createFixture(): Fixture = tx {
         val view = permission("appointments:own:view")
         val create = permission("appointments:own:create")
@@ -443,6 +481,19 @@ class AppointmentFlowTest {
 
     private fun adminPatch(id: UUID, action: String, token: String = fixture.adminToken): MvcResult = mvc.perform(
         patch("/api/admin/appointments/$id/$action").header("Authorization", "Bearer $token"),
+    ).andReturn()
+
+    private fun adminSlots(id: UUID): MvcResult = mvc.perform(
+        get("/api/admin/appointments/$id/slots")
+            .header("Authorization", "Bearer ${fixture.adminToken}")
+            .queryParam("date", fixture.date.toString()),
+    ).andReturn()
+
+    private fun reschedule(id: UUID, assignmentId: UUID, startHour: Int, endHour: Int): MvcResult = mvc.perform(
+        put("/api/admin/appointments/$id/schedule")
+            .header("Authorization", "Bearer ${fixture.adminToken}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"professionalAssignmentId":"$assignmentId","startsAt":"${at(startHour)}","endsAt":"${at(endHour)}"}"""),
     ).andReturn()
 
     private fun slots(token: String): MvcResult = mvc.perform(
