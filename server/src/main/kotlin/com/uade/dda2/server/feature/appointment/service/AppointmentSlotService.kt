@@ -73,6 +73,7 @@ class AppointmentSlotService(
         citizenId: Long,
         now: OffsetDateTime,
         includeOccupancy: Boolean = true,
+        excludeAppointmentId: UUID? = null,
     ): List<AvailableAppointmentSlotResponse> {
         validator.validateDate(date, now, properties.zone())
         val centerService = centerServices.findById(centerServiceId).orElseThrow(AppointmentErrors::resourceNotFound)
@@ -89,11 +90,13 @@ class AppointmentSlotService(
         val professionalIds = effectiveAvailabilities.map { requireNotNull(it.assignment.professional.id) }.distinct()
         val professionalAppointments = if (includeOccupancy) {
             appointments.findByProfessionalIdsInRange(professionalIds, dayStart, dayEnd)
+                .filterNot { it.id == excludeAppointmentId }
         } else {
             emptyList()
         }
         val citizenAppointments = if (includeOccupancy) {
             appointments.findByCitizenIdInRange(citizenId, dayStart, dayEnd)
+                .filterNot { it.id == excludeAppointmentId }
         } else {
             emptyList()
         }

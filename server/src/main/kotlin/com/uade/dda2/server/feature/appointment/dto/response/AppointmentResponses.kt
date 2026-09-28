@@ -32,7 +32,7 @@ data class AvailableAppointmentSlotResponse(
     val endsAt: OffsetDateTime,
 )
 
-@Schema(description = "Detalle de un turno propio confirmado.")
+@Schema(description = "Detalle vigente de un turno propio, confirmado o cancelado.")
 data class AppointmentResponse(
     val id: UUID,
     val status: AppointmentStatus,
@@ -46,4 +46,12 @@ data class AppointmentResponse(
     val startsAt: OffsetDateTime,
     val endsAt: OffsetDateTime,
     val createdAt: OffsetDateTime,
+)
+
+@Schema(description = "Detalle administrativo del turno y estado de retención de su horario.")
+data class AdminAppointmentResponse(
+    val appointment: AppointmentResponse,
+    val citizenId: Long,
+    val citizenName: String,
+    val slotRetained: Boolean,
 )

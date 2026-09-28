@@ -83,7 +83,7 @@ class CitizenAppointmentController(
 
     @GetMapping("/appointments/{appointmentId}")
     @PreAuthorize("hasRole('CIUDADANO') and hasAuthority('appointments:own:view')")
-    @Operation(operationId = "getCitizenAppointment", summary = "Consultar un turno propio confirmado")
+    @Operation(operationId = "getCitizenAppointment", summary = "Consultar el estado de un turno propio")
     @ApiResponse(responseCode = "404", description = "Turno inexistente o ajeno.", content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))])
     fun get(@PathVariable appointmentId: UUID): AppointmentResponse = appointmentService.get(appointmentId)
 }
