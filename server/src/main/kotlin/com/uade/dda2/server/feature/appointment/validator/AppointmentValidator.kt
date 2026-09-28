@@ -3,6 +3,8 @@ package com.uade.dda2.server.feature.appointment.validator
 import com.uade.dda2.server.error.ForbiddenException
 import com.uade.dda2.server.error.UnauthorizedException
 import com.uade.dda2.server.feature.appointment.error.AppointmentErrors
+import com.uade.dda2.server.feature.appointment.entity.Appointment
+import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
 import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.security.JwtPrincipal
 import org.springframework.stereotype.Component
@@ -27,6 +29,27 @@ class AppointmentValidator {
             throw ForbiddenException("AUTH_FORBIDDEN", "El rol activo no esta autorizado para esta operacion.")
         }
         return user
+    }
+
+    fun validateAdmin(user: User?, principal: JwtPrincipal, permission: String): User {
+        if (user == null || !user.active) {
+            throw UnauthorizedException("AUTH_UNAUTHENTICATED", "Usuario inexistente o inactivo.")
+        }
+        val adminRole = user.roles.firstOrNull { it.name.equals("ADMIN", ignoreCase = true) }
+        if (!principal.activeRole.equals("ADMIN", ignoreCase = true) ||
+            adminRole == null || permission !in principal.permissions ||
+            adminRole.permissions.none { it.name == permission }
+        ) {
+            throw ForbiddenException("AUTH_FORBIDDEN", "El rol activo no esta autorizado para esta operacion.")
+        }
+        return user
+    }
+
+    fun validateManageable(appointment: Appointment, now: OffsetDateTime) {
+        if (appointment.status != AppointmentStatus.CONFIRMED ||
+            !appointment.startsAt.toInstant().isAfter(now.toInstant())) {
+            throw AppointmentErrors.notManageable()
+        }
     }
 
     fun validateDate(date: LocalDate, now: OffsetDateTime, zone: ZoneId) {

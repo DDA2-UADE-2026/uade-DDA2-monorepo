@@ -34,6 +34,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -89,6 +90,7 @@ class AppointmentFlowTest {
         val token: String,
         val wrongRoleToken: String,
         val secondCitizenToken: String,
+        val adminToken: String,
         val serviceId: UUID,
         val centerServiceId: UUID,
         val firstAssignmentId: UUID,
@@ -313,12 +315,39 @@ class AppointmentFlowTest {
         expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
     }
 
+    @Test
+    fun `administrativo cancela y habilita manualmente el horario mientras ciudadano consulta su estado`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(adminGet(created.id), 200)
+        expect(adminPatch(created.id, "cancel", fixture.token), 403)
+        expect(adminPatch(created.id, "release-slot"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+
+        val cancelled = adminPatch(created.id, "cancel")
+        expect(cancelled, 200)
+        assertEquals("CANCELLED", response(cancelled).status.name)
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        expect(adminPatch(created.id, "cancel"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken),
+            409, "APPOINTMENT_SLOT_UNAVAILABLE")
+
+        expect(adminPatch(created.id, "release-slot"), 200)
+        expect(adminPatch(created.id, "release-slot"), 409, "APPOINTMENT_SLOT_ALREADY_RELEASED")
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        assertEquals(2, jdbc.queryForObject(
+            "select count(*) from logs where entity_type = 'appointment' and entity_id = ? and action = 'update'",
+            Long::class.java, created.id.toString(),
+        ))
+    }
+
     private fun createFixture(): Fixture = tx {
         val view = permission("appointments:own:view")
         val create = permission("appointments:own:create")
         val citizenRole = role("CIUDADANO", mutableSetOf(view, create))
         val viewerRole = role("VIEWER_APPOINTMENTS", mutableSetOf(view, create))
         val professionalRole = role("PROFESIONAL_CENTRO")
+        val adminRole = role("ADMIN", mutableSetOf(permission("appointments:management:view"), permission("appointments:management:manage")))
+        val admin = users.saveAndFlush(User(name = "Admin Turnos", email = "admin-${UUID.randomUUID()}@example.com", roles = mutableSetOf(adminRole)))
         val citizen = users.saveAndFlush(
             User(
                 name = "Ciudadano Uno",
@@ -383,6 +412,7 @@ class AppointmentFlowTest {
             token = jwt.createToken(citizen, citizenRole),
             wrongRoleToken = jwt.createToken(citizen, viewerRole),
             secondCitizenToken = jwt.createToken(secondCitizen, citizenRole),
+            adminToken = jwt.createToken(admin, adminRole),
             serviceId = requireNotNull(service.id),
             centerServiceId = requireNotNull(centerService.id),
             firstAssignmentId = requireNotNull(firstAssignment.id),
@@ -405,6 +435,14 @@ class AppointmentFlowTest {
 
     private fun authorizedGet(path: String): MvcResult = mvc.perform(
         get(path).header("Authorization", "Bearer ${fixture.token}"),
+    ).andReturn()
+
+    private fun adminGet(id: UUID): MvcResult = mvc.perform(
+        get("/api/admin/appointments/$id").header("Authorization", "Bearer ${fixture.adminToken}"),
+    ).andReturn()
+
+    private fun adminPatch(id: UUID, action: String, token: String = fixture.adminToken): MvcResult = mvc.perform(
+        patch("/api/admin/appointments/$id/$action").header("Authorization", "Bearer $token"),
     ).andReturn()
 
     private fun slots(token: String): MvcResult = mvc.perform(

@@ -2,14 +2,24 @@ package com.uade.dda2.server.feature.appointment.repository
 
 import com.uade.dda2.server.feature.appointment.entity.Appointment
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
+import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.OffsetDateTime
 import java.util.UUID
 
 interface AppointmentRepository : JpaRepository<Appointment, UUID> {
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional", "professionalAssignment.centerService.center", "professionalAssignment.centerService.service"])
+    @Query("select a from Appointment a where a.id = :id")
+    fun findDetailById(@Param("id") id: UUID): Appointment?
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select a from Appointment a where a.id = :id")
+    fun findByIdForUpdate(@Param("id") id: UUID): Appointment?
+
     @EntityGraph(
         attributePaths = [
             "citizen",

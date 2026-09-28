@@ -32,6 +32,12 @@ object AppointmentErrors {
             "El horario se superpone con otro turno confirmado del ciudadano.",
         )
 
+    fun notManageable(): ConflictException =
+        ConflictException("APPOINTMENT_NOT_MANAGEABLE", "Solo se pueden modificar turnos confirmados que aun no comenzaron.")
+
+    fun slotAlreadyReleased(): ConflictException =
+        ConflictException("APPOINTMENT_SLOT_ALREADY_RELEASED", "El horario de este turno ya fue habilitado.")
+
     fun idempotencyConflict(): ConflictException =
         ConflictException(
             "IDEMPOTENCY_KEY_REUSED",
