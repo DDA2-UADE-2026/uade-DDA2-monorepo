@@ -24,7 +24,14 @@ export function AppointmentDetail({ turnoId }: { turnoId: string }) {
 
   return (
     <ApplicationPage breadcrumbs={[{ label: "Mis turnos", to: "/portal/turnos" }, { label: "Confirmación" }]}>
-      <ApplicationHeading title="Turno confirmado" description="Guardá estos datos para el día de tu atención." />
+      <ApplicationHeading
+        title={appointment?.status === "CANCELLED" ? "Turno cancelado" : "Turno confirmado"}
+        description={
+          appointment?.status === "CANCELLED"
+            ? "Este turno fue cancelado por la administración del centro."
+            : "Guardá estos datos para el día de tu atención."
+        }
+      />
       {!valid ? (
         <Alert variant="destructive"><AlertTitle>No encontramos ese turno</AlertTitle><AlertDescription>El identificador no es válido.</AlertDescription></Alert>
       ) : detail.isPending ? <ApplicationLoading /> : detail.isError ? (

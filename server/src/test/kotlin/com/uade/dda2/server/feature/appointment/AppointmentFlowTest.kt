@@ -409,6 +409,84 @@ class AppointmentFlowTest {
     }
 
     @Test
+    fun `resume el mes con confirmados libres y retenidos y filtra por servicio`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val summary = json.readTree(monthlySummary(fixture.date.year, fixture.date.monthValue).response.contentAsString)
+        assertEquals(fixture.date.lengthOfMonth(), summary.size())
+        val day = summary.single { it.get("date").asText() == fixture.date.toString() }
+        assertEquals(1, day.get("confirmed").asInt())
+        assertEquals(5, day.get("free").asInt())
+        assertEquals(0, day.get("retained").asInt())
+        assertTrue(day.get("hasAgenda").asBoolean())
+
+        expect(adminPatch(created.id, "cancel"), 200)
+        val afterCancel = json.readTree(monthlySummary(fixture.date.year, fixture.date.monthValue).response.contentAsString)
+            .single { it.get("date").asText() == fixture.date.toString() }
+        assertEquals(0, afterCancel.get("confirmed").asInt())
+        assertEquals(5, afterCancel.get("free").asInt())
+        assertEquals(1, afterCancel.get("retained").asInt())
+
+        val filtered = json.readTree(
+            monthlySummary(fixture.date.year, fixture.date.monthValue, serviceId = fixture.serviceId).response.contentAsString,
+        ).single { it.get("date").asText() == fixture.date.toString() }
+        assertEquals(afterCancel, filtered)
+
+        expect(monthlySummary(fixture.date.year, fixture.date.monthValue, serviceId = UUID.randomUUID()), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(monthlySummary(fixture.date.year, fixture.date.monthValue, token = fixture.token), 403)
+        expect(monthlySummary(1999, 1), 400, "VALIDATION_ERROR")
+    }
+
+    @Test
+    fun `dias pasados informan cero libres pero conservan el historial`() {
+        val pastDate = LocalDate.now(zone).minusDays(1)
+        val startsAt = pastDate.atTime(9, 0).atZone(zone).toOffsetDateTime()
+            .toInstant().truncatedTo(ChronoUnit.MICROS).atOffset(ZoneOffset.UTC)
+        val endsAt = startsAt.plusHours(1)
+        tx {
+            val assignment = assignments.findById(fixture.firstAssignmentId).orElseThrow()
+            val citizen = users.findById(fixture.citizenId).orElseThrow()
+            appointments.saveAndFlush(
+                Appointment(
+                    citizen = citizen,
+                    professionalAssignment = assignment,
+                    startsAt = startsAt,
+                    endsAt = endsAt,
+                    idempotencyKey = UUID.randomUUID().toString(),
+                    requestHash = requestHash(fixture.firstAssignmentId, startsAt, endsAt),
+                ),
+            )
+        }
+
+        val day = json.readTree(monthlySummary(pastDate.year, pastDate.monthValue).response.contentAsString)
+            .single { it.get("date").asText() == pastDate.toString() }
+        assertEquals(1, day.get("confirmed").asInt())
+        assertEquals(0, day.get("free").asInt())
+        assertEquals(0, day.get("retained").asInt())
+
+        val availability = dayAvailability(pastDate)
+        expect(availability, 200)
+        assertEquals(0, json.readTree(availability.response.contentAsString).size())
+    }
+
+    @Test
+    fun `la disponibilidad diaria lista horarios libres con servicio y profesional`() {
+        val availability = dayAvailability(fixture.date)
+        expect(availability, 200)
+        val slots = json.readTree(availability.response.contentAsString)
+        assertEquals(6, slots.size())
+        assertTrue(slots.all {
+            it.get("serviceId").asText() == fixture.serviceId.toString() &&
+                it.get("centerServiceId").asText() == fixture.centerServiceId.toString() &&
+                it.get("professionalName").asText().isNotEmpty()
+        })
+
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()), 201)
+        assertEquals(5, json.readTree(dayAvailability(fixture.date).response.contentAsString).size())
+        expect(dayAvailability(fixture.date, serviceId = UUID.randomUUID()), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(dayAvailability(fixture.date, token = fixture.token), 403)
+    }
+
+    @Test
     fun `dos cancelaciones simultaneas no modifican el turno dos veces`() {
         val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
         val results = concurrently(
@@ -531,6 +609,34 @@ class AppointmentFlowTest {
             .queryParam("centerId", fixture.centerId.toString())
             .queryParam("date", fixture.date.toString()),
     ).andReturn()
+
+    private fun monthlySummary(
+        year: Int,
+        month: Int,
+        serviceId: UUID? = null,
+        token: String = fixture.adminToken,
+    ): MvcResult {
+        var request = get("/api/admin/appointments/monthly-summary")
+            .header("Authorization", "Bearer $token")
+            .queryParam("centerId", fixture.centerId.toString())
+            .queryParam("year", year.toString())
+            .queryParam("month", month.toString())
+        if (serviceId != null) request = request.queryParam("serviceId", serviceId.toString())
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun dayAvailability(
+        date: LocalDate,
+        serviceId: UUID? = null,
+        token: String = fixture.adminToken,
+    ): MvcResult {
+        var request = get("/api/admin/appointments/day-availability")
+            .header("Authorization", "Bearer $token")
+            .queryParam("centerId", fixture.centerId.toString())
+            .queryParam("date", date.toString())
+        if (serviceId != null) request = request.queryParam("serviceId", serviceId.toString())
+        return mvc.perform(request).andReturn()
+    }
 
     private fun adminPatch(id: UUID, action: String, token: String = fixture.adminToken): MvcResult = mvc.perform(
         patch("/api/admin/appointments/$id/$action").header("Authorization", "Bearer $token"),

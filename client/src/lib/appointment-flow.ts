@@ -4,6 +4,7 @@ export const APPOINTMENT_TIME_ZONE = "America/Argentina/Buenos_Aires"
 
 export const appointmentStatusLabels: Record<NonNullable<AppointmentResponse["status"]>, string> = {
   CONFIRMED: "Confirmado",
+  CANCELLED: "Cancelado",
 }
 
 export function appointmentToday(now = new Date()) {

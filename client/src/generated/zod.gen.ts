@@ -411,6 +411,43 @@ export const zCenterOpeningHourResponse = z.object({
 });
 
 /**
+ * Reprograma un turno al horario elegido para el mismo servicio y centro.
+ */
+export const zRescheduleAppointmentRequest = z.object({
+    professionalAssignmentId: z.uuid(),
+    startsAt: z.iso.datetime(),
+    endsAt: z.iso.datetime()
+});
+
+/**
+ * Detalle vigente de un turno propio, confirmado o cancelado.
+ */
+export const zAppointmentResponse = z.object({
+    id: z.uuid().optional(),
+    status: z.enum(['CONFIRMED', 'CANCELLED']).optional(),
+    serviceId: z.uuid().optional(),
+    serviceName: z.string().optional(),
+    centerId: z.uuid().optional(),
+    centerName: z.string().optional(),
+    centerAddress: z.string().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    createdAt: z.iso.datetime().optional()
+});
+
+/**
+ * Detalle administrativo del turno y estado de retención de su horario.
+ */
+export const zAdminAppointmentResponse = z.object({
+    appointment: zAppointmentResponse.optional(),
+    citizenId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    citizenName: z.string().optional(),
+    slotRetained: z.boolean().optional()
+});
+
+/**
  * Datos requeridos para actualizar una actividad comunitaria en borrador.
  */
 export const zUpdateActivityRequest = z.object({
@@ -523,24 +560,6 @@ export const zCreateAppointmentRequest = z.object({
     professionalAssignmentId: z.uuid(),
     startsAt: z.iso.datetime(),
     endsAt: z.iso.datetime()
-});
-
-/**
- * Detalle de un turno propio confirmado.
- */
-export const zAppointmentResponse = z.object({
-    id: z.uuid().optional(),
-    status: z.enum(['CONFIRMED']).optional(),
-    serviceId: z.uuid().optional(),
-    serviceName: z.string().optional(),
-    centerId: z.uuid().optional(),
-    centerName: z.string().optional(),
-    centerAddress: z.string().optional(),
-    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    professionalName: z.string().optional(),
-    startsAt: z.iso.datetime().optional(),
-    endsAt: z.iso.datetime().optional(),
-    createdAt: z.iso.datetime().optional()
 });
 
 /**
@@ -1252,6 +1271,31 @@ export const zMunicipalCenterListResponse = z.object({
 });
 
 /**
+ * Ocupación de un centro en un día para el calendario administrativo.
+ */
+export const zAdminDaySummaryResponse = z.object({
+    date: z.iso.date().optional(),
+    confirmed: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    free: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    retained: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    hasAgenda: z.boolean().optional()
+});
+
+/**
+ * Horario libre de un centro en una fecha, con servicio y profesional.
+ */
+export const zAdminFreeSlotResponse = z.object({
+    centerServiceId: z.uuid().optional(),
+    serviceId: z.uuid().optional(),
+    serviceName: z.string().optional(),
+    professionalAssignmentId: z.uuid().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional()
+});
+
+/**
  * Resumen de una solicitud en el listado administrativo. No incluye documentos ni campos internos de idempotencia.
  */
 export const zAdminApplicationListItemResponse = z.object({
@@ -1795,6 +1839,17 @@ export const zUpdateCenterOpeningHourPath = z.object({
  * OK
  */
 export const zUpdateCenterOpeningHourResponse = zCenterOpeningHourResponse;
+
+export const zRescheduleAdminAppointmentBody = zRescheduleAppointmentRequest;
+
+export const zRescheduleAdminAppointmentPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zRescheduleAdminAppointmentResponse = zAdminAppointmentResponse;
 
 export const zPut1Body = z.object({
     file: z.string()
@@ -2434,6 +2489,24 @@ export const zActivateCenterOpeningHourPath = z.object({
  */
 export const zActivateCenterOpeningHourResponse = zCenterOpeningHourResponse;
 
+export const zReleaseAdminAppointmentSlotPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zReleaseAdminAppointmentSlotResponse = zAdminAppointmentResponse;
+
+export const zCancelAdminAppointmentPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zCancelAdminAppointmentResponse = zAdminAppointmentResponse;
+
 export const zReviewBody = zReviewApplicationDocumentRequest;
 
 export const zReviewPath = z.object({
@@ -2646,6 +2719,61 @@ export const zListProgramEditionOptionsPath = z.object({
  * OK
  */
 export const zListProgramEditionOptionsResponse = z.array(zProgramEditionOptionResponse);
+
+export const zListAdminAppointmentsQuery = z.object({
+    centerId: z.uuid(),
+    date: z.iso.date()
+});
+
+/**
+ * OK
+ */
+export const zListAdminAppointmentsResponse = z.array(zAdminAppointmentResponse);
+
+export const zGetAdminAppointmentPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetAdminAppointmentResponse = zAdminAppointmentResponse;
+
+export const zListAdminAppointmentSlotsPath = z.object({
+    id: z.uuid()
+});
+
+export const zListAdminAppointmentSlotsQuery = z.object({
+    date: z.iso.date()
+});
+
+/**
+ * OK
+ */
+export const zListAdminAppointmentSlotsResponse = z.array(zAvailableAppointmentSlotResponse);
+
+export const zListAdminAppointmentMonthlySummaryQuery = z.object({
+    centerId: z.uuid(),
+    year: z.int().gte(2000).lte(2100),
+    month: z.int().gte(1).lte(12),
+    serviceId: z.uuid().optional()
+});
+
+/**
+ * OK
+ */
+export const zListAdminAppointmentMonthlySummaryResponse = z.array(zAdminDaySummaryResponse);
+
+export const zListAdminAppointmentDayAvailabilityQuery = z.object({
+    centerId: z.uuid(),
+    date: z.iso.date(),
+    serviceId: z.uuid().optional()
+});
+
+/**
+ * OK
+ */
+export const zListAdminAppointmentDayAvailabilityResponse = z.array(zAdminFreeSlotResponse);
 
 export const zGet3Path = z.object({
     id: z.uuid()
