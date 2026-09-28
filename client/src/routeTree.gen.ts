@@ -64,6 +64,7 @@ import { Route as AppPortalProgramasProgramaIdRouteImport } from "./routes/_app/
 import { Route as AppPortalSolicitudesIndexRouteImport } from "./routes/_app/portal/solicitudes/index"
 import { Route as AppPortalSolicitudesNuevaRouteImport } from "./routes/_app/portal/solicitudes/nueva"
 import { Route as AppPortalTurnosIndexRouteImport } from "./routes/_app/portal/turnos/index"
+import { Route as AppPortalTurnosTurnoIdRouteImport } from "./routes/_app/portal/turnos/$turnoId"
 import { Route as AppPortalTurnosNuevoRouteImport } from "./routes/_app/portal/turnos/nuevo"
 import { Route as AppGestionActividadesActividadIdIndexRouteImport } from "./routes/_app/gestion/actividades/$actividadId/index"
 import { Route as AppGestionActividadesActividadIdAsistenciaRouteImport } from "./routes/_app/gestion/actividades/$actividadId/asistencia"
@@ -382,6 +383,11 @@ const AppPortalTurnosIndexRoute = AppPortalTurnosIndexRouteImport.update({
   path: "/turnos/",
   getParentRoute: () => AppPortalRouteRoute,
 } as any)
+const AppPortalTurnosTurnoIdRoute = AppPortalTurnosTurnoIdRouteImport.update({
+  id: "/turnos/$turnoId",
+  path: "/turnos/$turnoId",
+  getParentRoute: () => AppPortalRouteRoute,
+} as any)
 const AppPortalTurnosNuevoRoute = AppPortalTurnosNuevoRouteImport.update({
   id: "/turnos/nuevo",
   path: "/turnos/nuevo",
@@ -549,6 +555,7 @@ export interface FileRoutesByFullPath {
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
+  "/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
   "/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
   "/gestion/actividades/": typeof AppGestionActividadesIndexRoute
   "/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
@@ -617,6 +624,7 @@ export interface FileRoutesByTo {
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
+  "/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
   "/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
   "/gestion/actividades": typeof AppGestionActividadesIndexRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaIndexRoute
@@ -694,6 +702,7 @@ export interface FileRoutesById {
   "/_app/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/_app/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/_app/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
+  "/_app/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
   "/_app/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
   "/_app/gestion/actividades/": typeof AppGestionActividadesIndexRoute
   "/_app/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
@@ -770,6 +779,7 @@ export interface FileRouteTypes {
     | "/portal/actividades/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
+    | "/portal/turnos/$turnoId"
     | "/portal/turnos/nuevo"
     | "/gestion/actividades/"
     | "/gestion/auditoria/"
@@ -838,6 +848,7 @@ export interface FileRouteTypes {
     | "/portal/actividades/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
+    | "/portal/turnos/$turnoId"
     | "/portal/turnos/nuevo"
     | "/gestion/actividades"
     | "/gestion/auditoria"
@@ -914,6 +925,7 @@ export interface FileRouteTypes {
     | "/_app/portal/actividades/$actividadId"
     | "/_app/portal/programas/$programaId"
     | "/_app/portal/solicitudes/nueva"
+    | "/_app/portal/turnos/$turnoId"
     | "/_app/portal/turnos/nuevo"
     | "/_app/gestion/actividades/"
     | "/_app/gestion/auditoria/"
@@ -1348,6 +1360,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppPortalTurnosIndexRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
+    "/_app/portal/turnos/$turnoId": {
+      id: "/_app/portal/turnos/$turnoId"
+      path: "/turnos/$turnoId"
+      fullPath: "/portal/turnos/$turnoId"
+      preLoaderRoute: typeof AppPortalTurnosTurnoIdRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
     "/_app/portal/turnos/nuevo": {
       id: "/_app/portal/turnos/nuevo"
       path: "/turnos/nuevo"
@@ -1684,6 +1703,7 @@ interface AppPortalRouteRouteChildren {
   AppPortalActividadesActividadIdRoute: typeof AppPortalActividadesActividadIdRoute
   AppPortalProgramasProgramaIdRoute: typeof AppPortalProgramasProgramaIdRoute
   AppPortalSolicitudesNuevaRoute: typeof AppPortalSolicitudesNuevaRoute
+  AppPortalTurnosTurnoIdRoute: typeof AppPortalTurnosTurnoIdRoute
   AppPortalTurnosNuevoRoute: typeof AppPortalTurnosNuevoRoute
   AppPortalActividadesIndexRoute: typeof AppPortalActividadesIndexRoute
   AppPortalBeneficiosIndexRoute: typeof AppPortalBeneficiosIndexRoute
@@ -1700,6 +1720,7 @@ const AppPortalRouteRouteChildren: AppPortalRouteRouteChildren = {
   AppPortalActividadesActividadIdRoute: AppPortalActividadesActividadIdRoute,
   AppPortalProgramasProgramaIdRoute: AppPortalProgramasProgramaIdRoute,
   AppPortalSolicitudesNuevaRoute: AppPortalSolicitudesNuevaRoute,
+  AppPortalTurnosTurnoIdRoute: AppPortalTurnosTurnoIdRoute,
   AppPortalTurnosNuevoRoute: AppPortalTurnosNuevoRoute,
   AppPortalActividadesIndexRoute: AppPortalActividadesIndexRoute,
   AppPortalBeneficiosIndexRoute: AppPortalBeneficiosIndexRoute,

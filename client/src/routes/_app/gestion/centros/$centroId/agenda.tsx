@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconCalendarClock, IconPencil, IconPlus, IconPower, IconRefresh, IconStethoscope } from "@tabler/icons-react"
+import { IconAlertTriangle, IconCalendarClock, IconPencil, IconPlus, IconRefresh, IconStethoscope } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
@@ -8,6 +8,7 @@ import { DAYS, shortTime, type TimeRangeValue } from "@/components/centros/timeR
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
 import {
   activateCenterOpeningHourMutation,
   activateProfessionalAvailabilityMutation,
@@ -43,7 +44,7 @@ function RouteComponent() {
   )
 }
 
-function OpeningHoursSection({ centroId }: { centroId: string }) {
+export function OpeningHoursSection({ centroId }: { centroId: string }) {
   const queryClient = useQueryClient()
   const hours = useQuery(listCenterOpeningHoursOptions({ path: { centerId: centroId } }))
   const [dialog, setDialog] = useState<{ range: CenterOpeningHourResponse | null } | null>(null)
@@ -105,7 +106,7 @@ function OpeningHoursSection({ centroId }: { centroId: string }) {
                         {shortTime(range.startTime)}–{shortTime(range.endTime)}
                         {!range.active && " (inactiva)"}
                       </span>
-                      <span className="flex gap-1">
+                      <span className="flex items-center gap-1">
                         <Button
                           type="button"
                           size="icon-sm"
@@ -115,20 +116,18 @@ function OpeningHoursSection({ centroId }: { centroId: string }) {
                         >
                           <IconPencil />
                         </Button>
-                        <Button
-                          type="button"
-                          size="icon-sm"
-                          variant="ghost"
-                          aria-label={`${range.active ? "Desactivar" : "Activar"} franja`}
+                        <Switch
+                          checked={range.active === true}
+                          aria-label={`Horario de apertura ${group.label} ${shortTime(range.startTime)}–${shortTime(range.endTime)}`}
                           disabled={activate.isPending || deactivate.isPending}
-                          onClick={() => {
-                            if (!range.id) return
-                            if (range.active) deactivate.mutate({ path: { id: range.id } })
-                            else activate.mutate({ path: { id: range.id } })
+                          onCheckedChange={(checked) => {
+                            if (!range.id || checked === range.active) return
+                            activate.reset()
+                            deactivate.reset()
+                            if (checked) activate.mutate({ path: { id: range.id } })
+                            else deactivate.mutate({ path: { id: range.id } })
                           }}
-                        >
-                          <IconPower />
-                        </Button>
+                        />
                       </span>
                     </li>
                   ))}
@@ -247,7 +246,7 @@ function ServiceAvailability({ centerServiceId, serviceName }: {
   )
 }
 
-function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
+export function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
   assignmentId: string
   professionalName: string
   onChanged: () => void
@@ -255,6 +254,7 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
   const queryClient = useQueryClient()
   const availability = useQuery(listProfessionalAvailabilityOptions({ path: { assignmentId } }))
   const [dialog, setDialog] = useState<{ range: ProfessionalAvailabilityResponse | null } | null>(null)
+  const [duplicateInactiveError, setDuplicateInactiveError] = useState<string | null>(null)
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: listProfessionalAvailabilityQueryKey({ path: { assignmentId } }) })
@@ -270,7 +270,7 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
   const byDay = DAYS.map((day) => ({
     ...day,
     ranges: [...(availability.data ?? [])]
-      .filter((range) => range.active && range.dayOfWeek === day.value)
+      .filter((range) => range.dayOfWeek === day.value)
       .sort((a, b) => (a.startTime ?? "").localeCompare(b.startTime ?? "")),
   })).filter((group) => group.ranges.length > 0)
 
@@ -278,7 +278,7 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
     <div className="space-y-2 border-t pt-3 first:border-t-0 first:pt-0">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">{professionalName}</h3>
-        <Button size="xs" variant="outline" onClick={() => { create.reset(); createBulk.reset(); update.reset(); setDialog({ range: null }) }}>
+        <Button size="xs" variant="outline" onClick={() => { create.reset(); createBulk.reset(); update.reset(); setDuplicateInactiveError(null); setDialog({ range: null }) }}>
           <IconPlus />Agregar
         </Button>
       </div>
@@ -287,6 +287,9 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
         <Alert variant="destructive">
           <IconAlertTriangle />
           <AlertTitle>{mutationError.message ?? "No se pudo actualizar la disponibilidad."}</AlertTitle>
+          {mutationError.code === "PROFESSIONAL_AVAILABILITY_OVERLAP" && (
+            <AlertDescription>Revisá las franjas activas del profesional: también cuentan las de otros servicios y centros.</AlertDescription>
+          )}
         </Alert>
       )}
 
@@ -295,7 +298,7 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
       ) : availability.isError ? (
         <Button size="xs" variant="outline" onClick={() => availability.refetch()}>Reintentar</Button>
       ) : byDay.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Sin franjas activas.</p>
+        <p className="text-sm text-muted-foreground">Sin franjas registradas.</p>
       ) : (
         <div className="divide-y rounded-lg border px-3">
           {byDay.map((group) => (
@@ -304,27 +307,32 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
               <ul className="divide-y">
                 {group.ranges.map((range) => (
                   <li key={range.id} className="flex items-center justify-between gap-2 py-1.5 text-sm">
-                    <span className="tabular-nums">{shortTime(range.startTime)}–{shortTime(range.endTime)}</span>
-                    <span className="flex gap-1">
+                    <span className={range.active ? "tabular-nums" : "text-muted-foreground tabular-nums"}>
+                      {shortTime(range.startTime)}–{shortTime(range.endTime)}
+                      {!range.active && " (inactiva)"}
+                    </span>
+                    <span className="flex items-center gap-1">
                       <Button
                         type="button"
                         size="icon-sm"
                         variant="ghost"
-                        aria-label="Editar disponibilidad"
-                        onClick={() => { create.reset(); update.reset(); setDialog({ range }) }}
+                        aria-label={`Editar disponibilidad ${group.label} ${shortTime(range.startTime)}`}
+                        onClick={() => { create.reset(); update.reset(); setDuplicateInactiveError(null); setDialog({ range }) }}
                       >
                         <IconPencil />
                       </Button>
-                      <Button
-                        type="button"
-                        size="icon-sm"
-                        variant="ghost"
-                        aria-label="Desactivar disponibilidad"
-                        disabled={deactivate.isPending}
-                        onClick={() => range.id && deactivate.mutate({ path: { id: range.id } })}
-                      >
-                        <IconPower />
-                      </Button>
+                      <Switch
+                        checked={range.active === true}
+                        aria-label={`Disponibilidad ${group.label} ${shortTime(range.startTime)}–${shortTime(range.endTime)}`}
+                        disabled={activate.isPending || deactivate.isPending}
+                        onCheckedChange={(checked) => {
+                          if (!range.id || checked === range.active) return
+                          activate.reset()
+                          deactivate.reset()
+                          if (checked) activate.mutate({ path: { id: range.id } })
+                          else deactivate.mutate({ path: { id: range.id } })
+                        }}
+                      />
                     </span>
                   </li>
                 ))}
@@ -345,12 +353,22 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
           }}
           allowMultipleDays={!dialog.range}
           pending={isPending}
-          error={create.error ?? createBulk.error ?? update.error}
+          error={duplicateInactiveError ? { message: duplicateInactiveError } : create.error ?? createBulk.error ?? update.error}
           submitLabel={dialog.range ? "Guardar cambios" : "Crear disponibilidad"}
           onSubmit={(value) => {
             create.reset()
             createBulk.reset()
             update.reset()
+            if (!dialog.range) {
+              const duplicateDays = DAYS.filter((day) => value.days.includes(day.value) &&
+                (availability.data ?? []).some((range) => !range.active && range.dayOfWeek === day.value &&
+                  range.startTime?.slice(0, 5) === value.startTime && range.endTime?.slice(0, 5) === value.endTime))
+              if (duplicateDays.length > 0) {
+                setDuplicateInactiveError(`Ya existe una disponibilidad inactiva idéntica para ${duplicateDays.map((day) => day.label).join(", ")}. Activala desde la lista en vez de volver a crearla.`)
+                return
+              }
+            }
+            setDuplicateInactiveError(null)
             if (dialog.range?.id) {
               update.mutate({ path: { id: dialog.range.id }, body: value })
             } else if (value.days.length > 1) {
@@ -362,7 +380,7 @@ function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
               create.mutate({ path: { assignmentId }, body: value })
             }
           }}
-          onOpenChange={(open) => { if (!open) setDialog(null) }}
+          onOpenChange={(open) => { if (!open) { setDialog(null); setDuplicateInactiveError(null) } }}
         />
       )}
     </div>
