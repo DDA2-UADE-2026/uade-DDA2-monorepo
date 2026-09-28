@@ -55,6 +55,16 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
     )
     fun findByCitizenIdAndIdempotencyKey(citizenId: Long, idempotencyKey: String): Appointment?
 
+    @EntityGraph(
+        attributePaths = [
+            "citizen",
+            "professionalAssignment.professional",
+            "professionalAssignment.centerService.center",
+            "professionalAssignment.centerService.service",
+        ],
+    )
+    fun findAllByCitizenIdOrderByStartsAtDesc(citizenId: Long): List<Appointment>
+
     @Query(
         """
         select appointment from Appointment appointment
