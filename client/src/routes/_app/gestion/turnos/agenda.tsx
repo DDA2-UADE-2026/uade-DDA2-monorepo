@@ -121,7 +121,12 @@ function RouteComponent() {
               {center.data?.name ?? "Centro"} ·{" "}
               <span className="font-medium text-blue-700 dark:text-blue-400">{confirmed} conf.</span> ·{" "}
               <span className="font-medium text-emerald-700 dark:text-emerald-400">{freeSlots.length} lib.</span>
-              {retained > 0 ? ` · ${retained} ret.` : ""}
+              {retained > 0 && (
+                <>
+                  {" · "}
+                  <span className="font-medium text-red-700 dark:text-red-400">{retained} ret.</span>
+                </>
+              )}
             </p>
           </div>
 
