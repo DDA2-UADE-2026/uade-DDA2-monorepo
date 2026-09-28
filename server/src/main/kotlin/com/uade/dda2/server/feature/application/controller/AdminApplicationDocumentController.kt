@@ -14,11 +14,12 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.UUID
 
 @RestController
 @RequestMapping("/api/admin/applications/{applicationId}/documents")
-@Tag(name = "Revisión de documentos de solicitudes", description = "Consulta y revisión administrativa de documentos protegidos.")
+@Tag(name = "Revisión de documentos de solicitudes", description = "Entrega asistida, consulta y revisión administrativa de documentos protegidos.")
 class AdminApplicationDocumentController(private val service: ApplicationDocumentService) {
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("hasAuthority('applications:management:documents:view')")
@@ -31,6 +32,28 @@ class AdminApplicationDocumentController(private val service: ApplicationDocumen
     @ApiResponse(responseCode = "200", description = "Contenido del archivo.", content = [Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE, schema = Schema(type = "string", format = "binary"))])
     fun content(@PathVariable applicationId: UUID, @PathVariable applicationDocumentId: UUID): ResponseEntity<ByteArray> =
         inline(service.contentAdmin(applicationId, applicationDocumentId))
+
+    @PutMapping("/{requirementId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @PreAuthorize("hasAuthority('applications:management:documents:manage')")
+    @Operation(
+        summary = "Cargar o reemplazar un documento en nombre del titular",
+        description = "Entrega asistida para completar un trámite iniciado en la ventanilla. " +
+            "Admite PDF, JPEG o PNG de hasta 10 MB. Reemplazar conserva la entrega y reinicia su revisión a PENDING. " +
+            "El archivo queda atribuido al administrativo que lo sube.",
+    )
+    @ApiResponse(responseCode = "201", description = "Primera entrega para el requisito.")
+    @ApiResponse(responseCode = "200", description = "Entrega existente reemplazada.")
+    @ApiResponse(responseCode = "400", description = "Archivo vacío, nombre, extensión, MIME o firma inválidos.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "413", description = "Archivo mayor a 10 MB.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "409", description = "La solicitud se encuentra resuelta.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    fun put(
+        @PathVariable applicationId: UUID,
+        @PathVariable requirementId: UUID,
+        @RequestPart("file") file: MultipartFile,
+    ): ResponseEntity<ApplicationDocumentResponse> {
+        val result = service.putAdmin(applicationId, requirementId, file)
+        return ResponseEntity.status(if (result.created) 201 else 200).body(result.document)
+    }
 
     @PatchMapping("/{applicationDocumentId}/review", consumes = [MediaType.APPLICATION_JSON_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     @PreAuthorize("hasAuthority('applications:management:documents:review')")

@@ -3,11 +3,14 @@ import {
   IconFileCheck,
   IconFileDescription,
   IconRefresh,
+  IconUpload,
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import type { ReactNode } from "react"
+import { useState } from "react"
 
+import { AdminApplicationDocumentUploadDialog } from "@/components/applications/AdminApplicationDocumentUploadDialog"
 import { AdminDocumentsTable } from "@/components/applications/AdminApplicationDocuments"
 import {
   OutletNavRightButton,
@@ -31,8 +34,14 @@ import {
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
 import { get3Options, list7Options } from "@/generated/@tanstack/react-query.gen"
-import type { AdminApplicationResponse, ErrorResponse } from "@/generated/types.gen"
+import type {
+  AdminApplicationResponse,
+  ApplicationDocumentResponse,
+  AvailableProgramDocumentRequirementResponse,
+  ErrorResponse,
+} from "@/generated/types.gen"
 import {
+  applicationDocumentRequirements,
   applicationStatusLabels,
   formatApplicationDateTime,
   isApplicationResolved,
@@ -201,7 +210,7 @@ function RouteComponent() {
                   </Card>
                 </div>
 
-                <ApplicationDocumentsSection applicationId={solicitudId} />
+                <ApplicationDocumentsSection application={{ ...application, id: solicitudId }} />
               </>
             )}
           </div>
@@ -211,8 +220,25 @@ function RouteComponent() {
   )
 }
 
-function ApplicationDocumentsSection({ applicationId }: { applicationId: string }) {
+function ApplicationDocumentsSection({ application }: { application: AdminApplicationResponse & { id: string } }) {
+  const applicationId = application.id
   const documents = useQuery(list7Options({ path: { applicationId } }))
+  const [uploadTarget, setUploadTarget] = useState<
+    { requirement: AvailableProgramDocumentRequirementResponse & { id: string }; existing?: ApplicationDocumentResponse } | null
+  >(null)
+
+  // Una solicitud aprobada, rechazada o cerrada ya no admite cambios documentales.
+  const resolved = !application.status || isApplicationResolved(application.status)
+  const requirements = applicationDocumentRequirements(application, documents.data ?? [])
+  const byRequirement = new Map((documents.data ?? []).map((document) => [document.requirementId, document]))
+  const withoutDelivery = requirements.filter((requirement) => !byRequirement.get(requirement.id))
+  const replace = resolved
+    ? undefined
+    : (document: ApplicationDocumentResponse) => {
+        const requirement = requirements.find((item) => item.id === document.requirementId)
+          ?? { id: document.requirementId!, name: document.requirementName, code: document.requirementCode, required: document.required }
+        setUploadTarget({ requirement, existing: document })
+      }
 
   return (
     <section aria-labelledby="admin-application-documents" className="space-y-3">
@@ -220,7 +246,7 @@ function ApplicationDocumentsSection({ applicationId }: { applicationId: string 
         <div>
           <h2 id="admin-application-documents" className="font-heading text-xl font-medium">Documentación entregada</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Validá u observá cada entrega sin salir de la solicitud.
+            Cargá lo que falte en nombre del titular y validá u observá cada entrega sin salir de la solicitud.
           </p>
         </div>
         <Button
@@ -243,16 +269,76 @@ function ApplicationDocumentsSection({ applicationId }: { applicationId: string 
           title="No se pudieron cargar los documentos"
           retry={() => documents.refetch()}
         />
-      ) : (documents.data?.length ?? 0) === 0 ? (
-        <Empty className="min-h-56 border">
-          <EmptyHeader>
-            <EmptyMedia variant="icon"><IconFileDescription /></EmptyMedia>
-            <EmptyTitle>Sin documentos entregados</EmptyTitle>
-            <EmptyDescription>Esta solicitud todavía no tiene archivos para revisar.</EmptyDescription>
-          </EmptyHeader>
-        </Empty>
       ) : (
-        <AdminDocumentsTable applicationId={applicationId} documents={documents.data ?? []} />
+        <>
+          {resolved && (
+            <Alert>
+              <IconFileCheck />
+              <AlertTitle>Documentación disponible solo para consulta</AlertTitle>
+              <AlertDescription>
+                El estado de esta solicitud ya no permite cargar ni reemplazar documentos.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {(documents.data?.length ?? 0) === 0 ? (
+            <Empty className="min-h-56 border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon"><IconFileDescription /></EmptyMedia>
+                <EmptyTitle>Sin documentos entregados</EmptyTitle>
+                <EmptyDescription>
+                  {resolved
+                    ? "Esta solicitud no tiene archivos para revisar."
+                    : "Todavía no hay archivos. Podés cargarlos en nombre del titular."}
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          ) : (
+            <AdminDocumentsTable
+              applicationId={applicationId}
+              documents={documents.data ?? []}
+              onReplace={replace}
+            />
+          )}
+
+          {!resolved && withoutDelivery.length > 0 && (
+            <div className="rounded-xl border">
+              <p className="border-b px-4 py-2.5 text-sm font-medium">Requisitos sin entrega</p>
+              <ul className="divide-y">
+                {withoutDelivery.map((requirement) => (
+                  <li key={requirement.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{requirement.name ?? "Documento solicitado"}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {requirement.code ? `${requirement.code} · ` : ""}
+                        {requirement.required ? "Obligatorio" : "Opcional"}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setUploadTarget({ requirement })}
+                    >
+                      <IconUpload />
+                      Adjuntar
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
+      )}
+
+      {uploadTarget && (
+        <AdminApplicationDocumentUploadDialog
+          applicationId={applicationId}
+          requirement={uploadTarget.requirement}
+          existing={uploadTarget.existing}
+          disabled={resolved}
+          onOpenChange={(open) => { if (!open) setUploadTarget(null) }}
+        />
       )}
     </section>
   )

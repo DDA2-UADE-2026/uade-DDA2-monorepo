@@ -135,7 +135,7 @@ POST /api/admin/applications
 
 La solicitud pertenece al usuario indicado. El administrativo queda guardado por separado como quien la registró. El titular encuentra después esa solicitud en su listado propio y es quien puede cargar o reemplazar sus archivos.
 
-La presentación asistida no permite adjuntar documentos y esta entrega tampoco incluye una carga administrativa en nombre del ciudadano.
+El cuerpo de la presentación asistida no admite archivos: los documentos se cargan después, sobre la solicitud creada. El administrativo puede hacerlo en nombre del titular con la carga asistida descrita en la sección 6, de modo que el trámite iniciado en la ventanilla pueda completarse sin que la persona tenga que entrar por su cuenta.
 
 Registrar una solicitud para otra persona no habilita a consultarla: quien necesite ver las solicitudes de otros titulares requiere `applications:management:view`, con las rutas de la sección siguiente.
 
@@ -245,6 +245,7 @@ El personal con permisos documentales usa estas operaciones:
 
 | Acción | Método y ruta |
 | --- | --- |
+| Cargar o reemplazar un documento en nombre del titular | `PUT /api/admin/applications/{applicationId}/documents/{requirementId}` |
 | Listar entregas de una solicitud | `GET /api/admin/applications/{applicationId}/documents` |
 | Obtener un archivo para revisarlo | `GET /api/admin/applications/{applicationId}/documents/{applicationDocumentId}/content` |
 | Registrar la revisión | `PATCH /api/admin/applications/{applicationId}/documents/{applicationDocumentId}/review` |
@@ -275,6 +276,14 @@ Las reglas son:
 - si el ciudadano reemplaza el archivo, la entrega vuelve a `PENDING` y puede revisarse nuevamente;
 - la revisión no cambia `Application.status`.
 
+### Carga asistida
+
+`PUT /api/admin/applications/{applicationId}/documents/{requirementId}` recibe el archivo en `multipart/form-data` bajo la parte `file`, igual que la carga ciudadana. Responde `201` en la primera entrega de ese requisito y `200` cuando reemplaza una anterior. Aplica las mismas validaciones que la carga propia: PDF, JPEG o PNG de hasta 10 MB, con extensión, MIME y firma coherentes, y rechaza la operación con `409 APPLICATION_DOCUMENTS_FINALIZED` si la solicitud está aprobada, rechazada o cerrada.
+
+Reemplazar conserva el vínculo, borra el archivo anterior y reinicia la revisión a `PENDING`, aunque la entrega previa ya estuviera `VALID` u `OBSERVED`. Para el titular la entrega es propia: la ve en su listado, la descarga y deja de figurar en `pendingDocuments`.
+
+El archivo queda atribuido al **administrativo que lo sube**, no al titular, del mismo modo que `registeredByUserId` distingue a quien registró una solicitud asistida de quien es su titular. La constancia de auditoría registra al administrativo como autor de la carga.
+
 Los endpoints administrativos operan con un `applicationId` conocido. Actualmente no existe una bandeja administrativa general para descubrir o listar todas las solicitudes; la presentación asistida devuelve el identificador de la solicitud que crea.
 
 ## 7. Permisos por rol activo
@@ -289,6 +298,7 @@ Los endpoints administrativos operan con un `applicationId` conocido. Actualment
 | Consultar solicitudes de cualquier titular | `applications:management:view` |
 | Listar y descargar documentos para revisión | `applications:management:documents:view` |
 | Revisar documentos | `applications:management:documents:review` |
+| Cargar o reemplazar documentos en nombre del titular | `applications:management:documents:manage` |
 | Consultar el catálogo documental | `programs:management:view` |
 | Crear entradas del catálogo | `programs:management:create` |
 | Modificar o eliminar entradas del catálogo | `programs:management:edit` |
@@ -312,8 +322,8 @@ Durante todo el recorrido, el estado general de la solicitud continúa en `SUBMI
 
 ## Límites actuales
 
-- No existe carga administrativa de archivos en nombre del ciudadano.
 - No existe un endpoint público de documentos.
+- La carga asistida no incluye una eliminación administrativa: borrar una entrega sigue siendo una acción del titular.
 - No existe una bandeja administrativa general de solicitudes.
 - No se implementaron imágenes públicas de programas en este flujo.
 - No se modifican automáticamente los estados generales de la solicitud según sus documentos.

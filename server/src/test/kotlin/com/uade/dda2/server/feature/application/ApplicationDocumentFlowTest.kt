@@ -111,7 +111,8 @@ class ApplicationDocumentFlowTest {
         ))
         val admin = role("ADMIN_DOCUMENTOS", setOf(
             "programs:management:view", "programs:management:create", "programs:management:edit",
-            "applications:management:documents:view", "applications:management:documents:review", "users:delete",
+            "applications:management:documents:view", "applications:management:documents:review",
+            "applications:management:documents:manage", "users:delete",
         ))
         val empty = role("SIN_PERMISOS_DOCUMENTOS", emptySet())
         val owner = users.save(User(name = "Titular ${UUID.randomUUID()}", email = "owner-${UUID.randomUUID()}@example.com", roles = mutableSetOf(citizen, empty)))
@@ -143,6 +144,10 @@ class ApplicationDocumentFlowTest {
     private fun pdf(suffix: String = "content") = "%PDF-1.7\n$suffix".toByteArray()
     private fun putDocument(requirementId: UUID = f.requiredId, upload: MockMultipartFile = file("dni.pdf", "application/pdf", pdf()), token: String = f.ownerToken): MvcResult =
         mvc.perform(multipart("/api/applications/${f.applicationId}/documents/$requirementId").file(upload)
+            .with { it.method = "PUT"; it }.header("Authorization", auth(token))).andReturn()
+
+    private fun putAdminDocument(requirementId: UUID = f.requiredId, upload: MockMultipartFile = file("dni.pdf", "application/pdf", pdf()), token: String = f.adminToken): MvcResult =
+        mvc.perform(multipart("/api/admin/applications/${f.applicationId}/documents/$requirementId").file(upload)
             .with { it.method = "PUT"; it }.header("Authorization", auth(token))).andReturn()
 
     @Test
@@ -353,6 +358,7 @@ class ApplicationDocumentFlowTest {
         val linkId = expect(putDocument(), 201)!!.get("id").asString()
         tx { applications.findById(f.applicationId).orElseThrow().status = status }
         expect(putDocument(), 409, "APPLICATION_DOCUMENTS_FINALIZED")
+        expect(putAdminDocument(), 409, "APPLICATION_DOCUMENTS_FINALIZED")
         expect(mvc.perform(delete("/api/applications/${f.applicationId}/documents/$linkId")
             .header("Authorization", auth(f.ownerToken))).andReturn(), 409, "APPLICATION_DOCUMENTS_FINALIZED")
         expect(mvc.perform(patch("/api/admin/applications/${f.applicationId}/documents/$linkId/review")
@@ -384,6 +390,51 @@ class ApplicationDocumentFlowTest {
             assertFalse(text.contains("%PDF"))
             assertFalse(text.contains("content\":"))
         }
+    }
+
+    @Test
+    fun `entrega asistida carga en nombre del titular la atribuye al administrativo y el titular la ve`() {
+        val created = expect(putAdminDocument(), 201)!!
+        val linkId = created.get("id").asString()
+        assertEquals("PENDING", created.get("status").asString())
+        assertTrue(created.get("contentUrl").asString().startsWith("/api/admin/applications/"))
+
+        // El archivo queda atribuido a quien lo subio realmente, no al titular.
+        val documentId = UUID.fromString(created.get("documentId").asString())
+        assertEquals(f.adminId, tx { documents.findById(documentId).orElseThrow().uploadedBy.id!! })
+
+        // Para el titular la entrega es suya: la ve, la descarga y deja de estar pendiente.
+        val detail = expect(mvc.perform(get("/api/applications/${f.applicationId}")
+            .header("Authorization", auth(f.ownerToken))).andReturn(), 200)!!
+        assertEquals(0, detail.get("pendingDocuments").size())
+        val own = expect(mvc.perform(get("/api/applications/${f.applicationId}/documents")
+            .header("Authorization", auth(f.ownerToken))).andReturn(), 200)!!
+        assertEquals(1, own.size())
+        assertEquals(linkId, own.get(0).get("id").asString())
+        val download = mvc.perform(get("/api/applications/${f.applicationId}/documents/$linkId/content")
+            .header("Authorization", auth(f.ownerToken))).andReturn()
+        assertEquals(200, download.response.status)
+        assertContentEquals(pdf(), download.response.contentAsByteArray)
+
+        // Reemplazar desde la ventanilla reusa el vinculo, reinicia la revision y no deja huerfanos.
+        expect(mvc.perform(patch("/api/admin/applications/${f.applicationId}/documents/$linkId/review")
+            .contentType(MediaType.APPLICATION_JSON).content("""{"status":"VALID"}""")
+            .header("Authorization", auth(f.adminToken))).andReturn(), 200)
+        val replaced = expect(putAdminDocument(upload = file("dni.pdf", "application/pdf", pdf("v2"))), 200)!!
+        assertEquals(linkId, replaced.get("id").asString())
+        assertEquals("PENDING", replaced.get("status").asString())
+        assertFalse(documents.existsById(documentId))
+        assertEquals(0, orphanDocumentCount())
+        assertEquals(1, applicationDocuments.findMetadataByApplicationId(f.applicationId).size)
+    }
+
+    @Test
+    fun `la entrega asistida exige el permiso administrativo y no la habilita el titular`() {
+        expect(putAdminDocument(token = f.ownerToken), 403)
+        expect(putAdminDocument(token = f.noPermissionToken), 403)
+        expect(mvc.perform(multipart("/api/admin/applications/${f.applicationId}/documents/${f.requiredId}")
+            .file(file("dni.pdf", "application/pdf", pdf())).with { it.method = "PUT"; it }).andReturn(), 401)
+        assertEquals(0, applicationDocuments.findMetadataByApplicationId(f.applicationId).size)
     }
 
     @Test

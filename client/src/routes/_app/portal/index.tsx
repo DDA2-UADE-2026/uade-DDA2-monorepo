@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
+import { CitizenActivitiesSection } from "@/components/activities/CitizenActivitiesSection"
 import { RecentApplications } from "@/components/applications/RecentApplications"
 import {
   OutletNavSidebarTrigger,
@@ -51,6 +52,8 @@ function RouteComponent() {
             <ProgramTicker />
 
             <RecentApplications />
+
+            <CitizenActivitiesSection />
           </main>
         </div>
       </SidebarShellContent>

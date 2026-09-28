@@ -59,6 +59,29 @@ class ApplicationDocumentService(
         val actor = authorized("applications:own:documents:manage")
         val application = applications.findByIdAndUserIdForUpdate(applicationId, requireNotNull(actor.id))
             ?: throw ApplicationErrors.notFound()
+        return put(application, actor, requirementId, file, administrative = false)
+    }
+
+    /**
+     * Entrega asistida: el administrativo carga el archivo en nombre del titular para
+     * completar un tramite iniciado en la ventanilla. El documento queda atribuido a
+     * quien lo sube realmente, igual que registeredBy en la solicitud asistida.
+     */
+    @Transactional
+    fun putAdmin(applicationId: UUID, requirementId: UUID, file: MultipartFile): ApplicationDocumentMutation {
+        val actor = authorized("applications:management:documents:manage")
+        val application = applications.findByIdForUpdate(applicationId) ?: throw ApplicationErrors.notFound()
+        return put(application, actor, requirementId, file, administrative = true)
+    }
+
+    private fun put(
+        application: Application,
+        actor: User,
+        requirementId: UUID,
+        file: MultipartFile,
+        administrative: Boolean,
+    ): ApplicationDocumentMutation {
+        val applicationId = requireNotNull(application.id)
         documentValidator.validateMutable(application)
         val requirement = requirements.findByIdAndProgramEditionId(requirementId, requireNotNull(application.programEdition.id))
             ?: throw ProgramDocumentRequirementErrors.wrongEdition(requirementId)
@@ -112,7 +135,7 @@ class ApplicationDocumentService(
             oldValues = oldSnapshot,
             newValues = snapshotJson(saved),
         )
-        return ApplicationDocumentMutation(response(applicationId, requireNotNull(saved.id), false), created)
+        return ApplicationDocumentMutation(response(applicationId, requireNotNull(saved.id), administrative), created)
     }
 
     @Transactional

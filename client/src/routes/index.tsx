@@ -40,7 +40,7 @@ const FEATURES = [
   {
     icon: IconStethoscope,
     title: "Salud comunitaria y turnos",
-    description: "Sacá turno en centros municipales y sumate a campañas, talleres y actividades comunitarias.",
+    description: "Sacá turno en centros municipales y sumate a talleres, jornadas y actividades comunitarias.",
   },
 ]
 

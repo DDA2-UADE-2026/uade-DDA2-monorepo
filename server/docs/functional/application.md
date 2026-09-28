@@ -10,7 +10,7 @@ La solicitud pertenece a la persona solicitante, aunque un administrativo la reg
 
 **Presentar no equivale a recibir el beneficio.** La solicitud tampoco representa una incorporación efectiva ni una reserva de cupo.
 
-Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas. La evaluación general, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
+Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas, y también cargarlas en nombre del titular para completar un trámite iniciado en la ventanilla. La evaluación general, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
 
 ## Quién puede presentar y consultar
 
@@ -60,8 +60,17 @@ Una vez que existe la primera solicitud de una edición, ese catálogo queda fij
 3. Carga el archivo correspondiente a cada requisito. Se admiten PDF, JPEG y PNG de hasta 10 MB.
 4. Si se equivocó o el archivo fue observado, reemplaza la entrega del mismo requisito. La entrega sigue siendo la misma, pero el archivo anterior deja de conservarse y la revisión vuelve a pendiente.
 5. Puede eliminar una entrega y volver a cargarla mientras la solicitud no esté aprobada, rechazada ni cerrada.
+6. Si presentó en la ventanilla, un administrativo autorizado puede cargar o reemplazar esos archivos en su nombre.
 
-Los documentos son privados. Solo la persona titular puede listar y obtener los de sus propias solicitudes. No existe una galería pública ni un acceso general por el identificador del archivo.
+Los documentos son privados. Por la vía ciudadana, solo la persona titular puede listar y obtener los de sus propias solicitudes; el personal con autorización documental los consulta por las rutas administrativas. No existe una galería pública ni un acceso general por el identificador del archivo.
+
+### Carga asistida por un administrativo
+
+Quien presentó su solicitud en la ventanilla puede entregar ahí mismo la documentación: el administrativo autorizado carga o reemplaza el archivo de un requisito en nombre del titular, con las mismas validaciones de formato, tamaño y estado que la carga propia. Así la asistencia cubre el trámite completo y no obliga a la persona a ingresar por su cuenta.
+
+La entrega pertenece al titular, que la ve en su listado y deja de tenerla como pendiente. El archivo, en cambio, queda atribuido al administrativo que lo subió, igual que la solicitud asistida distingue al titular de quien la registró.
+
+Eliminar una entrega sigue siendo una acción del titular: la asistencia alcanza para cargar y reemplazar, no para borrar documentación ajena.
 
 ### Revisión administrativa
 

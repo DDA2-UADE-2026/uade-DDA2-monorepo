@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconCheck, IconDownload, IconEye } from "@tabler/icons-react"
+import { IconAlertTriangle, IconCheck, IconDownload, IconEye, IconUpload } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useMemo, useState } from "react"
 
@@ -42,9 +42,12 @@ type ReviewDecision = "VALID" | "OBSERVED"
 export function AdminDocumentsTable({
   applicationId,
   documents,
+  onReplace,
 }: {
   applicationId: string
   documents: ApplicationDocumentResponse[]
+  /** Ausente cuando la solicitud ya no admite cambios en su documentación. */
+  onReplace?: (document: ApplicationDocumentResponse) => void
 }) {
   const [previewDocument, setPreviewDocument] = useState<ApplicationDocumentResponse | null>(null)
   const [reviewDocument, setReviewDocument] = useState<ApplicationDocumentResponse | null>(null)
@@ -107,6 +110,17 @@ export function AdminDocumentsTable({
                         onClick={() => setPreviewDocument(document)}
                       >
                         <IconEye />
+                      </Button>
+                    )}
+                    {onReplace && document.requirementId && (
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        variant="ghost"
+                        aria-label={`Reemplazar ${document.requirementName ?? "documento"}`}
+                        onClick={() => onReplace(document)}
+                      >
+                        <IconUpload />
                       </Button>
                     )}
                     {document.id && document.status === "PENDING" && (
