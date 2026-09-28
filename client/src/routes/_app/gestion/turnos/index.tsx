@@ -222,7 +222,9 @@ function RouteComponent() {
                       })}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      conf. = turnos confirmados · lib. = horarios disponibles · ret. = cancelados con horario retenido
+                      <span className="font-medium text-blue-700 dark:text-blue-400">conf.</span> = turnos confirmados ·{" "}
+                      <span className="font-medium text-emerald-700 dark:text-emerald-400">lib.</span> = horarios disponibles ·{" "}
+                      ret. = cancelados con horario retenido
                     </p>
                   </>
                 )}
@@ -259,8 +261,14 @@ function DayCell({ day, iso, info, centro, servicio }: {
         <span className="text-[11px] text-muted-foreground">Sin agenda</span>
       ) : (
         <>
-          <span className="text-[11px] text-muted-foreground">{confirmed} conf.</span>
-          <span className="text-[11px] text-muted-foreground">{free} lib.</span>
+          <span className="flex items-center gap-1 text-[11px] font-medium text-blue-700 dark:text-blue-400">
+            <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" />
+            {confirmed} conf.
+          </span>
+          <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+            <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-emerald-600 dark:bg-emerald-400" />
+            {free} lib.
+          </span>
           {retained > 0 && <span className="text-[11px] text-muted-foreground">{retained} ret.</span>}
         </>
       )}

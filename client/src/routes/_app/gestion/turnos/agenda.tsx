@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 
 import { adminDaySearchSchema } from "@/components/turnos/adminAppointmentFilters"
+import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -95,10 +97,17 @@ function RouteComponent() {
   const refetch = () => { turnos.refetch(); libres.refetch() }
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-4 p-4 lg:p-6">
-      <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" search={backSearch} />}>
-        <IconArrowLeft />Volver al calendario
-      </Button>
+    <SidebarShell>
+      <OutletNavSticky>
+        <OutletNavSidebarTrigger withSeparator />
+        <OutletNavBreadcrumbs items={[{ label: "Turnos", to: "/gestion/turnos" }, { label: "Agenda del día" }]} />
+      </OutletNavSticky>
+      <SidebarShellContent>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-5xl space-y-4 p-4 lg:p-6">
+            <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" search={backSearch} />}>
+              <IconArrowLeft />Volver al calendario
+            </Button>
 
       {!validCenter ? (
         <p className="text-sm text-muted-foreground">
@@ -109,7 +118,9 @@ function RouteComponent() {
           <div>
             <h1 className="font-heading text-xl capitalize">{formatAppointmentDate(search.fecha)}</h1>
             <p className="text-sm text-muted-foreground">
-              {center.data?.name ?? "Centro"} · {confirmed} conf. · {freeSlots.length} lib.
+              {center.data?.name ?? "Centro"} ·{" "}
+              <span className="font-medium text-blue-700 dark:text-blue-400">{confirmed} conf.</span> ·{" "}
+              <span className="font-medium text-emerald-700 dark:text-emerald-400">{freeSlots.length} lib.</span>
               {retained > 0 ? ` · ${retained} ret.` : ""}
             </p>
           </div>
@@ -208,6 +219,9 @@ function RouteComponent() {
           )}
         </>
       )}
-    </div>
+          </div>
+        </div>
+      </SidebarShellContent>
+    </SidebarShell>
   )
 }

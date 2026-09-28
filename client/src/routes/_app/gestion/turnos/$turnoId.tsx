@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute, redirect } from "@tanstack/react-router"
 import { useState } from "react"
 
+import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
+import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   AlertDialog,
@@ -89,10 +91,17 @@ function RouteComponent() {
   const actionError = cancel.error ?? release.error
 
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-4 p-4 lg:p-6">
-      <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" />}>
-        <IconArrowLeft />Volver a turnos
-      </Button>
+    <SidebarShell>
+      <OutletNavSticky>
+        <OutletNavSidebarTrigger withSeparator />
+        <OutletNavBreadcrumbs items={[{ label: "Turnos", to: "/gestion/turnos" }, { label: "Detalle" }]} />
+      </OutletNavSticky>
+      <SidebarShellContent>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-3xl space-y-4 p-4 lg:p-6">
+            <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" />}>
+              <IconArrowLeft />Volver a turnos
+            </Button>
       {!valid ? (
         <Alert variant="destructive">
           <AlertTitle>No encontramos ese turno</AlertTitle>
@@ -202,7 +211,10 @@ function RouteComponent() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+          </div>
+        </div>
+      </SidebarShellContent>
+    </SidebarShell>
   )
 }
 
