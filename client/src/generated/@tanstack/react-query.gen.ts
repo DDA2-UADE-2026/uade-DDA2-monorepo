@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assignProfessional, assignServiceToCenter, close, close1, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, create8, createCenterOpeningHour, createCenterOpeningHoursBatch, createCitizenAppointment, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createProfessionalAvailabilitiesBatch, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, get3, get4, getAvailableProgram, getCitizenAppointment, getEnrollmentPeriod, getMunicipalCenter, getMunicipalService, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, list7, list8, listActivities, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listCitizenAppointmentCenters, listCitizenAppointmentServices, listCitizenAppointmentSlots, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, put, put1, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, update7, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage } from '../sdk.gen';
-import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchError, CreateCenterOpeningHoursBatchResponse, CreateCitizenAppointmentData, CreateCitizenAppointmentError, CreateCitizenAppointmentResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchError, CreateProfessionalAvailabilitiesBatchResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetCitizenAppointmentData, GetCitizenAppointmentError, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersError, ListCitizenAppointmentCentersResponse, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesError, ListCitizenAppointmentServicesResponse, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsError, ListCitizenAppointmentSlotsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PublishData, PublishError, PublishResponse, Put1Data, Put1Error, Put1Response, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
+import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assignProfessional, assignServiceToCenter, cancelAdminAppointment, close, close1, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, create8, createCenterOpeningHour, createCenterOpeningHoursBatch, createCitizenAppointment, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createProfessionalAvailabilitiesBatch, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, get3, get4, getAdminAppointment, getAvailableProgram, getCitizenAppointment, getEnrollmentPeriod, getMunicipalCenter, getMunicipalService, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, list7, list8, listActivities, listAdminAppointments, listAdminAppointmentSlots, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listCitizenAppointmentCenters, listCitizenAppointments, listCitizenAppointmentServices, listCitizenAppointmentSlots, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, put, put1, releaseAdminAppointmentSlot, reopenEnrollmentPeriod, rescheduleAdminAppointment, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, update7, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage } from '../sdk.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, CancelAdminAppointmentData, CancelAdminAppointmentError, CancelAdminAppointmentResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchError, CreateCenterOpeningHoursBatchResponse, CreateCitizenAppointmentData, CreateCitizenAppointmentError, CreateCitizenAppointmentResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchError, CreateProfessionalAvailabilitiesBatchResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, GetAdminAppointmentData, GetAdminAppointmentError, GetAdminAppointmentResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetCitizenAppointmentData, GetCitizenAppointmentError, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAdminAppointmentsData, ListAdminAppointmentsError, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsError, ListAdminAppointmentSlotsResponse, ListAdminAppointmentsResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersError, ListCitizenAppointmentCentersResponse, ListCitizenAppointmentsData, ListCitizenAppointmentsError, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesError, ListCitizenAppointmentServicesResponse, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsError, ListCitizenAppointmentSlotsResponse, ListCitizenAppointmentsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PublishData, PublishError, PublishResponse, Put1Data, Put1Error, Put1Response, PutData, PutError, PutResponse, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotError, ReleaseAdminAppointmentSlotResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, RescheduleAdminAppointmentData, RescheduleAdminAppointmentError, RescheduleAdminAppointmentResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -657,6 +657,23 @@ export const updateCenterOpeningHourMutation = (options?: Partial<Options<Update
 };
 
 /**
+ * Reprogramar un turno pendiente
+ */
+export const rescheduleAdminAppointmentMutation = (options?: Partial<Options<RescheduleAdminAppointmentData>>): UseMutationOptions<RescheduleAdminAppointmentResponse, RescheduleAdminAppointmentError, Options<RescheduleAdminAppointmentData>> => {
+    const mutationOptions: UseMutationOptions<RescheduleAdminAppointmentResponse, RescheduleAdminAppointmentError, Options<RescheduleAdminAppointmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await rescheduleAdminAppointment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Cargar o reemplazar un documento en nombre del titular
  *
  * Entrega asistida para completar un trámite iniciado en la ventanilla. Admite PDF, JPEG o PNG de hasta 10 MB. Reemplazar conserva la entrega y reinicia su revisión a PENDING. El archivo queda atribuido al administrativo que lo sube.
@@ -846,6 +863,24 @@ export const loginMutation = (options?: Partial<Options<LoginData>>): UseMutatio
     };
     return mutationOptions;
 };
+
+export const listCitizenAppointmentsQueryKey = (options?: Options<ListCitizenAppointmentsData>) => createQueryKey('listCitizenAppointments', options);
+
+/**
+ * Listar turnos propios con su estado
+ */
+export const listCitizenAppointmentsOptions = (options?: Options<ListCitizenAppointmentsData>) => queryOptions<ListCitizenAppointmentsResponse, ListCitizenAppointmentsError, ListCitizenAppointmentsResponse, ReturnType<typeof listCitizenAppointmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCitizenAppointments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCitizenAppointmentsQueryKey(options)
+});
 
 /**
  * Solicitar y confirmar un turno propio
@@ -2148,6 +2183,40 @@ export const activateCenterOpeningHourMutation = (options?: Partial<Options<Acti
 };
 
 /**
+ * Habilitar el horario de un turno cancelado
+ */
+export const releaseAdminAppointmentSlotMutation = (options?: Partial<Options<ReleaseAdminAppointmentSlotData>>): UseMutationOptions<ReleaseAdminAppointmentSlotResponse, ReleaseAdminAppointmentSlotError, Options<ReleaseAdminAppointmentSlotData>> => {
+    const mutationOptions: UseMutationOptions<ReleaseAdminAppointmentSlotResponse, ReleaseAdminAppointmentSlotError, Options<ReleaseAdminAppointmentSlotData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await releaseAdminAppointmentSlot({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cancelar un turno pendiente y retener su horario
+ */
+export const cancelAdminAppointmentMutation = (options?: Partial<Options<CancelAdminAppointmentData>>): UseMutationOptions<CancelAdminAppointmentResponse, CancelAdminAppointmentError, Options<CancelAdminAppointmentData>> => {
+    const mutationOptions: UseMutationOptions<CancelAdminAppointmentResponse, CancelAdminAppointmentError, Options<CancelAdminAppointmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await cancelAdminAppointment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Revisar un documento pendiente
  *
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
@@ -2495,7 +2564,7 @@ export const getPublicImageOptions = (options: Options<GetPublicImageData>) => q
 export const getCitizenAppointmentQueryKey = (options: Options<GetCitizenAppointmentData>) => createQueryKey('getCitizenAppointment', options);
 
 /**
- * Consultar un turno propio confirmado
+ * Consultar el estado de un turno propio
  */
 export const getCitizenAppointmentOptions = (options: Options<GetCitizenAppointmentData>) => queryOptions<unknown, GetCitizenAppointmentError, unknown, ReturnType<typeof getCitizenAppointmentQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -2680,6 +2749,60 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
         return data;
     },
     queryKey: listProgramEditionOptionsQueryKey(options)
+});
+
+export const listAdminAppointmentsQueryKey = (options: Options<ListAdminAppointmentsData>) => createQueryKey('listAdminAppointments', options);
+
+/**
+ * Buscar turnos por centro y fecha
+ */
+export const listAdminAppointmentsOptions = (options: Options<ListAdminAppointmentsData>) => queryOptions<ListAdminAppointmentsResponse, ListAdminAppointmentsError, ListAdminAppointmentsResponse, ReturnType<typeof listAdminAppointmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAdminAppointments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAdminAppointmentsQueryKey(options)
+});
+
+export const getAdminAppointmentQueryKey = (options: Options<GetAdminAppointmentData>) => createQueryKey('getAdminAppointment', options);
+
+/**
+ * Consultar un turno para su gestión
+ */
+export const getAdminAppointmentOptions = (options: Options<GetAdminAppointmentData>) => queryOptions<GetAdminAppointmentResponse, GetAdminAppointmentError, GetAdminAppointmentResponse, ReturnType<typeof getAdminAppointmentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAdminAppointment({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAdminAppointmentQueryKey(options)
+});
+
+export const listAdminAppointmentSlotsQueryKey = (options: Options<ListAdminAppointmentSlotsData>) => createQueryKey('listAdminAppointmentSlots', options);
+
+/**
+ * Consultar horarios para reprogramar un turno
+ */
+export const listAdminAppointmentSlotsOptions = (options: Options<ListAdminAppointmentSlotsData>) => queryOptions<ListAdminAppointmentSlotsResponse, ListAdminAppointmentSlotsError, ListAdminAppointmentSlotsResponse, ReturnType<typeof listAdminAppointmentSlotsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAdminAppointmentSlots({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAdminAppointmentSlotsQueryKey(options)
 });
 
 export const get3QueryKey = (options: Options<Get3Data>) => createQueryKey('get3', options);
