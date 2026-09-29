@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import type { ProfessionalAppointmentResponse } from "@/generated/types.gen"
+import type { CreateAttentionRequest, ProfessionalAppointmentResponse } from "@/generated/types.gen"
 import { appointmentToday } from "@/lib/appointment-flow"
 
 export const professionalTurnSearchSchema = z.object({
@@ -18,4 +18,18 @@ export function attentionLabel(row: ProfessionalAppointmentResponse, now = new D
   if (row.attention?.result === "ATENDIDO") return "Atendido"
   if (row.attention?.result === "AUSENTE") return "Ausente"
   return canRegisterAttention(row, now) ? "Sin registrar" : "Aún no comenzó"
+}
+
+export function attentionRequest(
+  result: CreateAttentionRequest["result"], attendedOn: string, description: string, today = appointmentToday(),
+): { body: CreateAttentionRequest; error?: never } | { body?: never; error: string } {
+  if (result === "AUSENTE") return { body: { result } }
+  if (!z.iso.date().safeParse(attendedOn).success || attendedOn > today) {
+    return { error: "Indicá una fecha de atención válida que no sea futura." }
+  }
+  const cleaned = description.trim()
+  if (cleaned.length < 1 || cleaned.length > 500) {
+    return { error: "Describí el servicio prestado en 1 a 500 caracteres." }
+  }
+  return { body: { result, attendedOn, description: cleaned } }
 }
