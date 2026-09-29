@@ -48,6 +48,28 @@ export const zRoleResponse = z.object({
 });
 
 /**
+ * Corrige una constancia usando la version consultada previamente.
+ */
+export const zCorrectAttentionRequest = z.object({
+    version: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
+    result: z.enum(['ATENDIDO', 'AUSENTE']),
+    attendedOn: z.iso.date().optional(),
+    description: z.string().optional()
+});
+
+/**
+ * Constancia de asistencia o atencion comunitaria; no incluye datos clinicos.
+ */
+export const zCommunityAttentionResponse = z.object({
+    result: z.enum(['ATENDIDO', 'AUSENTE']).optional(),
+    attendedOn: z.iso.date().optional(),
+    description: z.string().optional(),
+    version: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional()
+});
+
+/**
  * Detalle de un campo que no superó la validación.
  */
 export const zFieldErrorResponse = z.object({
@@ -444,7 +466,8 @@ export const zAdminAppointmentResponse = z.object({
     appointment: zAppointmentResponse.optional(),
     citizenId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
     citizenName: z.string().optional(),
-    slotRetained: z.boolean().optional()
+    slotRetained: z.boolean().optional(),
+    attention: zCommunityAttentionResponse.optional()
 });
 
 /**
@@ -551,6 +574,15 @@ export const zSelectRoleRequest = z.object({
  */
 export const zLoginRequest = z.object({
     username: z.string().min(1)
+});
+
+/**
+ * Registra asistencia. ATENDIDO exige fecha y descripcion; AUSENTE no admite ninguna de ellas.
+ */
+export const zCreateAttentionRequest = z.object({
+    result: z.enum(['ATENDIDO', 'AUSENTE']),
+    attendedOn: z.iso.date().optional(),
+    description: z.string().optional()
 });
 
 /**
@@ -1072,6 +1104,16 @@ export const zAvailableProgramDetailResponse = z.object({
 });
 
 /**
+ * Turno asignado al profesional con resultado de atencion, cuando existe.
+ */
+export const zProfessionalAppointmentResponse = z.object({
+    appointment: zAppointmentResponse.optional(),
+    citizenId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    citizenName: z.string().optional(),
+    attention: zCommunityAttentionResponse.optional()
+});
+
+/**
  * Actividad disponible para el registro profesional de asistencia.
  */
 export const zProfessionalActivityResponse = z.object({
@@ -1550,6 +1592,28 @@ export const zUpdate1Path = z.object({
  * OK
  */
 export const zUpdate1Response = zRoleResponse;
+
+export const zRegisterCommunityAttentionBody = zCreateAttentionRequest;
+
+export const zRegisterCommunityAttentionPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Created
+ */
+export const zRegisterCommunityAttentionResponse = zCommunityAttentionResponse;
+
+export const zCorrectCommunityAttentionBody = zCorrectAttentionRequest;
+
+export const zCorrectCommunityAttentionPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zCorrectCommunityAttentionResponse = zCommunityAttentionResponse;
 
 export const zPutBody = z.object({
     file: z.string()
@@ -2612,6 +2676,24 @@ export const zGetAvailableProgramPath = z.object({
  * OK
  */
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
+
+export const zListProfessionalAppointmentsQuery = z.object({
+    date: z.iso.date()
+});
+
+/**
+ * OK
+ */
+export const zListProfessionalAppointmentsResponse = z.array(zProfessionalAppointmentResponse);
+
+export const zGetProfessionalAppointmentPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetProfessionalAppointmentResponse = zProfessionalAppointmentResponse;
 
 export const zListActivitiesQuery = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),

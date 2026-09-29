@@ -115,6 +115,28 @@ export type RoleResponse = {
 };
 
 /**
+ * Corrige una constancia usando la version consultada previamente.
+ */
+export type CorrectAttentionRequest = {
+    version: number;
+    result: 'ATENDIDO' | 'AUSENTE';
+    attendedOn?: string;
+    description?: string;
+};
+
+/**
+ * Constancia de asistencia o atencion comunitaria; no incluye datos clinicos.
+ */
+export type CommunityAttentionResponse = {
+    result?: 'ATENDIDO' | 'AUSENTE';
+    attendedOn?: string;
+    description?: string;
+    version?: number;
+    createdAt?: string;
+    updatedAt?: string;
+};
+
+/**
  * Respuesta estándar de error de la API.
  */
 export type ErrorResponse = {
@@ -647,6 +669,7 @@ export type AdminAppointmentResponse = {
     citizenId?: number;
     citizenName?: string;
     slotRetained?: boolean;
+    attention?: CommunityAttentionResponse;
 };
 
 /**
@@ -836,6 +859,15 @@ export type LoginRequest = {
      * Nombre de usuario registrado.
      */
     username: string;
+};
+
+/**
+ * Registra asistencia. ATENDIDO exige fecha y descripcion; AUSENTE no admite ninguna de ellas.
+ */
+export type CreateAttentionRequest = {
+    result: 'ATENDIDO' | 'AUSENTE';
+    attendedOn?: string;
+    description?: string;
 };
 
 /**
@@ -1523,6 +1555,16 @@ export type AvailableProgramRequirementResponse = {
      * Explicación complementaria del requisito.
      */
     readonly description?: string;
+};
+
+/**
+ * Turno asignado al profesional con resultado de atencion, cuando existe.
+ */
+export type ProfessionalAppointmentResponse = {
+    appointment?: AppointmentResponse;
+    citizenId?: number;
+    citizenName?: string;
+    attention?: CommunityAttentionResponse;
 };
 
 export type ProfessionalActivityListResponse = {
@@ -2445,6 +2487,100 @@ export type Update1Responses = {
 };
 
 export type Update1Response = Update1Responses[keyof Update1Responses];
+
+export type RegisterCommunityAttentionData = {
+    body: CreateAttentionRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/professional/appointments/{id}/attention';
+};
+
+export type RegisterCommunityAttentionErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type RegisterCommunityAttentionError = RegisterCommunityAttentionErrors[keyof RegisterCommunityAttentionErrors];
+
+export type RegisterCommunityAttentionResponses = {
+    /**
+     * Created
+     */
+    201: CommunityAttentionResponse;
+};
+
+export type RegisterCommunityAttentionResponse = RegisterCommunityAttentionResponses[keyof RegisterCommunityAttentionResponses];
+
+export type CorrectCommunityAttentionData = {
+    body: CorrectAttentionRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/professional/appointments/{id}/attention';
+};
+
+export type CorrectCommunityAttentionErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CorrectCommunityAttentionError = CorrectCommunityAttentionErrors[keyof CorrectCommunityAttentionErrors];
+
+export type CorrectCommunityAttentionResponses = {
+    /**
+     * OK
+     */
+    200: CommunityAttentionResponse;
+};
+
+export type CorrectCommunityAttentionResponse = CorrectCommunityAttentionResponses[keyof CorrectCommunityAttentionResponses];
 
 export type PutData = {
     body?: {
@@ -7502,6 +7638,88 @@ export type GetAvailableProgramResponses = {
 };
 
 export type GetAvailableProgramResponse = GetAvailableProgramResponses[keyof GetAvailableProgramResponses];
+
+export type ListProfessionalAppointmentsData = {
+    body?: never;
+    path?: never;
+    query: {
+        date: string;
+    };
+    url: '/api/professional/appointments';
+};
+
+export type ListProfessionalAppointmentsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListProfessionalAppointmentsError = ListProfessionalAppointmentsErrors[keyof ListProfessionalAppointmentsErrors];
+
+export type ListProfessionalAppointmentsResponses = {
+    /**
+     * OK
+     */
+    200: Array<ProfessionalAppointmentResponse>;
+};
+
+export type ListProfessionalAppointmentsResponse = ListProfessionalAppointmentsResponses[keyof ListProfessionalAppointmentsResponses];
+
+export type GetProfessionalAppointmentData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/professional/appointments/{id}';
+};
+
+export type GetProfessionalAppointmentErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetProfessionalAppointmentError = GetProfessionalAppointmentErrors[keyof GetProfessionalAppointmentErrors];
+
+export type GetProfessionalAppointmentResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalAppointmentResponse;
+};
+
+export type GetProfessionalAppointmentResponse = GetProfessionalAppointmentResponses[keyof GetProfessionalAppointmentResponses];
 
 export type ListActivitiesData = {
     body?: never;
