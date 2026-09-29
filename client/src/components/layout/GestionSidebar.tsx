@@ -21,7 +21,9 @@ function GestionSidebar() {
   const { pathname } = useLocation()
   const { data } = useMe()
   const professional = data?.user?.activeRole?.toUpperCase() === "PROFESIONAL_CENTRO"
-  const operationItems = professional ? [...OPERACION_NAV, PROFESSIONAL_APPOINTMENTS_NAV] : OPERACION_NAV
+  const operationItems = professional
+    ? [...OPERACION_NAV.filter((item) => item.url !== "/gestion/turnos"), PROFESSIONAL_APPOINTMENTS_NAV]
+    : OPERACION_NAV
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">

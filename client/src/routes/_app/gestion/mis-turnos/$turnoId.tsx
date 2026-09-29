@@ -102,9 +102,14 @@ function RouteComponent() {
               {canRegisterAttention(row) ? (
                 <CommunityAttentionForm key={row.attention?.version ?? "new"} turnoId={turnoId} row={row} onSaved={onSaved} onConflict={onConflict} />
               ) : (
-                <p className="text-sm text-muted-foreground">{appointment.status === "CANCELLED"
-                  ? "Este turno fue cancelado y no admite registrar asistencia."
-                  : "Podrás registrar la asistencia cuando comience el turno."}</p>
+                appointment.status === "CANCELLED" ? (
+                  <p className="text-sm text-muted-foreground">Este turno fue cancelado y no admite registrar asistencia.</p>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                    <p>Podrás registrar la asistencia cuando comience el turno.</p>
+                    <Button variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}>Actualizar turno</Button>
+                  </div>
+                )
               )}
             </>
           )}
