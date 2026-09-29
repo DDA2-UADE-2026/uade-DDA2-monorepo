@@ -6,6 +6,7 @@ import com.uade.dda2.server.feature.appointment.dto.response.AdminAppointmentRes
 import com.uade.dda2.server.feature.appointment.dto.request.RescheduleAppointmentRequest
 import com.uade.dda2.server.feature.appointment.dto.response.AdminDaySummaryResponse
 import com.uade.dda2.server.feature.appointment.dto.response.AdminFreeSlotResponse
+import com.uade.dda2.server.feature.appointment.dto.response.CommunityAttentionResponse
 import com.uade.dda2.server.feature.appointment.dto.response.AvailableAppointmentSlotResponse
 import com.uade.dda2.server.feature.appointment.entity.Appointment
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
@@ -13,6 +14,7 @@ import com.uade.dda2.server.feature.appointment.error.AppointmentErrors
 import com.uade.dda2.server.feature.appointment.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.appointment.mapper.toResponse
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
+import com.uade.dda2.server.feature.appointment.repository.CommunityAttentionRepository
 import com.uade.dda2.server.feature.appointment.validator.AppointmentValidator
 import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.feature.auth.repository.UserRepository
@@ -40,6 +42,7 @@ import java.util.UUID
 @Service
 class AdminAppointmentService(
     private val appointments: AppointmentRepository,
+    private val attentions: CommunityAttentionRepository,
     private val centers: MunicipalCenterRepository,
     private val centerServices: CenterServiceRepository,
     private val municipalServices: MunicipalServiceRepository,
@@ -58,7 +61,8 @@ class AdminAppointmentService(
     @Transactional(readOnly = true)
     fun get(id: UUID): AdminAppointmentResponse {
         admin("appointments:management:view")
-        return (appointments.findDetailById(id) ?: throw AppointmentErrors.resourceNotFound()).toAdminResponse()
+        return (appointments.findDetailById(id) ?: throw AppointmentErrors.resourceNotFound())
+            .toAdminResponse(attentions.findByAppointmentId(id)?.toResponse())
     }
 
     @Transactional(readOnly = true)
@@ -66,7 +70,11 @@ class AdminAppointmentService(
         admin("appointments:management:view")
         val start = date.atStartOfDay(properties.zone()).toOffsetDateTime()
         val end = date.plusDays(1).atStartOfDay(properties.zone()).toOffsetDateTime()
-        return appointments.findByCenterIdInRange(centerId, start, end).map { it.toAdminResponse() }
+        val found = appointments.findByCenterIdInRange(centerId, start, end)
+        if (found.isEmpty()) return emptyList()
+        val byAppointmentId = attentions.findAllByAppointmentIdIn(found.map { requireNotNull(it.id) })
+            .associateBy { requireNotNull(it.appointment.id) }
+        return found.map { it.toAdminResponse(byAppointmentId[it.id]?.toResponse()) }
     }
 
     @Transactional(readOnly = true)
@@ -319,10 +327,11 @@ class AdminAppointmentService(
     private fun overlaps(appointment: Appointment, start: OffsetDateTime, end: OffsetDateTime): Boolean =
         appointment.startsAt.isBefore(end) && appointment.endsAt.isAfter(start)
 
-    private fun Appointment.toAdminResponse(): AdminAppointmentResponse = AdminAppointmentResponse(
+    private fun Appointment.toAdminResponse(attention: CommunityAttentionResponse? = null): AdminAppointmentResponse = AdminAppointmentResponse(
         appointment = toResponse(properties.zone()),
         citizenId = requireNotNull(citizen.id),
         citizenName = citizen.name,
         slotRetained = status == AppointmentStatus.CANCELLED && slotReleasedAt == null,
+        attention = attention,
     )
 }
