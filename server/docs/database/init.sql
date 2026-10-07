@@ -44,6 +44,8 @@ VALUES ('permissions:view'),
        ('appointments:own:create'),
        ('appointments:management:view'),
        ('appointments:management:manage'),
+       ('appointments:professional:view'),
+       ('appointments:professional:manage'),
        ('applications:management:create'),
        ('applications:management:view'),
        ('applications:management:documents:view'),
@@ -93,14 +95,15 @@ JOIN permissions p ON p.name IN (
 WHERE r.name = 'CIUDADANO'
 ON CONFLICT DO NOTHING;
 
--- El profesional accede a todas las actividades publicadas o cerradas.
--- La asignación a centros o actividades queda fuera del alcance actual.
+-- El profesional puede gestionar asistencia de actividades y sus turnos asignados.
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
 JOIN permissions p ON p.name IN (
     'activities:attendance:view',
-    'activities:attendance:manage'
+    'activities:attendance:manage',
+    'appointments:professional:view',
+    'appointments:professional:manage'
 )
 WHERE r.name = 'PROFESIONAL_CENTRO'
 ON CONFLICT DO NOTHING;

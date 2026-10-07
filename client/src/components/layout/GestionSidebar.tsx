@@ -2,9 +2,10 @@ import { useLocation } from "@tanstack/react-router"
 
 import { AppSidebarHeader } from "@/components/layout/AppSidebarHeader"
 import { KeyboardNotice } from "@/components/layout/KeyboardNotice"
-import { ANALISIS_NAV, DEBUG_NAV, OPERACION_NAV } from "@/components/layout/sidebar-constants"
+import { ANALISIS_NAV, DEBUG_NAV, OPERACION_NAV, PROFESSIONAL_APPOINTMENTS_NAV } from "@/components/layout/sidebar-constants"
 import { SidebarNavMenu } from "@/components/layout/SidebarNavMenu"
 import { SidebarUser } from "@/components/layout/SidebarUser"
+import { useMe } from "@/hooks/use-auth"
 import {
   Sidebar,
   SidebarContent,
@@ -18,6 +19,11 @@ import { BackendStatusPill } from "../BackendStatusPill"
 
 function GestionSidebar() {
   const { pathname } = useLocation()
+  const { data } = useMe()
+  const professional = data?.user?.activeRole?.toUpperCase() === "PROFESIONAL_CENTRO"
+  const operationItems = professional
+    ? [...OPERACION_NAV.filter((item) => item.url !== "/gestion/turnos"), PROFESSIONAL_APPOINTMENTS_NAV]
+    : OPERACION_NAV
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -26,7 +32,7 @@ function GestionSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Gestión municipal</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarNavMenu items={OPERACION_NAV} pathname={pathname} />
+            <SidebarNavMenu items={operationItems} pathname={pathname} />
           </SidebarGroupContent>
         </SidebarGroup>
 

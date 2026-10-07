@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute, redirect } from "@tanstack/react-router"
 import { useState } from "react"
 
+import { AdminAttentionSummary } from "@/components/appointments/AdminAttentionSummary"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -136,6 +137,8 @@ function RouteComponent() {
               <p className="text-muted-foreground">Identificador: {appointment.id}</p>
             </CardContent>
           </Card>
+
+          <AdminAttentionSummary attention={row.attention} />
 
           {slotRetained && (
             <Alert>

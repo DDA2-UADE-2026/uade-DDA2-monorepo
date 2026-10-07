@@ -89,6 +89,10 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
   },
 ]
 
+export const PROFESSIONAL_APPOINTMENTS_NAV: SidebarNavItem = {
+  title: "Mis turnos", url: "/gestion/mis-turnos", icon: IconCalendarEvent,
+}
+
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [
   { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
   { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },

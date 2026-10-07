@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.appointment.dto.response
 
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
+import com.uade.dda2.server.feature.appointment.entity.AttentionResult
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -55,6 +56,25 @@ data class AdminAppointmentResponse(
     val citizenId: Long,
     val citizenName: String,
     val slotRetained: Boolean,
+    val attention: CommunityAttentionResponse? = null,
+)
+
+@Schema(description = "Constancia de asistencia o atencion comunitaria; no incluye datos clinicos.")
+data class CommunityAttentionResponse(
+    val result: AttentionResult,
+    val attendedOn: LocalDate?,
+    val description: String?,
+    val version: Long,
+    val createdAt: OffsetDateTime,
+    val updatedAt: OffsetDateTime,
+)
+
+@Schema(description = "Turno asignado al profesional con resultado de atencion, cuando existe.")
+data class ProfessionalAppointmentResponse(
+    val appointment: AppointmentResponse,
+    val citizenId: Long,
+    val citizenName: String,
+    val attention: CommunityAttentionResponse?,
 )
 
 @Schema(description = "Ocupación de un centro en un día para el calendario administrativo.")

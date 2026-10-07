@@ -1,4 +1,4 @@
-# Appointment — Turnos de salud comunitaria (HU-18 y HU-19)
+# Appointment — Turnos de salud comunitaria (HU-18, HU-19 y HU-20)
 
 Esta guía explica cómo un ciudadano solicita un turno de salud comunitaria. Está pensada para alguien que no conoce el proyecto y no requiere conocimientos técnicos.
 
@@ -40,6 +40,16 @@ El turno reprogramado conserva identificador y titular; su horario anterior vuel
 Contrato administrativo: `GET /api/admin/appointments?centerId={id}&date={YYYY-MM-DD}`, `GET /api/admin/appointments/{id}`, `GET /api/admin/appointments/{id}/slots?date={YYYY-MM-DD}`, `PUT /api/admin/appointments/{id}/schedule`, `PATCH /api/admin/appointments/{id}/cancel`, `PATCH /api/admin/appointments/{id}/release-slot`. La respuesta administrativa incluye titular y `slotRetained`; las consultas ciudadanas siguen limitadas al titular.
 
 En bases PostgreSQL existentes se debe aplicar `server/docs/database/migrations/2026-09-28-hu19-appointment-cancellation.sql` antes de habilitar cancelaciones: `ddl-auto=update` no elimina la unicidad anterior de `(professional_assignment_id, starts_at)`, que impediría reservar un horario liberado, ni corrige un posible check antiguo que solo permita `CONFIRMED`. El script incorpora la columna nullable `slot_released_at`, admite ambos estados y agrega los permisos de gestión al rol `ADMIN` de manera aditiva. En bases nuevas, `server/docs/database/init.sql` carga esos permisos junto con el resto de los datos iniciales de prueba.
+
+## Constancia profesional (HU-20)
+
+El profesional con rol activo `PROFESIONAL_CENTRO` y permisos `appointments:professional:view` / `appointments:professional:manage` consulta sus turnos por fecha en `GET /api/professional/appointments?date={YYYY-MM-DD}` y abre un detalle en `GET /api/professional/appointments/{id}`. El listado incluye turnos históricos y cancelados, pero solo los turnos confirmados cuyo inicio ya llegó admiten un primer registro. Un turno reprogramado corresponde al profesional de la asignación vigente.
+
+`POST /api/professional/appointments/{id}/attention` registra `ATENDIDO` con `attendedOn` no futuro y `description` breve (1–500 caracteres), o `AUSENTE` sin esos campos. `PUT` sobre la misma ruta corrige la constancia existente: exige su `version` actual; si está desactualizada, responde conflicto y requiere refrescar el detalle. Una corrección a `AUSENTE` elimina la fecha y descripción anteriores. Una sola constancia vigente pertenece a cada turno, y los cambios de resultado quedan auditados sin conservar descripciones en el log.
+
+El resultado de atención es independiente de `CONFIRMED` y `CANCELLED`: no libera ni cambia el horario del turno. `GET /api/admin/appointments/{id}` y la búsqueda por centro y fecha incorporan la constancia al detalle administrativo; las respuestas ciudadanas siguen sin datos de asistencia o atención. El texto se limita a una descripción administrativa del servicio, sin campos para diagnósticos ni historia clínica; el backend no clasifica automáticamente contenido médico en texto libre.
+
+Para bases PostgreSQL existentes, aplicar `server/docs/database/migrations/2026-09-29-hu20-community-attention.sql` antes de habilitar la API: crea la tabla si falta y asigna permisos al rol profesional sin quitar permisos previos. En bases nuevas, `server/docs/database/init.sql` incluye los permisos.
 
 ## Referencia técnica
 

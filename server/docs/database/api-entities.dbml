@@ -78,6 +78,11 @@ Enum appointment_status {
   CANCELLED
 }
 
+Enum attention_result {
+  ATENDIDO
+  AUSENTE
+}
+
 Enum program_edition_status {
   DRAFT
   ACTIVE
@@ -316,6 +321,23 @@ Table appointment {
   }
 
   Note: 'Turno concreto. HU-19 permite reprogramar un CONFIRMED futuro y cancelar reteniendo el intervalo hasta liberación manual. Se conserva el identificador e idempotency_key originales.'
+}
+
+Table community_attention {
+  id uuid [pk]
+  appointment_id uuid [not null, unique, ref: > appointment.id, note: 'Una constancia vigente por turno.']
+  result attention_result [not null, note: 'Persistido como varchar(20); independiente del estado administrativo del turno.']
+  attended_on date [note: 'Obligatorio para ATENDIDO, nulo para AUSENTE.']
+  description varchar(500) [note: 'Descripción administrativa, no clínica; solo para ATENDIDO.']
+  version bigint [not null, note: 'Control de correcciones concurrentes.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  checks {
+    `(result = 'ATENDIDO' and attended_on is not null and description is not null) or (result = 'AUSENTE' and attended_on is null and description is null)` [name: 'ck_community_attention_result_data']
+  }
+
+  Note: 'HU-20: registro y correcciones del profesional del turno. El historial de auditoría solo registra metadatos, nunca las descripciones.'
 }
 
 Table activity {
