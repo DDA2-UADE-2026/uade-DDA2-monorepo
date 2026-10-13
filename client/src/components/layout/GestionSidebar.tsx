@@ -1,7 +1,6 @@
 import { useLocation } from "@tanstack/react-router"
 
 import { AppSidebarHeader } from "@/components/layout/AppSidebarHeader"
-import { KeyboardNotice } from "@/components/layout/KeyboardNotice"
 import { ANALISIS_NAV, DEBUG_NAV, OPERACION_NAV, PROFESSIONAL_APPOINTMENTS_NAV } from "@/components/layout/sidebar-constants"
 import { SidebarNavMenu } from "@/components/layout/SidebarNavMenu"
 import { SidebarUser } from "@/components/layout/SidebarUser"
@@ -50,7 +49,6 @@ function GestionSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <KeyboardNotice />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
