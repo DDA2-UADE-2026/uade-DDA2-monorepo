@@ -9,6 +9,7 @@ import com.uade.dda2.server.feature.activity.dto.response.ActivityResponse
 import com.uade.dda2.server.feature.activity.dto.response.ActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityListResponse
 import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityResponse
+import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.AttendanceRecordedByResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentListResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentResponse
@@ -94,7 +95,7 @@ fun Activity.toAuditSnapshot(): Map<String, Any?> =
         "updatedAt" to updatedAt.toString(),
     )
 
-fun Activity.toCitizenResponse(enrolledCount: Long): CitizenActivityResponse =
+fun Activity.toCitizenResponse(enrolledCount: Long, enrollment: ActivityEnrollment? = null): CitizenActivityResponse =
     CitizenActivityResponse(
         id = requireNotNull(id),
         name = name,
@@ -105,12 +106,19 @@ fun Activity.toCitizenResponse(enrolledCount: Long): CitizenActivityResponse =
         capacity = capacity,
         enrolledCount = enrolledCount,
         availableCapacity = (capacity.toLong() - enrolledCount).coerceAtLeast(0),
+        status = status,
+        myEnrollment = enrollment?.let {
+            CitizenActivityEnrollmentResponse(requireNotNull(it.id), it.enrolledAt, it.attendance)
+        },
     )
 
-fun Page<Activity>.toCitizenListResponse(enrollmentCounts: Map<UUID, Long>): CitizenActivityListResponse =
+fun Page<Activity>.toCitizenListResponse(
+    enrollmentCounts: Map<UUID, Long>,
+    ownEnrollments: Map<UUID, ActivityEnrollment> = emptyMap(),
+): CitizenActivityListResponse =
     CitizenActivityListResponse(
         content = content.map { activity ->
-            activity.toCitizenResponse(enrollmentCounts[requireNotNull(activity.id)] ?: 0)
+            activity.toCitizenResponse(enrollmentCounts[requireNotNull(activity.id)] ?: 0, ownEnrollments[activity.id])
         },
         page = number,
         size = size,
@@ -140,20 +148,18 @@ fun ActivityEnrollment.toAuditSnapshot(): Map<String, Any?> =
 fun Page<Activity>.toProfessionalListResponse(enrollmentCounts: Map<UUID, Long>): ProfessionalActivityListResponse =
     ProfessionalActivityListResponse(
         content = content.map { activity ->
-            ProfessionalActivityResponse(
-                id = requireNotNull(activity.id),
-                name = activity.name,
-                location = activity.location,
-                startDate = activity.startDate,
-                endDate = activity.endDate,
-                status = activity.status,
-                enrolledCount = enrollmentCounts[requireNotNull(activity.id)] ?: 0,
-            )
+            activity.toProfessionalResponse(enrollmentCounts[requireNotNull(activity.id)] ?: 0)
         },
         page = number,
         size = size,
         totalElements = totalElements,
         totalPages = totalPages,
+    )
+
+fun Activity.toProfessionalResponse(enrolledCount: Long): ProfessionalActivityResponse =
+    ProfessionalActivityResponse(
+        id = requireNotNull(id), name = name, location = location,
+        startDate = startDate, endDate = endDate, status = status, enrolledCount = enrolledCount,
     )
 
 fun ActivityEnrollment.toProfessionalResponse(): ProfessionalActivityEnrollmentResponse =

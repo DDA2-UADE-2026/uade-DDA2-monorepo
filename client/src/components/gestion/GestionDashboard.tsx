@@ -97,7 +97,7 @@ export function GestionDashboard() {
   const canViewUsers = permissions.includes("users:view")
   const canViewPrograms = permissions.includes("programs:management:view")
   const canViewApplications = permissions.includes("applications:management:view")
-  const canViewActivities = isAdmin && permissions.includes("activities:management:view")
+  const canViewActivities = permissions.includes("activities:management:view")
   const canViewCenters = isAdmin && permissions.includes("centers:management:view")
   const canCreateApplication = permissions.includes("applications:management:create")
 

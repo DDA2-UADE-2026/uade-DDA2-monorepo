@@ -4,6 +4,7 @@ import com.uade.dda2.server.feature.activity.dto.request.UpdateActivityAttendanc
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentListResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityListResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityResponse
 import com.uade.dda2.server.feature.activity.entity.Activity
 import com.uade.dda2.server.feature.activity.entity.ActivityStatus
 import com.uade.dda2.server.feature.activity.error.ActivityErrors
@@ -18,6 +19,7 @@ import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.json.JsonMapper
@@ -48,9 +50,17 @@ class ProfessionalActivityService(
     }
 
     @Transactional(readOnly = true)
+    fun getActivity(activityId: UUID): ProfessionalActivityResponse {
+        val activity = findActivity(activityId)
+        validateAttendanceActivity(activity)
+        return activity.toProfessionalResponse(enrollments.countByActivityId(activityId))
+    }
+
+    @Transactional(readOnly = true)
     fun listEnrollments(activityId: UUID, page: Int, size: Int): ProfessionalActivityEnrollmentListResponse {
         validateAttendanceActivity(findActivity(activityId))
-        return enrollments.findAllByActivityId(activityId, PageRequest.of(page, size)).toProfessionalEnrollmentListResponse()
+        return enrollments.findAllByActivityId(activityId, PageRequest.of(page, size, Sort.by("enrolledAt", "id")))
+            .toProfessionalEnrollmentListResponse()
     }
 
     @Transactional

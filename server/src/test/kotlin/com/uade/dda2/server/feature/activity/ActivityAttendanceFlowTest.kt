@@ -3,6 +3,7 @@ package com.uade.dda2.server.feature.activity
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentListResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityListResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityResponse
 import com.uade.dda2.server.feature.activity.entity.Activity
 import com.uade.dda2.server.feature.activity.entity.ActivityAttendanceStatus
 import com.uade.dda2.server.feature.activity.entity.ActivityEnrollment
@@ -88,6 +89,22 @@ class ActivityAttendanceFlowTest {
         }
         professionalToken = tokens.first
         unauthorizedToken = tokens.second
+    }
+
+    @Test
+    fun `consulta el detalle profesional sin permitir borradores ni acceso sin permiso`() {
+        val activityId = saveActivity(ActivityStatus.OPEN)
+        saveEnrollment(activityId, "Citizen Detail")
+        val result = performGet("/api/professional/activities/$activityId")
+        expect(result, 200)
+        val detail = json.readValue(result.response.contentAsString, ProfessionalActivityResponse::class.java)
+        assertEquals(activityId, detail.id)
+        assertEquals(1, detail.enrolledCount)
+        expect(performGet("/api/professional/activities/${saveActivity(ActivityStatus.CLOSED)}"), 200)
+        expect(performGet("/api/professional/activities/${saveActivity(ActivityStatus.DRAFT)}"), 409)
+        expect(performGet("/api/professional/activities/${UUID.randomUUID()}"), 404)
+        expect(performGet("/api/professional/activities/$activityId", unauthorizedToken), 403)
+        expect(mvc.perform(get("/api/professional/activities/$activityId")).andReturn(), 401)
     }
 
     @Test

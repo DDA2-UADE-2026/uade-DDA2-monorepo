@@ -19,6 +19,11 @@ interface ActivityEnrollmentCount {
 interface ActivityEnrollmentRepository : JpaRepository<ActivityEnrollment, UUID> {
     fun existsByActivityIdAndCitizenId(activityId: UUID, citizenId: Long): Boolean
 
+    fun findByActivityIdAndCitizenId(activityId: UUID, citizenId: Long): ActivityEnrollment?
+
+    @EntityGraph(attributePaths = ["activity"])
+    fun findAllByCitizenIdAndActivityIdIn(citizenId: Long, activityIds: Collection<UUID>): List<ActivityEnrollment>
+
     fun countByActivityId(activityId: UUID): Long
 
     fun existsByCitizenIdOrAttendanceRecordedById(citizenId: Long, attendanceRecordedById: Long): Boolean

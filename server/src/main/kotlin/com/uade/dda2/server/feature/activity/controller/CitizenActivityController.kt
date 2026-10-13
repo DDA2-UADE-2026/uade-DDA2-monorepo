@@ -31,7 +31,7 @@ class CitizenActivityController(
 ) {
     @GetMapping
     @PreAuthorize("hasAuthority('activities:own:view')")
-    @Operation(summary = "Listar actividades abiertas")
+    @Operation(summary = "Listar actividades abiertas o inscripciones propias")
     fun list(
         @Parameter(description = "Número de página, comenzando en cero.")
         @Min(0, message = "La página no puede ser negativa.")
@@ -40,11 +40,13 @@ class CitizenActivityController(
         @Min(1, message = "El tamaño de página debe ser mayor a cero.")
         @Max(100, message = "El tamaño de página no puede superar 100 elementos.")
         @RequestParam(defaultValue = "20") size: Int,
-    ): CitizenActivityListResponse = service.list(page, size)
+        @Parameter(description = "Si es true, devuelve solo las actividades del ciudadano autenticado, incluidas las cerradas.")
+        @RequestParam(defaultValue = "false") enrolledOnly: Boolean,
+    ): CitizenActivityListResponse = service.list(page, size, enrolledOnly)
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('activities:own:view')")
-    @Operation(summary = "Consultar una actividad abierta")
+    @Operation(summary = "Consultar una actividad abierta o una actividad cerrada con inscripción propia")
     fun get(@PathVariable id: UUID): CitizenActivityResponse = service.get(id)
 
     @PostMapping("/{id}/enrollments")

@@ -1455,7 +1455,16 @@ export const zActivityListResponse = z.object({
 });
 
 /**
- * Actividad abierta disponible para la comunidad.
+ * Inscripción del ciudadano autenticado, sin datos de otros participantes.
+ */
+export const zCitizenActivityEnrollmentResponse = z.object({
+    id: z.uuid().optional(),
+    enrolledAt: z.iso.datetime().optional(),
+    attendance: z.enum(['PRESENT', 'ABSENT']).optional()
+});
+
+/**
+ * Actividad disponible para la comunidad o incluida en las inscripciones del ciudadano autenticado.
  */
 export const zCitizenActivityResponse = z.object({
     id: z.uuid().optional(),
@@ -1466,11 +1475,17 @@ export const zCitizenActivityResponse = z.object({
     endDate: z.iso.date().optional(),
     capacity: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
     enrolledCount: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    availableCapacity: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+    availableCapacity: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    status: z.enum([
+        'DRAFT',
+        'OPEN',
+        'CLOSED'
+    ]).optional(),
+    myEnrollment: zCitizenActivityEnrollmentResponse.optional()
 });
 
 /**
- * Página de actividades abiertas disponibles para la comunidad.
+ * Página de actividades abiertas o de inscripciones propias, incluidas las actividades cerradas.
  */
 export const zCitizenActivityListResponse = z.object({
     content: z.array(zCitizenActivityResponse).optional(),
@@ -2705,6 +2720,15 @@ export const zListActivitiesQuery = z.object({
  */
 export const zListActivitiesResponse = zProfessionalActivityListResponse;
 
+export const zGetProfessionalActivityPath = z.object({
+    activityId: z.uuid()
+});
+
+/**
+ * OK
+ */
+export const zGetProfessionalActivityResponse = zProfessionalActivityResponse;
+
 export const zListEnrollmentsPath = z.object({
     activityId: z.uuid()
 });
@@ -2892,7 +2916,8 @@ export const zContent1Response = z.string();
 
 export const zList8Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
-    size: z.int().gte(1).lte(100).optional().default(20)
+    size: z.int().gte(1).lte(100).optional().default(20),
+    enrolledOnly: z.boolean().optional().default(false)
 });
 
 /**

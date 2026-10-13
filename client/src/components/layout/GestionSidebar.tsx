@@ -23,6 +23,9 @@ function GestionSidebar() {
   const operationItems = professional
     ? [...OPERACION_NAV.filter((item) => item.url !== "/gestion/turnos"), PROFESSIONAL_APPOINTMENTS_NAV]
     : OPERACION_NAV
+  const activityPermissions = data?.user?.permissions ?? []
+  const visibleOperationItems = operationItems.filter((item) => item.url !== "/gestion/actividades" ||
+    activityPermissions.some((permission) => ["activities:management:view", "activities:attendance:view"].includes(permission)))
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
@@ -31,7 +34,7 @@ function GestionSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Gestión municipal</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarNavMenu items={operationItems} pathname={pathname} />
+            <SidebarNavMenu items={visibleOperationItems} pathname={pathname} />
           </SidebarGroupContent>
         </SidebarGroup>
 

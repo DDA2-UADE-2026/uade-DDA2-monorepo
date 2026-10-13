@@ -13,6 +13,7 @@ import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-ro
 import { useState } from "react"
 
 import { ActivityDialog } from "@/components/activities/ActivityDialog"
+import { ProfessionalActivities } from "@/components/activities/ProfessionalActivities"
 import { ActivityStatusDialog, type ActivityStatusAction } from "@/components/activities/ActivityStatusDialog"
 import {
   ActivityStatusBadge,
@@ -47,7 +48,7 @@ import type { ActivityListItemResponse } from "@/generated/types.gen"
 export const Route = createFileRoute("/_app/gestion/actividades/")({
   validateSearch: activitySearchSchema,
   beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
+    if (!context.user.permissions?.some((permission) => ["activities:management:view", "activities:attendance:view"].includes(permission))) {
       throw redirect({ to: "/403", replace: true })
     }
   },
@@ -55,6 +56,21 @@ export const Route = createFileRoute("/_app/gestion/actividades/")({
 })
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext()
+  const { page } = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
+  if (!user.permissions?.includes("activities:management:view")) {
+    return <ProfessionalActivities page={page} onPageChange={(nextPage) => navigate({ search: { page: nextPage } })} />
+  }
+  return <AdminActivities />
+}
+
+function AdminActivities() {
+  const { user } = Route.useRouteContext()
+  const canCreate = user.permissions?.includes("activities:management:create")
+  const canEdit = user.permissions?.includes("activities:management:edit")
+  const canChangeStatus = user.permissions?.includes("activities:management:change-status")
+  const canViewAttendance = user.permissions?.includes("activities:attendance:view")
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const [editing, setEditing] = useState<{ id?: string } | null>(null)
@@ -77,10 +93,10 @@ function RouteComponent() {
         <OutletNavSidebarTrigger withSeparator />
         <OutletNavBreadcrumbs items={[{ label: "Actividades" }]} />
         <OutletNavRightButton>
-          <Button size="sm" onClick={() => setEditing({})}>
+          {canCreate && <Button size="sm" onClick={() => setEditing({})}>
             <IconPlus />
             Nueva actividad
-          </Button>
+          </Button>}
         </OutletNavRightButton>
       </OutletNavSticky>
 
@@ -123,12 +139,12 @@ function RouteComponent() {
                   <Button variant="outline" onClick={() => navigate({ search: { page: 1 } })}>
                     Primera página
                   </Button>
-                ) : (
+                ) : canCreate ? (
                   <Button variant="outline" onClick={() => setEditing({})}>
                     <IconPlus />
                     Nueva actividad
                   </Button>
-                )}
+                ) : null}
               </Empty>
             ) : (
               <Table>
@@ -175,7 +191,8 @@ function RouteComponent() {
                       <TableCell><ActivityStatusBadge status={activity.status} /></TableCell>
                       <TableCell>
                         <div className="flex justify-end gap-1">
-                          {canEditActivity(activity.status) && (
+                          {canViewAttendance && activity.status !== "DRAFT" && <Button size="sm" variant="outline" render={<Link to="/gestion/actividades/$actividadId/asistencia" params={{ actividadId: activity.id ?? "" }} search={{ page: 1 }} />}>Asistencia</Button>}
+                          {canEdit && canEditActivity(activity.status) && (
                             <Button
                               type="button"
                               size="icon-sm"
@@ -186,7 +203,7 @@ function RouteComponent() {
                               <IconPencil />
                             </Button>
                           )}
-                          {canPublishActivity(activity.status) && (
+                          {canChangeStatus && canPublishActivity(activity.status) && (
                             <Button
                               type="button"
                               size="icon-sm"
@@ -197,7 +214,7 @@ function RouteComponent() {
                               <IconSpeakerphone />
                             </Button>
                           )}
-                          {canCloseActivity(activity.status) && (
+                          {canChangeStatus && canCloseActivity(activity.status) && (
                             <Button
                               type="button"
                               size="icon-sm"

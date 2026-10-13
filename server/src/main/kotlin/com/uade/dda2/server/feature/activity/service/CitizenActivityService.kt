@@ -18,6 +18,7 @@ import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.json.JsonMapper
@@ -32,22 +33,35 @@ class CitizenActivityService(
     private val json: JsonMapper,
 ) {
     @Transactional(readOnly = true)
-    fun list(page: Int, size: Int): CitizenActivityListResponse {
-        val result = activities.findAllByStatusOrderByStartDateAsc(ActivityStatus.OPEN, PageRequest.of(page, size))
+    fun list(page: Int, size: Int, enrolledOnly: Boolean = false): CitizenActivityListResponse {
+        val citizenId = currentUser.principal().id
+        val result = if (enrolledOnly) {
+            activities.findEnrolledActivities(
+                citizenId, listOf(ActivityStatus.OPEN, ActivityStatus.CLOSED),
+                PageRequest.of(page, size, Sort.by(Sort.Order.desc("startDate"), Sort.Order.asc("id"))),
+            )
+        } else {
+            activities.findAllByStatusOrderByStartDateAsc(ActivityStatus.OPEN, PageRequest.of(page, size, Sort.by("id")))
+        }
         val ids = result.content.map { requireNotNull(it.id) }
         val counts = if (ids.isEmpty()) {
             emptyMap()
         } else {
             enrollments.countByActivityIds(ids).associate { it.activityId to it.enrollmentCount }
         }
-        return result.toCitizenListResponse(counts)
+        val ownEnrollments = if (ids.isEmpty()) emptyMap() else
+            enrollments.findAllByCitizenIdAndActivityIdIn(citizenId, ids).associateBy { requireNotNull(it.activity.id) }
+        return result.toCitizenListResponse(counts, ownEnrollments)
     }
 
     @Transactional(readOnly = true)
     fun get(id: UUID): CitizenActivityResponse {
-        val activity = activities.findByIdAndStatus(id, ActivityStatus.OPEN)
-            ?: throw ActivityErrors.notAvailable(id)
-        return activity.toCitizenResponse(enrollments.countByActivityId(id))
+        val activity = activities.findById(id).orElseThrow { ActivityErrors.notAvailable(id) }
+        val enrollment = enrollments.findByActivityIdAndCitizenId(id, currentUser.principal().id)
+        if (activity.status == ActivityStatus.DRAFT || (activity.status == ActivityStatus.CLOSED && enrollment == null)) {
+            throw ActivityErrors.notAvailable(id)
+        }
+        return activity.toCitizenResponse(enrollments.countByActivityId(id), enrollment)
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import com.uade.dda2.server.feature.activity.dto.request.UpdateActivityAttendanc
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentListResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityListResponse
+import com.uade.dda2.server.feature.activity.dto.response.ProfessionalActivityResponse
 import com.uade.dda2.server.feature.activity.service.ProfessionalActivityService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -41,6 +42,11 @@ class ProfessionalActivityController(
         @Max(100, message = "El tamaño de página no puede superar 100 elementos.")
         @RequestParam(defaultValue = "20") size: Int,
     ): ProfessionalActivityListResponse = service.listActivities(page, size)
+
+    @GetMapping("/{activityId}")
+    @PreAuthorize("hasAuthority('activities:attendance:view')")
+    @Operation(operationId = "getProfessionalActivity", summary = "Consultar una actividad para registrar asistencia")
+    fun getActivity(@PathVariable activityId: UUID): ProfessionalActivityResponse = service.getActivity(activityId)
 
     @GetMapping("/{activityId}/enrollments")
     @PreAuthorize("hasAuthority('activities:attendance:view')")
