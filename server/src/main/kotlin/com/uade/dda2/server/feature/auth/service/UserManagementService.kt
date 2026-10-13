@@ -240,8 +240,9 @@ class UserManagementService(
             return emptySet()
         }
 
-        val roles = roleRepository.findByNameIn(names).associateBy { it.name.uppercase() }
-        val missing = names.filterNot(roles::containsKey)
+        val assignedNames = if ("ADMIN" in names) names + "CIUDADANO" else names
+        val roles = roleRepository.findByNameIn(assignedNames).associateBy { it.name.uppercase() }
+        val missing = assignedNames.filterNot(roles::containsKey)
         if (missing.isNotEmpty()) {
             throw BadRequestException(
                 code = "USER_UNKNOWN_ROLES",
@@ -249,7 +250,7 @@ class UserManagementService(
             )
         }
 
-        return names.mapNotNull(roles::get).toSet()
+        return assignedNames.mapNotNull(roles::get).toSet()
     }
 
     private fun normalizeUsername(username: String): String =

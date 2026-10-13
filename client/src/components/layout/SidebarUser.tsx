@@ -24,7 +24,7 @@ function SidebarUser() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
   const { data } = useMe()
-  const logout = useLogout()
+  const { logout, isPending: isLoggingOut } = useLogout()
   const perfilUrl = pathname.startsWith("/portal") ? "/portal/perfil" : "/gestion/perfil"
 
   const displayName = data?.user?.name || data?.user?.username || "Usuario"
@@ -32,9 +32,11 @@ function SidebarUser() {
   const activeRole = data?.user?.activeRole
   const canSwitchRole = (data?.user?.roles?.length ?? 0) > 1
 
-  const handleLogout = () => {
-    logout()
-    navigate({ to: "/login" })
+  const handleLogout = async () => {
+    try {
+      await logout()
+      await navigate({ to: "/login", replace: true })
+    } catch { /* Keep the current screen on failure; the hook displays the error. */ }
   }
 
   return (
@@ -97,6 +99,7 @@ function SidebarUser() {
             variant="destructive"
             className="rounded-lg"
             onClick={handleLogout}
+            disabled={isLoggingOut}
           >
             <IconLogout />
             Cerrar sesión

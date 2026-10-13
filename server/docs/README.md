@@ -26,6 +26,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 
 Recursos principales:
 
+- [Autenticación con cookies y Bearer](technical/cookie-auth.md)
 - [Contrato técnico de solicitudes y documentos](technical/solicitudes-beneficios.md)
 - [Análisis de seguridad y preparación para Ciudadanos](technical/seguridad-ciudadanos-analisis.md)
 - [Modelo de datos](database/api-entities.dbml)

@@ -531,7 +531,7 @@ export const zCreateRoleRequest = z.object({
 });
 
 /**
- * Cambio de rol activo. Requiere un bearer JWT operativo y no revoca el token anterior.
+ * Nombre del rol asignado a seleccionar o activar. Cambiar el rol activo no revoca JWT emitidos anteriormente.
  */
 export const zSwitchRoleRequest = z.object({
     role: z.string().min(0).max(50)
@@ -563,10 +563,12 @@ export const zLoginResponse = z.object({
 });
 
 /**
- * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
+ * Sesión del navegador. Los JWT se envían exclusivamente en cookies HttpOnly.
  */
-export const zSelectRoleRequest = z.object({
-    role: z.string().min(0).max(50)
+export const zCookieSessionResponse = z.object({
+    user: zUserResponse.optional(),
+    requiresRoleSelection: z.boolean().optional(),
+    expiresIn: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
 });
 
 /**
@@ -574,6 +576,13 @@ export const zSelectRoleRequest = z.object({
  */
 export const zLoginRequest = z.object({
     username: z.string().min(1)
+});
+
+/**
+ * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
+ */
+export const zSelectRoleRequest = z.object({
+    role: z.string().min(0).max(50)
 });
 
 /**
@@ -982,6 +991,14 @@ export const zLogResponse = z.object({
     oldValues: z.string().readonly().optional(),
     newValues: z.string().readonly().optional(),
     createdAt: z.iso.datetime().readonly().optional()
+});
+
+/**
+ * Token CSRF para enviar en el header indicado junto con las cookies del navegador.
+ */
+export const zSessionCsrfResponse = z.object({
+    headerName: z.string().optional(),
+    token: z.string().optional()
 });
 
 /**
@@ -1510,11 +1527,11 @@ export const zCreateUserRequestWritable = z.object({
 });
 
 /**
- * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
+ * Sesión del navegador. Los JWT se envían exclusivamente en cookies HttpOnly.
  */
-export const zSelectRoleRequestWritable = z.object({
-    selectionToken: z.string().min(1),
-    role: z.string().min(0).max(50)
+export const zCookieSessionResponseWritable = z.object({
+    requiresRoleSelection: z.boolean().optional(),
+    expiresIn: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
 });
 
 /**
@@ -1523,6 +1540,14 @@ export const zSelectRoleRequestWritable = z.object({
 export const zLoginRequestWritable = z.object({
     username: z.string().min(1),
     password: z.string().min(1)
+});
+
+/**
+ * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
+ */
+export const zSelectRoleRequestWritable = z.object({
+    selectionToken: z.string().min(1),
+    role: z.string().min(0).max(50)
 });
 
 /**
@@ -1979,6 +2004,32 @@ export const zSwitchRoleBody = zSwitchRoleRequest;
  * OK
  */
 export const zSwitchRoleResponse = zLoginResponse;
+
+export const zSessionSwitchRoleBody = zSwitchRoleRequest;
+
+/**
+ * OK
+ */
+export const zSessionSwitchRoleResponse = zCookieSessionResponse;
+
+export const zSessionSelectRoleBody = zSwitchRoleRequest;
+
+/**
+ * OK
+ */
+export const zSessionSelectRoleResponse = zCookieSessionResponse;
+
+/**
+ * No Content
+ */
+export const zSessionLogoutResponse = z.void();
+
+export const zSessionLoginBody = zLoginRequestWritable;
+
+/**
+ * OK
+ */
+export const zSessionLoginResponse = zCookieSessionResponse;
 
 export const zSelectRoleBody = zSelectRoleRequestWritable;
 
@@ -2652,6 +2703,16 @@ export const zListLogsByEntityPath = z.object({
  * OK
  */
 export const zListLogsByEntityResponse = z.array(zLogResponse);
+
+/**
+ * OK
+ */
+export const zSessionRoleSelectionResponse = zCookieSessionResponse;
+
+/**
+ * OK
+ */
+export const zSessionCsrfResponse2 = zSessionCsrfResponse;
 
 /**
  * OK

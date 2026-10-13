@@ -32,7 +32,7 @@ const roleLabels: Record<string, string> = {
 
 function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
   const navigate = useNavigate()
-  const logout = useLogout()
+  const { logout, isPending: isLoggingOut } = useLogout()
   const selectRole = useSelectRole()
   const switchRole = useSwitchRole()
   const isInitialSelection = roleChoice.mode === "select"
@@ -47,13 +47,12 @@ function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
       const data = isInitialSelection
         ? await selectRole.mutateAsync({
             body: {
-              selectionToken: roleChoice.pending.selectionToken,
               role,
             },
           })
         : await switchRole.mutateAsync({ body: { role } })
 
-      if (data.token && data.user?.activeRole) {
+      if (data.user?.activeRole) {
         navigate({ to: getRoleHome(data.user.activeRole), replace: true })
       }
     } catch {
@@ -61,10 +60,12 @@ function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
     }
   }
 
-  const leaveSelector = () => {
+  const leaveSelector = async () => {
     if (isInitialSelection) {
-      logout()
-      navigate({ to: "/login", replace: true })
+      try {
+        await logout()
+        await navigate({ to: "/login", replace: true })
+      } catch { /* The logout hook shows the error and keeps the session visible. */ }
       return
     }
 
@@ -83,7 +84,7 @@ function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
         <Button
           variant={isInitialSelection ? "destructive" : "outline"}
           className="w-full"
-          disabled={mutation.isPending}
+          disabled={mutation.isPending || isLoggingOut}
           onClick={leaveSelector}
         >
           {isInitialSelection && <IconLogout />}
@@ -112,7 +113,7 @@ function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
             <button
               key={role}
               type="button"
-              disabled={mutation.isPending || isCurrent}
+              disabled={mutation.isPending || isLoggingOut || isCurrent}
               onClick={() => chooseRole(role)}
               className="group flex items-center gap-4 rounded-2xl border border-input p-4 text-left transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
             >

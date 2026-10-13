@@ -54,7 +54,13 @@ springdoc:
     tags-sorter: alpha
     try-it-out-enabled: true
 app:
+  bootstrap:
+    admin:
+      enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
   security:
+    cookie:
+      secure: ${AUTH_COOKIE_SECURE:false}
+      same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
     jwt:
       issuer: ${JWT_ISSUER:example-issuer}
       secret: ${JWT_SECRET}

@@ -1,6 +1,7 @@
 package com.uade.dda2.server.config
 
 import com.uade.dda2.server.error.ErrorResponse
+import com.uade.dda2.server.security.ACCESS_COOKIE
 import io.swagger.v3.core.converter.ModelConverters
 import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 const val JWT_SECURITY_SCHEME = "bearer-jwt"
+const val COOKIE_SECURITY_SCHEME = "cookie-session"
 
 @Configuration
 class OpenApiConfig {
@@ -35,6 +37,12 @@ class OpenApiConfig {
             )
             .components(
                 Components().apply {
+                    addSecuritySchemes(
+                        COOKIE_SECURITY_SCHEME,
+                        SecurityScheme().type(SecurityScheme.Type.APIKEY)
+                            .`in`(SecurityScheme.In.COOKIE).name(ACCESS_COOKIE)
+                            .description("Cookie HttpOnly emitida por /auth/session/login o /auth/session/select-role. Las escrituras requieren X-XSRF-TOKEN obtenido de /auth/session/csrf."),
+                    )
                     addSecuritySchemes(
                         JWT_SECURITY_SCHEME,
                         SecurityScheme()
@@ -59,7 +67,10 @@ class OpenApiConfig {
                         operation.description = description
                     }
                     if (path !in publicPaths) {
-                        operation.security = listOf(SecurityRequirement().addList(JWT_SECURITY_SCHEME))
+                        operation.security = listOf(
+                            SecurityRequirement().addList(JWT_SECURITY_SCHEME),
+                            SecurityRequirement().addList(COOKIE_SECURITY_SCHEME),
+                        )
                         operation.responses.addApiResponse("401", errorResponse("No autenticado."))
                         operation.responses.addApiResponse("403", errorResponse("No posee permisos para realizar la operación."))
                     }
@@ -69,6 +80,10 @@ class OpenApiConfig {
                     }
                     if (operation.requestBody != null || operation.parameters.orEmpty().isNotEmpty()) {
                         operation.responses.addApiResponse("400", errorResponse("La solicitud es inválida."))
+                    }
+                    if (path.startsWith("/auth/session/")) {
+                        operation.responses.addApiResponse("401", errorResponse("Sesión o selección de rol inválida o vencida."))
+                        operation.responses.addApiResponse("403", errorResponse("Verificación CSRF inválida o acceso denegado."))
                     }
                     if (operation.parameters.orEmpty().any { it.`in` == "path" }) {
                         operation.responses.addApiResponse("404", errorResponse("No se encontró el recurso solicitado."))
@@ -94,6 +109,11 @@ class OpenApiConfig {
     private val publicPaths = setOf(
         "/auth/login",
         "/auth/select-role",
+        "/auth/session/csrf",
+        "/auth/session/login",
+        "/auth/session/select-role",
+        "/auth/session/role-selection",
+        "/auth/session/logout",
         "/api/images/{imageId}",
         "/actuator/health",
     )
