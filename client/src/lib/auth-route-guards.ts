@@ -2,11 +2,9 @@ import type { QueryClient } from '@tanstack/react-query'
 import { redirect } from '@tanstack/react-router'
 
 import { meOptions } from '@/generated/@tanstack/react-query.gen'
-import { client } from '@/generated/client.gen'
 import type { UserResponse } from '@/generated/types.gen'
-import { clearStoredAuthToken, getStoredAuthToken } from '@/lib/auth-token'
+import { clearLegacyAuthStorage, getPendingRoleSelection, isUnauthenticated, type PendingRoleSelection } from '@/lib/auth-session'
 import { clearCurrentUserAvatar } from '@/lib/avatar'
-import { getPendingRoleSelection, type PendingRoleSelection } from '@/lib/role-selection'
 
 export type RoleHome = '/portal' | '/gestion'
 export type RoleChoice =
@@ -18,15 +16,12 @@ export function getRoleHome(activeRole: string): RoleHome {
 }
 
 function clearInvalidSession(queryClient: QueryClient): void {
-  clearStoredAuthToken()
+  clearLegacyAuthStorage()
   clearCurrentUserAvatar()
-  client.setConfig({ headers: { Authorization: null } })
   queryClient.clear()
 }
 
 export async function getAuthenticatedUser(queryClient: QueryClient): Promise<UserResponse | null> {
-  if (!getStoredAuthToken()) return null
-
   try {
     const session = await queryClient.fetchQuery({
       ...meOptions(),
@@ -34,8 +29,9 @@ export async function getAuthenticatedUser(queryClient: QueryClient): Promise<Us
     })
 
     if (session.user) return session.user
-  } catch {
-    // Invalid and expired sessions are handled identically below.
+  } catch (error) {
+    // Connectivity and server errors must not turn into a false logout.
+    if (!isUnauthenticated(error)) throw error
   }
 
   clearInvalidSession(queryClient)
@@ -49,7 +45,7 @@ export async function redirectAuthenticatedUser(queryClient: QueryClient): Promi
     throw redirect({ to: getRoleHome(user.activeRole), replace: true })
   }
 
-  if (getPendingRoleSelection()) {
+  if (await getPendingRoleSelection(queryClient)) {
     throw redirect({ to: '/seleccionar-rol', replace: true })
   }
 }
@@ -76,7 +72,7 @@ export async function requireRoleChoice(queryClient: QueryClient): Promise<RoleC
     return { mode: 'switch', user }
   }
 
-  const pending = getPendingRoleSelection()
+  const pending = await getPendingRoleSelection(queryClient)
   if (pending) return { mode: 'select', pending }
 
   throw redirect({ to: '/login', replace: true })

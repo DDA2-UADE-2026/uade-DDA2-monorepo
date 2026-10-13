@@ -1,49 +1,37 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import {
-  loginMutation,
+  sessionLoginMutation,
+  sessionLogoutMutation,
   meOptions,
   meQueryKey,
-  selectRoleMutation,
-  switchRoleMutation,
+  sessionSelectRoleMutation,
+  sessionSwitchRoleMutation,
 } from '@/generated/@tanstack/react-query.gen'
-import { client } from '@/generated/client.gen'
-import type { LoginResponse } from '@/generated/types.gen'
-import { clearStoredAuthToken, getStoredAuthToken, setStoredAuthToken } from '@/lib/auth-token'
+import type { CookieSessionResponse } from '@/generated/types.gen'
+import { clearLegacyAuthStorage } from '@/lib/auth-session'
 import { clearCurrentUserAvatar, saveCurrentUserAvatar } from '@/lib/avatar'
-import { clearPendingRoleSelection, storePendingRoleSelection } from '@/lib/role-selection'
 
-function storeOperationalSession(
-  data: LoginResponse,
+async function storeSession(
+  data: CookieSessionResponse,
   queryClient: ReturnType<typeof useQueryClient>,
-  clearRoleScopedQueries = false,
-): void {
-  if (!data.token || !data.user?.activeRole) return
-
-  if (clearRoleScopedQueries) queryClient.removeQueries()
-  clearPendingRoleSelection()
-  setStoredAuthToken(data.token)
-  client.setConfig({ headers: { Authorization: `Bearer ${data.token}` } })
-  queryClient.setQueryData(meQueryKey(), { user: data.user })
-  saveCurrentUserAvatar(data.user)
+): Promise<void> {
+  // Cancel requests from the previous role before clearing its private data.
+  await queryClient.cancelQueries()
+  queryClient.removeQueries()
+  clearLegacyAuthStorage()
+  clearCurrentUserAvatar()
+  if (data.user?.activeRole) queryClient.setQueryData(meQueryKey(), { user: data.user })
+  if (data.user) saveCurrentUserAvatar(data.user)
 }
 
 export function useLogin() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...loginMutation(),
-    onSuccess: (data) => {
-      clearStoredAuthToken()
-      clearPendingRoleSelection()
-      client.setConfig({ headers: { Authorization: null } })
-      queryClient.removeQueries()
-
-      if (data.token) storeOperationalSession(data, queryClient)
-      else storePendingRoleSelection(data)
-
-      if (data.user) saveCurrentUserAvatar(data.user)
-    },
+    ...sessionLoginMutation(),
+    onSuccess: (data) => storeSession(data, queryClient),
   })
 }
 
@@ -51,8 +39,8 @@ export function useSelectRole() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...selectRoleMutation({ headers: { Authorization: null } }),
-    onSuccess: (data) => storeOperationalSession(data, queryClient, true),
+    ...sessionSelectRoleMutation(),
+    onSuccess: (data) => storeSession(data, queryClient),
   })
 }
 
@@ -60,15 +48,14 @@ export function useSwitchRole() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    ...switchRoleMutation(),
-    onSuccess: (data) => storeOperationalSession(data, queryClient, true),
+    ...sessionSwitchRoleMutation(),
+    onSuccess: (data) => storeSession(data, queryClient),
   })
 }
 
 export function useMe() {
   return useQuery({
     ...meOptions(),
-    enabled: !!getStoredAuthToken(),
     retry: false,
   })
 }
@@ -76,11 +63,18 @@ export function useMe() {
 export function useLogout() {
   const queryClient = useQueryClient()
 
-  return () => {
-    clearStoredAuthToken()
-    clearPendingRoleSelection()
-    clearCurrentUserAvatar()
-    client.setConfig({ headers: { Authorization: null } })
-    queryClient.clear()
+  const mutation = useMutation({
+    ...sessionLogoutMutation(),
+    onSuccess: async () => {
+      await queryClient.cancelQueries()
+      queryClient.clear()
+      clearLegacyAuthStorage()
+      clearCurrentUserAvatar()
+    },
+    onError: () => toast.error('No pudimos cerrar la sesión. Verificá la conexión e intentá nuevamente.'),
+  })
+  return {
+    isPending: mutation.isPending,
+    logout: () => mutation.mutateAsync({}),
   }
 }

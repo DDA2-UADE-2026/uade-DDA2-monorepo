@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, CancelAdminAppointmentData, CancelAdminAppointmentErrors, CancelAdminAppointmentResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, CorrectCommunityAttentionData, CorrectCommunityAttentionErrors, CorrectCommunityAttentionResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchErrors, CreateCenterOpeningHoursBatchResponses, CreateCitizenAppointmentData, CreateCitizenAppointmentErrors, CreateCitizenAppointmentResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchErrors, CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, GetAdminAppointmentData, GetAdminAppointmentErrors, GetAdminAppointmentResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetCitizenAppointmentData, GetCitizenAppointmentErrors, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetProfessionalActivityData, GetProfessionalActivityErrors, GetProfessionalActivityResponses, GetProfessionalAppointmentData, GetProfessionalAppointmentErrors, GetProfessionalAppointmentResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityErrors, ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryErrors, ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentsData, ListAdminAppointmentsErrors, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsErrors, ListAdminAppointmentSlotsResponses, ListAdminAppointmentsResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersErrors, ListCitizenAppointmentCentersResponses, ListCitizenAppointmentsData, ListCitizenAppointmentsErrors, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesErrors, ListCitizenAppointmentServicesResponses, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsErrors, ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListProfessionalAppointmentsData, ListProfessionalAppointmentsErrors, ListProfessionalAppointmentsResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PublishData, PublishErrors, PublishResponses, Put1Data, Put1Errors, Put1Responses, PutData, PutErrors, PutResponses, RegisterCommunityAttentionData, RegisterCommunityAttentionErrors, RegisterCommunityAttentionResponses, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotErrors, ReleaseAdminAppointmentSlotResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, RescheduleAdminAppointmentData, RescheduleAdminAppointmentErrors, RescheduleAdminAppointmentResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, CancelAdminAppointmentData, CancelAdminAppointmentErrors, CancelAdminAppointmentResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, CorrectCommunityAttentionData, CorrectCommunityAttentionErrors, CorrectCommunityAttentionResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchErrors, CreateCenterOpeningHoursBatchResponses, CreateCitizenAppointmentData, CreateCitizenAppointmentErrors, CreateCitizenAppointmentResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchErrors, CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, GetAdminAppointmentData, GetAdminAppointmentErrors, GetAdminAppointmentResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetCitizenAppointmentData, GetCitizenAppointmentErrors, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetProfessionalActivityData, GetProfessionalActivityErrors, GetProfessionalActivityResponses, GetProfessionalAppointmentData, GetProfessionalAppointmentErrors, GetProfessionalAppointmentResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityErrors, ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryErrors, ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentsData, ListAdminAppointmentsErrors, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsErrors, ListAdminAppointmentSlotsResponses, ListAdminAppointmentsResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersErrors, ListCitizenAppointmentCentersResponses, ListCitizenAppointmentsData, ListCitizenAppointmentsErrors, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesErrors, ListCitizenAppointmentServicesResponses, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsErrors, ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListProfessionalAppointmentsData, ListProfessionalAppointmentsErrors, ListProfessionalAppointmentsResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PublishData, PublishErrors, PublishResponses, Put1Data, Put1Errors, Put1Responses, PutData, PutErrors, PutResponses, RegisterCommunityAttentionData, RegisterCommunityAttentionErrors, RegisterCommunityAttentionResponses, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotErrors, ReleaseAdminAppointmentSlotResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, RescheduleAdminAppointmentData, RescheduleAdminAppointmentErrors, RescheduleAdminAppointmentResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SessionCsrfData, SessionCsrfErrors, SessionCsrfResponses, SessionLoginData, SessionLoginErrors, SessionLoginResponses, SessionLogoutData, SessionLogoutErrors, SessionLogoutResponses, SessionRoleSelectionData, SessionRoleSelectionErrors, SessionRoleSelectionResponses, SessionSelectRoleData, SessionSelectRoleErrors, SessionSelectRoleResponses, SessionSwitchRoleData, SessionSwitchRoleErrors, SessionSwitchRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -24,7 +24,11 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * Elimina el usuario indicado si no existen relaciones que lo impidan.
  */
 export const delete_ = <ThrowOnError extends boolean = false>(options: Options<DeleteData, ThrowOnError>): RequestResult<DeleteResponses, DeleteErrors, ThrowOnError> => (options.client ?? client).delete<DeleteResponses, DeleteErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/users/{id}',
     ...options
 });
@@ -35,7 +39,11 @@ export const delete_ = <ThrowOnError extends boolean = false>(options: Options<D
  * Devuelve el usuario identificado por su ID.
  */
 export const findById = <ThrowOnError extends boolean = false>(options: Options<FindByIdData, ThrowOnError>): RequestResult<FindByIdResponses, FindByIdErrors, ThrowOnError> => (options.client ?? client).get<FindByIdResponses, FindByIdErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/users/{id}',
     ...options
 });
@@ -46,7 +54,11 @@ export const findById = <ThrowOnError extends boolean = false>(options: Options<
  * Actualiza los datos, el estado y los roles del usuario indicado.
  */
 export const update = <ThrowOnError extends boolean = false>(options: Options<UpdateData, ThrowOnError>): RequestResult<UpdateResponses, UpdateErrors, ThrowOnError> => (options.client ?? client).put<UpdateResponses, UpdateErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/users/{id}',
     ...options,
     headers: {
@@ -61,7 +73,11 @@ export const update = <ThrowOnError extends boolean = false>(options: Options<Up
  * Elimina el rol indicado si no existen relaciones que lo impidan.
  */
 export const delete1 = <ThrowOnError extends boolean = false>(options: Options<Delete1Data, ThrowOnError>): RequestResult<Delete1Responses, Delete1Errors, ThrowOnError> => (options.client ?? client).delete<Delete1Responses, Delete1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/roles/{id}',
     ...options
 });
@@ -72,7 +88,11 @@ export const delete1 = <ThrowOnError extends boolean = false>(options: Options<D
  * Devuelve el rol identificado por su ID.
  */
 export const findById1 = <ThrowOnError extends boolean = false>(options: Options<FindById1Data, ThrowOnError>): RequestResult<FindById1Responses, FindById1Errors, ThrowOnError> => (options.client ?? client).get<FindById1Responses, FindById1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/roles/{id}',
     ...options
 });
@@ -83,7 +103,11 @@ export const findById1 = <ThrowOnError extends boolean = false>(options: Options
  * Reemplaza el nombre y los permisos del rol indicado.
  */
 export const update1 = <ThrowOnError extends boolean = false>(options: Options<Update1Data, ThrowOnError>): RequestResult<Update1Responses, Update1Errors, ThrowOnError> => (options.client ?? client).put<Update1Responses, Update1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/roles/{id}',
     ...options,
     headers: {
@@ -96,7 +120,11 @@ export const update1 = <ThrowOnError extends boolean = false>(options: Options<U
  * Registrar atendido o ausente
  */
 export const registerCommunityAttention = <ThrowOnError extends boolean = false>(options: Options<RegisterCommunityAttentionData, ThrowOnError>): RequestResult<RegisterCommunityAttentionResponses, RegisterCommunityAttentionErrors, ThrowOnError> => (options.client ?? client).post<RegisterCommunityAttentionResponses, RegisterCommunityAttentionErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/appointments/{id}/attention',
     ...options,
     headers: {
@@ -109,7 +137,11 @@ export const registerCommunityAttention = <ThrowOnError extends boolean = false>
  * Corregir la constancia con su version vigente
  */
 export const correctCommunityAttention = <ThrowOnError extends boolean = false>(options: Options<CorrectCommunityAttentionData, ThrowOnError>): RequestResult<CorrectCommunityAttentionResponses, CorrectCommunityAttentionErrors, ThrowOnError> => (options.client ?? client).put<CorrectCommunityAttentionResponses, CorrectCommunityAttentionErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/appointments/{id}/attention',
     ...options,
     headers: {
@@ -125,7 +157,11 @@ export const correctCommunityAttention = <ThrowOnError extends boolean = false>(
  */
 export const put = <ThrowOnError extends boolean = false>(options: Options<PutData, ThrowOnError>): RequestResult<PutResponses, PutErrors, ThrowOnError> => (options.client ?? client).put<PutResponses, PutErrors, ThrowOnError>({
     ...formDataBodySerializer,
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications/{applicationId}/documents/{requirementId}',
     ...options,
     headers: {
@@ -138,7 +174,11 @@ export const put = <ThrowOnError extends boolean = false>(options: Options<PutDa
  * Eliminar la imagen de un programa
  */
 export const deleteProgramImage = <ThrowOnError extends boolean = false>(options: Options<DeleteProgramImageData, ThrowOnError>): RequestResult<DeleteProgramImageResponses, DeleteProgramImageErrors, ThrowOnError> => (options.client ?? client).delete<DeleteProgramImageResponses, DeleteProgramImageErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/image',
     ...options
 });
@@ -150,7 +190,11 @@ export const deleteProgramImage = <ThrowOnError extends boolean = false>(options
  */
 export const createProgramImage = <ThrowOnError extends boolean = false>(options: Options<CreateProgramImageData, ThrowOnError>): RequestResult<CreateProgramImageResponses, CreateProgramImageErrors, ThrowOnError> => (options.client ?? client).post<CreateProgramImageResponses, CreateProgramImageErrors, ThrowOnError>({
     ...formDataBodySerializer,
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/image',
     ...options,
     headers: {
@@ -166,7 +210,11 @@ export const createProgramImage = <ThrowOnError extends boolean = false>(options
  */
 export const updateProgramImage = <ThrowOnError extends boolean = false>(options: Options<UpdateProgramImageData, ThrowOnError>): RequestResult<UpdateProgramImageResponses, UpdateProgramImageErrors, ThrowOnError> => (options.client ?? client).put<UpdateProgramImageResponses, UpdateProgramImageErrors, ThrowOnError>({
     ...formDataBodySerializer,
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/image',
     ...options,
     headers: {
@@ -181,7 +229,11 @@ export const updateProgramImage = <ThrowOnError extends boolean = false>(options
  * Devuelve el detalle del período y valida su pertenencia al programa y la edición indicados.
  */
 export const getEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<GetEnrollmentPeriodData, ThrowOnError>): RequestResult<GetEnrollmentPeriodResponses, GetEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).get<GetEnrollmentPeriodResponses, GetEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}',
     ...options
 });
@@ -192,7 +244,11 @@ export const getEnrollmentPeriod = <ThrowOnError extends boolean = false>(option
  * Actualiza fechas y observaciones sin permitir modificar directamente el estado.
  */
 export const updateEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<UpdateEnrollmentPeriodData, ThrowOnError>): RequestResult<UpdateEnrollmentPeriodResponses, UpdateEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).put<UpdateEnrollmentPeriodResponses, UpdateEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}',
     ...options,
     headers: {
@@ -207,7 +263,11 @@ export const updateEnrollmentPeriod = <ThrowOnError extends boolean = false>(opt
  * Elimina el programa si no existen relaciones que lo impidan.
  */
 export const delete2 = <ThrowOnError extends boolean = false>(options: Options<Delete2Data, ThrowOnError>): RequestResult<Delete2Responses, Delete2Errors, ThrowOnError> => (options.client ?? client).delete<Delete2Responses, Delete2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{id}',
     ...options
 });
@@ -218,7 +278,11 @@ export const delete2 = <ThrowOnError extends boolean = false>(options: Options<D
  * Devuelve el detalle del programa identificado por su UUID.
  */
 export const findById2 = <ThrowOnError extends boolean = false>(options: Options<FindById2Data, ThrowOnError>): RequestResult<FindById2Responses, FindById2Errors, ThrowOnError> => (options.client ?? client).get<FindById2Responses, FindById2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{id}',
     ...options
 });
@@ -229,7 +293,11 @@ export const findById2 = <ThrowOnError extends boolean = false>(options: Options
  * Actualiza el nombre y el objetivo del programa indicado.
  */
 export const update2 = <ThrowOnError extends boolean = false>(options: Options<Update2Data, ThrowOnError>): RequestResult<Update2Responses, Update2Errors, ThrowOnError> => (options.client ?? client).put<Update2Responses, Update2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{id}',
     ...options,
     headers: {
@@ -244,7 +312,11 @@ export const update2 = <ThrowOnError extends boolean = false>(options: Options<U
  * Elimina la edición si su estado y sus relaciones lo permiten.
  */
 export const delete3 = <ThrowOnError extends boolean = false>(options: Options<Delete3Data, ThrowOnError>): RequestResult<Delete3Responses, Delete3Errors, ThrowOnError> => (options.client ?? client).delete<Delete3Responses, Delete3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{id}',
     ...options
 });
@@ -255,7 +327,11 @@ export const delete3 = <ThrowOnError extends boolean = false>(options: Options<D
  * Devuelve el detalle de la edición indicada.
  */
 export const findById3 = <ThrowOnError extends boolean = false>(options: Options<FindById3Data, ThrowOnError>): RequestResult<FindById3Responses, FindById3Errors, ThrowOnError> => (options.client ?? client).get<FindById3Responses, FindById3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{id}',
     ...options
 });
@@ -266,7 +342,11 @@ export const findById3 = <ThrowOnError extends boolean = false>(options: Options
  * Actualiza los datos de la edición indicada.
  */
 export const update3 = <ThrowOnError extends boolean = false>(options: Options<Update3Data, ThrowOnError>): RequestResult<Update3Responses, Update3Errors, ThrowOnError> => (options.client ?? client).put<Update3Responses, Update3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{id}',
     ...options,
     headers: {
@@ -281,7 +361,11 @@ export const update3 = <ThrowOnError extends boolean = false>(options: Options<U
  * Elimina el requisito indicado de la edición.
  */
 export const delete4 = <ThrowOnError extends boolean = false>(options: Options<Delete4Data, ThrowOnError>): RequestResult<Delete4Responses, Delete4Errors, ThrowOnError> => (options.client ?? client).delete<Delete4Responses, Delete4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}',
     ...options
 });
@@ -292,7 +376,11 @@ export const delete4 = <ThrowOnError extends boolean = false>(options: Options<D
  * Devuelve un requisito perteneciente a la edición indicada.
  */
 export const findById4 = <ThrowOnError extends boolean = false>(options: Options<FindById4Data, ThrowOnError>): RequestResult<FindById4Responses, FindById4Errors, ThrowOnError> => (options.client ?? client).get<FindById4Responses, FindById4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}',
     ...options
 });
@@ -303,7 +391,11 @@ export const findById4 = <ThrowOnError extends boolean = false>(options: Options
  * Actualiza los datos del requisito indicado.
  */
 export const update4 = <ThrowOnError extends boolean = false>(options: Options<Update4Data, ThrowOnError>): RequestResult<Update4Responses, Update4Errors, ThrowOnError> => (options.client ?? client).put<Update4Responses, Update4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/requirements/{requirementId}',
     ...options,
     headers: {
@@ -316,7 +408,11 @@ export const update4 = <ThrowOnError extends boolean = false>(options: Options<U
  * Eliminar un requisito documental
  */
 export const delete5 = <ThrowOnError extends boolean = false>(options: Options<Delete5Data, ThrowOnError>): RequestResult<Delete5Responses, Delete5Errors, ThrowOnError> => (options.client ?? client).delete<Delete5Responses, Delete5Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/document-requirements/{requirementId}',
     ...options
 });
@@ -325,7 +421,11 @@ export const delete5 = <ThrowOnError extends boolean = false>(options: Options<D
  * Consultar un requisito documental
  */
 export const get = <ThrowOnError extends boolean = false>(options: Options<GetData, ThrowOnError>): RequestResult<GetResponses, GetErrors, ThrowOnError> => (options.client ?? client).get<GetResponses, GetErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/document-requirements/{requirementId}',
     ...options
 });
@@ -334,7 +434,11 @@ export const get = <ThrowOnError extends boolean = false>(options: Options<GetDa
  * Actualizar un requisito documental
  */
 export const update5 = <ThrowOnError extends boolean = false>(options: Options<Update5Data, ThrowOnError>): RequestResult<Update5Responses, Update5Errors, ThrowOnError> => (options.client ?? client).put<Update5Responses, Update5Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/document-requirements/{requirementId}',
     ...options,
     headers: {
@@ -349,7 +453,11 @@ export const update5 = <ThrowOnError extends boolean = false>(options: Options<U
  * Elimina el beneficio indicado de la edición.
  */
 export const delete6 = <ThrowOnError extends boolean = false>(options: Options<Delete6Data, ThrowOnError>): RequestResult<Delete6Responses, Delete6Errors, ThrowOnError> => (options.client ?? client).delete<Delete6Responses, Delete6Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}',
     ...options
 });
@@ -360,7 +468,11 @@ export const delete6 = <ThrowOnError extends boolean = false>(options: Options<D
  * Devuelve un beneficio perteneciente a la edición indicada.
  */
 export const findById5 = <ThrowOnError extends boolean = false>(options: Options<FindById5Data, ThrowOnError>): RequestResult<FindById5Responses, FindById5Errors, ThrowOnError> => (options.client ?? client).get<FindById5Responses, FindById5Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}',
     ...options
 });
@@ -371,7 +483,11 @@ export const findById5 = <ThrowOnError extends boolean = false>(options: Options
  * Actualiza los datos del beneficio indicado.
  */
 export const update6 = <ThrowOnError extends boolean = false>(options: Options<Update6Data, ThrowOnError>): RequestResult<Update6Responses, Update6Errors, ThrowOnError> => (options.client ?? client).put<Update6Responses, Update6Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/benefits/{benefitId}',
     ...options,
     headers: {
@@ -384,7 +500,11 @@ export const update6 = <ThrowOnError extends boolean = false>(options: Options<U
  * Editar una disponibilidad profesional
  */
 export const updateProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<UpdateProfessionalAvailabilityData, ThrowOnError>): RequestResult<UpdateProfessionalAvailabilityResponses, UpdateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).put<UpdateProfessionalAvailabilityResponses, UpdateProfessionalAvailabilityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-availability/{id}',
     ...options,
     headers: {
@@ -397,7 +517,11 @@ export const updateProfessionalAvailability = <ThrowOnError extends boolean = fa
  * Consultar un servicio municipal
  */
 export const getMunicipalService = <ThrowOnError extends boolean = false>(options: Options<GetMunicipalServiceData, ThrowOnError>): RequestResult<GetMunicipalServiceResponses, GetMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).get<GetMunicipalServiceResponses, GetMunicipalServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-services/{id}',
     ...options
 });
@@ -406,7 +530,11 @@ export const getMunicipalService = <ThrowOnError extends boolean = false>(option
  * Editar un servicio municipal
  */
 export const updateMunicipalService = <ThrowOnError extends boolean = false>(options: Options<UpdateMunicipalServiceData, ThrowOnError>): RequestResult<UpdateMunicipalServiceResponses, UpdateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).put<UpdateMunicipalServiceResponses, UpdateMunicipalServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-services/{id}',
     ...options,
     headers: {
@@ -419,7 +547,11 @@ export const updateMunicipalService = <ThrowOnError extends boolean = false>(opt
  * Consultar un centro municipal
  */
 export const getMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<GetMunicipalCenterData, ThrowOnError>): RequestResult<GetMunicipalCenterResponses, GetMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).get<GetMunicipalCenterResponses, GetMunicipalCenterErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{id}',
     ...options
 });
@@ -428,7 +560,11 @@ export const getMunicipalCenter = <ThrowOnError extends boolean = false>(options
  * Editar un centro municipal
  */
 export const updateMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<UpdateMunicipalCenterData, ThrowOnError>): RequestResult<UpdateMunicipalCenterResponses, UpdateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).put<UpdateMunicipalCenterResponses, UpdateMunicipalCenterErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{id}',
     ...options,
     headers: {
@@ -441,7 +577,11 @@ export const updateMunicipalCenter = <ThrowOnError extends boolean = false>(opti
  * Editar un horario de apertura
  */
 export const updateCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<UpdateCenterOpeningHourData, ThrowOnError>): RequestResult<UpdateCenterOpeningHourResponses, UpdateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).put<UpdateCenterOpeningHourResponses, UpdateCenterOpeningHourErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-opening-hours/{id}',
     ...options,
     headers: {
@@ -454,7 +594,11 @@ export const updateCenterOpeningHour = <ThrowOnError extends boolean = false>(op
  * Reprogramar un turno pendiente
  */
 export const rescheduleAdminAppointment = <ThrowOnError extends boolean = false>(options: Options<RescheduleAdminAppointmentData, ThrowOnError>): RequestResult<RescheduleAdminAppointmentResponses, RescheduleAdminAppointmentErrors, ThrowOnError> => (options.client ?? client).put<RescheduleAdminAppointmentResponses, RescheduleAdminAppointmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/{id}/schedule',
     ...options,
     headers: {
@@ -470,7 +614,11 @@ export const rescheduleAdminAppointment = <ThrowOnError extends boolean = false>
  */
 export const put1 = <ThrowOnError extends boolean = false>(options: Options<Put1Data, ThrowOnError>): RequestResult<Put1Responses, Put1Errors, ThrowOnError> => (options.client ?? client).put<Put1Responses, Put1Errors, ThrowOnError>({
     ...formDataBodySerializer,
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications/{applicationId}/documents/{requirementId}',
     ...options,
     headers: {
@@ -483,7 +631,11 @@ export const put1 = <ThrowOnError extends boolean = false>(options: Options<Put1
  * Consultar una actividad
  */
 export const get1 = <ThrowOnError extends boolean = false>(options: Options<Get1Data, ThrowOnError>): RequestResult<Get1Responses, Get1Errors, ThrowOnError> => (options.client ?? client).get<Get1Responses, Get1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/activities/{id}',
     ...options
 });
@@ -494,7 +646,11 @@ export const get1 = <ThrowOnError extends boolean = false>(options: Options<Get1
  * Solo se pueden modificar actividades en estado DRAFT.
  */
 export const update7 = <ThrowOnError extends boolean = false>(options: Options<Update7Data, ThrowOnError>): RequestResult<Update7Responses, Update7Errors, ThrowOnError> => (options.client ?? client).put<Update7Responses, Update7Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/activities/{id}',
     ...options,
     headers: {
@@ -509,7 +665,11 @@ export const update7 = <ThrowOnError extends boolean = false>(options: Options<U
  * Devuelve todos los usuarios con sus roles y permisos separados por rol.
  */
 export const findAll = <ThrowOnError extends boolean = false>(options?: Options<FindAllData, ThrowOnError>): RequestResult<FindAllResponses, FindAllErrors, ThrowOnError> => (options?.client ?? client).get<FindAllResponses, FindAllErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/users',
     ...options
 });
@@ -520,7 +680,11 @@ export const findAll = <ThrowOnError extends boolean = false>(options?: Options<
  * Registra un usuario y le asigna los roles indicados.
  */
 export const create = <ThrowOnError extends boolean = false>(options: Options<CreateData, ThrowOnError>): RequestResult<CreateResponses, CreateErrors, ThrowOnError> => (options.client ?? client).post<CreateResponses, CreateErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/users',
     ...options,
     headers: {
@@ -535,7 +699,11 @@ export const create = <ThrowOnError extends boolean = false>(options: Options<Cr
  * Devuelve todos los roles con sus permisos asociados.
  */
 export const findAll1 = <ThrowOnError extends boolean = false>(options?: Options<FindAll1Data, ThrowOnError>): RequestResult<FindAll1Responses, FindAll1Errors, ThrowOnError> => (options?.client ?? client).get<FindAll1Responses, FindAll1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/roles',
     ...options
 });
@@ -546,7 +714,11 @@ export const findAll1 = <ThrowOnError extends boolean = false>(options?: Options
  * Crea un rol y le asigna el conjunto de permisos indicado.
  */
 export const create1 = <ThrowOnError extends boolean = false>(options: Options<Create1Data, ThrowOnError>): RequestResult<Create1Responses, Create1Errors, ThrowOnError> => (options.client ?? client).post<Create1Responses, Create1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/roles',
     ...options,
     headers: {
@@ -561,8 +733,60 @@ export const create1 = <ThrowOnError extends boolean = false>(options: Options<C
  * Requiere JWT operativo y valida el usuario activo y el rol actual en la base. Emite un nuevo JWT; el anterior sigue válido hasta vencer.
  */
 export const switchRole = <ThrowOnError extends boolean = false>(options: Options<SwitchRoleData, ThrowOnError>): RequestResult<SwitchRoleResponses, SwitchRoleErrors, ThrowOnError> => (options.client ?? client).post<SwitchRoleResponses, SwitchRoleErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/auth/switch-role',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Cambiar el rol activo de la sesión
+ */
+export const sessionSwitchRole = <ThrowOnError extends boolean = false>(options: Options<SessionSwitchRoleData, ThrowOnError>): RequestResult<SessionSwitchRoleResponses, SessionSwitchRoleErrors, ThrowOnError> => (options.client ?? client).post<SessionSwitchRoleResponses, SessionSwitchRoleErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/auth/session/switch-role',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Seleccionar el rol de la sesión
+ */
+export const sessionSelectRole = <ThrowOnError extends boolean = false>(options: Options<SessionSelectRoleData, ThrowOnError>): RequestResult<SessionSelectRoleResponses, SessionSelectRoleErrors, ThrowOnError> => (options.client ?? client).post<SessionSelectRoleResponses, SessionSelectRoleErrors, ThrowOnError>({
+    url: '/auth/session/select-role',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Cerrar sesión del navegador
+ *
+ * Borra las cookies de acceso, selección y CSRF incluso si el JWT venció. No revoca tokens Bearer emitidos anteriormente.
+ */
+export const sessionLogout = <ThrowOnError extends boolean = false>(options?: Options<SessionLogoutData, ThrowOnError>): RequestResult<SessionLogoutResponses, SessionLogoutErrors, ThrowOnError> => (options?.client ?? client).post<SessionLogoutResponses, SessionLogoutErrors, ThrowOnError>({ url: '/auth/session/logout', ...options });
+
+/**
+ * Iniciar sesión con cookie
+ */
+export const sessionLogin = <ThrowOnError extends boolean = false>(options: Options<SessionLoginData, ThrowOnError>): RequestResult<SessionLoginResponses, SessionLoginErrors, ThrowOnError> => (options.client ?? client).post<SessionLoginResponses, SessionLoginErrors, ThrowOnError>({
+    url: '/auth/session/login',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -602,7 +826,11 @@ export const login = <ThrowOnError extends boolean = false>(options: Options<Log
  * Listar turnos propios con su estado
  */
 export const listCitizenAppointments = <ThrowOnError extends boolean = false>(options?: Options<ListCitizenAppointmentsData, ThrowOnError>): RequestResult<ListCitizenAppointmentsResponses, ListCitizenAppointmentsErrors, ThrowOnError> => (options?.client ?? client).get<ListCitizenAppointmentsResponses, ListCitizenAppointmentsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/citizen/appointments',
     ...options
 });
@@ -611,7 +839,11 @@ export const listCitizenAppointments = <ThrowOnError extends boolean = false>(op
  * Solicitar y confirmar un turno propio
  */
 export const createCitizenAppointment = <ThrowOnError extends boolean = false>(options: Options<CreateCitizenAppointmentData, ThrowOnError>): RequestResult<CreateCitizenAppointmentResponses, CreateCitizenAppointmentErrors, ThrowOnError> => (options.client ?? client).post<CreateCitizenAppointmentResponses, CreateCitizenAppointmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/citizen/appointments',
     ...options,
     headers: {
@@ -626,7 +858,11 @@ export const createCitizenAppointment = <ThrowOnError extends boolean = false>(o
  * Solo solicitudes propias, ordenadas por número descendente. Requiere applications:own:view.
  */
 export const list = <ThrowOnError extends boolean = false>(options?: Options<ListData, ThrowOnError>): RequestResult<ListResponses, ListErrors, ThrowOnError> => (options?.client ?? client).get<ListResponses, ListErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications',
     ...options
 });
@@ -637,7 +873,11 @@ export const list = <ThrowOnError extends boolean = false>(options?: Options<Lis
  * Requiere applications:own:create en el rol activo. La convocatoria debe estar OPEN y vigente y la edición ACTIVE. No consume ni requiere cupo disponible. Una sola solicitud por usuario y convocatoria; en otra convocatoria de la misma edición solo se permite si todas las anteriores están REJECTED o CLOSED. El cuerpo solo admite enrollmentPeriodId.
  */
 export const submit = <ThrowOnError extends boolean = false>(options: Options<SubmitData, ThrowOnError>): RequestResult<SubmitResponses, SubmitErrors, ThrowOnError> => (options.client ?? client).post<SubmitResponses, SubmitErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications',
     ...options,
     headers: {
@@ -652,7 +892,11 @@ export const submit = <ThrowOnError extends boolean = false>(options: Options<Su
  * Devuelve una página del catálogo de programas sociales.
  */
 export const list1 = <ThrowOnError extends boolean = false>(options?: Options<List1Data, ThrowOnError>): RequestResult<List1Responses, List1Errors, ThrowOnError> => (options?.client ?? client).get<List1Responses, List1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs',
     ...options
 });
@@ -663,7 +907,11 @@ export const list1 = <ThrowOnError extends boolean = false>(options?: Options<Li
  * Registra un nuevo programa social.
  */
 export const create2 = <ThrowOnError extends boolean = false>(options: Options<Create2Data, ThrowOnError>): RequestResult<Create2Responses, Create2Errors, ThrowOnError> => (options.client ?? client).post<Create2Responses, Create2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs',
     ...options,
     headers: {
@@ -678,7 +926,11 @@ export const create2 = <ThrowOnError extends boolean = false>(options: Options<C
  * Elimina la relación de incompatibilidad entre los programas indicados.
  */
 export const delete7 = <ThrowOnError extends boolean = false>(options: Options<Delete7Data, ThrowOnError>): RequestResult<Delete7Responses, Delete7Errors, ThrowOnError> => (options.client ?? client).delete<Delete7Responses, Delete7Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}',
     ...options
 });
@@ -689,7 +941,11 @@ export const delete7 = <ThrowOnError extends boolean = false>(options: Options<D
  * Declara que dos programas son incompatibles entre sí.
  */
 export const create3 = <ThrowOnError extends boolean = false>(options: Options<Create3Data, ThrowOnError>): RequestResult<Create3Responses, Create3Errors, ThrowOnError> => (options.client ?? client).post<Create3Responses, Create3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}',
     ...options
 });
@@ -700,7 +956,11 @@ export const create3 = <ThrowOnError extends boolean = false>(options: Options<C
  * Devuelve una página de períodos pertenecientes a la edición indicada.
  */
 export const listEnrollmentPeriods = <ThrowOnError extends boolean = false>(options: Options<ListEnrollmentPeriodsData, ThrowOnError>): RequestResult<ListEnrollmentPeriodsResponses, ListEnrollmentPeriodsErrors, ThrowOnError> => (options.client ?? client).get<ListEnrollmentPeriodsResponses, ListEnrollmentPeriodsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods',
     ...options
 });
@@ -711,7 +971,11 @@ export const listEnrollmentPeriods = <ThrowOnError extends boolean = false>(opti
  * Crea un período programado, contenido en las fechas de la edición y sin superponerse con otros períodos.
  */
 export const createEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<CreateEnrollmentPeriodData, ThrowOnError>): RequestResult<CreateEnrollmentPeriodResponses, CreateEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<CreateEnrollmentPeriodResponses, CreateEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods',
     ...options,
     headers: {
@@ -726,7 +990,11 @@ export const createEnrollmentPeriod = <ThrowOnError extends boolean = false>(opt
  * Suspende un período abierto e impide recibir nuevas solicitudes.
  */
 export const suspendEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<SuspendEnrollmentPeriodData, ThrowOnError>): RequestResult<SuspendEnrollmentPeriodResponses, SuspendEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<SuspendEnrollmentPeriodResponses, SuspendEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/suspend',
     ...options
 });
@@ -737,7 +1005,11 @@ export const suspendEnrollmentPeriod = <ThrowOnError extends boolean = false>(op
  * Reabre un período suspendido si aún se encuentra dentro de sus fechas, la edición continúa activa y no existe otro período abierto para la edición.
  */
 export const reopenEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<ReopenEnrollmentPeriodData, ThrowOnError>): RequestResult<ReopenEnrollmentPeriodResponses, ReopenEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<ReopenEnrollmentPeriodResponses, ReopenEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/reopen',
     ...options
 });
@@ -748,7 +1020,11 @@ export const reopenEnrollmentPeriod = <ThrowOnError extends boolean = false>(opt
  * Abre un período programado cuando la edición está activa, la fecha actual se encuentra dentro del rango y no existe otro período abierto para la edición.
  */
 export const openEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<OpenEnrollmentPeriodData, ThrowOnError>): RequestResult<OpenEnrollmentPeriodResponses, OpenEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<OpenEnrollmentPeriodResponses, OpenEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/open',
     ...options
 });
@@ -759,7 +1035,11 @@ export const openEnrollmentPeriod = <ThrowOnError extends boolean = false>(optio
  * Cierra de forma terminal un período abierto o suspendido.
  */
 export const closeEnrollmentPeriod = <ThrowOnError extends boolean = false>(options: Options<CloseEnrollmentPeriodData, ThrowOnError>): RequestResult<CloseEnrollmentPeriodResponses, CloseEnrollmentPeriodErrors, ThrowOnError> => (options.client ?? client).post<CloseEnrollmentPeriodResponses, CloseEnrollmentPeriodErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/editions/{editionId}/enrollment-periods/{enrollmentPeriodId}/close',
     ...options
 });
@@ -770,7 +1050,11 @@ export const closeEnrollmentPeriod = <ThrowOnError extends boolean = false>(opti
  * Devuelve todos los requisitos de la edición indicada.
  */
 export const findAll2 = <ThrowOnError extends boolean = false>(options: Options<FindAll2Data, ThrowOnError>): RequestResult<FindAll2Responses, FindAll2Errors, ThrowOnError> => (options.client ?? client).get<FindAll2Responses, FindAll2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/requirements',
     ...options
 });
@@ -781,7 +1065,11 @@ export const findAll2 = <ThrowOnError extends boolean = false>(options: Options<
  * Agrega un requisito a la edición indicada.
  */
 export const create4 = <ThrowOnError extends boolean = false>(options: Options<Create4Data, ThrowOnError>): RequestResult<Create4Responses, Create4Errors, ThrowOnError> => (options.client ?? client).post<Create4Responses, Create4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/requirements',
     ...options,
     headers: {
@@ -794,7 +1082,11 @@ export const create4 = <ThrowOnError extends boolean = false>(options: Options<C
  * Listar requisitos documentales
  */
 export const list2 = <ThrowOnError extends boolean = false>(options: Options<List2Data, ThrowOnError>): RequestResult<List2Responses, List2Errors, ThrowOnError> => (options.client ?? client).get<List2Responses, List2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/document-requirements',
     ...options
 });
@@ -803,7 +1095,11 @@ export const list2 = <ThrowOnError extends boolean = false>(options: Options<Lis
  * Crear un requisito documental
  */
 export const create5 = <ThrowOnError extends boolean = false>(options: Options<Create5Data, ThrowOnError>): RequestResult<Create5Responses, Create5Errors, ThrowOnError> => (options.client ?? client).post<Create5Responses, Create5Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/document-requirements',
     ...options,
     headers: {
@@ -818,7 +1114,11 @@ export const create5 = <ThrowOnError extends boolean = false>(options: Options<C
  * Devuelve todos los beneficios de la edición indicada.
  */
 export const findAll3 = <ThrowOnError extends boolean = false>(options: Options<FindAll3Data, ThrowOnError>): RequestResult<FindAll3Responses, FindAll3Errors, ThrowOnError> => (options.client ?? client).get<FindAll3Responses, FindAll3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/benefits',
     ...options
 });
@@ -829,7 +1129,11 @@ export const findAll3 = <ThrowOnError extends boolean = false>(options: Options<
  * Agrega un beneficio a la edición indicada.
  */
 export const create6 = <ThrowOnError extends boolean = false>(options: Options<Create6Data, ThrowOnError>): RequestResult<Create6Responses, Create6Errors, ThrowOnError> => (options.client ?? client).post<Create6Responses, Create6Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{editionId}/benefits',
     ...options,
     headers: {
@@ -844,7 +1148,11 @@ export const create6 = <ThrowOnError extends boolean = false>(options: Options<C
  * Devuelve una página de ediciones pertenecientes a un programa.
  */
 export const list3 = <ThrowOnError extends boolean = false>(options: Options<List3Data, ThrowOnError>): RequestResult<List3Responses, List3Errors, ThrowOnError> => (options.client ?? client).get<List3Responses, List3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/program/{programId}',
     ...options
 });
@@ -855,7 +1163,11 @@ export const list3 = <ThrowOnError extends boolean = false>(options: Options<Lis
  * Crea una edición para el programa indicado.
  */
 export const create7 = <ThrowOnError extends boolean = false>(options: Options<Create7Data, ThrowOnError>): RequestResult<Create7Responses, Create7Errors, ThrowOnError> => (options.client ?? client).post<Create7Responses, Create7Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/program/{programId}',
     ...options,
     headers: {
@@ -868,7 +1180,11 @@ export const create7 = <ThrowOnError extends boolean = false>(options: Options<C
  * Listar disponibilidad de una asignación
  */
 export const listProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAvailabilityData, ThrowOnError>): RequestResult<ListProfessionalAvailabilityResponses, ListProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAvailabilityResponses, ListProfessionalAvailabilityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-assignments/{assignmentId}/availability',
     ...options
 });
@@ -877,7 +1193,11 @@ export const listProfessionalAvailability = <ThrowOnError extends boolean = fals
  * Crear una disponibilidad profesional
  */
 export const createProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<CreateProfessionalAvailabilityData, ThrowOnError>): RequestResult<CreateProfessionalAvailabilityResponses, CreateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).post<CreateProfessionalAvailabilityResponses, CreateProfessionalAvailabilityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-assignments/{assignmentId}/availability',
     ...options,
     headers: {
@@ -890,7 +1210,11 @@ export const createProfessionalAvailability = <ThrowOnError extends boolean = fa
  * Crear la misma disponibilidad en varios días
  */
 export const createProfessionalAvailabilitiesBatch = <ThrowOnError extends boolean = false>(options: Options<CreateProfessionalAvailabilitiesBatchData, ThrowOnError>): RequestResult<CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilitiesBatchErrors, ThrowOnError> => (options.client ?? client).post<CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilitiesBatchErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-assignments/{assignmentId}/availability/batch',
     ...options,
     headers: {
@@ -903,7 +1227,11 @@ export const createProfessionalAvailabilitiesBatch = <ThrowOnError extends boole
  * Listar servicios municipales
  */
 export const listMunicipalServices = <ThrowOnError extends boolean = false>(options?: Options<ListMunicipalServicesData, ThrowOnError>): RequestResult<ListMunicipalServicesResponses, ListMunicipalServicesErrors, ThrowOnError> => (options?.client ?? client).get<ListMunicipalServicesResponses, ListMunicipalServicesErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-services',
     ...options
 });
@@ -912,7 +1240,11 @@ export const listMunicipalServices = <ThrowOnError extends boolean = false>(opti
  * Crear un servicio municipal
  */
 export const createMunicipalService = <ThrowOnError extends boolean = false>(options: Options<CreateMunicipalServiceData, ThrowOnError>): RequestResult<CreateMunicipalServiceResponses, CreateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).post<CreateMunicipalServiceResponses, CreateMunicipalServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-services',
     ...options,
     headers: {
@@ -925,7 +1257,11 @@ export const createMunicipalService = <ThrowOnError extends boolean = false>(opt
  * Listar centros municipales
  */
 export const listMunicipalCenters = <ThrowOnError extends boolean = false>(options?: Options<ListMunicipalCentersData, ThrowOnError>): RequestResult<ListMunicipalCentersResponses, ListMunicipalCentersErrors, ThrowOnError> => (options?.client ?? client).get<ListMunicipalCentersResponses, ListMunicipalCentersErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers',
     ...options
 });
@@ -934,7 +1270,11 @@ export const listMunicipalCenters = <ThrowOnError extends boolean = false>(optio
  * Crear un centro municipal
  */
 export const createMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<CreateMunicipalCenterData, ThrowOnError>): RequestResult<CreateMunicipalCenterResponses, CreateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).post<CreateMunicipalCenterResponses, CreateMunicipalCenterErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers',
     ...options,
     headers: {
@@ -947,7 +1287,11 @@ export const createMunicipalCenter = <ThrowOnError extends boolean = false>(opti
  * Listar servicios de un centro
  */
 export const listCenterServices = <ThrowOnError extends boolean = false>(options: Options<ListCenterServicesData, ThrowOnError>): RequestResult<ListCenterServicesResponses, ListCenterServicesErrors, ThrowOnError> => (options.client ?? client).get<ListCenterServicesResponses, ListCenterServicesErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{centerId}/services',
     ...options
 });
@@ -956,7 +1300,11 @@ export const listCenterServices = <ThrowOnError extends boolean = false>(options
  * Asignar un servicio a un centro
  */
 export const assignServiceToCenter = <ThrowOnError extends boolean = false>(options: Options<AssignServiceToCenterData, ThrowOnError>): RequestResult<AssignServiceToCenterResponses, AssignServiceToCenterErrors, ThrowOnError> => (options.client ?? client).post<AssignServiceToCenterResponses, AssignServiceToCenterErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{centerId}/services',
     ...options,
     headers: {
@@ -969,7 +1317,11 @@ export const assignServiceToCenter = <ThrowOnError extends boolean = false>(opti
  * Listar horarios de apertura
  */
 export const listCenterOpeningHours = <ThrowOnError extends boolean = false>(options: Options<ListCenterOpeningHoursData, ThrowOnError>): RequestResult<ListCenterOpeningHoursResponses, ListCenterOpeningHoursErrors, ThrowOnError> => (options.client ?? client).get<ListCenterOpeningHoursResponses, ListCenterOpeningHoursErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{centerId}/opening-hours',
     ...options
 });
@@ -978,7 +1330,11 @@ export const listCenterOpeningHours = <ThrowOnError extends boolean = false>(opt
  * Crear un horario de apertura
  */
 export const createCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<CreateCenterOpeningHourData, ThrowOnError>): RequestResult<CreateCenterOpeningHourResponses, CreateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).post<CreateCenterOpeningHourResponses, CreateCenterOpeningHourErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{centerId}/opening-hours',
     ...options,
     headers: {
@@ -991,7 +1347,11 @@ export const createCenterOpeningHour = <ThrowOnError extends boolean = false>(op
  * Crear la misma franja en varios días
  */
 export const createCenterOpeningHoursBatch = <ThrowOnError extends boolean = false>(options: Options<CreateCenterOpeningHoursBatchData, ThrowOnError>): RequestResult<CreateCenterOpeningHoursBatchResponses, CreateCenterOpeningHoursBatchErrors, ThrowOnError> => (options.client ?? client).post<CreateCenterOpeningHoursBatchResponses, CreateCenterOpeningHoursBatchErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{centerId}/opening-hours/batch',
     ...options,
     headers: {
@@ -1004,7 +1364,11 @@ export const createCenterOpeningHoursBatch = <ThrowOnError extends boolean = fal
  * Listar profesionales de un servicio del centro
  */
 export const listProfessionalAssignments = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAssignmentsData, ThrowOnError>): RequestResult<ListProfessionalAssignmentsResponses, ListProfessionalAssignmentsErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAssignmentsResponses, ListProfessionalAssignmentsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-services/{centerServiceId}/professionals',
     ...options
 });
@@ -1013,7 +1377,11 @@ export const listProfessionalAssignments = <ThrowOnError extends boolean = false
  * Asignar un profesional a un servicio del centro
  */
 export const assignProfessional = <ThrowOnError extends boolean = false>(options: Options<AssignProfessionalData, ThrowOnError>): RequestResult<AssignProfessionalResponses, AssignProfessionalErrors, ThrowOnError> => (options.client ?? client).post<AssignProfessionalResponses, AssignProfessionalErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-services/{centerServiceId}/professionals',
     ...options,
     headers: {
@@ -1028,7 +1396,11 @@ export const assignProfessional = <ThrowOnError extends boolean = false>(options
  * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
  */
 export const list4 = <ThrowOnError extends boolean = false>(options?: Options<List4Data, ThrowOnError>): RequestResult<List4Responses, List4Errors, ThrowOnError> => (options?.client ?? client).get<List4Responses, List4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications',
     ...options
 });
@@ -1039,7 +1411,11 @@ export const list4 = <ThrowOnError extends boolean = false>(options?: Options<Li
  * Requiere applications:management:create en el rol activo. userId identifica al titular en users, sin restricción de jurisdicción ni integración externa. registeredByUserId se obtiene del JWT y no se acepta en el cuerpo. Conserva las mismas reglas de convocatoria, edición, duplicados e idempotencia que la presentación propia. Para solicitar para uno mismo se debe usar POST /api/applications con su permiso propio. Registrar para otra persona no habilita por sí mismo a consultar sus solicitudes: la consulta administrativa exige applications:management:view.
  */
 export const submit1 = <ThrowOnError extends boolean = false>(options: Options<Submit1Data, ThrowOnError>): RequestResult<Submit1Responses, Submit1Errors, ThrowOnError> => (options.client ?? client).post<Submit1Responses, Submit1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications',
     ...options,
     headers: {
@@ -1054,7 +1430,11 @@ export const submit1 = <ThrowOnError extends boolean = false>(options: Options<S
  * Devuelve una página de actividades comunitarias.
  */
 export const list5 = <ThrowOnError extends boolean = false>(options?: Options<List5Data, ThrowOnError>): RequestResult<List5Responses, List5Errors, ThrowOnError> => (options?.client ?? client).get<List5Responses, List5Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/activities',
     ...options
 });
@@ -1065,7 +1445,11 @@ export const list5 = <ThrowOnError extends boolean = false>(options?: Options<Li
  * Registra una actividad comunitaria en estado DRAFT.
  */
 export const create8 = <ThrowOnError extends boolean = false>(options: Options<Create8Data, ThrowOnError>): RequestResult<Create8Responses, Create8Errors, ThrowOnError> => (options.client ?? client).post<Create8Responses, Create8Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/activities',
     ...options,
     headers: {
@@ -1080,7 +1464,11 @@ export const create8 = <ThrowOnError extends boolean = false>(options: Options<C
  * La identidad ciudadana se obtiene del JWT. La actividad debe estar abierta y tener cupo.
  */
 export const enroll = <ThrowOnError extends boolean = false>(options: Options<EnrollData, ThrowOnError>): RequestResult<EnrollResponses, EnrollErrors, ThrowOnError> => (options.client ?? client).post<EnrollResponses, EnrollErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/activities/{id}/enrollments',
     ...options
 });
@@ -1089,7 +1477,11 @@ export const enroll = <ThrowOnError extends boolean = false>(options: Options<En
  * Marcar a una persona como presente o ausente
  */
 export const updateAttendance = <ThrowOnError extends boolean = false>(options: Options<UpdateAttendanceData, ThrowOnError>): RequestResult<UpdateAttendanceResponses, UpdateAttendanceErrors, ThrowOnError> => (options.client ?? client).patch<UpdateAttendanceResponses, UpdateAttendanceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/activities/{activityId}/enrollments/{enrollmentId}/attendance',
     ...options,
     headers: {
@@ -1104,7 +1496,11 @@ export const updateAttendance = <ThrowOnError extends boolean = false>(options: 
  * Cambia la edición al estado suspendido cuando la transición es válida.
  */
 export const suspend = <ThrowOnError extends boolean = false>(options: Options<SuspendData, ThrowOnError>): RequestResult<SuspendResponses, SuspendErrors, ThrowOnError> => (options.client ?? client).patch<SuspendResponses, SuspendErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{id}/suspend',
     ...options
 });
@@ -1115,7 +1511,11 @@ export const suspend = <ThrowOnError extends boolean = false>(options: Options<S
  * Cambia la edición al estado cerrado cuando la transición es válida.
  */
 export const close = <ThrowOnError extends boolean = false>(options: Options<CloseData, ThrowOnError>): RequestResult<CloseResponses, CloseErrors, ThrowOnError> => (options.client ?? client).patch<CloseResponses, CloseErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{id}/close',
     ...options
 });
@@ -1126,7 +1526,11 @@ export const close = <ThrowOnError extends boolean = false>(options: Options<Clo
  * Cambia la edición al estado activo cuando la transición es válida.
  */
 export const activate = <ThrowOnError extends boolean = false>(options: Options<ActivateData, ThrowOnError>): RequestResult<ActivateResponses, ActivateErrors, ThrowOnError> => (options.client ?? client).patch<ActivateResponses, ActivateErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/{id}/activate',
     ...options
 });
@@ -1135,7 +1539,11 @@ export const activate = <ThrowOnError extends boolean = false>(options: Options<
  * Desactivar una disponibilidad profesional
  */
 export const deactivateProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<DeactivateProfessionalAvailabilityData, ThrowOnError>): RequestResult<DeactivateProfessionalAvailabilityResponses, DeactivateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateProfessionalAvailabilityResponses, DeactivateProfessionalAvailabilityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-availability/{id}/deactivate',
     ...options
 });
@@ -1144,7 +1552,11 @@ export const deactivateProfessionalAvailability = <ThrowOnError extends boolean 
  * Reactivar una disponibilidad profesional
  */
 export const activateProfessionalAvailability = <ThrowOnError extends boolean = false>(options: Options<ActivateProfessionalAvailabilityData, ThrowOnError>): RequestResult<ActivateProfessionalAvailabilityResponses, ActivateProfessionalAvailabilityErrors, ThrowOnError> => (options.client ?? client).patch<ActivateProfessionalAvailabilityResponses, ActivateProfessionalAvailabilityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-availability/{id}/activate',
     ...options
 });
@@ -1153,7 +1565,11 @@ export const activateProfessionalAvailability = <ThrowOnError extends boolean = 
  * Desactivar una asignación profesional
  */
 export const deactivateProfessionalAssignment = <ThrowOnError extends boolean = false>(options: Options<DeactivateProfessionalAssignmentData, ThrowOnError>): RequestResult<DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAssignmentErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAssignmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-assignments/{id}/deactivate',
     ...options
 });
@@ -1162,7 +1578,11 @@ export const deactivateProfessionalAssignment = <ThrowOnError extends boolean = 
  * Reactivar una asignación profesional
  */
 export const activateProfessionalAssignment = <ThrowOnError extends boolean = false>(options: Options<ActivateProfessionalAssignmentData, ThrowOnError>): RequestResult<ActivateProfessionalAssignmentResponses, ActivateProfessionalAssignmentErrors, ThrowOnError> => (options.client ?? client).patch<ActivateProfessionalAssignmentResponses, ActivateProfessionalAssignmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/professional-assignments/{id}/activate',
     ...options
 });
@@ -1171,7 +1591,11 @@ export const activateProfessionalAssignment = <ThrowOnError extends boolean = fa
  * Desactivar un servicio municipal
  */
 export const deactivateMunicipalService = <ThrowOnError extends boolean = false>(options: Options<DeactivateMunicipalServiceData, ThrowOnError>): RequestResult<DeactivateMunicipalServiceResponses, DeactivateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateMunicipalServiceResponses, DeactivateMunicipalServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-services/{id}/deactivate',
     ...options
 });
@@ -1180,7 +1604,11 @@ export const deactivateMunicipalService = <ThrowOnError extends boolean = false>
  * Activar un servicio municipal
  */
 export const activateMunicipalService = <ThrowOnError extends boolean = false>(options: Options<ActivateMunicipalServiceData, ThrowOnError>): RequestResult<ActivateMunicipalServiceResponses, ActivateMunicipalServiceErrors, ThrowOnError> => (options.client ?? client).patch<ActivateMunicipalServiceResponses, ActivateMunicipalServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-services/{id}/activate',
     ...options
 });
@@ -1189,7 +1617,11 @@ export const activateMunicipalService = <ThrowOnError extends boolean = false>(o
  * Desactivar un centro municipal
  */
 export const deactivateMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<DeactivateMunicipalCenterData, ThrowOnError>): RequestResult<DeactivateMunicipalCenterResponses, DeactivateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateMunicipalCenterResponses, DeactivateMunicipalCenterErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{id}/deactivate',
     ...options
 });
@@ -1198,7 +1630,11 @@ export const deactivateMunicipalCenter = <ThrowOnError extends boolean = false>(
  * Activar un centro municipal
  */
 export const activateMunicipalCenter = <ThrowOnError extends boolean = false>(options: Options<ActivateMunicipalCenterData, ThrowOnError>): RequestResult<ActivateMunicipalCenterResponses, ActivateMunicipalCenterErrors, ThrowOnError> => (options.client ?? client).patch<ActivateMunicipalCenterResponses, ActivateMunicipalCenterErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/municipal-centers/{id}/activate',
     ...options
 });
@@ -1207,7 +1643,11 @@ export const activateMunicipalCenter = <ThrowOnError extends boolean = false>(op
  * Desactivar un servicio del centro
  */
 export const deactivateCenterService = <ThrowOnError extends boolean = false>(options: Options<DeactivateCenterServiceData, ThrowOnError>): RequestResult<DeactivateCenterServiceResponses, DeactivateCenterServiceErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateCenterServiceResponses, DeactivateCenterServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-services/{id}/deactivate',
     ...options
 });
@@ -1216,7 +1656,11 @@ export const deactivateCenterService = <ThrowOnError extends boolean = false>(op
  * Reactivar un servicio del centro
  */
 export const activateCenterService = <ThrowOnError extends boolean = false>(options: Options<ActivateCenterServiceData, ThrowOnError>): RequestResult<ActivateCenterServiceResponses, ActivateCenterServiceErrors, ThrowOnError> => (options.client ?? client).patch<ActivateCenterServiceResponses, ActivateCenterServiceErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-services/{id}/activate',
     ...options
 });
@@ -1225,7 +1669,11 @@ export const activateCenterService = <ThrowOnError extends boolean = false>(opti
  * Desactivar un horario de apertura
  */
 export const deactivateCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<DeactivateCenterOpeningHourData, ThrowOnError>): RequestResult<DeactivateCenterOpeningHourResponses, DeactivateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).patch<DeactivateCenterOpeningHourResponses, DeactivateCenterOpeningHourErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-opening-hours/{id}/deactivate',
     ...options
 });
@@ -1234,7 +1682,11 @@ export const deactivateCenterOpeningHour = <ThrowOnError extends boolean = false
  * Reactivar un horario de apertura
  */
 export const activateCenterOpeningHour = <ThrowOnError extends boolean = false>(options: Options<ActivateCenterOpeningHourData, ThrowOnError>): RequestResult<ActivateCenterOpeningHourResponses, ActivateCenterOpeningHourErrors, ThrowOnError> => (options.client ?? client).patch<ActivateCenterOpeningHourResponses, ActivateCenterOpeningHourErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/center-opening-hours/{id}/activate',
     ...options
 });
@@ -1243,7 +1695,11 @@ export const activateCenterOpeningHour = <ThrowOnError extends boolean = false>(
  * Habilitar el horario de un turno cancelado
  */
 export const releaseAdminAppointmentSlot = <ThrowOnError extends boolean = false>(options: Options<ReleaseAdminAppointmentSlotData, ThrowOnError>): RequestResult<ReleaseAdminAppointmentSlotResponses, ReleaseAdminAppointmentSlotErrors, ThrowOnError> => (options.client ?? client).patch<ReleaseAdminAppointmentSlotResponses, ReleaseAdminAppointmentSlotErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/{id}/release-slot',
     ...options
 });
@@ -1252,7 +1708,11 @@ export const releaseAdminAppointmentSlot = <ThrowOnError extends boolean = false
  * Cancelar un turno pendiente y retener su horario
  */
 export const cancelAdminAppointment = <ThrowOnError extends boolean = false>(options: Options<CancelAdminAppointmentData, ThrowOnError>): RequestResult<CancelAdminAppointmentResponses, CancelAdminAppointmentErrors, ThrowOnError> => (options.client ?? client).patch<CancelAdminAppointmentResponses, CancelAdminAppointmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/{id}/cancel',
     ...options
 });
@@ -1263,7 +1723,11 @@ export const cancelAdminAppointment = <ThrowOnError extends boolean = false>(opt
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
  */
 export const review = <ThrowOnError extends boolean = false>(options: Options<ReviewData, ThrowOnError>): RequestResult<unknown, ReviewErrors, ThrowOnError> => (options.client ?? client).patch<unknown, ReviewErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications/{applicationId}/documents/{applicationDocumentId}/review',
     ...options,
     headers: {
@@ -1278,7 +1742,11 @@ export const review = <ThrowOnError extends boolean = false>(options: Options<Re
  * Cambia una actividad de DRAFT a OPEN.
  */
 export const publish = <ThrowOnError extends boolean = false>(options: Options<PublishData, ThrowOnError>): RequestResult<PublishResponses, PublishErrors, ThrowOnError> => (options.client ?? client).patch<PublishResponses, PublishErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/activities/{id}/publish',
     ...options
 });
@@ -1289,7 +1757,11 @@ export const publish = <ThrowOnError extends boolean = false>(options: Options<P
  * Cambia una actividad de OPEN a CLOSED.
  */
 export const close1 = <ThrowOnError extends boolean = false>(options: Options<Close1Data, ThrowOnError>): RequestResult<Close1Responses, Close1Errors, ThrowOnError> => (options.client ?? client).patch<Close1Responses, Close1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/activities/{id}/close',
     ...options
 });
@@ -1300,7 +1772,11 @@ export const close1 = <ThrowOnError extends boolean = false>(options: Options<Cl
  * Devuelve todos los permisos registrados en el sistema.
  */
 export const findAll4 = <ThrowOnError extends boolean = false>(options?: Options<FindAll4Data, ThrowOnError>): RequestResult<FindAll4Responses, FindAll4Errors, ThrowOnError> => (options?.client ?? client).get<FindAll4Responses, FindAll4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/permissions',
     ...options
 });
@@ -1311,7 +1787,11 @@ export const findAll4 = <ThrowOnError extends boolean = false>(options?: Options
  * Devuelve todos los eventos de auditoría, ordenados desde el más reciente.
  */
 export const listLogs = <ThrowOnError extends boolean = false>(options?: Options<ListLogsData, ThrowOnError>): RequestResult<ListLogsResponses, ListLogsErrors, ThrowOnError> => (options?.client ?? client).get<ListLogsResponses, ListLogsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/logs',
     ...options
 });
@@ -1322,7 +1802,11 @@ export const listLogs = <ThrowOnError extends boolean = false>(options?: Options
  * Devuelve los eventos originados por un usuario, ordenados desde el más reciente.
  */
 export const listLogsByUser = <ThrowOnError extends boolean = false>(options: Options<ListLogsByUserData, ThrowOnError>): RequestResult<ListLogsByUserResponses, ListLogsByUserErrors, ThrowOnError> => (options.client ?? client).get<ListLogsByUserResponses, ListLogsByUserErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/logs/users/{userId}',
     ...options
 });
@@ -1333,10 +1817,28 @@ export const listLogsByUser = <ThrowOnError extends boolean = false>(options: Op
  * Devuelve el historial de auditoría de una entidad, ordenado desde el evento más reciente.
  */
 export const listLogsByEntity = <ThrowOnError extends boolean = false>(options: Options<ListLogsByEntityData, ThrowOnError>): RequestResult<ListLogsByEntityResponses, ListLogsByEntityErrors, ThrowOnError> => (options.client ?? client).get<ListLogsByEntityResponses, ListLogsByEntityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/logs/entities/{entityType}/{entityId}',
     ...options
 });
+
+/**
+ * Recuperar selección de rol pendiente
+ *
+ * Permite recargar la pantalla sin almacenar tokens en JavaScript. Responde 401 si no hay una selección vigente.
+ */
+export const sessionRoleSelection = <ThrowOnError extends boolean = false>(options?: Options<SessionRoleSelectionData, ThrowOnError>): RequestResult<SessionRoleSelectionResponses, SessionRoleSelectionErrors, ThrowOnError> => (options?.client ?? client).get<SessionRoleSelectionResponses, SessionRoleSelectionErrors, ThrowOnError>({ url: '/auth/session/role-selection', ...options });
+
+/**
+ * Obtener token CSRF
+ *
+ * Consultar antes de operaciones de escritura. Enviar el token en X-XSRF-TOKEN y las cookies con credentials: include.
+ */
+export const sessionCsrf = <ThrowOnError extends boolean = false>(options?: Options<SessionCsrfData, ThrowOnError>): RequestResult<SessionCsrfResponses, SessionCsrfErrors, ThrowOnError> => (options?.client ?? client).get<SessionCsrfResponses, SessionCsrfErrors, ThrowOnError>({ url: '/auth/session/csrf', ...options });
 
 /**
  * Consultar mi perfil
@@ -1344,7 +1846,11 @@ export const listLogsByEntity = <ThrowOnError extends boolean = false>(options: 
  * Devuelve datos y roles asignados actuales; el rol activo y sus permisos corresponden al JWT utilizado, sin combinar otros roles.
  */
 export const me = <ThrowOnError extends boolean = false>(options?: Options<MeData, ThrowOnError>): RequestResult<MeResponses, MeErrors, ThrowOnError> => (options?.client ?? client).get<MeResponses, MeErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/auth/me',
     ...options
 });
@@ -1355,7 +1861,11 @@ export const me = <ThrowOnError extends boolean = false>(options?: Options<MeDat
  * Devuelve los programas que poseen al menos una edición activa vigente o futura.
  */
 export const listAvailablePrograms = <ThrowOnError extends boolean = false>(options?: Options<ListAvailableProgramsData, ThrowOnError>): RequestResult<ListAvailableProgramsResponses, ListAvailableProgramsErrors, ThrowOnError> => (options?.client ?? client).get<ListAvailableProgramsResponses, ListAvailableProgramsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/programs',
     ...options
 });
@@ -1366,7 +1876,11 @@ export const listAvailablePrograms = <ThrowOnError extends boolean = false>(opti
  * Devuelve el programa con sus ediciones activas no finalizadas, beneficios, requisitos, períodos de inscripción e incompatibilidades.
  */
 export const getAvailableProgram = <ThrowOnError extends boolean = false>(options: Options<GetAvailableProgramData, ThrowOnError>): RequestResult<GetAvailableProgramResponses, GetAvailableProgramErrors, ThrowOnError> => (options.client ?? client).get<GetAvailableProgramResponses, GetAvailableProgramErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/programs/{id}',
     ...options
 });
@@ -1375,7 +1889,11 @@ export const getAvailableProgram = <ThrowOnError extends boolean = false>(option
  * Listar turnos asignados para una fecha
  */
 export const listProfessionalAppointments = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAppointmentsData, ThrowOnError>): RequestResult<ListProfessionalAppointmentsResponses, ListProfessionalAppointmentsErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAppointmentsResponses, ListProfessionalAppointmentsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/appointments',
     ...options
 });
@@ -1384,7 +1902,11 @@ export const listProfessionalAppointments = <ThrowOnError extends boolean = fals
  * Consultar un turno asignado y su constancia
  */
 export const getProfessionalAppointment = <ThrowOnError extends boolean = false>(options: Options<GetProfessionalAppointmentData, ThrowOnError>): RequestResult<GetProfessionalAppointmentResponses, GetProfessionalAppointmentErrors, ThrowOnError> => (options.client ?? client).get<GetProfessionalAppointmentResponses, GetProfessionalAppointmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/appointments/{id}',
     ...options
 });
@@ -1393,7 +1915,11 @@ export const getProfessionalAppointment = <ThrowOnError extends boolean = false>
  * Listar actividades habilitadas para registrar asistencia
  */
 export const listActivities = <ThrowOnError extends boolean = false>(options?: Options<ListActivitiesData, ThrowOnError>): RequestResult<ListActivitiesResponses, ListActivitiesErrors, ThrowOnError> => (options?.client ?? client).get<ListActivitiesResponses, ListActivitiesErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/activities',
     ...options
 });
@@ -1402,7 +1928,11 @@ export const listActivities = <ThrowOnError extends boolean = false>(options?: O
  * Consultar una actividad para registrar asistencia
  */
 export const getProfessionalActivity = <ThrowOnError extends boolean = false>(options: Options<GetProfessionalActivityData, ThrowOnError>): RequestResult<GetProfessionalActivityResponses, GetProfessionalActivityErrors, ThrowOnError> => (options.client ?? client).get<GetProfessionalActivityResponses, GetProfessionalActivityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/activities/{activityId}',
     ...options
 });
@@ -1411,7 +1941,11 @@ export const getProfessionalActivity = <ThrowOnError extends boolean = false>(op
  * Listar personas inscriptas y su asistencia
  */
 export const listEnrollments = <ThrowOnError extends boolean = false>(options: Options<ListEnrollmentsData, ThrowOnError>): RequestResult<ListEnrollmentsResponses, ListEnrollmentsErrors, ThrowOnError> => (options.client ?? client).get<ListEnrollmentsResponses, ListEnrollmentsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/professional/activities/{activityId}/enrollments',
     ...options
 });
@@ -1427,7 +1961,11 @@ export const getPublicImage = <ThrowOnError extends boolean = false>(options: Op
  * Consultar el estado de un turno propio
  */
 export const getCitizenAppointment = <ThrowOnError extends boolean = false>(options: Options<GetCitizenAppointmentData, ThrowOnError>): RequestResult<unknown, GetCitizenAppointmentErrors, ThrowOnError> => (options.client ?? client).get<unknown, GetCitizenAppointmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/citizen/appointments/{appointmentId}',
     ...options
 });
@@ -1436,7 +1974,11 @@ export const getCitizenAppointment = <ThrowOnError extends boolean = false>(opti
  * Listar horarios disponibles para una fecha
  */
 export const listCitizenAppointmentSlots = <ThrowOnError extends boolean = false>(options: Options<ListCitizenAppointmentSlotsData, ThrowOnError>): RequestResult<ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentSlotsErrors, ThrowOnError> => (options.client ?? client).get<ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentSlotsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/citizen/appointment-slots',
     ...options
 });
@@ -1445,7 +1987,11 @@ export const listCitizenAppointmentSlots = <ThrowOnError extends boolean = false
  * Listar servicios disponibles para turnos
  */
 export const listCitizenAppointmentServices = <ThrowOnError extends boolean = false>(options?: Options<ListCitizenAppointmentServicesData, ThrowOnError>): RequestResult<ListCitizenAppointmentServicesResponses, ListCitizenAppointmentServicesErrors, ThrowOnError> => (options?.client ?? client).get<ListCitizenAppointmentServicesResponses, ListCitizenAppointmentServicesErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/citizen/appointment-services',
     ...options
 });
@@ -1454,7 +2000,11 @@ export const listCitizenAppointmentServices = <ThrowOnError extends boolean = fa
  * Listar centros disponibles para un servicio
  */
 export const listCitizenAppointmentCenters = <ThrowOnError extends boolean = false>(options: Options<ListCitizenAppointmentCentersData, ThrowOnError>): RequestResult<ListCitizenAppointmentCentersResponses, ListCitizenAppointmentCentersErrors, ThrowOnError> => (options.client ?? client).get<ListCitizenAppointmentCentersResponses, ListCitizenAppointmentCentersErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/citizen/appointment-services/{serviceId}/centers',
     ...options
 });
@@ -1465,7 +2015,11 @@ export const listCitizenAppointmentCenters = <ThrowOnError extends boolean = fal
  * Requiere applications:own:view. Una solicitud ajena se responde como inexistente.
  */
 export const get2 = <ThrowOnError extends boolean = false>(options: Options<Get2Data, ThrowOnError>): RequestResult<Get2Responses, Get2Errors, ThrowOnError> => (options.client ?? client).get<Get2Responses, Get2Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications/{id}',
     ...options
 });
@@ -1474,7 +2028,11 @@ export const get2 = <ThrowOnError extends boolean = false>(options: Options<Get2
  * Listar los documentos entregados en una solicitud propia
  */
 export const list6 = <ThrowOnError extends boolean = false>(options: Options<List6Data, ThrowOnError>): RequestResult<List6Responses, List6Errors, ThrowOnError> => (options.client ?? client).get<List6Responses, List6Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications/{applicationId}/documents',
     ...options
 });
@@ -1485,7 +2043,11 @@ export const list6 = <ThrowOnError extends boolean = false>(options: Options<Lis
  * Devuelve el contenido inline con caché privada deshabilitada.
  */
 export const content = <ThrowOnError extends boolean = false>(options: Options<ContentData, ThrowOnError>): RequestResult<ContentResponses, ContentErrors, ThrowOnError> => (options.client ?? client).get<ContentResponses, ContentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications/{applicationId}/documents/{applicationDocumentId}/content',
     ...options
 });
@@ -1496,7 +2058,11 @@ export const content = <ThrowOnError extends boolean = false>(options: Options<C
  * Devuelve los programas incompatibles con el programa indicado.
  */
 export const findAll5 = <ThrowOnError extends boolean = false>(options: Options<FindAll5Data, ThrowOnError>): RequestResult<FindAll5Responses, FindAll5Errors, ThrowOnError> => (options.client ?? client).get<FindAll5Responses, FindAll5Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/{programId}/incompatibilities',
     ...options
 });
@@ -1507,7 +2073,11 @@ export const findAll5 = <ThrowOnError extends boolean = false>(options: Options<
  * Devuelve una lista reducida de programas para controles de selección.
  */
 export const listProgramOptions = <ThrowOnError extends boolean = false>(options?: Options<ListProgramOptionsData, ThrowOnError>): RequestResult<ListProgramOptionsResponses, ListProgramOptionsErrors, ThrowOnError> => (options?.client ?? client).get<ListProgramOptionsResponses, ListProgramOptionsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/programs/options',
     ...options
 });
@@ -1518,7 +2088,11 @@ export const listProgramOptions = <ThrowOnError extends boolean = false>(options
  * Devuelve las ediciones de un programa en formato reducido para controles de selección.
  */
 export const listProgramEditionOptions = <ThrowOnError extends boolean = false>(options: Options<ListProgramEditionOptionsData, ThrowOnError>): RequestResult<ListProgramEditionOptionsResponses, ListProgramEditionOptionsErrors, ThrowOnError> => (options.client ?? client).get<ListProgramEditionOptionsResponses, ListProgramEditionOptionsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/program-editions/program/{programId}/options',
     ...options
 });
@@ -1527,7 +2101,11 @@ export const listProgramEditionOptions = <ThrowOnError extends boolean = false>(
  * Buscar turnos por centro y fecha
  */
 export const listAdminAppointments = <ThrowOnError extends boolean = false>(options: Options<ListAdminAppointmentsData, ThrowOnError>): RequestResult<ListAdminAppointmentsResponses, ListAdminAppointmentsErrors, ThrowOnError> => (options.client ?? client).get<ListAdminAppointmentsResponses, ListAdminAppointmentsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments',
     ...options
 });
@@ -1536,7 +2114,11 @@ export const listAdminAppointments = <ThrowOnError extends boolean = false>(opti
  * Consultar un turno para su gestión
  */
 export const getAdminAppointment = <ThrowOnError extends boolean = false>(options: Options<GetAdminAppointmentData, ThrowOnError>): RequestResult<GetAdminAppointmentResponses, GetAdminAppointmentErrors, ThrowOnError> => (options.client ?? client).get<GetAdminAppointmentResponses, GetAdminAppointmentErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/{id}',
     ...options
 });
@@ -1545,7 +2127,11 @@ export const getAdminAppointment = <ThrowOnError extends boolean = false>(option
  * Consultar horarios para reprogramar un turno
  */
 export const listAdminAppointmentSlots = <ThrowOnError extends boolean = false>(options: Options<ListAdminAppointmentSlotsData, ThrowOnError>): RequestResult<ListAdminAppointmentSlotsResponses, ListAdminAppointmentSlotsErrors, ThrowOnError> => (options.client ?? client).get<ListAdminAppointmentSlotsResponses, ListAdminAppointmentSlotsErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/{id}/slots',
     ...options
 });
@@ -1554,7 +2140,11 @@ export const listAdminAppointmentSlots = <ThrowOnError extends boolean = false>(
  * Resumir ocupación diaria de un centro en un mes
  */
 export const listAdminAppointmentMonthlySummary = <ThrowOnError extends boolean = false>(options: Options<ListAdminAppointmentMonthlySummaryData, ThrowOnError>): RequestResult<ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentMonthlySummaryErrors, ThrowOnError> => (options.client ?? client).get<ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentMonthlySummaryErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/monthly-summary',
     ...options
 });
@@ -1563,7 +2153,11 @@ export const listAdminAppointmentMonthlySummary = <ThrowOnError extends boolean 
  * Listar horarios libres de un centro en una fecha
  */
 export const listAdminAppointmentDayAvailability = <ThrowOnError extends boolean = false>(options: Options<ListAdminAppointmentDayAvailabilityData, ThrowOnError>): RequestResult<ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentDayAvailabilityErrors, ThrowOnError> => (options.client ?? client).get<ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentDayAvailabilityErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/appointments/day-availability',
     ...options
 });
@@ -1574,7 +2168,11 @@ export const listAdminAppointmentDayAvailability = <ThrowOnError extends boolean
  * Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.
  */
 export const get3 = <ThrowOnError extends boolean = false>(options: Options<Get3Data, ThrowOnError>): RequestResult<Get3Responses, Get3Errors, ThrowOnError> => (options.client ?? client).get<Get3Responses, Get3Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications/{id}',
     ...options
 });
@@ -1583,7 +2181,11 @@ export const get3 = <ThrowOnError extends boolean = false>(options: Options<Get3
  * Listar documentos de cualquier solicitud
  */
 export const list7 = <ThrowOnError extends boolean = false>(options: Options<List7Data, ThrowOnError>): RequestResult<List7Responses, List7Errors, ThrowOnError> => (options.client ?? client).get<List7Responses, List7Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications/{applicationId}/documents',
     ...options
 });
@@ -1594,7 +2196,11 @@ export const list7 = <ThrowOnError extends boolean = false>(options: Options<Lis
  * Devuelve el contenido inline con caché privada deshabilitada.
  */
 export const content1 = <ThrowOnError extends boolean = false>(options: Options<Content1Data, ThrowOnError>): RequestResult<Content1Responses, Content1Errors, ThrowOnError> => (options.client ?? client).get<Content1Responses, Content1Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/admin/applications/{applicationId}/documents/{applicationDocumentId}/content',
     ...options
 });
@@ -1603,7 +2209,11 @@ export const content1 = <ThrowOnError extends boolean = false>(options: Options<
  * Listar actividades abiertas o inscripciones propias
  */
 export const list8 = <ThrowOnError extends boolean = false>(options?: Options<List8Data, ThrowOnError>): RequestResult<List8Responses, List8Errors, ThrowOnError> => (options?.client ?? client).get<List8Responses, List8Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/activities',
     ...options
 });
@@ -1612,7 +2222,11 @@ export const list8 = <ThrowOnError extends boolean = false>(options?: Options<Li
  * Consultar una actividad abierta o una actividad cerrada con inscripción propia
  */
 export const get4 = <ThrowOnError extends boolean = false>(options: Options<Get4Data, ThrowOnError>): RequestResult<Get4Responses, Get4Errors, ThrowOnError> => (options.client ?? client).get<Get4Responses, Get4Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/activities/{id}',
     ...options
 });
@@ -1623,7 +2237,11 @@ export const get4 = <ThrowOnError extends boolean = false>(options: Options<Get4
  * Devuelve los enlaces de descubrimiento de los endpoints operativos disponibles.
  */
 export const links = <ThrowOnError extends boolean = false>(options?: Options<LinksData, ThrowOnError>): RequestResult<LinksResponses, LinksErrors, ThrowOnError> => (options?.client ?? client).get<LinksResponses, LinksErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/actuator',
     ...options
 });
@@ -1634,7 +2252,11 @@ export const links = <ThrowOnError extends boolean = false>(options?: Options<Li
  * Devuelve la información operativa publicada por la aplicación.
  */
 export const info = <ThrowOnError extends boolean = false>(options?: Options<InfoData, ThrowOnError>): RequestResult<InfoResponses, InfoErrors, ThrowOnError> => (options?.client ?? client).get<InfoResponses, InfoErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/actuator/info',
     ...options
 });
@@ -1650,7 +2272,11 @@ export const health = <ThrowOnError extends boolean = false>(options?: Options<H
  * Eliminar un documento entregado
  */
 export const delete8 = <ThrowOnError extends boolean = false>(options: Options<Delete8Data, ThrowOnError>): RequestResult<Delete8Responses, Delete8Errors, ThrowOnError> => (options.client ?? client).delete<Delete8Responses, Delete8Errors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
     url: '/api/applications/{applicationId}/documents/{applicationDocumentId}',
     ...options
 });

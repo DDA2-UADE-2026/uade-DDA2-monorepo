@@ -3,8 +3,7 @@ import userEvent from '@testing-library/user-event'
 import type { ComponentProps, ReactNode } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { LoginResponse } from '@/generated/types.gen'
-import { storePendingRoleSelection } from '@/lib/role-selection'
+import type { CookieSessionResponse } from '@/generated/types.gen'
 import { LoginForm } from './LoginForm'
 
 const navigateMock = vi.fn()
@@ -93,10 +92,9 @@ describe('LoginForm', () => {
     expect(password).toHaveAttribute('type', 'password')
   })
 
-  it('redirige al inicio del rol activo cuando el login devuelve token operativo', async () => {
+  it('redirige al inicio del rol activo sin recibir un JWT en JavaScript', async () => {
     const user = userEvent.setup()
-    const response: LoginResponse = {
-      token: 'jwt-operativo',
+    const response: CookieSessionResponse = {
       user: {
         username: 'ada.lovelace',
         activeRole: 'CIUDADANO',
@@ -116,10 +114,9 @@ describe('LoginForm', () => {
 
   it('redirige a selección de rol cuando el login queda pendiente de rol', async () => {
     const user = userEvent.setup()
-    const response: LoginResponse = {
+    const response: CookieSessionResponse = {
       requiresRoleSelection: true,
-      selectionToken: 'jwt-seleccion',
-      selectionExpiresIn: 300,
+      expiresIn: 300,
       user: {
         username: 'ada.lovelace',
         roles: ['CIUDADANO', 'OPERADOR'],
@@ -127,7 +124,6 @@ describe('LoginForm', () => {
     }
 
     mutateMock.mockImplementation((_variables, options) => {
-      storePendingRoleSelection(response)
       options.onSuccess(response)
     })
     render(<LoginForm />)
