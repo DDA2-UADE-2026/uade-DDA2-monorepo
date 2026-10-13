@@ -37,7 +37,7 @@ object ActivityErrors {
     fun notAvailable(id: UUID): NotFoundException =
         NotFoundException(
             code = "ACTIVITY_NOT_AVAILABLE",
-            message = "No se encontró una actividad abierta con id '$id'.",
+            message = "No se encontró una actividad disponible con id '$id'.",
         )
 
     fun notOpen(): ConflictException =

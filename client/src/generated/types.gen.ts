@@ -2081,7 +2081,16 @@ export type ActivityListResponse = {
 };
 
 /**
- * Página de actividades abiertas disponibles para la comunidad.
+ * Inscripción del ciudadano autenticado, sin datos de otros participantes.
+ */
+export type CitizenActivityEnrollmentResponse = {
+    id?: string;
+    enrolledAt?: string;
+    attendance?: 'PRESENT' | 'ABSENT';
+};
+
+/**
+ * Página de actividades abiertas o de inscripciones propias, incluidas las actividades cerradas.
  */
 export type CitizenActivityListResponse = {
     content?: Array<CitizenActivityResponse>;
@@ -2092,7 +2101,7 @@ export type CitizenActivityListResponse = {
 };
 
 /**
- * Actividad abierta disponible para la comunidad.
+ * Actividad disponible para la comunidad o incluida en las inscripciones del ciudadano autenticado.
  */
 export type CitizenActivityResponse = {
     id?: string;
@@ -2104,6 +2113,8 @@ export type CitizenActivityResponse = {
     capacity?: number;
     enrolledCount?: number;
     availableCapacity?: number;
+    status?: 'DRAFT' | 'OPEN' | 'CLOSED';
+    myEnrollment?: CitizenActivityEnrollmentResponse;
 };
 
 export type Link = {
@@ -8018,6 +8029,49 @@ export type ListActivitiesResponses = {
 
 export type ListActivitiesResponse = ListActivitiesResponses[keyof ListActivitiesResponses];
 
+export type GetProfessionalActivityData = {
+    body?: never;
+    path: {
+        activityId: string;
+    };
+    query?: never;
+    url: '/api/professional/activities/{activityId}';
+};
+
+export type GetProfessionalActivityErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetProfessionalActivityError = GetProfessionalActivityErrors[keyof GetProfessionalActivityErrors];
+
+export type GetProfessionalActivityResponses = {
+    /**
+     * OK
+     */
+    200: ProfessionalActivityResponse;
+};
+
+export type GetProfessionalActivityResponse = GetProfessionalActivityResponses[keyof GetProfessionalActivityResponses];
+
 export type ListEnrollmentsData = {
     body?: never;
     path: {
@@ -8857,6 +8911,10 @@ export type List8Data = {
          * Cantidad de elementos por página, entre 1 y 100.
          */
         size?: number;
+        /**
+         * Si es true, devuelve solo las actividades del ciudadano autenticado, incluidas las cerradas.
+         */
+        enrolledOnly?: boolean;
     };
     url: '/api/activities';
 };

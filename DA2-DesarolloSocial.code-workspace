@@ -16,5 +16,28 @@
 	"settings": {
 		"java.compile.nullAnalysis.mode": "automatic",
 		"java.configuration.updateBuildConfiguration": "interactive"
+	},
+	"launch": {
+		"configurations": [
+			{
+				"type": "node-terminal",
+				"request": "launch",
+				"name": "Client (Vite)",
+				"command": "npm run dev",
+				"cwd": "${workspaceFolder:Client}"
+			}
+		],
+		"compounds": [
+			{
+				"name": "Server + Client",
+				"configurations": [
+					{
+						"folder": "Server",
+						"name": "ServerApplication"
+					},
+					"Client (Vite)"
+				]
+			}
+		]
 	}
 }

@@ -12,6 +12,10 @@ export const activitySearchSchema = z.object({
   page: z.coerce.number().int().positive().catch(1).default(1),
 })
 
+export const citizenActivitySearchSchema = activitySearchSchema.extend({
+  vista: z.enum(["disponibles", "inscripciones"]).catch("disponibles").default("disponibles"),
+})
+
 export const activityStatusLabels: Record<ActivityStatus, string> = {
   DRAFT: "Borrador",
   OPEN: "Publicada",

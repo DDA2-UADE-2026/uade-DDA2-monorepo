@@ -9,7 +9,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, Link, redirect } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 import { useState } from "react"
 
@@ -39,8 +39,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { get1Options } from "@/generated/@tanstack/react-query.gen"
 
 export const Route = createFileRoute("/_app/gestion/actividades/$actividadId/")({
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
+  beforeLoad: ({ context, params }) => {
+    if (!context.user.permissions?.includes("activities:management:view")) {
+      if (context.user.permissions?.includes("activities:attendance:view")) {
+        throw redirect({ to: "/gestion/actividades/$actividadId/asistencia", params, search: { page: 1 }, replace: true })
+      }
       throw redirect({ to: "/403", replace: true })
     }
   },
@@ -48,6 +51,7 @@ export const Route = createFileRoute("/_app/gestion/actividades/$actividadId/")(
 })
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext()
   const { actividadId } = Route.useParams()
   const [editing, setEditing] = useState(false)
   const [statusChange, setStatusChange] = useState<ActivityStatusAction | null>(null)
@@ -67,19 +71,20 @@ function RouteComponent() {
         {activity && (
           <OutletNavRightButton>
             <ActivityStatusBadge status={activity.status} />
-            {canEditActivity(activity.status) && (
+            {user.permissions?.includes("activities:attendance:view") && activity.status !== "DRAFT" && <Button size="sm" variant="outline" render={<Link to="/gestion/actividades/$actividadId/asistencia" params={{ actividadId }} search={{ page: 1 }} />}>Ver asistencia</Button>}
+            {user.permissions?.includes("activities:management:edit") && canEditActivity(activity.status) && (
               <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
                 <IconPencil />
                 Editar
               </Button>
             )}
-            {canPublishActivity(activity.status) && (
+            {user.permissions?.includes("activities:management:change-status") && canPublishActivity(activity.status) && (
               <Button size="sm" onClick={() => setStatusChange("publish")}>
                 <IconSpeakerphone />
                 Publicar
               </Button>
             )}
-            {canCloseActivity(activity.status) && (
+            {user.permissions?.includes("activities:management:change-status") && canCloseActivity(activity.status) && (
               <Button size="sm" variant="outline" onClick={() => setStatusChange("close")}>
                 <IconLock />
                 Cerrar
