@@ -24,5 +24,13 @@ interface ActivityRepository : JpaRepository<Activity, UUID> {
 
     fun findByIdAndStatus(id: UUID, status: ActivityStatus): Activity?
 
+    @Query("select a from Activity a where a.status in :statuses and exists " +
+        "(select e.id from ActivityEnrollment e where e.activity = a and e.citizen.id = :citizenId)")
+    fun findEnrolledActivities(
+        @Param("citizenId") citizenId: Long,
+        @Param("statuses") statuses: Collection<ActivityStatus>,
+        pageable: Pageable,
+    ): Page<Activity>
+
     fun findAllByStatusInOrderByStartDateDesc(statuses: Collection<ActivityStatus>, pageable: Pageable): Page<Activity>
 }

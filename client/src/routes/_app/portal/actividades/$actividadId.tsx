@@ -1,9 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { CitizenActivityDetail } from "@/components/activities/CitizenActivityDetail"
 
 export const Route = createFileRoute("/_app/portal/actividades/$actividadId")({
+  beforeLoad: ({ context }) => {
+    if (!context.user.permissions?.includes("activities:own:view")) throw redirect({ to: "/403", replace: true })
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/_app/portal/actividades/$actividadId"!</div>
+  const { actividadId } = Route.useParams()
+  const { user } = Route.useRouteContext()
+  return <CitizenActivityDetail activityId={actividadId} canEnroll={user.permissions?.includes("activities:own:enroll") ?? false} />
 }

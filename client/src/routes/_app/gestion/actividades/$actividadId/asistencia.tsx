@@ -1,11 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { ActivityAttendance } from "@/components/activities/ActivityAttendance"
+import { activitySearchSchema } from "@/components/activities/activity-ui"
 
 export const Route = createFileRoute(
   "/_app/gestion/actividades/$actividadId/asistencia",
 )({
+  validateSearch: activitySearchSchema,
+  beforeLoad: ({ context }) => {
+    if (!context.user.permissions?.includes("activities:attendance:view")) throw redirect({ to: "/403", replace: true })
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/_app/gestion/actividades/$actividadId/asistencia"!</div>
+  const { actividadId } = Route.useParams()
+  const { page } = Route.useSearch()
+  const { user } = Route.useRouteContext()
+  const navigate = useNavigate({ from: Route.fullPath })
+  return <ActivityAttendance activityId={actividadId} page={page} onPageChange={(nextPage) => navigate({ search: { page: nextPage } })} canManage={user.permissions?.includes("activities:attendance:manage") ?? false} />
 }
