@@ -17,6 +17,7 @@ Enum log_entity_type {
   enrollment_period
   application
   application_evaluation
+  application_visit
   application_document
   municipal_center
   municipal_service
@@ -68,6 +69,16 @@ Enum evaluation_priority {
   MEDIUM
   HIGH
   URGENT
+}
+
+Enum application_visit_type {
+  VISIT
+  INTERVIEW
+}
+
+Enum application_visit_status {
+  SCHEDULED
+  CANCELLED
 }
 
 Enum enrollment_period_status {
@@ -570,6 +581,37 @@ Table application_evaluation {
   }
 
   Note: 'El alta bloquea la solicitud, impide duplicados, asigna al profesional autenticado y cambia la solicitud a IN_EVALUATION. La administracion permite listado filtrado y detalle, pero no correcciones ni reevaluaciones.'
+}
+
+Table application_visit {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id]
+  type application_visit_type [not null, note: 'VISIT o INTERVIEW; persistido como varchar(20).']
+  starts_at timestamptz [not null, note: 'Instante normalizado a UTC al persistir.']
+  ends_at timestamptz [not null, note: 'Calculado por el servidor a partir de startsAt y durationMinutes.']
+  location varchar(300) [not null, note: 'Dato operativo potencialmente sensible; no se copia al log de auditoria.']
+  responsible_user_id bigint [not null, ref: > users.id, note: 'Trabajador ya asignado a la solicitud y actor autenticado del alta.']
+  status application_visit_status [not null, note: 'SCHEDULED ocupa la agenda; CANCELLED la libera inmediatamente.']
+  scheduled_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+  cancellation_reason varchar(1000) [note: 'Obligatorio y recortado al cancelar. No se copia al log de auditoria.']
+  cancelled_at timestamptz [note: 'Instante UTC de cancelacion.']
+  cancelled_by_user_id bigint [ref: > users.id, note: 'Actor que cancelo la actuacion.']
+
+  indexes {
+    application_id [name: 'ix_application_visit_application']
+    (application_id, status) [name: 'ix_application_visit_application_status']
+    (responsible_user_id, starts_at, ends_at, status) [name: 'ix_application_visit_responsible_time']
+    starts_at [name: 'ix_application_visit_starts_at']
+  }
+
+  checks {
+    `type in ('VISIT', 'INTERVIEW')` [name: 'ck_application_visit_type']
+    `status in ('SCHEDULED', 'CANCELLED')` [name: 'ck_application_visit_status']
+    `starts_at < ends_at` [name: 'ck_application_visit_time_range']
+    `(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and cancelled_by_user_id is not null)` [name: 'ck_application_visit_cancellation']
+  }
+
+  Note: 'Admite varias actuaciones por solicitud evaluada. Se pueden reprogramar o cancelar solo actuaciones futuras SCHEDULED. Cancelar la ultima devuelve la solicitud a IN_EVALUATION.'
 }
 
 Table document {

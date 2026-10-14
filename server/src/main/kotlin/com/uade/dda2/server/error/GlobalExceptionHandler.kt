@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @RestControllerAdvice
@@ -61,6 +62,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(
         HandlerMethodValidationException::class,
         ConstraintViolationException::class,
+        MethodArgumentTypeMismatchException::class,
     )
     fun handleMethodValidation(
         request: HttpServletRequest,
@@ -69,8 +71,16 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "La validación falló.",
-                    code = "VALIDATION_ERROR",
+                    message = when {
+                        request.requestURI == "/api/admin/application-visits" -> "Los filtros de visitas o entrevistas son inválidos."
+                        request.requestURI == "/api/admin/application-evaluations" -> "Los filtros de evaluaciones son inválidos."
+                        else -> "La validación falló."
+                    },
+                    code = when {
+                        request.requestURI == "/api/admin/application-visits" -> "APPLICATION_VISIT_INVALID_FILTER"
+                        request.requestURI == "/api/admin/application-evaluations" -> "APPLICATION_EVALUATION_INVALID_FILTER"
+                        else -> "VALIDATION_ERROR"
+                    },
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
                 ),
@@ -87,14 +97,22 @@ class GlobalExceptionHandler {
             ?.let { return handleApiException(it, request) }
         val appointmentRequest = request.requestURI == "/api/citizen/appointments"
         val evaluationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/evaluation"))
+        val visitRequest = request.requestURI.matches(
+            Regex("/api/applications/[^/]+/visits(?:/[^/]+/(?:schedule|cancel))?"),
+        )
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = if (evaluationRequest) "Los datos de la evaluacion son invalidos." else "El cuerpo de la solicitud es inválido.",
+                    message = when {
+                        evaluationRequest -> "Los datos de la evaluacion son invalidos."
+                        visitRequest -> "Los datos de la visita o entrevista son invalidos."
+                        else -> "El cuerpo de la solicitud es inválido."
+                    },
                     code = when {
                         appointmentRequest -> "APPOINTMENT_INVALID_REQUEST"
                         evaluationRequest -> "APPLICATION_EVALUATION_INVALID_DATA"
+                        visitRequest -> "APPLICATION_VISIT_INVALID_DATA"
                         else -> "INVALID_REQUEST_BODY"
                     },
                     status = HttpStatus.BAD_REQUEST.value(),

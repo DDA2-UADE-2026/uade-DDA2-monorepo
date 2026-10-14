@@ -489,7 +489,7 @@ class ApplicationEvaluationFlowTest {
     fun `un fallo de auditoria revierte evaluacion asignacion y estado`() {
         jdbc.execute(
             "alter table logs add constraint ck_evaluation_test_audit_failure " +
-                "check (entity_type <> 'application_evaluation')",
+                "check (entity_type <> 'application_evaluation' or user_id <> ${fixture.actorId})",
         )
         try {
             expect(create(), 409, "DATA_INTEGRITY_VIOLATION")

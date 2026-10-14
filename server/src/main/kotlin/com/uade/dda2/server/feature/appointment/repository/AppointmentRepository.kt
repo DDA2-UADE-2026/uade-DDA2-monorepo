@@ -151,6 +151,30 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         @Param("status") status: AppointmentStatus = AppointmentStatus.CONFIRMED,
     ): List<Appointment>
 
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional"])
+    @Query(
+        """
+        select distinct appointment from Appointment appointment
+        join appointment.professionalAssignment assignment
+        where appointment.startsAt < :rangeEnd
+          and appointment.endsAt > :rangeStart
+          and (
+              (appointment.citizen.id in :userIds and appointment.status = :confirmed)
+              or
+              (assignment.professional.id in :userIds and
+                  (appointment.status = :confirmed or
+                   (appointment.status = :cancelled and appointment.slotReleasedAt is null)))
+          )
+        """,
+    )
+    fun findBlockingByParticipantIdsInRange(
+        @Param("userIds") userIds: Collection<Long>,
+        @Param("rangeStart") rangeStart: OffsetDateTime,
+        @Param("rangeEnd") rangeEnd: OffsetDateTime,
+        @Param("confirmed") confirmed: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("cancelled") cancelled: AppointmentStatus = AppointmentStatus.CANCELLED,
+    ): List<Appointment>
+
     @Query(
         """
         select case when count(appointment) > 0 then true else false end

@@ -341,7 +341,7 @@ class ApplicationFlowTest {
     @Test
     fun `cors permite usar idempotencia desde el frontend sin cambiarlo`() {
         val result = mvc.perform(options("/api/applications")
-            .header("Origin", "http://localhost:3000")
+            .header("Origin", "http://localhost:5173")
             .header("Access-Control-Request-Method", "POST")
             .header("Access-Control-Request-Headers", "authorization,content-type,idempotency-key")).andReturn()
         expect(result, 200)

@@ -10,7 +10,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | --- | --- |
 | [Program — Programas y ediciones](functional/program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
 | [EnrollmentPeriod — Convocatorias](functional/enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
-| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cómo se registran y consultan evaluaciones sociales. |
+| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos y cómo se evalúa y programa una visita o entrevista social. |
 | [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
 | [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
@@ -55,6 +55,8 @@ El beneficio es la ayuda ofrecida por una edición, por ejemplo asistencia alime
 
 **Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado, presenta y consulta sus propias solicitudes y entrega sus documentos protegidos. No presenta solicitudes a nombre de otra persona.
 
+**Trabajador social autorizado.** Registra la evaluación, queda asignado a la solicitud y puede programar sus visitas o entrevistas sin superponer la agenda propia ni la del titular.
+
 Una misma persona puede tener funciones municipales y ciudadanas. Debe operar con el rol adecuado para la tarea que desea realizar; tener varios roles no mezcla sus atribuciones.
 
 **Sistema.** Comprueba las condiciones de presentación, confirma las solicitudes, evita duplicados y cierra automáticamente las convocatorias cuya fecha final ya pasó.
@@ -72,8 +74,9 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 9. Si la presentación es válida, recibe un número único, una fecha y el estado **Presentada**.
 10. La persona consulta sus solicitudes, entrega documentos faltantes y reemplaza los observados. El personal documental autorizado puede revisarlos.
 11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación; la solicitud queda asignada y pasa a evaluación. El personal con permiso de consulta administra luego la bandeja filtrada y el detalle.
+12. Ese mismo trabajador programa una visita domiciliaria o entrevista futura. La primera actuación lleva la solicitud a **En visita** y queda visible en una agenda administrativa filtrable.
 
-La implementación actual incluye presentación, consulta, revisión de documentos, registro único y consulta administrativa de la evaluación social. La aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
+La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social y programación y consulta de visitas o entrevistas. La aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
 
 ## Tres decisiones diferentes
 

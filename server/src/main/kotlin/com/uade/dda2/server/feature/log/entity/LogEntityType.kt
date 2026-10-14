@@ -7,6 +7,7 @@ enum class LogEntityType(val tableName: String) {
     ENROLLMENT_PERIOD("enrollment_period"),
     APPLICATION("application"),
     APPLICATION_EVALUATION("application_evaluation"),
+    APPLICATION_VISIT("application_visit"),
     APPLICATION_DOCUMENT("application_document"),
     ACTIVITY("activity"),
     ACTIVITY_ENROLLMENT("activity_enrollment"),

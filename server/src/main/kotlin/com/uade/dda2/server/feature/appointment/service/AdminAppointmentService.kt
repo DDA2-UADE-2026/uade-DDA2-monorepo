@@ -50,6 +50,7 @@ class AdminAppointmentService(
     private val availabilities: ProfessionalAvailabilityRepository,
     private val generator: AppointmentSlotGenerator,
     private val slots: AppointmentSlotService,
+    private val agenda: AgendaAvailabilityService,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
     private val validator: AppointmentValidator,
@@ -97,7 +98,6 @@ class AdminAppointmentService(
             val dayStart = date.atStartOfDay(zone).toOffsetDateTime()
             val dayEnd = date.plusDays(1).atStartOfDay(zone).toOffsetDateTime()
             val dayAppointments = monthAppointments.filter { overlaps(it, dayStart, dayEnd) && matchesService(it, serviceId) }
-            val blocking = dayAppointments.filter { blocksProfessional(it) }
             var hasAgenda = false
             var free = 0
             if (!date.isBefore(today)) {
@@ -112,14 +112,19 @@ class AdminAppointmentService(
                         }
                     if (dayAvailabilities.isEmpty()) continue
                     hasAgenda = true
+                    val professionalIds = dayAvailabilities
+                        .map { requireNotNull(it.assignment.professional.id) }
+                        .distinct()
+                    val busyIntervals = agenda.busyIntervals(professionalIds, dayStart, dayEnd)
                     free += generator.generate(
                         date = date,
                         durationMinutes = centerService.service.durationMinutes,
                         availabilities = dayAvailabilities,
-                        professionalAppointments = blocking,
+                        professionalAppointments = emptyList(),
                         citizenAppointments = emptyList(),
                         zone = zone,
                         now = now,
+                        additionalBusyIntervals = busyIntervals,
                     ).size
                 }
             }
@@ -142,19 +147,21 @@ class AdminAppointmentService(
         if (date.isBefore(now.atZoneSameInstant(zone).toLocalDate())) return emptyList()
         val dayStart = date.atStartOfDay(zone).toOffsetDateTime()
         val dayEnd = date.plusDays(1).atStartOfDay(zone).toOffsetDateTime()
-        val blocking = appointments.findByCenterIdInRange(centerId, dayStart, dayEnd).filter { blocksProfessional(it) }
         return relevantCenterServices(centerId, serviceId).flatMap { centerService ->
             val centerServiceId = requireNotNull(centerService.id)
             val dayAvailabilities = availabilities.findEffectiveByCenterServiceIdAndDayOfWeek(centerServiceId, date.dayOfWeek)
             if (dayAvailabilities.isEmpty()) return@flatMap emptyList()
+            val professionalIds = dayAvailabilities.map { requireNotNull(it.assignment.professional.id) }.distinct()
+            val busyIntervals = agenda.busyIntervals(professionalIds, dayStart, dayEnd)
             generator.generate(
                 date = date,
                 durationMinutes = centerService.service.durationMinutes,
                 availabilities = dayAvailabilities,
-                professionalAppointments = blocking,
+                professionalAppointments = emptyList(),
                 citizenAppointments = emptyList(),
                 zone = zone,
                 now = now,
+                additionalBusyIntervals = busyIntervals,
             ).map { slot ->
                 AdminFreeSlotResponse(
                     centerServiceId = centerServiceId,
@@ -221,10 +228,12 @@ class AdminAppointmentService(
         ).any { it.professionalAssignmentId == request.professionalAssignmentId &&
             it.startsAt.toInstant() == startsAt.toInstant() && it.endsAt.toInstant() == endsAt.toInstant() }
         if (!onGrid) throw AppointmentErrors.slotUnavailable()
-        if (appointments.findOverlapsByCitizenId(requireNotNull(appointment.citizen.id), startsAt, endsAt)
-                .any { it.id != id }) throw AppointmentErrors.citizenOverlap()
-        if (appointments.findOverlapsByProfessionalId(target.professionalId, startsAt, endsAt)
-                .any { it.id != id }) throw AppointmentErrors.slotUnavailable()
+        if (agenda.hasConflict(requireNotNull(appointment.citizen.id), startsAt, endsAt, excludeAppointmentId = id)) {
+            throw AppointmentErrors.citizenOverlap()
+        }
+        if (agenda.hasConflict(target.professionalId, startsAt, endsAt, excludeAppointmentId = id)) {
+            throw AppointmentErrors.slotUnavailable()
+        }
 
         val old = json.writeValueAsString(appointment.toAuditSnapshot())
         appointment.professionalAssignment = assignment
@@ -319,10 +328,6 @@ class AdminAppointmentService(
 
     private fun matchesService(appointment: Appointment, serviceId: UUID?): Boolean =
         serviceId == null || appointment.professionalAssignment.centerService.service.id == serviceId
-
-    private fun blocksProfessional(appointment: Appointment): Boolean =
-        appointment.status == AppointmentStatus.CONFIRMED ||
-            (appointment.status == AppointmentStatus.CANCELLED && appointment.slotReleasedAt == null)
 
     private fun overlaps(appointment: Appointment, start: OffsetDateTime, end: OffsetDateTime): Boolean =
         appointment.startsAt.isBefore(end) && appointment.endsAt.isAfter(start)
