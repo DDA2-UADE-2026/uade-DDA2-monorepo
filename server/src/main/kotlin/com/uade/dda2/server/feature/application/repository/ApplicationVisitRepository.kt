@@ -17,6 +17,8 @@ import java.util.UUID
 interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
     fun existsByResponsibleId(responsibleId: Long): Boolean
 
+    fun existsByResultRecordedById(resultRecordedById: Long): Boolean
+
     fun countByApplicationId(applicationId: UUID): Long
 
     fun existsByApplicationIdAndStatusAndIdNot(
@@ -29,6 +31,7 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
         attributePaths = [
             "responsible",
             "cancelledBy",
+            "resultRecordedBy",
             "application",
             "application.user",
             "application.programEdition",
@@ -68,6 +71,7 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
         attributePaths = [
             "responsible",
             "cancelledBy",
+            "resultRecordedBy",
             "application",
             "application.user",
             "application.programEdition",
@@ -83,6 +87,7 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
         attributePaths = [
             "responsible",
             "cancelledBy",
+            "resultRecordedBy",
             "application",
             "application.user",
             "application.assignedWorker",

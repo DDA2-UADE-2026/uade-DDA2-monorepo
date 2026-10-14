@@ -31,7 +31,7 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/admin/application-visits", produces = ["application/json"])
 @Validated
-@Tag(name = "Visitas sociales", description = "Agenda administrativa de visitas y entrevistas sociales.")
+@Tag(name = "Visitas sociales", description = "Agenda y resultados administrativos de visitas y entrevistas sociales.")
 class AdminApplicationVisitController(private val service: ApplicationVisitService) {
     @GetMapping
     @PreAuthorize("hasAuthority('$APPLICATION_VISIT_VIEW_PERMISSION')")
@@ -61,7 +61,7 @@ class AdminApplicationVisitController(private val service: ApplicationVisitServi
         @RequestParam(required = false) programEditionId: UUID?,
         @Parameter(description = "Tipo exacto de actuacion.", example = "VISIT")
         @RequestParam(required = false) type: ApplicationVisitType?,
-        @Parameter(description = "Estado exacto de la actuacion.", example = "SCHEDULED")
+        @Parameter(description = "Estado exacto: SCHEDULED, CANCELLED, REALIZED o NOT_REALIZED.", example = "SCHEDULED")
         @RequestParam(required = false) status: ApplicationVisitStatus?,
         @Parameter(description = "Inicio inclusivo de la ventana ISO-8601 con offset.", example = "2026-10-20T00:00:00-03:00")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -91,7 +91,7 @@ class AdminApplicationVisitController(private val service: ApplicationVisitServi
     @Operation(
         operationId = "getApplicationVisit",
         summary = "Consultar una visita o entrevista social",
-        description = "Requiere applications:visits:view en el rol activo y devuelve la actuacion con el contexto completo de la solicitud.",
+        description = "Requiere applications:visits:view en el rol activo y devuelve la actuacion, su resultado cuando existe y el contexto completo de la solicitud.",
     )
     @ApiResponse(responseCode = "200", description = "Detalle completo de la actuacion.", useReturnTypeSchema = true)
     @ApiResponse(

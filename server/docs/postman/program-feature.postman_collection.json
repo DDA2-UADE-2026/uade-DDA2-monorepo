@@ -5170,7 +5170,7 @@
     },
     {
       "name": "Visitas y entrevistas sociales",
-      "description": "Programacion, reprogramacion, cancelacion y consulta administrativa de actuaciones sociales. visitAccessToken debe tener applications:visits:create, applications:visits:manage y applications:visits:view; applicationId debe identificar una solicitud evaluada y asignada al mismo usuario.",
+      "description": "Programacion, reprogramacion, cancelacion, resultado y consulta administrativa de actuaciones sociales. visitAccessToken debe tener applications:visits:create, applications:visits:manage, applications:visits:results:create y applications:visits:view; applicationId debe identificar una solicitud evaluada y asignada al mismo usuario.",
       "auth": {
         "type": "bearer",
         "bearer": [
@@ -5263,7 +5263,7 @@
               "_postman_previewlanguage": "json",
               "header": [{"key": "Content-Type", "value": "application/json"}],
               "cookie": [],
-              "body": "{\n  \"id\": \"80316903-6bc6-42e2-ad0e-20decc3ec5b0\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationStatus\": \"IN_VISIT\",\n  \"type\": \"VISIT\",\n  \"startsAt\": \"2026-10-20T10:00:00-03:00\",\n  \"endsAt\": \"2026-10-20T11:00:00-03:00\",\n  \"durationMinutes\": 60,\n  \"location\": \"Domicilio declarado por el ciudadano\",\n  \"status\": \"SCHEDULED\",\n  \"responsibleId\": 7,\n  \"responsibleName\": \"Trabajador Social\",\n  \"scheduledAt\": \"2026-10-14T18:30:00Z\",\n  \"cancellationReason\": null,\n  \"cancelledAt\": null,\n  \"cancelledById\": null,\n  \"cancelledByName\": null\n}"
+              "body": "{\n  \"id\": \"80316903-6bc6-42e2-ad0e-20decc3ec5b0\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationStatus\": \"IN_VISIT\",\n  \"type\": \"VISIT\",\n  \"startsAt\": \"2026-10-20T10:00:00-03:00\",\n  \"endsAt\": \"2026-10-20T11:00:00-03:00\",\n  \"durationMinutes\": 60,\n  \"location\": \"Domicilio declarado por el ciudadano\",\n  \"status\": \"SCHEDULED\",\n  \"responsibleId\": 7,\n  \"responsibleName\": \"Trabajador Social\",\n  \"scheduledAt\": \"2026-10-14T18:30:00Z\",\n  \"cancellationReason\": null,\n  \"cancelledAt\": null,\n  \"cancelledById\": null,\n  \"cancelledByName\": null,\n  \"observations\": null,\n  \"conclusions\": null,\n  \"resultRecordedAt\": null,\n  \"resultRecordedById\": null,\n  \"resultRecordedByName\": null\n}"
             }
           ]
         },
@@ -5333,7 +5333,7 @@
                 {"key": "status", "value": "SCHEDULED"}
               ]
             },
-            "description": "Tambien admite applicationNumber, applicantUserId, responsibleId, programId, programEditionId, status, windowStart y windowEnd. Sin status devuelve programadas y canceladas; la ventana devuelve intervalos superpuestos."
+            "description": "Tambien admite applicationNumber, applicantUserId, responsibleId, programId, programEditionId, status, windowStart y windowEnd. Sin status devuelve programadas, canceladas y finalizadas; la ventana devuelve intervalos superpuestos."
           },
           "event": [
             {
@@ -5358,7 +5358,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "admin", "application-visits", "{{applicationVisitId}}"]
             },
-            "description": "Devuelve contexto de solicitud, titular, programa, edicion, convocatoria, lugar y responsable."
+            "description": "Devuelve contexto de solicitud, titular, programa, edicion, convocatoria, lugar, responsable y el resultado completo cuando existe."
           },
           "event": [
             {
@@ -5432,6 +5432,56 @@
                 "exec": [
                   "pm.test('HTTP 409', () => pm.response.to.have.status(409));",
                   "if (pm.response.code === 409) pm.expect(pm.response.json().code).to.equal('APPLICATION_VISIT_APPLICANT_CONFLICT');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registrar resultado de actuacion finalizada",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/visits/{{applicationVisitResultId}}/result",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "visits", "{{applicationVisitResultId}}", "result"]
+            },
+            "description": "Configurar applicationVisitResultId con una actuacion SCHEDULED cuyo endsAt ya haya pasado. El resultado es inmutable y los textos sensibles solo aparecen en esta respuesta y en el detalle autorizado.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"REALIZED\",\n  \"observations\": \"La familia recibio al profesional.\",\n  \"conclusions\": \"Se requiere continuar con la evaluacion.\"\n}",
+              "options": {"raw": {"language": "json"}}
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"visitAccessToken\",\"applicationId\",\"applicationVisitResultId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta peticion.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) {",
+                  " const result = pm.response.json();",
+                  " pm.test('Resultado registrado', () => {",
+                  "  pm.expect(result.status).to.be.oneOf(['REALIZED', 'NOT_REALIZED']);",
+                  "  pm.expect(result.resultRecordedAt).to.be.a('string').and.not.empty;",
+                  "  pm.expect(result.resultRecordedById).to.be.a('number');",
+                  "  pm.expect(result.observations).to.be.a('string').and.not.empty;",
+                  "  pm.expect(result.conclusions).to.be.a('string').and.not.empty;",
+                  " });",
+                  "}"
                 ]
               }
             }
@@ -5818,6 +5868,11 @@
     },
     {
       "key": "applicationVisitId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicationVisitResultId",
       "value": "",
       "type": "string"
     },

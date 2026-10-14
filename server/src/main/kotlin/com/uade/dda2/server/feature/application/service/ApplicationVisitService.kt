@@ -4,6 +4,7 @@ import com.uade.dda2.server.config.AppointmentProperties
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CancelApplicationVisitRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationVisitRequest
+import com.uade.dda2.server.feature.application.dto.request.RecordApplicationVisitResultRequest
 import com.uade.dda2.server.feature.application.dto.request.RescheduleApplicationVisitRequest
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitListResponse
@@ -49,6 +50,7 @@ import java.util.UUID
 const val APPLICATION_VISIT_CREATE_PERMISSION = "applications:visits:create"
 const val APPLICATION_VISIT_VIEW_PERMISSION = "applications:visits:view"
 const val APPLICATION_VISIT_MANAGE_PERMISSION = "applications:visits:manage"
+const val APPLICATION_VISIT_RESULT_CREATE_PERMISSION = "applications:visits:results:create"
 
 data class ApplicationVisitFilters(
     val applicationId: UUID? = null,
@@ -141,8 +143,8 @@ class ApplicationVisitService(
         visitId: UUID,
         request: RescheduleApplicationVisitRequest,
     ): ApplicationVisitResponse {
-        val principal = authorizeManage()
-        val locked = lockVisit(applicationId, visitId, principal)
+        val principal = authorizeFor(APPLICATION_VISIT_MANAGE_PERMISSION)
+        val locked = lockVisit(applicationId, visitId, principal, APPLICATION_VISIT_MANAGE_PERMISSION)
         val now = utcNow()
         validator.validateManageable(locked.application, locked.visit, locked.actor, now)
         val data = validator.validateRescheduleRequest(request, now)
@@ -200,9 +202,9 @@ class ApplicationVisitService(
         visitId: UUID,
         request: CancelApplicationVisitRequest,
     ): ApplicationVisitResponse {
-        val principal = authorizeManage()
+        val principal = authorizeFor(APPLICATION_VISIT_MANAGE_PERMISSION)
         val reason = validator.validateCancellationRequest(request)
-        val locked = lockVisit(applicationId, visitId, principal)
+        val locked = lockVisit(applicationId, visitId, principal, APPLICATION_VISIT_MANAGE_PERMISSION)
         val now = utcNow()
         validator.validateManageable(locked.application, locked.visit, locked.actor, now)
 
@@ -230,6 +232,50 @@ class ApplicationVisitService(
             oldValues = oldValues,
             previousApplicationStatus = previousApplicationStatus,
             extra = mapOf("cancellationReasonRecorded" to true),
+        )
+        return locked.visit.toResponse(appointmentTime.zone())
+    }
+
+    @Transactional
+    fun recordResult(
+        applicationId: UUID,
+        visitId: UUID,
+        request: RecordApplicationVisitResultRequest,
+    ): ApplicationVisitResponse {
+        val principal = authorizeFor(APPLICATION_VISIT_RESULT_CREATE_PERMISSION)
+        val result = validator.validateResultRequest(request)
+        val locked = lockVisit(applicationId, visitId, principal, APPLICATION_VISIT_RESULT_CREATE_PERMISSION)
+        val now = utcNow()
+        validator.validateResultRegistrable(locked.application, locked.visit, locked.actor, now)
+
+        val previousApplicationStatus = locked.application.status
+        val oldValues = json.writeValueAsString(locked.visit.toAuditSnapshot())
+        locked.visit.status = result.status
+        locked.visit.resultObservations = result.observations
+        locked.visit.resultConclusions = result.conclusions
+        locked.visit.resultRecordedAt = now
+        locked.visit.resultRecordedBy = locked.actor
+        visits.saveAndFlush(locked.visit)
+        if (
+            !visits.existsByApplicationIdAndStatusAndIdNot(
+                applicationId,
+                ApplicationVisitStatus.SCHEDULED,
+                visitId,
+            )
+        ) {
+            locked.application.status = ApplicationStatus.IN_EVALUATION
+        }
+        locked.application.updatedAt = LocalDateTime.ofInstant(now.toInstant(), applicationTime.zone())
+        recordUpdate(
+            actor = locked.actor,
+            visit = locked.visit,
+            operation = "RECORD_RESULT",
+            oldValues = oldValues,
+            previousApplicationStatus = previousApplicationStatus,
+            extra = mapOf(
+                "observationsRecorded" to (result.observations != null),
+                "conclusionsRecorded" to (result.conclusions != null),
+            ),
         )
         return locked.visit.toResponse(appointmentTime.zone())
     }
@@ -280,17 +326,22 @@ class ApplicationVisitService(
         validator.validateActor(users.findByIdWithRoles(principal.id), principal, permission)
     }
 
-    private fun authorizeManage(): JwtPrincipal {
+    private fun authorizeFor(permission: String): JwtPrincipal {
         val principal = currentUser.principal()
         validator.validateActor(
             users.findByIdWithRoles(principal.id),
             principal,
-            APPLICATION_VISIT_MANAGE_PERMISSION,
+            permission,
         )
         return principal
     }
 
-    private fun lockVisit(applicationId: UUID, visitId: UUID, principal: JwtPrincipal): LockedApplicationVisit {
+    private fun lockVisit(
+        applicationId: UUID,
+        visitId: UUID,
+        principal: JwtPrincipal,
+        permission: String,
+    ): LockedApplicationVisit {
         val snapshot = managementSnapshot(applicationId, visitId)
         val application = applications.findByIdForUpdate(applicationId) ?: throw ApplicationErrors.notFound()
         entityManager.refresh(application)
@@ -312,7 +363,7 @@ class ApplicationVisitService(
         val actor = validator.validateActor(
             users.findByIdWithRoles(principal.id),
             principal,
-            APPLICATION_VISIT_MANAGE_PERMISSION,
+            permission,
         )
         if (
             lockedUsers[snapshot.applicantId] == null ||
@@ -358,6 +409,10 @@ class ApplicationVisitService(
             cancellationReason = visit.cancellationReason,
             cancelledAt = visit.cancelledAt?.toInstant(),
             cancelledById = visit.cancelledBy?.id,
+            resultObservations = visit.resultObservations,
+            resultConclusions = visit.resultConclusions,
+            resultRecordedAt = visit.resultRecordedAt?.toInstant(),
+            resultRecordedById = visit.resultRecordedBy?.id,
         )
     }
 
@@ -411,6 +466,10 @@ class ApplicationVisitService(
         val cancellationReason: String?,
         val cancelledAt: Instant?,
         val cancelledById: Long?,
+        val resultObservations: String?,
+        val resultConclusions: String?,
+        val resultRecordedAt: Instant?,
+        val resultRecordedById: Long?,
     ) {
         fun matches(visit: ApplicationVisit, application: Application): Boolean =
             visit.id == visitId &&
@@ -428,6 +487,10 @@ class ApplicationVisitService(
                 visit.scheduledAt.toInstant() == scheduledAt &&
                 visit.cancellationReason == cancellationReason &&
                 visit.cancelledAt?.toInstant() == cancelledAt &&
-                visit.cancelledBy?.id == cancelledById
+                visit.cancelledBy?.id == cancelledById &&
+                visit.resultObservations == resultObservations &&
+                visit.resultConclusions == resultConclusions &&
+                visit.resultRecordedAt?.toInstant() == resultRecordedAt &&
+                visit.resultRecordedBy?.id == resultRecordedById
     }
 }

@@ -4,6 +4,7 @@ import com.uade.dda2.server.error.ForbiddenException
 import com.uade.dda2.server.error.UnauthorizedException
 import com.uade.dda2.server.feature.application.dto.request.CancelApplicationVisitRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationVisitRequest
+import com.uade.dda2.server.feature.application.dto.request.RecordApplicationVisitResultRequest
 import com.uade.dda2.server.feature.application.dto.request.RescheduleApplicationVisitRequest
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
@@ -30,6 +31,12 @@ data class ValidatedApplicationVisitSchedule(
     val startsAt: OffsetDateTime,
     val endsAt: OffsetDateTime,
     val location: String,
+)
+
+data class ValidatedApplicationVisitResult(
+    val status: ApplicationVisitStatus,
+    val observations: String?,
+    val conclusions: String?,
 )
 
 @Component
@@ -75,6 +82,16 @@ class ApplicationVisitValidator {
         return reason
     }
 
+    fun validateResultRequest(request: RecordApplicationVisitResultRequest): ValidatedApplicationVisitResult {
+        val status = request.status
+            ?: throw ApplicationVisitErrors.invalidResultData("El estado final es obligatorio.")
+        return ValidatedApplicationVisitResult(
+            status = ApplicationVisitStatus.valueOf(status.name),
+            observations = optionalResultText(request.observations, "Las observaciones"),
+            conclusions = optionalResultText(request.conclusions, "Las conclusiones"),
+        )
+    }
+
     fun validateManageable(
         application: Application,
         visit: ApplicationVisit,
@@ -91,6 +108,33 @@ class ApplicationVisitValidator {
         ) {
             throw ApplicationVisitErrors.notModifiable()
         }
+    }
+
+    fun validateResultRegistrable(
+        application: Application,
+        visit: ApplicationVisit,
+        actor: User,
+        now: OffsetDateTime,
+    ) {
+        if (application.assignedWorker?.id != actor.id || visit.responsible.id != actor.id) {
+            throw ApplicationVisitErrors.assignedToAnotherWorker()
+        }
+        if (
+            application.status != ApplicationStatus.IN_VISIT ||
+            visit.status != ApplicationVisitStatus.SCHEDULED ||
+            visit.endsAt.toInstant().isAfter(now.toInstant())
+        ) {
+            throw ApplicationVisitErrors.resultNotRegistrable()
+        }
+    }
+
+    private fun optionalResultText(value: String?, label: String): String? {
+        if (value == null) return null
+        val trimmed = value.trim()
+        if (trimmed.isEmpty() || trimmed.length > 2000) {
+            throw ApplicationVisitErrors.invalidResultData("$label deben tener entre 1 y 2000 caracteres cuando se informan.")
+        }
+        return trimmed
     }
 
     private fun validateSchedule(

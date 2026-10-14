@@ -27,6 +27,7 @@ import java.util.UUID
             name = "ix_application_visit_responsible_time",
             columnList = "responsible_user_id, starts_at, ends_at, status",
         ),
+        Index(name = "ix_application_visit_result_recorded_by", columnList = "result_recorded_by_user_id"),
         Index(name = "ix_application_visit_starts_at", columnList = "starts_at"),
     ],
     check = [
@@ -36,18 +37,26 @@ import java.util.UUID
         ),
         CheckConstraint(
             name = "ck_application_visit_status",
-            constraint = "status in ('SCHEDULED', 'CANCELLED')",
+            constraint = "status in ('SCHEDULED', 'CANCELLED', 'REALIZED', 'NOT_REALIZED')",
         ),
         CheckConstraint(
             name = "ck_application_visit_time_range",
             constraint = "starts_at < ends_at",
         ),
         CheckConstraint(
-            name = "ck_application_visit_cancellation",
+            name = "ck_application_visit_lifecycle_data",
             constraint = "(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null " +
-                "and cancelled_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null " +
+                "and cancelled_by_user_id is null and result_observations is null and result_conclusions is null " +
+                "and result_recorded_at is null and result_recorded_by_user_id is null) or " +
+                "(status = 'CANCELLED' and cancellation_reason is not null " +
                 "and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null " +
-                "and cancelled_by_user_id is not null)",
+                "and cancelled_by_user_id is not null and result_observations is null and result_conclusions is null " +
+                "and result_recorded_at is null and result_recorded_by_user_id is null) or " +
+                "(status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null " +
+                "and cancelled_by_user_id is null and result_recorded_at is not null " +
+                "and result_recorded_by_user_id = responsible_user_id and result_recorded_at >= ends_at " +
+                "and (result_observations is null or length(trim(result_observations)) between 1 and 2000) " +
+                "and (result_conclusions is null or length(trim(result_conclusions)) between 1 and 2000))",
         ),
     ],
 )
@@ -93,4 +102,17 @@ class ApplicationVisit(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cancelled_by_user_id")
     var cancelledBy: User? = null,
+
+    @Column(name = "result_observations", length = 2000)
+    var resultObservations: String? = null,
+
+    @Column(name = "result_conclusions", length = 2000)
+    var resultConclusions: String? = null,
+
+    @Column(name = "result_recorded_at")
+    var resultRecordedAt: OffsetDateTime? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "result_recorded_by_user_id")
+    var resultRecordedBy: User? = null,
 )

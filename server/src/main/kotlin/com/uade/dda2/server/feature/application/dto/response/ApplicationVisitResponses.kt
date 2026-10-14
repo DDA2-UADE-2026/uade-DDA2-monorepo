@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.OffsetDateTime
 import java.util.UUID
 
-@Schema(description = "Estado vigente de una visita o entrevista social programada o cancelada.")
+@Schema(description = "Estado vigente de una visita o entrevista social programada, cancelada o finalizada.")
 data class ApplicationVisitResponse(
     val id: UUID,
     val applicationId: UUID,
@@ -28,6 +28,14 @@ data class ApplicationVisitResponse(
     val cancelledAt: OffsetDateTime?,
     val cancelledById: Long?,
     val cancelledByName: String?,
+    @field:Schema(description = "Observaciones del resultado; null mientras la actuacion no haya finalizado.", nullable = true)
+    val observations: String?,
+    @field:Schema(description = "Conclusiones del resultado; null mientras la actuacion no haya finalizado.", nullable = true)
+    val conclusions: String?,
+    @field:Schema(description = "Instante UTC en que se registro el resultado.", nullable = true)
+    val resultRecordedAt: OffsetDateTime?,
+    val resultRecordedById: Long?,
+    val resultRecordedByName: String?,
 )
 
 @Schema(description = "Actuacion incluida en la agenda administrativa de solicitudes.")
@@ -54,6 +62,9 @@ data class ApplicationVisitListItemResponse(
     val cancelledAt: OffsetDateTime?,
     val cancelledById: Long?,
     val cancelledByName: String?,
+    val resultRecordedAt: OffsetDateTime?,
+    val resultRecordedById: Long?,
+    val resultRecordedByName: String?,
 )
 
 @Schema(description = "Pagina de visitas y entrevistas sociales ordenada cronologicamente.")
@@ -95,4 +106,12 @@ data class ApplicationVisitDetailResponse(
     val cancelledById: Long?,
     val cancelledByName: String?,
     val cancelledByEmail: String?,
+    @field:Schema(description = "Observaciones sensibles del resultado, visibles solo en el detalle autorizado.", nullable = true)
+    val observations: String?,
+    @field:Schema(description = "Conclusiones sensibles del resultado, visibles solo en el detalle autorizado.", nullable = true)
+    val conclusions: String?,
+    val resultRecordedAt: OffsetDateTime?,
+    val resultRecordedById: Long?,
+    val resultRecordedByName: String?,
+    val resultRecordedByEmail: String?,
 )

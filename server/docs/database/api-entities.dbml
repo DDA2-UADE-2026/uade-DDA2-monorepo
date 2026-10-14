@@ -79,6 +79,8 @@ Enum application_visit_type {
 Enum application_visit_status {
   SCHEDULED
   CANCELLED
+  REALIZED
+  NOT_REALIZED
 }
 
 Enum enrollment_period_status {
@@ -591,27 +593,32 @@ Table application_visit {
   ends_at timestamptz [not null, note: 'Calculado por el servidor a partir de startsAt y durationMinutes.']
   location varchar(300) [not null, note: 'Dato operativo potencialmente sensible; no se copia al log de auditoria.']
   responsible_user_id bigint [not null, ref: > users.id, note: 'Trabajador ya asignado a la solicitud y actor autenticado del alta.']
-  status application_visit_status [not null, note: 'SCHEDULED ocupa la agenda; CANCELLED la libera inmediatamente.']
+  status application_visit_status [not null, note: 'SCHEDULED ocupa la agenda; CANCELLED, REALIZED y NOT_REALIZED son finales y la liberan.']
   scheduled_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
   cancellation_reason varchar(1000) [note: 'Obligatorio y recortado al cancelar. No se copia al log de auditoria.']
   cancelled_at timestamptz [note: 'Instante UTC de cancelacion.']
   cancelled_by_user_id bigint [ref: > users.id, note: 'Actor que cancelo la actuacion.']
+  result_observations varchar(2000) [note: 'Texto profesional opcional y sensible; solo se expone en detalle autorizado.']
+  result_conclusions varchar(2000) [note: 'Texto profesional opcional y sensible; solo se expone en detalle autorizado.']
+  result_recorded_at timestamptz [note: 'Instante UTC asignado por el servidor al registrar el resultado.']
+  result_recorded_by_user_id bigint [ref: > users.id, note: 'Responsable autenticado que registro el resultado.']
 
   indexes {
     application_id [name: 'ix_application_visit_application']
     (application_id, status) [name: 'ix_application_visit_application_status']
     (responsible_user_id, starts_at, ends_at, status) [name: 'ix_application_visit_responsible_time']
+    result_recorded_by_user_id [name: 'ix_application_visit_result_recorded_by']
     starts_at [name: 'ix_application_visit_starts_at']
   }
 
   checks {
     `type in ('VISIT', 'INTERVIEW')` [name: 'ck_application_visit_type']
-    `status in ('SCHEDULED', 'CANCELLED')` [name: 'ck_application_visit_status']
+    `status in ('SCHEDULED', 'CANCELLED', 'REALIZED', 'NOT_REALIZED')` [name: 'ck_application_visit_status']
     `starts_at < ends_at` [name: 'ck_application_visit_time_range']
-    `(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and cancelled_by_user_id is not null)` [name: 'ck_application_visit_cancellation']
+    `(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and cancelled_by_user_id is not null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_recorded_at is not null and result_recorded_by_user_id = responsible_user_id and result_recorded_at >= ends_at and (result_observations is null or length(trim(result_observations)) between 1 and 2000) and (result_conclusions is null or length(trim(result_conclusions)) between 1 and 2000))` [name: 'ck_application_visit_lifecycle_data']
   }
 
-  Note: 'Admite varias actuaciones por solicitud evaluada. Se pueden reprogramar o cancelar solo actuaciones futuras SCHEDULED. Cancelar la ultima devuelve la solicitud a IN_EVALUATION.'
+  Note: 'Admite varias actuaciones por solicitud evaluada. Las futuras SCHEDULED pueden reprogramarse o cancelarse; una finalizada puede cerrarse una sola vez como REALIZED o NOT_REALIZED. Cancelar o finalizar la ultima pendiente devuelve la solicitud a IN_EVALUATION.'
 }
 
 Table document {

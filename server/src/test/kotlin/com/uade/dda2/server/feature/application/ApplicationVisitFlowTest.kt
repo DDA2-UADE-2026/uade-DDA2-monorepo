@@ -42,6 +42,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.context.ActiveProfiles
@@ -67,6 +68,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -133,10 +135,11 @@ class ApplicationVisitFlowTest {
         val createPermission = permission("applications:visits:create")
         val viewPermission = permission("applications:visits:view")
         val managePermission = permission("applications:visits:manage")
+        val resultPermission = permission("applications:visits:results:create")
         val actorRole = roles.save(
             Role(
                 name = "TRABAJADOR_${UUID.randomUUID()}",
-                permissions = mutableSetOf(createPermission, viewPermission, managePermission),
+                permissions = mutableSetOf(createPermission, viewPermission, managePermission, resultPermission),
             ),
         )
         val unauthorizedRole = roles.save(Role(name = "SIN_VISITAS_${UUID.randomUUID()}"))
@@ -259,6 +262,34 @@ class ApplicationVisitFlowTest {
             .content(body ?: json.writeValueAsString(mapOf("reason" to reason)))
         if (token != null) request.header("Authorization", "Bearer $token")
         return mvc.perform(request).andReturn()
+    }
+
+    private fun recordResult(
+        visitId: UUID,
+        applicationId: UUID = fixture.applicationId,
+        token: String? = fixture.actorToken,
+        status: String = "REALIZED",
+        observations: String? = "  La familia recibio al profesional.  ",
+        conclusions: String? = "  Se requiere continuar con la evaluacion.  ",
+        body: String? = null,
+    ): MvcResult {
+        val request = post("/api/applications/$applicationId/visits/$visitId/result")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body ?: json.writeValueAsString(mapOf(
+                "status" to status,
+                "observations" to observations,
+                "conclusions" to conclusions,
+            )))
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun markEnded(visitId: UUID) {
+        tx {
+            val visit = visits.findById(visitId).orElseThrow()
+            visit.startsAt = OffsetDateTime.now(ZoneOffset.UTC).minusHours(2)
+            visit.endsAt = OffsetDateTime.now(ZoneOffset.UTC).minusHours(1)
+        }
     }
 
     @Test
@@ -436,6 +467,131 @@ class ApplicationVisitFlowTest {
         assertEquals("IN_EVALUATION", audit.get("applicationStatus").stringValue())
         assertFalse(log["new_values"].toString().contains("El ciudadano solicito"))
         assertFalse(log["new_values"].toString().contains("Domicilio reservado"))
+    }
+
+    @Test
+    fun `registra resultado realizado con profesional fecha textos sensibles y trazabilidad`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(created.id)
+
+        val result = recordResult(created.id)
+        expect(result, 201)
+        val completed = json.readValue(result.response.contentAsString, ApplicationVisitResponse::class.java)
+        assertEquals("REALIZED", completed.status.name)
+        assertEquals("La familia recibio al profesional.", completed.observations)
+        assertEquals("Se requiere continuar con la evaluacion.", completed.conclusions)
+        assertEquals(fixture.actorId, completed.resultRecordedById)
+        assertEquals("Trabajador Social", completed.resultRecordedByName)
+        assertNotNull(completed.resultRecordedAt)
+        assertEquals(ZoneOffset.UTC, completed.resultRecordedAt.offset)
+        assertEquals(ApplicationStatus.IN_EVALUATION, completed.applicationStatus)
+
+        val listing = mvc.perform(
+            get("/api/admin/application-visits")
+                .header("Authorization", "Bearer ${fixture.actorToken}")
+                .param("applicationId", fixture.applicationId.toString())
+                .param("status", "REALIZED"),
+        ).andReturn()
+        expect(listing, 200)
+        val item = json.readTree(listing.response.contentAsString).get("content").get(0)
+        assertEquals("REALIZED", item.get("status").stringValue())
+        assertEquals(fixture.actorId, item.get("resultRecordedById").longValue())
+        assertTrue(item.hasNonNull("resultRecordedAt"))
+        assertFalse(item.has("observations"))
+        assertFalse(item.has("conclusions"))
+
+        val detailResult = mvc.perform(
+            get("/api/admin/application-visits/${created.id}")
+                .header("Authorization", "Bearer ${fixture.actorToken}"),
+        ).andReturn()
+        expect(detailResult, 200)
+        val detail = json.readTree(detailResult.response.contentAsString)
+        assertEquals("La familia recibio al profesional.", detail.get("observations").stringValue())
+        assertEquals("Se requiere continuar con la evaluacion.", detail.get("conclusions").stringValue())
+        assertEquals(fixture.actorId, detail.get("resultRecordedById").longValue())
+
+        val log = jdbc.queryForMap(
+            "select old_values, new_values from logs " +
+                "where entity_type = 'application_visit' and entity_id = ? and action = 'UPDATE'",
+            created.id.toString(),
+        )
+        val audit = jsonValue(log["new_values"])
+        assertEquals("RECORD_RESULT", audit.get("operation").stringValue())
+        assertEquals("REALIZED", audit.get("status").stringValue())
+        assertTrue(audit.get("observationsRecorded").booleanValue())
+        assertTrue(audit.get("conclusionsRecorded").booleanValue())
+        assertEquals("IN_EVALUATION", audit.get("applicationStatus").stringValue())
+        assertFalse(log["old_values"].toString().contains("La familia recibio"))
+        assertFalse(log["new_values"].toString().contains("La familia recibio"))
+        assertFalse(log["new_values"].toString().contains("continuar con la evaluacion"))
+    }
+
+    @Test
+    fun `registra no realizada sin textos y conserva visita cuando queda otra pendiente`() {
+        val first = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(create(startsAt = OffsetDateTime.now(ZoneOffset.UTC).plusDays(4).withNano(0)), 201)
+        markEnded(first.id)
+
+        val result = recordResult(
+            first.id,
+            status = "NOT_REALIZED",
+            observations = null,
+            conclusions = null,
+        )
+        expect(result, 201)
+        val completed = json.readValue(result.response.contentAsString, ApplicationVisitResponse::class.java)
+        assertEquals("NOT_REALIZED", completed.status.name)
+        assertEquals(null, completed.observations)
+        assertEquals(null, completed.conclusions)
+        assertEquals(ApplicationStatus.IN_VISIT, completed.applicationStatus)
+        tx { assertEquals(ApplicationStatus.IN_VISIT, applications.findById(fixture.applicationId).orElseThrow().status) }
+    }
+
+    @Test
+    fun `rechaza cuerpos de resultado invalidos y propiedades administradas por el servidor`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(created.id)
+        val bodies = listOf(
+            "{}",
+            """{"status":null}""",
+            """{"status":"SCHEDULED"}""",
+            """{"status":"UNKNOWN"}""",
+            """{"status":"REALIZED","observations":"   "}""",
+            """{"status":"REALIZED","conclusions":"   "}""",
+            json.writeValueAsString(mapOf("status" to "REALIZED", "observations" to "x".repeat(2001))),
+            json.writeValueAsString(mapOf("status" to "REALIZED", "conclusions" to "x".repeat(2001))),
+            """{"status":"REALIZED","resultRecordedById":${fixture.actorId}}""",
+            "{\"status\":",
+        )
+        bodies.forEach {
+            expect(recordResult(created.id, body = it), 400, "APPLICATION_VISIT_RESULT_INVALID_DATA")
+        }
+        assertEquals("SCHEDULED", tx { visits.findById(created.id).orElseThrow().status.name })
+    }
+
+    @Test
+    fun `la base exige que el resultado lo registre el responsable y que sus textos sean validos`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(created.id)
+        assertFailsWith<DataIntegrityViolationException> {
+            jdbc.update(
+                "update application_visit set status = 'REALIZED', result_recorded_at = ?, " +
+                    "result_recorded_by_user_id = ? where id = ?",
+                OffsetDateTime.now(ZoneOffset.UTC),
+                fixture.applicantId,
+                created.id,
+            )
+        }
+        assertFailsWith<DataIntegrityViolationException> {
+            jdbc.update(
+                "update application_visit set status = 'REALIZED', result_recorded_at = ?, " +
+                    "result_recorded_by_user_id = ?, result_observations = '   ' where id = ?",
+                OffsetDateTime.now(ZoneOffset.UTC),
+                fixture.actorId,
+                created.id,
+            )
+        }
+        assertEquals("SCHEDULED", tx { visits.findById(created.id).orElseThrow().status.name })
     }
 
     @Test
@@ -883,6 +1039,135 @@ class ApplicationVisitFlowTest {
     }
 
     @Test
+    fun `resultado exige horario finalizado estado solicitud responsable y ruta consistente`() {
+        val future = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(recordResult(future.id), 409, "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE")
+
+        markEnded(future.id)
+        expect(recordResult(future.id, applicationId = UUID.randomUUID()), 404, "APPLICATION_VISIT_NOT_FOUND")
+        expect(recordResult(UUID.randomUUID()), 404, "APPLICATION_VISIT_NOT_FOUND")
+        expect(recordResult(UUID.randomUUID(), applicationId = UUID.randomUUID()), 404, "APPLICATION_NOT_FOUND")
+
+        val other = tx { users.saveAndFlush(User(name = "Otro", email = "other-${UUID.randomUUID()}@example.com")) }
+        tx { applications.findById(fixture.applicationId).orElseThrow().assignedWorker = other }
+        expect(recordResult(future.id), 409, "APPLICATION_VISIT_ASSIGNED_TO_ANOTHER_WORKER")
+        tx { applications.findById(fixture.applicationId).orElseThrow().assignedWorker = users.getReferenceById(fixture.actorId) }
+
+        expect(recordResult(future.id), 201)
+        expect(recordResult(future.id), 409, "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE")
+
+        val cancelledApplication = newApplication(
+            status = ApplicationStatus.IN_EVALUATION,
+            actorId = fixture.actorId,
+            withEvaluation = true,
+        )
+        val cancelled = json.readValue(
+            create(applicationId = cancelledApplication).response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+        expect(cancel(cancelled.id, applicationId = cancelledApplication), 200)
+        expect(
+            recordResult(cancelled.id, applicationId = cancelledApplication),
+            409,
+            "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+        )
+    }
+
+    @Test
+    fun `resultado exige autenticacion permiso vigente usuario activo rol y asignacion`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(created.id)
+        expect(recordResult(created.id, token = null), 401, "AUTH_UNAUTHENTICATED")
+        expect(recordResult(created.id, token = "invalid"), 401, "AUTH_INVALID_TOKEN")
+        expect(recordResult(created.id, token = fixture.unauthorizedToken), 403, "AUTH_FORBIDDEN")
+
+        tx {
+            roles.findById(fixture.actorRoleId).orElseThrow().permissions.removeIf {
+                it.name == "applications:visits:results:create"
+            }
+        }
+        expect(recordResult(created.id), 403, "AUTH_FORBIDDEN")
+        tx {
+            roles.findById(fixture.actorRoleId).orElseThrow().permissions.add(
+                permission("applications:visits:results:create"),
+            )
+        }
+
+        tx { users.findById(fixture.actorId).orElseThrow().active = false }
+        expect(recordResult(created.id), 401, "AUTH_UNAUTHENTICATED")
+        tx { users.findById(fixture.actorId).orElseThrow().active = true }
+
+        tx { users.findById(fixture.actorId).orElseThrow().roles.clear() }
+        expect(recordResult(created.id), 403, "AUTH_FORBIDDEN")
+    }
+
+    @Test
+    fun `dos resultados concurrentes finalizan la actuacion una sola vez`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(created.id)
+        val ready = CountDownLatch(2)
+        val release = CountDownLatch(1)
+        val pool = Executors.newFixedThreadPool(2)
+        try {
+            val futures = (1..2).map {
+                pool.submit<MvcResult> {
+                    ready.countDown()
+                    assertTrue(release.await(5, TimeUnit.SECONDS))
+                    recordResult(created.id)
+                }
+            }
+            assertTrue(ready.await(5, TimeUnit.SECONDS))
+            release.countDown()
+            val results = futures.map { it.get(15, TimeUnit.SECONDS) }
+            assertEquals(listOf(201, 409), results.map { it.response.status }.sorted())
+            val conflictCode = results.first { it.response.status == 409 }.let {
+                json.readTree(it.response.contentAsString).get("code").stringValue()
+            }
+            assertTrue(
+                conflictCode in setOf(
+                    "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+                    "APPLICATION_VISIT_CONCURRENT_MODIFICATION",
+                ),
+            )
+            assertEquals(
+                1,
+                jdbc.queryForObject(
+                    "select count(*) from logs where entity_type = 'application_visit' " +
+                        "and entity_id = ? and action = 'UPDATE'",
+                    Int::class.java,
+                    created.id.toString(),
+                ),
+            )
+        } finally {
+            pool.shutdownNow()
+        }
+    }
+
+    @Test
+    fun `un fallo de auditoria revierte resultado y transicion de solicitud`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(created.id)
+        jdbc.execute(
+            "alter table logs add constraint ck_visit_result_audit_failure " +
+                "check (entity_type <> 'application_visit' or action <> 'UPDATE' or user_id <> ${fixture.actorId})",
+        )
+        try {
+            expect(recordResult(created.id), 409, "DATA_INTEGRITY_VIOLATION")
+            tx {
+                val stored = visits.findById(created.id).orElseThrow()
+                assertEquals("SCHEDULED", stored.status.name)
+                assertEquals(null, stored.resultObservations)
+                assertEquals(null, stored.resultConclusions)
+                assertEquals(null, stored.resultRecordedAt)
+                assertEquals(null, stored.resultRecordedBy)
+                assertEquals(ApplicationStatus.IN_VISIT, applications.findById(fixture.applicationId).orElseThrow().status)
+            }
+        } finally {
+            jdbc.execute("alter table logs drop constraint ck_visit_result_audit_failure")
+        }
+    }
+
+    @Test
     fun `rechaza ventana invertida y detalle inexistente`() {
         val invalidRange = mvc.perform(
             get("/api/admin/application-visits")
@@ -924,6 +1209,7 @@ class ApplicationVisitFlowTest {
                     permission("applications:visits:create"),
                     permission("applications:visits:view"),
                     permission("applications:visits:manage"),
+                    permission("applications:visits:results:create"),
                 ),
             ),
         )

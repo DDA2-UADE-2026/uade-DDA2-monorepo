@@ -25,6 +25,11 @@ fun ApplicationVisit.toResponse(zone: ZoneId): ApplicationVisitResponse = Applic
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
     cancelledByName = cancelledBy?.name,
+    observations = resultObservations,
+    conclusions = resultConclusions,
+    resultRecordedAt = resultRecordedAt,
+    resultRecordedById = resultRecordedBy?.id,
+    resultRecordedByName = resultRecordedBy?.name,
 )
 
 fun ApplicationVisit.toListItemResponse(zone: ZoneId): ApplicationVisitListItemResponse = ApplicationVisitListItemResponse(
@@ -50,6 +55,9 @@ fun ApplicationVisit.toListItemResponse(zone: ZoneId): ApplicationVisitListItemR
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
     cancelledByName = cancelledBy?.name,
+    resultRecordedAt = resultRecordedAt,
+    resultRecordedById = resultRecordedBy?.id,
+    resultRecordedByName = resultRecordedBy?.name,
 )
 
 fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailResponse = ApplicationVisitDetailResponse(
@@ -80,6 +88,12 @@ fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailRespo
     cancelledById = cancelledBy?.id,
     cancelledByName = cancelledBy?.name,
     cancelledByEmail = cancelledBy?.email,
+    observations = resultObservations,
+    conclusions = resultConclusions,
+    resultRecordedAt = resultRecordedAt,
+    resultRecordedById = resultRecordedBy?.id,
+    resultRecordedByName = resultRecordedBy?.name,
+    resultRecordedByEmail = resultRecordedBy?.email,
 )
 
 fun ApplicationVisit.toAuditSnapshot(): Map<String, Any?> = mapOf(
@@ -95,6 +109,8 @@ fun ApplicationVisit.toAuditSnapshot(): Map<String, Any?> = mapOf(
     "scheduledAt" to scheduledAt.toString(),
     "cancelledAt" to cancelledAt?.toString(),
     "cancelledById" to cancelledBy?.id,
+    "resultRecordedAt" to resultRecordedAt?.toString(),
+    "resultRecordedById" to resultRecordedBy?.id,
     "applicationStatus" to application.status.name,
 )
 

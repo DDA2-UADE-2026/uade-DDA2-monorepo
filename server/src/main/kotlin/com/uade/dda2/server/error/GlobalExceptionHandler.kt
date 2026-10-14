@@ -97,8 +97,11 @@ class GlobalExceptionHandler {
             ?.let { return handleApiException(it, request) }
         val appointmentRequest = request.requestURI == "/api/citizen/appointments"
         val evaluationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/evaluation"))
+        val visitResultRequest = request.requestURI.matches(
+            Regex("/api/applications/[^/]+/visits/[^/]+/result"),
+        )
         val visitRequest = request.requestURI.matches(
-            Regex("/api/applications/[^/]+/visits(?:/[^/]+/(?:schedule|cancel))?"),
+            Regex("/api/applications/[^/]+/visits(?:/[^/]+/(?:schedule|cancel|result))?"),
         )
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -106,12 +109,14 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     message = when {
                         evaluationRequest -> "Los datos de la evaluacion son invalidos."
+                        visitResultRequest -> "Los datos del resultado de la visita o entrevista son invalidos."
                         visitRequest -> "Los datos de la visita o entrevista son invalidos."
                         else -> "El cuerpo de la solicitud es inválido."
                     },
                     code = when {
                         appointmentRequest -> "APPOINTMENT_INVALID_REQUEST"
                         evaluationRequest -> "APPLICATION_EVALUATION_INVALID_DATA"
+                        visitResultRequest -> "APPLICATION_VISIT_RESULT_INVALID_DATA"
                         visitRequest -> "APPLICATION_VISIT_INVALID_DATA"
                         else -> "INVALID_REQUEST_BODY"
                     },

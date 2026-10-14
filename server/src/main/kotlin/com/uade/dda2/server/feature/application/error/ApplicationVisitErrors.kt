@@ -8,6 +8,9 @@ object ApplicationVisitErrors {
     fun invalidData(message: String): BadRequestException =
         BadRequestException("APPLICATION_VISIT_INVALID_DATA", message)
 
+    fun invalidResultData(message: String): BadRequestException =
+        BadRequestException("APPLICATION_VISIT_RESULT_INVALID_DATA", message)
+
     fun invalidFilter(message: String): BadRequestException =
         BadRequestException("APPLICATION_VISIT_INVALID_FILTER", message)
 
@@ -36,6 +39,12 @@ object ApplicationVisitErrors {
         ConflictException(
             "APPLICATION_VISIT_NOT_MODIFIABLE",
             "Solo se puede modificar una visita o entrevista programada cuyo inicio sea futuro.",
+        )
+
+    fun resultNotRegistrable(): ConflictException =
+        ConflictException(
+            "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+            "Solo se puede registrar el resultado de una visita o entrevista programada que ya finalizo.",
         )
 
     fun concurrentModification(): ConflictException =

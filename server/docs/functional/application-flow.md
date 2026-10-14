@@ -300,6 +300,7 @@ Los documentos administrativos operan con un `applicationId` conocido. La bandej
 | Listar y consultar evaluaciones sociales | `applications:evaluations:view` |
 | Programar una visita o entrevista social | `applications:visits:create` |
 | Reprogramar o cancelar una visita o entrevista | `applications:visits:manage` |
+| Registrar el resultado de una visita o entrevista finalizada | `applications:visits:results:create` |
 | Listar y consultar visitas o entrevistas | `applications:visits:view` |
 | Listar y descargar documentos para revisión | `applications:management:documents:view` |
 | Revisar documentos | `applications:management:documents:review` |
@@ -326,9 +327,10 @@ Los permisos corresponden al rol activo del JWT. Una persona que tenga roles ciu
 12. El personal con permiso de consulta encuentra la evaluación en la bandeja filtrada y abre su detalle completo.
 13. El trabajador asignado programa una visita o entrevista futura. La primera cambia la solicitud a `IN_VISIT`.
 14. Mientras siga pendiente, el mismo trabajador puede reprogramarla o cancelarla con motivo. Una cancelación libera la agenda.
-15. El personal autorizado consulta la agenda de actuaciones, la filtra por contexto, estado o ventana temporal y abre el detalle.
+15. Cuando alcanza su horario de fin, el responsable registra si fue realizada o no realizada, con observaciones y conclusiones opcionales.
+16. El personal autorizado consulta la agenda de actuaciones, la filtra por contexto, estado o ventana temporal y abre el detalle.
 
-Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION` y la primera actuación a `IN_VISIT`; todavía no existen transiciones de resolución, corrección o reevaluación.
+Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION` y la primera actuación a `IN_VISIT`. Cancelar o finalizar la última actuación pendiente devuelve el caso a `IN_EVALUATION`; todavía no existen transiciones de resolución, corrección o reevaluación.
 
 ## Límites actuales
 
@@ -338,4 +340,4 @@ Durante la carga y revisión documental el estado general continúa en `SUBMITTE
 - No se implementaron imágenes públicas de programas en este flujo.
 - No se modifican automáticamente los estados generales de la solicitud según sus documentos.
 - No se implementó todavía el mapeo de estados internos a estados públicos simplificados.
-- Las visitas y entrevistas no pueden reactivarse, cambiar de tipo o responsable ni registrar resultado, y no tienen consulta ciudadana ni notificación.
+- Las visitas y entrevistas no pueden reactivarse, cambiar de tipo o responsable ni corregir un resultado, y no tienen consulta ciudadana ni notificación.

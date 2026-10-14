@@ -164,6 +164,7 @@ class UserManagementService(
             applicationDocumentRepository.existsByReviewedById(id) ||
             applicationEvaluationRepository.existsByProfessionalId(id) ||
             applicationVisitRepository.existsByResponsibleId(id) ||
+            applicationVisitRepository.existsByResultRecordedById(id) ||
             documentRepository.existsByUploadedById(id)
         ) {
             throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes o sus documentos.")
