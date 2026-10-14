@@ -284,7 +284,7 @@ Reemplazar conserva el vínculo, borra el archivo anterior y reinicia la revisi�
 
 El archivo queda atribuido al **administrativo que lo sube**, no al titular, del mismo modo que `registeredByUserId` distingue a quien registró una solicitud asistida de quien es su titular. La constancia de auditoría registra al administrativo como autor de la carga.
 
-Los endpoints administrativos operan con un `applicationId` conocido. Actualmente no existe una bandeja administrativa general para descubrir o listar todas las solicitudes; la presentación asistida devuelve el identificador de la solicitud que crea.
+Los documentos administrativos operan con un `applicationId` conocido. La bandeja administrativa de solicitudes permite descubrirlo con `GET /api/admin/applications`; la bandeja de evaluaciones permite además consultar evaluaciones por solicitud, titular, profesional, programa, categorías y fecha.
 
 ## 7. Permisos por rol activo
 
@@ -296,6 +296,8 @@ Los endpoints administrativos operan con un `applicationId` conocido. Actualment
 | Cargar, reemplazar y eliminar documentos propios | `applications:own:documents:manage` |
 | Registrar una solicitud asistida | `applications:management:create` |
 | Consultar solicitudes de cualquier titular | `applications:management:view` |
+| Registrar una evaluación social | `applications:evaluations:create` |
+| Listar y consultar evaluaciones sociales | `applications:evaluations:view` |
 | Listar y descargar documentos para revisión | `applications:management:documents:view` |
 | Revisar documentos | `applications:management:documents:review` |
 | Cargar o reemplazar documentos en nombre del titular | `applications:management:documents:manage` |
@@ -317,8 +319,10 @@ Los permisos corresponden al rol activo del JWT. Una persona que tenga roles ciu
 8. Ana reemplaza `dni.pdf`. La entrega vuelve a `PENDING` y se limpia la observación anterior.
 9. El administrativo revisa el nuevo archivo y lo marca `VALID`.
 10. La solicitud ya no tiene documentos obligatorios pendientes.
+11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación. La solicitud queda asignada y pasa a `IN_EVALUATION`.
+12. El personal con permiso de consulta encuentra la evaluación en la bandeja filtrada y abre su detalle completo.
 
-Durante todo el recorrido, el estado general de la solicitud continúa en `SUBMITTED`, porque esta entrega no implementa las transiciones de evaluación o resolución.
+Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION`; todavía no existen transiciones de resolución, corrección o reevaluación.
 
 ## Límites actuales
 

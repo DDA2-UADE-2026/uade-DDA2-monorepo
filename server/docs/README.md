@@ -10,7 +10,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | --- | --- |
 | [Program — Programas y ediciones](functional/program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
 | [EnrollmentPeriod — Convocatorias](functional/enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
-| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cuándo puede volver a solicitar. |
+| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, recibe observaciones y cómo se registran y consultan evaluaciones sociales. |
 | [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
 | [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
@@ -71,8 +71,9 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 8. Presenta su solicitud. El sistema comprueba las condiciones y las solicitudes previas de esa persona.
 9. Si la presentación es válida, recibe un número único, una fecha y el estado **Presentada**.
 10. La persona consulta sus solicitudes, entrega documentos faltantes y reemplaza los observados. El personal documental autorizado puede revisarlos.
+11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación; la solicitud queda asignada y pasa a evaluación. El personal con permiso de consulta administra luego la bandeja filtrada y el detalle.
 
-La implementación actual incluye presentación, consulta y revisión de documentos. La evaluación general, aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
+La implementación actual incluye presentación, consulta, revisión de documentos, registro único y consulta administrativa de la evaluación social. La aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
 
 ## Tres decisiones diferentes
 

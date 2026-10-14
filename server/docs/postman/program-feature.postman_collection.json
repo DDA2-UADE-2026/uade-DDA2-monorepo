@@ -4922,6 +4922,253 @@
     }
   ,
     {
+      "name": "Evaluaciones sociales",
+      "description": "Registro y consulta administrativa de evaluaciones sociales. evaluationAccessToken debe operar con un rol que tenga applications:evaluations:create y applications:evaluations:view; applicationId identifica una solicitud en etapa evaluable.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{evaluationAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Registrar evaluacion social",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/evaluation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "evaluation"]
+            },
+            "description": "Asigna como responsable al usuario del JWT, registra la fecha UTC y cambia la solicitud a IN_EVALUATION.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vulnerability\": \"HIGH\",\n  \"priority\": \"URGENT\",\n  \"recommendation\": \"Se recomienda intervencion prioritaria.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"evaluationAccessToken\",\"applicationId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta peticion.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) {",
+                  " const result = pm.response.json();",
+                  " pm.collectionVariables.set('applicationEvaluationId', result.id);",
+                  " pm.test('Evaluacion asociada y fechada', () => {",
+                  "  pm.expect(result.applicationId).to.equal(pm.collectionVariables.get('applicationId'));",
+                  "  pm.expect(result.vulnerability).to.equal('HIGH');",
+                  "  pm.expect(result.priority).to.equal('URGENT');",
+                  "  pm.expect(result.professionalId).to.be.a('number');",
+                  "  pm.expect(result.evaluatedAt).to.be.a('string').and.not.empty;",
+                  " });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Respuesta esperada",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/evaluation",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "applications", "{{applicationId}}", "evaluation"]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"vulnerability\": \"HIGH\",\n  \"priority\": \"URGENT\",\n  \"recommendation\": \"Se recomienda intervencion prioritaria.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": \"773a2dd6-07ee-4ba4-b378-95767ab7b28c\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"vulnerability\": \"HIGH\",\n  \"priority\": \"URGENT\",\n  \"recommendation\": \"Se recomienda intervencion prioritaria.\",\n  \"professionalId\": 7,\n  \"professionalName\": \"Trabajador Social\",\n  \"evaluatedAt\": \"2026-10-10T18:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Listar evaluaciones filtradas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/application-evaluations?page=0&size=20&applicationId={{applicationId}}&vulnerability=HIGH&priority=URGENT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "application-evaluations"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"},
+                {"key": "applicationId", "value": "{{applicationId}}"},
+                {"key": "vulnerability", "value": "HIGH"},
+                {"key": "priority", "value": "URGENT"}
+              ]
+            },
+            "description": "Bandeja paginada. Tambien admite applicationNumber, applicantUserId, professionalId, programId, programEditionId, evaluatedFrom y evaluatedTo."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"evaluationAccessToken\",\"applicationId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta peticion.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  " const page = pm.response.json();",
+                  " pm.test('Pagina de evaluaciones', () => {",
+                  "  pm.expect(page.content).to.be.an('array').and.not.empty;",
+                  "  pm.expect(page.content[0]).not.to.have.property('recommendation');",
+                  " });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener evaluacion completa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/application-evaluations/{{applicationEvaluationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "application-evaluations", "{{applicationEvaluationId}}"]
+            },
+            "description": "Devuelve la recomendacion y el contexto completo de solicitud, titular, programa, edicion y profesional."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"evaluationAccessToken\",\"applicationEvaluationId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta peticion.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  " const result = pm.response.json();",
+                  " pm.test('Detalle completo', () => {",
+                  "  pm.expect(result.id).to.equal(pm.collectionVariables.get('applicationEvaluationId'));",
+                  "  pm.expect(result.recommendation).to.be.a('string').and.not.empty;",
+                  "  pm.expect(result.applicantUserId).to.be.a('number');",
+                  "  pm.expect(result.professionalId).to.be.a('number');",
+                  " });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar evaluacion duplicada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/evaluation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "evaluation"]
+            },
+            "description": "Ejecutar despues del alta sobre la misma solicitud. La evaluacion existente no se reemplaza.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vulnerability\": \"LOW\",\n  \"priority\": \"LOW\",\n  \"recommendation\": \"Intento duplicado.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', () => pm.response.to.have.status(409));",
+                  "if (pm.response.code === 409) pm.expect(pm.response.json().code).to.equal('APPLICATION_EVALUATION_ALREADY_EXISTS');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Turnos ciudadanos",
       "description": "Consulta de servicios, centros y horarios disponibles y confirmacion de un turno propio. Requiere rol activo CIUDADANO con appointments:own:view y appointments:own:create en citizenAccessToken.",
       "auth": {
@@ -5242,6 +5489,16 @@
     },
     {
       "key": "applicationIdempotencyKey",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "evaluationAccessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "applicationEvaluationId",
       "value": "",
       "type": "string"
     },

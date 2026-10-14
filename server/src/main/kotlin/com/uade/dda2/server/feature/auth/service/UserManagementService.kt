@@ -11,6 +11,7 @@ import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityEnrollmentRepository
@@ -45,6 +46,7 @@ class UserManagementService(
     private val activityEnrollmentRepository: ActivityEnrollmentRepository,
     private val applicationRepository: ApplicationRepository,
     private val applicationDocumentRepository: ApplicationDocumentRepository,
+    private val applicationEvaluationRepository: ApplicationEvaluationRepository,
     private val documentRepository: DocumentRepository,
     private val professionalAssignmentRepository: ProfessionalAssignmentRepository,
     private val appointmentRepository: AppointmentRepository,
@@ -158,6 +160,7 @@ class UserManagementService(
         if (
             applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id) ||
             applicationDocumentRepository.existsByReviewedById(id) ||
+            applicationEvaluationRepository.existsByProfessionalId(id) ||
             documentRepository.existsByUploadedById(id)
         ) {
             throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes o sus documentos.")

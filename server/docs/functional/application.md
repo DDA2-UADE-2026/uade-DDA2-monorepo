@@ -10,7 +10,7 @@ La solicitud pertenece a la persona solicitante, aunque un administrativo la reg
 
 **Presentar no equivale a recibir el beneficio.** La solicitud tampoco representa una incorporación efectiva ni una reserva de cupo.
 
-Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas, y también cargarlas en nombre del titular para completar un trámite iniciado en la ventanilla. La evaluación general, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
+Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas, cargarlas en nombre del titular, registrar una evaluación social y administrar su listado y detalle. La decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
 
 ## Quién puede presentar y consultar
 
@@ -184,17 +184,37 @@ Este listado no muestra solicitudes de otras personas. No es una bandeja municip
 
 El personal municipal con autorización específica de consulta administrativa accede a un listado aparte, que incluye las solicitudes de todas las personas, sin importar quién las registró. Se ordena igual que el listado ciudadano, por número descendente, y se recorre por páginas. Cada solicitud se identifica con el nombre y el correo de su titular.
 
-Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo de una resolución o el trabajador asignado. Muchos de esos campos permanecen vacíos mientras no existan las etapas de evaluación y asignación.
+Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo de una resolución o el trabajador asignado. El registro de la evaluación completa al trabajador; el origen y la resolución pueden permanecer vacíos mientras no existan sus flujos correspondientes.
 
-Esta consulta es solo de lectura: no cambia estados, no asigna responsables y no devuelve archivos. Ver o descargar documentos sigue siendo un flujo aparte, con su propia autorización. Registrar una solicitud asistida tampoco alcanza para consultarlas: son autorizaciones distintas.
+Esta consulta es solo de lectura: no cambia estados, no asigna responsables y no devuelve archivos. Ver o descargar documentos y registrar una evaluación siguen siendo flujos aparte, cada uno con su propia autorización. Registrar una solicitud asistida tampoco alcanza para consultarlas: son autorizaciones distintas.
+
+## Registrar y administrar evaluaciones sociales
+
+Un usuario activo cuyo rol activo tenga el permiso `applications:evaluations:create` puede registrar la evaluación de una solicitud. El permiso no está ligado a un nombre de rol: la cuenta `ADMIN` lo recibe en los datos iniciales y puede asignarse a otros roles desde la gestión existente.
+
+La operación recibe únicamente tres decisiones profesionales:
+
+- Vulnerabilidad: `LOW`, `MEDIUM`, `HIGH` o `CRITICAL`.
+- Prioridad: `LOW`, `MEDIUM`, `HIGH` o `URGENT`.
+- Recomendación: texto obligatorio de 1 a 1000 caracteres.
+
+El profesional y la fecha no se eligen en el cuerpo. El sistema toma al usuario autenticado, asigna un instante UTC, lo establece como trabajador de la solicitud y cambia el estado general a **En evaluación** (`IN_EVALUATION`). Se admite el alta desde `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION` o `IN_EVALUATION`.
+
+Cada solicitud admite una sola evaluación. Un nuevo intento se rechaza y no reemplaza la información existente. También se rechaza si la solicitud ya pertenece a otro trabajador o si está en borrador, visita o un estado de decisión/finalización. Esta historia no permite corregir, reevaluar, aprobar, rechazar ni enviar a lista de espera.
+
+Contrato de alta: `POST /api/applications/{applicationId}/evaluation`. La respuesta contiene la evaluación registrada.
+
+Un rol que tenga `applications:evaluations:view` puede recorrer la bandeja administrativa de evaluaciones, filtrarla y abrir un detalle completo. El listado permite ubicar evaluaciones por solicitud o número, titular, profesional, programa, edición, vulnerabilidad, prioridad y rango de fecha. Se ordena por la evaluación más reciente y se recorre por páginas.
+
+La bandeja no repite el texto de recomendación, porque puede contener información social sensible. Al abrir el detalle autorizado se muestran la recomendación, la solicitud, el titular, el programa, la edición y el profesional responsable. Consultar no cambia la evaluación ni el estado de la solicitud; las correcciones y reevaluaciones continúan fuera del alcance actual.
 
 ## Estados y transiciones
 
-### Qué transición existe hoy
+### Qué transiciones existen hoy
 
-El único cambio disponible sobre el estado general es **completar una nueva presentación y dejarla en Presentada**. No hay guardado previo en borrador, ni acciones para editar, cancelar, eliminar, evaluar o resolver una solicitud. La revisión de sus documentos utiliza estados propios y no mueve el estado general de la solicitud.
+Una nueva presentación queda en **Presentada**. El registro único de su evaluación social la lleva a **En evaluación** y asigna al profesional autenticado. No hay guardado previo en borrador ni acciones para editar, cancelar, eliminar o resolver una solicitud. La revisión de sus documentos utiliza estados propios y no mueve el estado general.
 
-Mientras no se implementen las etapas posteriores, una solicitud presentada mediante este flujo permanece presentada. Por eso, hoy una solicitud existente normalmente impedirá que esa persona solicite otra convocatoria de la misma edición.
+Tanto una solicitud presentada como una que está en evaluación impiden que esa persona solicite otra convocatoria de la misma edición.
 
 ### Estados previstos para las etapas posteriores
 
@@ -206,14 +226,14 @@ Los nombres siguientes ya están contemplados, pero **no constituyen una secuenc
 | Presentada (SUBMITTED) | La presentación fue recibida. Es el estado que genera el flujo actual. |
 | En validación (IN_VALIDATION) | Etapa prevista de comprobaciones iniciales. |
 | Pendiente de documentación (PENDING_DOCUMENTATION) | Etapa prevista para información o documentación pendiente. |
-| En evaluación (IN_EVALUATION) | Etapa prevista para analizar la solicitud. |
+| En evaluación (IN_EVALUATION) | La solicitud tiene registrada su evaluación social o fue colocada en esta etapa antes del alta. |
 | En visita (IN_VISIT) | Etapa prevista para actuaciones de visita. |
 | Aprobada (APPROVED) | Estado previsto para una decisión favorable. Todavía no se implementó su relación operativa con la incorporación efectiva. |
 | Rechazada (REJECTED) | Estado previsto para una decisión desfavorable. Permite solicitar otra convocatoria, pero nunca repetir la misma. |
 | En lista de espera (WAITLISTED) | Estado previsto para solicitudes que siguen pendientes de una oportunidad de incorporación. Bloquea una nueva en la misma edición. |
 | Cerrada (CLOSED) | Estado de finalización previsto. Permite solicitar otra convocatoria, sujeto a las demás reglas. |
 
-No se describen plazos de evaluación, motivos obligatorios de rechazo, criterios de prioridad, responsables ni pasos de reconsideración porque esas reglas aún no están definidas e implementadas en este flujo.
+No se describen plazos, motivos obligatorios de rechazo, cálculo automático de prioridad ni pasos de reconsideración porque esas reglas aún no están definidas e implementadas en este flujo.
 
 ## Cupo y decisión posterior
 
@@ -241,4 +261,6 @@ Cada presentación confirmada deja constancia del titular, de quién la registr�
 
 Las cargas, reemplazos, eliminaciones y revisiones documentales también dejan una constancia de auditoría con sus referencias, estado, nombre, tipo y tamaño. El contenido binario del archivo nunca se copia al registro de auditoría.
 
-Las pausas y cierres de recepción no borran esas solicitudes. Los cambios que afecten su evaluación o resultado deberán realizarse mediante los flujos posteriores que correspondan.
+Cada evaluación deja constancia de la solicitud, las categorías, el profesional, la fecha y la transición de estado. La recomendación se conserva en la evaluación, pero no se copia al log porque puede contener información social sensible.
+
+Las pausas y cierres de recepción no borran esas solicitudes. Los cambios posteriores que afecten la evaluación o el resultado deberán realizarse mediante los flujos que correspondan.

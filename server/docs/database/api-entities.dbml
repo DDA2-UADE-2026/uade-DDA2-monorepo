@@ -16,6 +16,7 @@ Enum log_entity_type {
   users
   enrollment_period
   application
+  application_evaluation
   application_document
   municipal_center
   municipal_service
@@ -53,6 +54,20 @@ Enum application_document_status {
   PENDING
   VALID
   OBSERVED
+}
+
+Enum vulnerability_level {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+Enum evaluation_priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
 Enum enrollment_period_status {
@@ -533,6 +548,28 @@ Table application {
   }
 
   Note: 'Presentación y auditoría en la misma transacción. El actor debe estar activo y autorizado por su rol activo. La presentación asistida permite elegir otro titular existente sin restricción de jurisdicción. Se exige período OPEN vigente y edición ACTIVE. No exige cupo ni aumenta current_enrollment. Una nueva convocatoria de la misma edición solo admite anteriores REJECTED/CLOSED; ambos flujos se serializan por titular para evitar carreras y comparten idempotencia por titular. Las consultas siempre filtran por el titular autenticado. No se elimina en cascada al eliminar personas, ediciones o convocatorias.'
+}
+
+Table application_evaluation {
+  id uuid [pk]
+  application_id uuid [not null, unique, ref: > application.id, note: 'Una unica evaluacion vigente por solicitud.']
+  vulnerability vulnerability_level [not null, note: 'Persistido como varchar(20).']
+  priority evaluation_priority [not null, note: 'Persistido como varchar(20).']
+  recommendation varchar(1000) [not null, note: 'Texto profesional sensible; no se copia al log de auditoria.']
+  professional_user_id bigint [not null, ref: > users.id, note: 'Actor autenticado que registro la evaluacion.']
+  evaluated_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+
+  indexes {
+    professional_user_id [name: 'ix_application_evaluation_professional']
+    evaluated_at [name: 'ix_application_evaluation_evaluated_at']
+  }
+
+  checks {
+    `vulnerability in ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')` [name: 'ck_application_evaluation_vulnerability']
+    `priority in ('LOW', 'MEDIUM', 'HIGH', 'URGENT')` [name: 'ck_application_evaluation_priority']
+  }
+
+  Note: 'El alta bloquea la solicitud, impide duplicados, asigna al profesional autenticado y cambia la solicitud a IN_EVALUATION. La administracion permite listado filtrado y detalle, pero no correcciones ni reevaluaciones.'
 }
 
 Table document {

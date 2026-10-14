@@ -1,6 +1,6 @@
 # Solicitudes de beneficios
 
-El backend implementa presentación propia y asistida, listado y detalle propios, listado y detalle administrativos, catálogo documental por edición y documentos protegidos de solicitudes, mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan imágenes públicas de programas, evaluación general, visitas, transiciones del estado de la solicitud, asignaciones ni integración con Ciudadanos.
+El backend implementa presentación propia y asistida, listado y detalle propios, listado y detalle administrativos, catálogo documental, documentos protegidos y el registro único con consulta administrativa de la evaluación social de una solicitud, mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan visitas, decisiones de aprobación o rechazo, correcciones, reevaluaciones ni integración con Ciudadanos.
 
 ## Contrato HTTP
 
@@ -12,6 +12,9 @@ El backend implementa presentación propia y asistida, listado y detalle propios
 | `GET /api/applications/{id}` | `applications:own:view` | Detalle propio; una solicitud ajena devuelve `404`, igual que una inexistente |
 | `GET /api/admin/applications?page=0&size=20` | `applications:management:view` | Página de solicitudes de todos los titulares, por número descendente |
 | `GET /api/admin/applications/{id}` | `applications:management:view` | Detalle administrativo con la entidad completa |
+| `POST /api/applications/{applicationId}/evaluation` | `applications:evaluations:create` | Registra la evaluación, asigna al actor y cambia la solicitud a `IN_EVALUATION`; `201 Created` |
+| `GET /api/admin/application-evaluations` | `applications:evaluations:view` | Página filtrada de evaluaciones, sin la recomendación sensible |
+| `GET /api/admin/application-evaluations/{evaluationId}` | `applications:evaluations:view` | Detalle completo de la evaluación y sus relaciones |
 | `GET /api/applications/{applicationId}/documents` | `applications:own:documents:view` | Metadatos de entregas propias, sin bytes |
 | `PUT /api/applications/{applicationId}/documents/{requirementId}` | `applications:own:documents:manage` | Primera carga `201` o reemplazo `200`, mediante `multipart/form-data` |
 | `DELETE /api/applications/{applicationId}/documents/{applicationDocumentId}` | `applications:own:documents:manage` | Elimina la entrega y su archivo, `204` |
@@ -21,7 +24,7 @@ El backend implementa presentación propia y asistida, listado y detalle propios
 | `PATCH /api/admin/applications/{applicationId}/documents/{applicationDocumentId}/review` | `applications:management:documents:review` | Revisa una entrega `PENDING` como `VALID` u `OBSERVED` |
 | CRUD `/api/admin/program-editions/{editionId}/document-requirements` | `programs:management:view\|create\|edit` | Administra el catálogo mientras la edición no tenga solicitudes |
 
-Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El actor autenticado debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. Como en el resto del modelo JWT, un cambio de permisos no revoca automáticamente tokens anteriores; se renuevan iniciando sesión o cambiando de rol.
+Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El actor autenticado debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. El alta y las consultas de evaluaciones comprueban además que su permiso siga asignado al rol en la base, por lo que una revocación se aplica aunque el JWT anterior todavía lo declare.
 
 La consulta propia no recibe un identificador de usuario: siempre filtra por el solicitante autenticado. La consulta administrativa no filtra por titular ni por el administrativo que registró la solicitud. En ambas, `page` empieza en cero y `size` admite valores entre 1 y 100.
 
@@ -43,6 +46,24 @@ El POST asistido acepta únicamente `userId` y `enrollmentPeriodId`:
 ```
 
 Se comprueba la existencia del titular en `users`, sin filtros de jurisdicción, roles, credenciales o vinculación externa. No se necesita el JWT del titular. La autorización para esta operación corresponde al administrativo. Enviar `registeredByUserId`, `registeredBy`, `registradoPor`, `citizenId` o cualquier otro campo adicional devuelve `400`. Para presentar para sí mismo, el actor debe utilizar el POST propio con su permiso correspondiente; la ruta asistida lo rechaza con `403`.
+
+El POST de evaluación acepta únicamente:
+
+```json
+{
+  "vulnerability": "HIGH",
+  "priority": "URGENT",
+  "recommendation": "Se recomienda intervención prioritaria."
+}
+```
+
+`vulnerability` admite `LOW`, `MEDIUM`, `HIGH` o `CRITICAL`; `priority` admite `LOW`, `MEDIUM`, `HIGH` o `URGENT`. La recomendación se recorta y debe tener de 1 a 1000 caracteres. Profesional, fecha, solicitud y estado se derivan del contexto y cualquier campo adicional devuelve `400 APPLICATION_EVALUATION_INVALID_DATA`.
+
+La respuesta `201` incluye `id`, `applicationId`, las tres decisiones, `professionalId`, `professionalName` y `evaluatedAt` UTC.
+
+El listado administrativo admite `page`, `size`, `applicationId`, `applicationNumber`, `applicantUserId`, `professionalId`, `programId`, `programEditionId`, `vulnerability`, `priority`, `evaluatedFrom` y `evaluatedTo`. El rango es inclusivo, utiliza ISO-8601 con offset y exige que el inicio no sea posterior al fin. El orden es `evaluatedAt` descendente, con `id` descendente como desempate. Cada elemento contiene contexto de solicitud, titular, programa, edición y profesional, pero omite `recommendation`.
+
+El detalle por `evaluationId` devuelve también la recomendación, correos del titular y profesional, convocatoria y todos los identificadores relacionados. No existe un endpoint de edición o eliminación: la evaluación continúa siendo inmutable.
 
 Respuesta de presentación propia:
 
@@ -80,7 +101,7 @@ El listado utiliza `content`, `page`, `size`, `totalElements` y `totalPages`. El
 
 La respuesta asistida tiene el mismo cuerpo, con `userId` del titular y `registeredByUserId` del administrativo que registró originalmente la solicitud. Devuelve `Idempotency-Replayed` y no informa `Location`. Registrar para otra persona no concede acceso a su detalle propio: la consulta administrativa depende de su propio permiso. El titular sí recibe la solicitud asistida en su listado y detalle propios.
 
-El campo `status` todavía devuelve el estado interno: la correspondencia completa con los estados públicos simplificados está pendiente de definición, en particular para los cierres sin resultado explícito. No se modifican los estados almacenados ni sus reglas.
+El campo `status` devuelve el estado interno. La presentación crea `SUBMITTED`; registrar una evaluación lo cambia a `IN_EVALUATION`. La correspondencia completa con otros estados públicos simplificados sigue pendiente de definición.
 
 ## Consulta administrativa de solicitudes
 
@@ -88,7 +109,7 @@ El campo `status` todavía devuelve el estado interno: la correspondencia comple
 
 `GET /api/admin/applications/{id}` devuelve la entidad completa. Además de los campos del detalle propio incorpora `userName`, `userEmail`, `registeredByUserName`, `originTicketId`, `resolutionReason`, `assignedWorkerUserId`, `assignedWorkerName`, `resolvedAt`, `idempotencyKey` y `requestHash`. La clave y el hash se exponen únicamente en esta vista administrativa, nunca en el detalle propio. Una solicitud inexistente devuelve `404 APPLICATION_NOT_FOUND`; no existe un filtro de titular que convierta una solicitud ajena en inexistente, porque la vista es global por definición.
 
-Ninguna de las dos rutas devuelve archivos ni metadatos de entregas. Los documentos conservan sus rutas y sus permisos administrativos separados. Ambas son de solo lectura: no cambian estado, no asignan trabajadores y no registran auditoría.
+Ninguna de las dos rutas devuelve archivos, metadatos de entregas ni la evaluación. Los documentos y la evaluación conservan rutas y permisos separados. Ambas consultas son de solo lectura: no cambian estado, no asignan trabajadores y no registran auditoría.
 
 ## Catálogo y entregas documentales
 
@@ -123,10 +144,10 @@ Cada mutación bloquea la fila de la solicitud. Documento, vínculo, `updatedAt`
 - La edición se deriva de la convocatoria y debe estar `ACTIVE`.
 - Se admite una sola solicitud por usuario y convocatoria, en cualquier estado, incluso `REJECTED` o `CLOSED`.
 - En otra convocatoria de la misma edición, todas las solicitudes anteriores deben estar `REJECTED` o `CLOSED`. `DRAFT`, `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION`, `IN_EVALUATION`, `IN_VISIT`, `APPROVED` y `WAITLISTED` bloquean una nueva.
-- Las solicitudes de otras ediciones no bloquean por esta regla. La evaluación de incompatibilidades y asignaciones pertenece a historias futuras.
+- Las solicitudes de otras ediciones no bloquean por esta regla. La evaluación de incompatibilidades pertenece a historias futuras.
 - El cupo agotado no impide presentar ni se incrementa `currentEnrollment`.
 - Se guarda `SUBMITTED` con las fechas asignadas por el servidor. El horario utiliza `ENROLLMENT_PERIOD_TIME_ZONE` (por defecto `America/Argentina/Buenos_Aires`), compartido con la configuración del cierre automático de convocatorias.
-- `originTicketId`, resolución y trabajador asignado quedan nulos. Las relaciones con personas utilizan siempre `User`.
+- `originTicketId`, resolución y trabajador asignado quedan nulos al presentar. El alta de la evaluación completa el trabajador. Las relaciones con personas utilizan siempre `User`.
 - `registeredBy` es obligatorio e inmutable: en la presentación propia coincide con el titular; en la asistida referencia al administrativo autenticado. No reemplaza a `assignedWorker`.
 - Ambas presentaciones comparten las reglas anteriores, sin cambiar duplicados, cupo ni incompatibilidades. Los documentos se gestionan después sobre la solicitud ya creada.
 
@@ -152,6 +173,8 @@ Cada presentación bloquea la fila del solicitante hasta que termina la transacc
 
 Presentación y log `CREATE` de tipo `application` se confirman en una única transacción. Si falla la auditoría o la persistencia, no se devuelve confirmación y se revierte la solicitud. El actor del log es quien registra; el snapshot incluye `userId` y `registeredByUserId` por separado. Las claves y hashes no se incluyen en el log.
 
+El alta de evaluación bloquea la solicitud. Solo admite `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION` o `IN_EVALUATION`, exige que no haya una evaluación previa y no reemplaza un trabajador diferente. Evaluación, asignación, cambio de estado y log `application_evaluation` se confirman juntos. La auditoría guarda categorías, profesional, fecha y transición, pero nunca la recomendación.
+
 ## Numeración y esquema
 
 `id` sigue siendo UUID. `applicationNumber` se genera con la secuencia `application_number_seq`, global, desde 1, con incremento 1 y sin reinicio anual. Hibernate registra y crea esta secuencia con el esquema; no hay una migración ni un script automático de inserción de datos. Tampoco se calcula `MAX + 1`.
@@ -160,13 +183,13 @@ La secuencia garantiza unicidad y crecimiento de los valores asignados. Los núm
 
 Al recrear la base de pruebas, iniciar el backend con la configuración habitual de generación del esquema y luego ejecutar manualmente `docs/database/init.sql`. No es necesario crear la secuencia a mano. El esquema documentado está en `docs/database/api-entities.dbml`.
 
-Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante, registrante, trabajador, cargador o revisor vinculado; las FK protegen también las referencias a ediciones, convocatorias, requisitos y archivos. Las tablas nuevas se crean con Hibernate al recrear el esquema; no se agrega una migración ni se completa información histórica automáticamente.
+Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante, registrante, trabajador, profesional evaluador, cargador o revisor vinculado; las FK protegen también las referencias a ediciones, convocatorias, requisitos y archivos. Las tablas nuevas se crean con Hibernate al recrear el esquema. Para una PostgreSQL existente debe aplicarse `docs/database/migrations/2026-10-10-application-evaluation.sql`; no se completa información histórica automáticamente.
 
 ## Permisos y pruebas manuales
 
 El init incluye `CIUDADANO` con `applications:own:create`, `applications:own:view`, `applications:own:documents:view` y `applications:own:documents:manage`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción anterior de superusuario técnico con todos los permisos.
 
-El init incorpora `applications:management:create`, `applications:management:view`, `applications:management:documents:view` y `applications:management:documents:review` y los incluye en `ADMIN`. No los concede a `CIUDADANO` ni crea nuevos roles: se deben asignar explícitamente a los roles administrativos que correspondan mediante la gestión existente. Después de cambiar permisos, renovar el JWT para que los contenga.
+El init incorpora `applications:management:create`, `applications:management:view`, permisos documentales, `applications:evaluations:create` y `applications:evaluations:view`, y los incluye en `ADMIN`. No los concede a `CIUDADANO` ni crea nuevos roles: se deben asignar explícitamente a los roles que correspondan mediante la gestión existente. Los endpoints de evaluación no exigen un nombre de rol concreto.
 
 Las cuentas de ejemplo `admin` y `viewer` también reciben `CIUDADANO` al ejecutar el init. En una base nueva, ambas deben seleccionar rol después del login. La gestión de roles del ABM conserva la asignación explícita existente; no se cambió para agregar roles automáticamente.
 
@@ -176,6 +199,8 @@ La carpeta **Solicitudes asistidas** usa `assistedAccessToken` con permiso admin
 
 Las carpetas **Requisitos documentales**, **Documentos de solicitudes propias** y **Revisión documental administrativa** cubren el nuevo contrato. Configurar `documentRequirementId`, `applicationId`, `applicationDocumentId` y `applicationDocumentFile`; cambiar el rol activo antes de alternar entre operaciones ciudadanas y administrativas.
 
+La carpeta **Evaluaciones sociales** usa `evaluationAccessToken` con los permisos de alta y consulta, y `applicationId` de una solicitud evaluable. La respuesta conserva `applicationEvaluationId`; luego permite listar con filtros, abrir el detalle completo y comprobar que un segundo alta devuelve conflicto.
+
 CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los orígenes ya configurados. No se modificó el frontend.
 
 ## Errores funcionales
@@ -184,10 +209,16 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 | --- | --- | --- |
 | 400 | `INVALID_REQUEST_BODY` | JSON inválido, UUID inválido, campo obligatorio ausente o campo extra |
 | 400 | `APPLICATION_INVALID_IDEMPOTENCY_KEY` | Formato de clave inválido |
+| 400 | `APPLICATION_EVALUATION_INVALID_DATA` | Categoría, recomendación o cuerpo de evaluación inválido |
+| 400 | `APPLICATION_EVALUATION_INVALID_FILTER` | Rango de fechas de consulta invertido |
 | 401 | `AUTH_UNAUTHENTICATED` / `AUTH_INVALID_TOKEN` | Falta de autenticación, token inválido o usuario inexistente/inactivo |
 | 403 | `AUTH_FORBIDDEN` | Rol activo sin permiso o ya no asignado |
 | 403 | `APPLICATION_ASSISTED_SELF_NOT_ALLOWED` | Se intentó usar la asistencia para uno mismo, en lugar de la presentación propia |
 | 404 | `APPLICATION_NOT_FOUND` | Solicitud inexistente o ajena |
+| 404 | `APPLICATION_EVALUATION_NOT_FOUND` | Evaluación inexistente |
+| 409 | `APPLICATION_EVALUATION_ALREADY_EXISTS` | La solicitud ya tiene una evaluación |
+| 409 | `APPLICATION_EVALUATION_STATUS_NOT_ALLOWED` | El estado de la solicitud no admite evaluación |
+| 409 | `APPLICATION_EVALUATION_ASSIGNED_TO_ANOTHER_WORKER` | La solicitud está asignada a otro trabajador |
 | 404 | `APPLICATION_USER_NOT_FOUND` | El titular indicado en la presentación asistida no existe |
 | 404 | `APPLICATION_ENROLLMENT_PERIOD_NOT_FOUND` | Convocatoria inexistente |
 | 409 | `APPLICATION_ENROLLMENT_PERIOD_NOT_OPEN` | Convocatoria no abierta |
@@ -208,15 +239,16 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 
 ## Verificación automatizada
 
-`ApplicationFlowTest` utiliza HTTP con JWT reales y persistencia real en una base aislada. Cubre permisos y propiedad, validación de fechas/estados, cupo, paginación, campos internos rechazados, unicidad, reintentos concurrentes, convocatorias concurrentes, números globales concurrentes, restricciones de base y rollback de auditoría. `ApplicationDocumentFlowTest` cubre catálogo, pendientes, propiedad, permisos, formatos, firmas, límite, reemplazo, eliminación, descarga inline, revisión, estados finales, concurrencia, auditoría, rollback y ausencia de archivos huérfanos.
+`ApplicationFlowTest` utiliza HTTP con JWT reales y persistencia real en una base aislada. Cubre permisos y propiedad, validación de fechas/estados, cupo, paginación, campos internos rechazados, unicidad, reintentos concurrentes, convocatorias concurrentes, números globales concurrentes, restricciones de base y rollback de auditoría. `ApplicationDocumentFlowTest` cubre catálogo, pendientes, propiedad, permisos, formatos, firmas, límite, reemplazo, eliminación, descarga inline, revisión, estados finales, concurrencia, auditoría, rollback y ausencia de archivos huérfanos. `ApplicationEvaluationFlowTest` cubre el alta completa, listado filtrado, detalle completo, datos inválidos, seguridad y revocaciones, estados, asignación, duplicados, concurrencia, rollback de auditoría, integridad del profesional y exclusión de la recomendación del listado y del log.
 
-Verificación del 5 de septiembre de 2026: 104 pruebas exitosas en H2, incluidas 13 del flujo documental; OpenAPI generado; 77 peticiones de Postman contrastadas con sus rutas, métodos, scripts y ejemplos; y DBML compilado para PostgreSQL. No se ejecutó SQL sobre la base de la aplicación. La equivalencia de estados públicos sigue pendiente de definición y no forma parte de esta entrega.
+Verificación del 10 de octubre de 2026: `compileKotlin`, `compileTestKotlin` y `bootJar` finalizan correctamente, y la colección Postman es JSON válido con la carpeta de evaluaciones. En este checkout local, `test` y `generateOpenApiDocs` fallan antes de ejecutar cualquier prueba porque el worker de Gradle arroja `ClassNotFoundException` para todas las clases desde la ruta que contiene `año`, incluidas clases preexistentes. La ejecución completa y la generación OpenAPI deben confirmarse en CI o desde una ruta ASCII; no se modifica esa infraestructura como parte de esta historia.
 
 ```powershell
-.\gradlew.bat test generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat compileKotlin compileTestKotlin bootJar
+.\gradlew.bat test generateOpenApiDocs
 ```
 
-El parámetro de codificación permite ejecutar el worker de Java 17 en la ruta local que contiene `año`. No cambia la codificación de la API. El perfil de pruebas no usa las credenciales ni la base de la aplicación.
+El perfil de pruebas no usa las credenciales ni la base de la aplicación.
 
 Para repetir la misma suite en PostgreSQL, la tarea `testApplicationsPostgres` usa exclusivamente `127.0.0.1:55439/application_test`, con usuario `application_test` y contraseña de `APPLICATION_TEST_POSTGRES_PASSWORD`. Debe ser una base desechable: la tarea crea y elimina su esquema. Nunca apunta a `DB_URL`.
 
