@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental y documentos protegidos de solicitudes. Los archivos son privados y se envían como multipart; configurar applicationDocumentFile con un PDF, JPEG o PNG de hasta 10 MB. Ciudadanos sigue preparado solo en el modelo y no contiene seeds ni migraciones.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -5170,7 +5170,7 @@
     },
     {
       "name": "Visitas y entrevistas sociales",
-      "description": "Programacion, reprogramacion, cancelacion, resultado y consulta administrativa de actuaciones sociales. visitAccessToken debe tener applications:visits:create, applications:visits:manage, applications:visits:results:create y applications:visits:view; applicationId debe identificar una solicitud evaluada y asignada al mismo usuario.",
+      "description": "Programacion, reprogramacion, cancelacion, resultado y consultas administrativas y ciudadanas de actuaciones sociales. visitAccessToken debe tener applications:visits:create, applications:visits:manage, applications:visits:results:create y applications:visits:view. Las consultas propias sobrescriben la autenticacion con citizenAccessToken, que debe ser el titular de applicationId y tener applications:own:visits:view.",
       "auth": {
         "type": "bearer",
         "bearer": [
@@ -5263,7 +5263,7 @@
               "_postman_previewlanguage": "json",
               "header": [{"key": "Content-Type", "value": "application/json"}],
               "cookie": [],
-              "body": "{\n  \"id\": \"80316903-6bc6-42e2-ad0e-20decc3ec5b0\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationStatus\": \"IN_VISIT\",\n  \"type\": \"VISIT\",\n  \"startsAt\": \"2026-10-20T10:00:00-03:00\",\n  \"endsAt\": \"2026-10-20T11:00:00-03:00\",\n  \"durationMinutes\": 60,\n  \"location\": \"Domicilio declarado por el ciudadano\",\n  \"status\": \"SCHEDULED\",\n  \"responsibleId\": 7,\n  \"responsibleName\": \"Trabajador Social\",\n  \"scheduledAt\": \"2026-10-14T18:30:00Z\",\n  \"cancellationReason\": null,\n  \"cancelledAt\": null,\n  \"cancelledById\": null,\n  \"cancelledByName\": null,\n  \"observations\": null,\n  \"conclusions\": null,\n  \"resultRecordedAt\": null,\n  \"resultRecordedById\": null,\n  \"resultRecordedByName\": null\n}"
+              "body": "{\n  \"id\": \"80316903-6bc6-42e2-ad0e-20decc3ec5b0\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"applicationStatus\": \"IN_VISIT\",\n  \"type\": \"VISIT\",\n  \"startsAt\": \"2026-10-20T10:00:00-03:00\",\n  \"endsAt\": \"2026-10-20T11:00:00-03:00\",\n  \"durationMinutes\": 60,\n  \"location\": \"Domicilio declarado por el ciudadano\",\n  \"status\": \"SCHEDULED\",\n  \"responsibleId\": 7,\n  \"responsibleName\": \"Trabajador Social\",\n  \"scheduledAt\": \"2026-10-14T18:30:00Z\",\n  \"rescheduled\": false,\n  \"lastRescheduledAt\": null,\n  \"cancellationReason\": null,\n  \"cancelledAt\": null,\n  \"cancelledById\": null,\n  \"cancelledByName\": null,\n  \"observations\": null,\n  \"conclusions\": null,\n  \"resultRecordedAt\": null,\n  \"resultRecordedById\": null,\n  \"resultRecordedByName\": null\n}"
             }
           ]
         },
@@ -5309,7 +5309,98 @@
                   "  pm.expect(result.status).to.equal('SCHEDULED');",
                   "  pm.expect(result.location).to.equal('Centro comunitario');",
                   "  pm.expect(result.durationMinutes).to.equal(90);",
+                  "  pm.expect(result.rescheduled).to.equal(true);",
+                  "  pm.expect(result.lastRescheduledAt).to.be.a('string').and.not.empty;",
                   " });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar actuaciones de mi solicitud",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/visits?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "visits"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Requiere applications:own:visits:view. Devuelve solamente actuaciones de una solicitud cuyo titular es el ciudadano autenticado, ordenadas por inicio descendente."
+          },
+          "auth": {
+            "type": "bearer",
+            "bearer": [{"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}]
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "for (const key of [\"citizenAccessToken\",\"applicationId\"]) {",
+                  " if (!pm.variables.get(key)) { console.warn('Configurar ' + key + ' antes de ejecutar esta peticion.'); pm.execution.skipRequest(); }",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  " const page = pm.response.json();",
+                  " pm.expect(page.content).to.be.an('array');",
+                  " page.content.forEach(item => {",
+                  "  pm.expect(item).to.have.all.keys('id','applicationId','applicationNumber','type','startsAt','endsAt','durationMinutes','location','status','rescheduled','lastRescheduledAt','cancelledAt');",
+                  "  pm.expect(item).not.to.have.property('cancellationReason');",
+                  "  pm.expect(item).not.to.have.property('observations');",
+                  "  pm.expect(item).not.to.have.property('conclusions');",
+                  " });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener actuacion propia reprogramada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/visits/{{applicationVisitId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "visits", "{{applicationVisitId}}"]
+            },
+            "description": "Consulta el horario vigente. Despues de ejecutar la reprogramacion debe informar rescheduled=true y lastRescheduledAt sin revelar datos profesionales internos."
+          },
+          "auth": {
+            "type": "bearer",
+            "bearer": [{"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  " const result = pm.response.json();",
+                  " pm.expect(result.id).to.equal(pm.collectionVariables.get('applicationVisitId'));",
+                  " pm.expect(result.rescheduled).to.equal(true);",
+                  " pm.expect(result.lastRescheduledAt).to.be.a('string').and.not.empty;",
+                  " pm.expect(result).not.to.have.property('observations');",
+                  " pm.expect(result).not.to.have.property('conclusions');",
                   "}"
                 ]
               }
@@ -5520,6 +5611,76 @@
                   "  pm.expect(result.cancelledById).to.be.a('number');",
                   " });",
                   "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener actuacion propia cancelada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/visits/{{applicationVisitId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{applicationId}}", "visits", "{{applicationVisitId}}"]
+            },
+            "description": "Ejecutar despues de cancelar. El titular ve CANCELLED, cancelledAt y el motivo, pero no el actor de la cancelacion."
+          },
+          "auth": {
+            "type": "bearer",
+            "bearer": [{"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  " const result = pm.response.json();",
+                  " pm.expect(result.status).to.equal('CANCELLED');",
+                  " pm.expect(result.cancelledAt).to.be.a('string').and.not.empty;",
+                  " pm.expect(result.cancellationReason).to.be.a('string').and.not.empty;",
+                  " pm.expect(result).not.to.have.property('cancelledById');",
+                  " pm.expect(result).not.to.have.property('observations');",
+                  " pm.expect(result).not.to.have.property('conclusions');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar consulta de solicitud ajena",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{otherCitizenApplicationId}}/visits?page=0&size=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "applications", "{{otherCitizenApplicationId}}", "visits"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "20"}
+              ]
+            },
+            "description": "Configurar otherCitizenApplicationId con una solicitud cuyo titular sea diferente del ciudadano autenticado. Debe ocultarla como APPLICATION_NOT_FOUND."
+          },
+          "auth": {
+            "type": "bearer",
+            "bearer": [{"key": "token", "value": "{{citizenAccessToken}}", "type": "string"}]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', () => pm.response.to.have.status(404));",
+                  "if (pm.response.code === 404) pm.expect(pm.response.json().code).to.equal('APPLICATION_NOT_FOUND');"
                 ]
               }
             }
@@ -5868,6 +6029,11 @@
     },
     {
       "key": "applicationVisitId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "otherCitizenApplicationId",
       "value": "",
       "type": "string"
     },

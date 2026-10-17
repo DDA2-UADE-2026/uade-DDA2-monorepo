@@ -40,6 +40,7 @@ VALUES ('permissions:view'),
        ('applications:own:view'),
        ('applications:own:documents:view'),
        ('applications:own:documents:manage'),
+       ('applications:own:visits:view'),
        ('appointments:own:view'),
        ('appointments:own:create'),
        ('appointments:management:view'),
@@ -95,6 +96,7 @@ JOIN permissions p ON p.name IN (
     'applications:own:view',
     'applications:own:documents:view',
     'applications:own:documents:manage',
+    'applications:own:visits:view',
     'appointments:own:view',
     'appointments:own:create'
 )

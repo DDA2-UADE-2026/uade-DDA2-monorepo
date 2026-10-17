@@ -292,6 +292,7 @@ Los documentos administrativos operan con un `applicationId` conocido. La bandej
 | --- | --- |
 | Presentar una solicitud propia | `applications:own:create` |
 | Consultar solicitudes propias | `applications:own:view` |
+| Consultar visitas o entrevistas de solicitudes propias | `applications:own:visits:view` |
 | Listar y descargar documentos propios | `applications:own:documents:view` |
 | Cargar, reemplazar y eliminar documentos propios | `applications:own:documents:manage` |
 | Registrar una solicitud asistida | `applications:management:create` |
@@ -329,6 +330,7 @@ Los permisos corresponden al rol activo del JWT. Una persona que tenga roles ciu
 14. Mientras siga pendiente, el mismo trabajador puede reprogramarla o cancelarla con motivo. Una cancelación libera la agenda.
 15. Cuando alcanza su horario de fin, el responsable registra si fue realizada o no realizada, con observaciones y conclusiones opcionales.
 16. El personal autorizado consulta la agenda de actuaciones, la filtra por contexto, estado o ventana temporal y abre el detalle.
+17. Ana consulta las actuaciones de su solicitud y ve el horario vigente, lugar, modalidad, estado y la última reprogramación o cancelación, sin notas sociales internas.
 
 Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION` y la primera actuación a `IN_VISIT`. Cancelar o finalizar la última actuación pendiente devuelve el caso a `IN_EVALUATION`; todavía no existen transiciones de resolución, corrección o reevaluación.
 
@@ -340,4 +342,4 @@ Durante la carga y revisión documental el estado general continúa en `SUBMITTE
 - No se implementaron imágenes públicas de programas en este flujo.
 - No se modifican automáticamente los estados generales de la solicitud según sus documentos.
 - No se implementó todavía el mapeo de estados internos a estados públicos simplificados.
-- Las visitas y entrevistas no pueden reactivarse, cambiar de tipo o responsable ni corregir un resultado, y no tienen consulta ciudadana ni notificación.
+- Las visitas y entrevistas no pueden reactivarse, cambiar de tipo o responsable ni corregir un resultado, y no tienen notificaciones automáticas.

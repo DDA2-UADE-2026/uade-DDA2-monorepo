@@ -2,6 +2,8 @@ package com.uade.dda2.server.feature.application
 
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitResponse
+import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitDetailResponse
+import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitListResponse
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationEvaluation
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
@@ -114,6 +116,9 @@ class ApplicationVisitFlowTest {
         val actorToken: String,
         val unauthorizedToken: String,
         val applicantId: Long,
+        val applicantRoleId: Long,
+        val applicantToken: String,
+        val otherApplicantToken: String,
         val periodId: UUID,
         val editionId: UUID,
         val programId: UUID,
@@ -136,6 +141,7 @@ class ApplicationVisitFlowTest {
         val viewPermission = permission("applications:visits:view")
         val managePermission = permission("applications:visits:manage")
         val resultPermission = permission("applications:visits:results:create")
+        val ownViewPermission = permission("applications:own:visits:view")
         val actorRole = roles.save(
             Role(
                 name = "TRABAJADOR_${UUID.randomUUID()}",
@@ -143,13 +149,32 @@ class ApplicationVisitFlowTest {
             ),
         )
         val unauthorizedRole = roles.save(Role(name = "SIN_VISITAS_${UUID.randomUUID()}"))
+        val applicantRole = roles.save(
+            Role(
+                name = "CIT_VIS_${UUID.randomUUID()}",
+                permissions = mutableSetOf(ownViewPermission),
+            ),
+        )
         val actor = users.saveAndFlush(
             User(name = "Trabajador Social", email = "worker-${UUID.randomUUID()}@example.com", roles = mutableSetOf(actorRole)),
         )
         val unauthorized = users.saveAndFlush(
             User(name = "Sin permiso", email = "forbidden-${UUID.randomUUID()}@example.com", roles = mutableSetOf(unauthorizedRole)),
         )
-        val applicant = users.saveAndFlush(User(name = "Titular", email = "applicant-${UUID.randomUUID()}@example.com"))
+        val applicant = users.saveAndFlush(
+            User(
+                name = "Titular",
+                email = "applicant-${UUID.randomUUID()}@example.com",
+                roles = mutableSetOf(applicantRole),
+            ),
+        )
+        val otherApplicant = users.saveAndFlush(
+            User(
+                name = "Otro titular",
+                email = "other-applicant-${UUID.randomUUID()}@example.com",
+                roles = mutableSetOf(applicantRole),
+            ),
+        )
         val program = programs.save(Program(name = "Programa ${UUID.randomUUID()}", createdBy = actor))
         val edition = editions.save(
             ProgramEdition(
@@ -198,6 +223,9 @@ class ApplicationVisitFlowTest {
             actorToken = jwt.createToken(actor, actorRole),
             unauthorizedToken = jwt.createToken(unauthorized, unauthorizedRole),
             applicantId = requireNotNull(applicant.id),
+            applicantRoleId = requireNotNull(applicantRole.id),
+            applicantToken = jwt.createToken(applicant, applicantRole),
+            otherApplicantToken = jwt.createToken(otherApplicant, applicantRole),
             periodId = requireNotNull(period.id),
             editionId = requireNotNull(edition.id),
             programId = requireNotNull(program.id),
@@ -292,6 +320,29 @@ class ApplicationVisitFlowTest {
         }
     }
 
+    private fun listOwn(
+        applicationId: UUID = fixture.applicationId,
+        token: String? = fixture.applicantToken,
+        page: Int = 0,
+        size: Int = 20,
+    ): MvcResult {
+        val request = get("/api/applications/$applicationId/visits")
+            .param("page", page.toString())
+            .param("size", size.toString())
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun getOwn(
+        visitId: UUID,
+        applicationId: UUID = fixture.applicationId,
+        token: String? = fixture.applicantToken,
+    ): MvcResult {
+        val request = get("/api/applications/$applicationId/visits/$visitId")
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
     @Test
     fun `programa multiples actuaciones y registra responsable estado y auditoria sin lugar`() {
         val firstStart = OffsetDateTime.now(ZoneOffset.UTC).plusDays(3).withNano(0)
@@ -307,6 +358,8 @@ class ApplicationVisitFlowTest {
         assertEquals(fixture.actorId, first.responsibleId)
         assertEquals(first.startsAt.plusMinutes(60), first.endsAt)
         assertEquals(ZoneOffset.UTC, first.scheduledAt.offset)
+        assertFalse(first.rescheduled)
+        assertEquals(null, first.lastRescheduledAt)
 
         expect(create(startsAt = firstStart.plusHours(2), type = "INTERVIEW", location = "Oficina social"), 201)
         assertEquals(2L, visits.countByApplicationId(fixture.applicationId))
@@ -353,6 +406,7 @@ class ApplicationVisitFlowTest {
         val touchingWindow = mvc.perform(
             get("/api/admin/application-visits")
                 .header("Authorization", "Bearer ${fixture.actorToken}")
+                .param("applicationId", fixture.applicationId.toString())
                 .param("windowStart", created.endsAt.toString()),
         ).andReturn()
         expect(touchingWindow, 200)
@@ -397,6 +451,13 @@ class ApplicationVisitFlowTest {
         assertEquals("Centro comunitario", updated.location)
         assertEquals("SCHEDULED", updated.status.name)
         assertEquals(ApplicationStatus.IN_VISIT, updated.applicationStatus)
+        assertTrue(updated.rescheduled)
+        assertNotNull(updated.lastRescheduledAt)
+        assertEquals(ZoneOffset.UTC, updated.lastRescheduledAt.offset)
+        assertEquals(
+            updated.lastRescheduledAt.toInstant(),
+            tx { requireNotNull(visits.findById(created.id).orElseThrow().lastRescheduledAt).toInstant() },
+        )
 
         val log = jdbc.queryForMap(
             "select action, old_values, new_values from logs " +
@@ -409,9 +470,204 @@ class ApplicationVisitFlowTest {
         assertEquals(originalStart.toInstant(), OffsetDateTime.parse(oldAudit.get("startsAt").stringValue()).toInstant())
         assertEquals(newStart.toInstant(), OffsetDateTime.parse(newAudit.get("startsAt").stringValue()).toInstant())
         assertEquals("RESCHEDULE", newAudit.get("operation").stringValue())
+        assertEquals(
+            updated.lastRescheduledAt.toInstant(),
+            OffsetDateTime.parse(newAudit.get("lastRescheduledAt").stringValue()).toInstant(),
+        )
         assertTrue(newAudit.get("locationChanged").booleanValue())
         assertFalse(log["old_values"].toString().contains("Domicilio original"))
         assertFalse(log["new_values"].toString().contains("Centro comunitario"))
+    }
+
+    @Test
+    fun `ciudadano lista y consulta modalidades estados reprogramacion y cancelacion sin datos sensibles`() {
+        val base = OffsetDateTime.now(ZoneOffset.UTC).plusDays(10).withNano(0)
+        val scheduled = json.readValue(
+            create(startsAt = base, type = "VISIT", location = "Domicilio declarado").response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+        val cancellable = json.readValue(
+            create(startsAt = base.plusDays(1), type = "INTERVIEW", location = "Centro comunitario").response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+        val firstReschedule = json.readValue(
+            reschedule(
+                cancellable.id,
+                startsAt = base.plusDays(2),
+                durationMinutes = 75,
+                location = "Oficina de Desarrollo Social",
+            ).response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+        val secondRescheduleResult = reschedule(
+            cancellable.id,
+            startsAt = base.plusDays(3),
+            durationMinutes = 45,
+            location = "Centro barrial",
+        )
+        expect(secondRescheduleResult, 200)
+        val secondReschedule = json.readValue(secondRescheduleResult.response.contentAsString, ApplicationVisitResponse::class.java)
+        assertTrue(!secondReschedule.lastRescheduledAt!!.isBefore(firstReschedule.lastRescheduledAt))
+        expect(cancel(cancellable.id, reason = "  El equipo reorganizo la agenda.  "), 200)
+
+        val realized = json.readValue(
+            create(startsAt = base.plusDays(4), location = "Sede vecinal").response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+        val realizedStart = OffsetDateTime.now(ZoneOffset.UTC).minusHours(2).withNano(0)
+        val realizedLastRescheduledAt = realizedStart.minusHours(1)
+        jdbc.update(
+            "update application_visit set scheduled_at = ?, last_rescheduled_at = ?, starts_at = ?, ends_at = ? where id = ?",
+            realizedStart.minusHours(2),
+            realizedLastRescheduledAt,
+            realizedStart,
+            realizedStart.plusHours(1),
+            realized.id,
+        )
+        expect(
+            recordResult(
+                realized.id,
+                observations = "Observacion social reservada",
+                conclusions = "Conclusion social reservada",
+            ),
+            201,
+        )
+
+        val notRealized = json.readValue(
+            create(startsAt = base.plusDays(5), type = "INTERVIEW", location = "Delegacion municipal").response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+        markEnded(notRealized.id)
+        expect(recordResult(notRealized.id, status = "NOT_REALIZED", observations = null, conclusions = null), 201)
+
+        val firstPageResult = listOwn(size = 2)
+        expect(firstPageResult, 200)
+        val firstPage = json.readValue(firstPageResult.response.contentAsString, CitizenApplicationVisitListResponse::class.java)
+        assertEquals(4L, firstPage.totalElements)
+        assertEquals(2, firstPage.content.size)
+
+        val listingResult = listOwn()
+        expect(listingResult, 200)
+        val listing = json.readValue(listingResult.response.contentAsString, CitizenApplicationVisitListResponse::class.java)
+        listing.content.zipWithNext().forEach { (current, next) ->
+            val startComparison = current.startsAt.toInstant().compareTo(next.startsAt.toInstant())
+            assertTrue(startComparison > 0 || (startComparison == 0 && current.id > next.id))
+        }
+        assertEquals(
+            setOf("SCHEDULED", "CANCELLED", "REALIZED", "NOT_REALIZED"),
+            listing.content.map { it.status.name }.toSet(),
+        )
+        val listedScheduled = listing.content.single { it.id == scheduled.id }
+        assertEquals("VISIT", listedScheduled.type.name)
+        val listedScheduledJson = json.readTree(listingResult.response.contentAsString)
+            .get("content")
+            .first { it.get("id").stringValue() == scheduled.id.toString() }
+        assertTrue(listedScheduledJson.get("startsAt").stringValue().endsWith("-03:00"))
+        assertFalse(listedScheduled.rescheduled)
+        assertEquals(null, listedScheduled.lastRescheduledAt)
+
+        val listedCancelled = listing.content.single { it.id == cancellable.id }
+        assertEquals("INTERVIEW", listedCancelled.type.name)
+        assertEquals("Centro barrial", listedCancelled.location)
+        assertEquals(45, listedCancelled.durationMinutes)
+        assertTrue(listedCancelled.rescheduled)
+        assertEquals(secondReschedule.lastRescheduledAt?.toInstant(), listedCancelled.lastRescheduledAt?.toInstant())
+        assertNotNull(listedCancelled.cancelledAt)
+
+        val listJson = json.readTree(listingResult.response.contentAsString)
+        listJson.get("content").forEach { item ->
+            assertFalse(item.has("cancellationReason"))
+            assertFalse(item.has("observations"))
+            assertFalse(item.has("conclusions"))
+            assertFalse(item.has("responsibleId"))
+            assertFalse(item.has("cancelledById"))
+            assertFalse(item.has("resultRecordedById"))
+        }
+
+        val cancelledDetailResult = getOwn(cancellable.id)
+        expect(cancelledDetailResult, 200)
+        val cancelledDetail = json.readValue(
+            cancelledDetailResult.response.contentAsString,
+            CitizenApplicationVisitDetailResponse::class.java,
+        )
+        assertEquals("El equipo reorganizo la agenda.", cancelledDetail.cancellationReason)
+        assertTrue(cancelledDetail.rescheduled)
+        assertEquals(secondReschedule.lastRescheduledAt?.toInstant(), cancelledDetail.lastRescheduledAt?.toInstant())
+
+        val resultDetail = getOwn(realized.id)
+        expect(resultDetail, 200)
+        assertFalse(resultDetail.response.contentAsString.contains("Observacion social reservada"))
+        assertFalse(resultDetail.response.contentAsString.contains("Conclusion social reservada"))
+        val resultJson = json.readTree(resultDetail.response.contentAsString)
+        assertTrue(resultJson.get("rescheduled").booleanValue())
+        assertEquals(
+            realizedLastRescheduledAt.toInstant(),
+            OffsetDateTime.parse(resultJson.get("lastRescheduledAt").stringValue()).toInstant(),
+        )
+        assertFalse(resultJson.has("observations"))
+        assertFalse(resultJson.has("conclusions"))
+        assertFalse(resultJson.has("resultRecordedAt"))
+    }
+
+    @Test
+    fun `consulta ciudadana protege propiedad permiso vigente usuario rol y paginacion`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+
+        expect(listOwn(token = null), 401, "AUTH_UNAUTHENTICATED")
+        expect(listOwn(token = "invalid"), 401, "AUTH_INVALID_TOKEN")
+        expect(listOwn(token = fixture.unauthorizedToken), 403, "AUTH_FORBIDDEN")
+        expect(listOwn(token = fixture.otherApplicantToken), 404, "APPLICATION_NOT_FOUND")
+        expect(getOwn(created.id, token = fixture.otherApplicantToken), 404, "APPLICATION_NOT_FOUND")
+        expect(getOwn(UUID.randomUUID()), 404, "APPLICATION_VISIT_NOT_FOUND")
+
+        val secondOwnApplication = newApplication(
+            status = ApplicationStatus.IN_EVALUATION,
+            actorId = fixture.actorId,
+            applicantId = fixture.applicantId,
+            withEvaluation = true,
+        )
+        expect(getOwn(created.id, applicationId = secondOwnApplication), 404, "APPLICATION_VISIT_NOT_FOUND")
+        expect(listOwn(page = -1), 400, "VALIDATION_ERROR")
+        expect(listOwn(size = 101), 400, "VALIDATION_ERROR")
+
+        tx {
+            roles.findById(fixture.applicantRoleId).orElseThrow().permissions.removeIf {
+                it.name == "applications:own:visits:view"
+            }
+        }
+        expect(listOwn(), 403, "AUTH_FORBIDDEN")
+        tx {
+            roles.findById(fixture.applicantRoleId).orElseThrow().permissions.add(
+                permission("applications:own:visits:view"),
+            )
+        }
+
+        tx { users.findById(fixture.applicantId).orElseThrow().active = false }
+        expect(listOwn(), 401, "AUTH_UNAUTHENTICATED")
+        tx { users.findById(fixture.applicantId).orElseThrow().active = true }
+
+        tx { users.findById(fixture.applicantId).orElseThrow().roles.clear() }
+        expect(listOwn(), 403, "AUTH_FORBIDDEN")
+    }
+
+    @Test
+    fun `base impide fechas de reprogramacion inconsistentes`() {
+        val created = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        assertFailsWith<DataIntegrityViolationException> {
+            jdbc.update(
+                "update application_visit set last_rescheduled_at = ? where id = ?",
+                created.scheduledAt.minusSeconds(1),
+                created.id,
+            )
+        }
+        assertFailsWith<DataIntegrityViolationException> {
+            jdbc.update(
+                "update application_visit set last_rescheduled_at = ? where id = ?",
+                created.startsAt,
+                created.id,
+            )
+        }
+        assertTrue(tx { visits.findById(created.id).orElseThrow().lastRescheduledAt == null })
     }
 
     @Test

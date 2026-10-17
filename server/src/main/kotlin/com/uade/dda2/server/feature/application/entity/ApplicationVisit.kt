@@ -44,6 +44,11 @@ import java.util.UUID
             constraint = "starts_at < ends_at",
         ),
         CheckConstraint(
+            name = "ck_application_visit_reschedule_data",
+            constraint = "last_rescheduled_at is null or " +
+                "(last_rescheduled_at >= scheduled_at and last_rescheduled_at < starts_at)",
+        ),
+        CheckConstraint(
             name = "ck_application_visit_lifecycle_data",
             constraint = "(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null " +
                 "and cancelled_by_user_id is null and result_observations is null and result_conclusions is null " +
@@ -92,6 +97,9 @@ class ApplicationVisit(
 
     @Column(name = "scheduled_at", nullable = false, updatable = false)
     var scheduledAt: OffsetDateTime,
+
+    @Column(name = "last_rescheduled_at")
+    var lastRescheduledAt: OffsetDateTime? = null,
 
     @Column(name = "cancellation_reason", length = 1000)
     var cancellationReason: String? = null,

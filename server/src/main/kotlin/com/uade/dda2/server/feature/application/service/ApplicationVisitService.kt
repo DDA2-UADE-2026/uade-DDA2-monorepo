@@ -9,6 +9,8 @@ import com.uade.dda2.server.feature.application.dto.request.RescheduleApplicatio
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitListResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitResponse
+import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitDetailResponse
+import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitListResponse
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
 import com.uade.dda2.server.feature.application.entity.ApplicationVisit
@@ -17,6 +19,8 @@ import com.uade.dda2.server.feature.application.entity.ApplicationVisitType
 import com.uade.dda2.server.feature.application.error.ApplicationErrors
 import com.uade.dda2.server.feature.application.error.ApplicationVisitErrors
 import com.uade.dda2.server.feature.application.mapper.toAuditSnapshot
+import com.uade.dda2.server.feature.application.mapper.toCitizenDetailResponse
+import com.uade.dda2.server.feature.application.mapper.toCitizenListItemResponse
 import com.uade.dda2.server.feature.application.mapper.toCreationAuditSnapshot
 import com.uade.dda2.server.feature.application.mapper.toDetailResponse
 import com.uade.dda2.server.feature.application.mapper.toListItemResponse
@@ -51,6 +55,7 @@ const val APPLICATION_VISIT_CREATE_PERMISSION = "applications:visits:create"
 const val APPLICATION_VISIT_VIEW_PERMISSION = "applications:visits:view"
 const val APPLICATION_VISIT_MANAGE_PERMISSION = "applications:visits:manage"
 const val APPLICATION_VISIT_RESULT_CREATE_PERMISSION = "applications:visits:results:create"
+const val APPLICATION_OWN_VISIT_VIEW_PERMISSION = "applications:own:visits:view"
 
 data class ApplicationVisitFilters(
     val applicationId: UUID? = null,
@@ -183,6 +188,7 @@ class ApplicationVisitService(
         locked.visit.startsAt = data.startsAt
         locked.visit.endsAt = data.endsAt
         locked.visit.location = data.location
+        locked.visit.lastRescheduledAt = now
         locked.application.updatedAt = LocalDateTime.ofInstant(now.toInstant(), applicationTime.zone())
         visits.saveAndFlush(locked.visit)
         recordUpdate(
@@ -321,9 +327,49 @@ class ApplicationVisitService(
             .toDetailResponse(appointmentTime.zone())
     }
 
+    @Transactional(readOnly = true)
+    fun listOwn(applicationId: UUID, page: Int, size: Int): CitizenApplicationVisitListResponse {
+        val userId = authorizeOwn()
+        applications.findByIdAndUserId(applicationId, userId) ?: throw ApplicationErrors.notFound()
+        val results = visits.findAllOwnByApplicationId(
+            applicationId = applicationId,
+            userId = userId,
+            pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("startsAt").descending().and(Sort.by("id").descending()),
+            ),
+        )
+        return CitizenApplicationVisitListResponse(
+            content = results.content.map { it.toCitizenListItemResponse(appointmentTime.zone()) },
+            page = results.number,
+            size = results.size,
+            totalElements = results.totalElements,
+            totalPages = results.totalPages,
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getOwn(applicationId: UUID, visitId: UUID): CitizenApplicationVisitDetailResponse {
+        val userId = authorizeOwn()
+        applications.findByIdAndUserId(applicationId, userId) ?: throw ApplicationErrors.notFound()
+        return (visits.findOwnDetailById(visitId, applicationId, userId) ?: throw ApplicationVisitErrors.notFound())
+            .toCitizenDetailResponse(appointmentTime.zone())
+    }
+
     private fun authorize(permission: String) {
         val principal = currentUser.principal()
         validator.validateActor(users.findByIdWithRoles(principal.id), principal, permission)
+    }
+
+    private fun authorizeOwn(): Long {
+        val principal = currentUser.principal()
+        val user = validator.validateActor(
+            users.findByIdWithRoles(principal.id),
+            principal,
+            APPLICATION_OWN_VISIT_VIEW_PERMISSION,
+        )
+        return requireNotNull(user.id)
     }
 
     private fun authorizeFor(permission: String): JwtPrincipal {
@@ -406,6 +452,7 @@ class ApplicationVisitService(
             location = visit.location,
             status = visit.status,
             scheduledAt = visit.scheduledAt.toInstant(),
+            lastRescheduledAt = visit.lastRescheduledAt?.toInstant(),
             cancellationReason = visit.cancellationReason,
             cancelledAt = visit.cancelledAt?.toInstant(),
             cancelledById = visit.cancelledBy?.id,
@@ -463,6 +510,7 @@ class ApplicationVisitService(
         val location: String,
         val status: ApplicationVisitStatus,
         val scheduledAt: Instant,
+        val lastRescheduledAt: Instant?,
         val cancellationReason: String?,
         val cancelledAt: Instant?,
         val cancelledById: Long?,
@@ -485,6 +533,7 @@ class ApplicationVisitService(
                 visit.location == location &&
                 visit.status == status &&
                 visit.scheduledAt.toInstant() == scheduledAt &&
+                visit.lastRescheduledAt?.toInstant() == lastRescheduledAt &&
                 visit.cancellationReason == cancellationReason &&
                 visit.cancelledAt?.toInstant() == cancelledAt &&
                 visit.cancelledBy?.id == cancelledById &&

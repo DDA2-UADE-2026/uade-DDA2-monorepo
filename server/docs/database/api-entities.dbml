@@ -595,6 +595,7 @@ Table application_visit {
   responsible_user_id bigint [not null, ref: > users.id, note: 'Trabajador ya asignado a la solicitud y actor autenticado del alta.']
   status application_visit_status [not null, note: 'SCHEDULED ocupa la agenda; CANCELLED, REALIZED y NOT_REALIZED son finales y la liberan.']
   scheduled_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+  last_rescheduled_at timestamptz [note: 'Ultima reprogramacion en UTC; null si nunca se modifico el horario o lugar.']
   cancellation_reason varchar(1000) [note: 'Obligatorio y recortado al cancelar. No se copia al log de auditoria.']
   cancelled_at timestamptz [note: 'Instante UTC de cancelacion.']
   cancelled_by_user_id bigint [ref: > users.id, note: 'Actor que cancelo la actuacion.']
@@ -615,10 +616,11 @@ Table application_visit {
     `type in ('VISIT', 'INTERVIEW')` [name: 'ck_application_visit_type']
     `status in ('SCHEDULED', 'CANCELLED', 'REALIZED', 'NOT_REALIZED')` [name: 'ck_application_visit_status']
     `starts_at < ends_at` [name: 'ck_application_visit_time_range']
+    `last_rescheduled_at is null or (last_rescheduled_at >= scheduled_at and last_rescheduled_at < starts_at)` [name: 'ck_application_visit_reschedule_data']
     `(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and cancelled_by_user_id is not null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_recorded_at is not null and result_recorded_by_user_id = responsible_user_id and result_recorded_at >= ends_at and (result_observations is null or length(trim(result_observations)) between 1 and 2000) and (result_conclusions is null or length(trim(result_conclusions)) between 1 and 2000))` [name: 'ck_application_visit_lifecycle_data']
   }
 
-  Note: 'Admite varias actuaciones por solicitud evaluada. Las futuras SCHEDULED pueden reprogramarse o cancelarse; una finalizada puede cerrarse una sola vez como REALIZED o NOT_REALIZED. Cancelar o finalizar la ultima pendiente devuelve la solicitud a IN_EVALUATION.'
+  Note: 'Admite varias actuaciones por solicitud evaluada. Las futuras SCHEDULED pueden reprogramarse o cancelarse; una finalizada puede cerrarse una sola vez como REALIZED o NOT_REALIZED. El titular consulta solo actuaciones de sus solicitudes mediante applications:own:visits:view. Cancelar o finalizar la ultima pendiente devuelve la solicitud a IN_EVALUATION.'
 }
 
 Table document {

@@ -3,6 +3,8 @@ package com.uade.dda2.server.feature.application.mapper
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitListItemResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitResponse
+import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitDetailResponse
+import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitListItemResponse
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
 import com.uade.dda2.server.feature.application.entity.ApplicationVisit
 import java.time.Duration
@@ -21,6 +23,8 @@ fun ApplicationVisit.toResponse(zone: ZoneId): ApplicationVisitResponse = Applic
     responsibleId = requireNotNull(responsible.id),
     responsibleName = responsible.name,
     scheduledAt = scheduledAt,
+    rescheduled = lastRescheduledAt != null,
+    lastRescheduledAt = lastRescheduledAt,
     cancellationReason = cancellationReason,
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
@@ -52,6 +56,8 @@ fun ApplicationVisit.toListItemResponse(zone: ZoneId): ApplicationVisitListItemR
     responsibleId = requireNotNull(responsible.id),
     responsibleName = responsible.name,
     scheduledAt = scheduledAt,
+    rescheduled = lastRescheduledAt != null,
+    lastRescheduledAt = lastRescheduledAt,
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
     cancelledByName = cancelledBy?.name,
@@ -83,6 +89,8 @@ fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailRespo
     responsibleName = responsible.name,
     responsibleEmail = responsible.email,
     scheduledAt = scheduledAt,
+    rescheduled = lastRescheduledAt != null,
+    lastRescheduledAt = lastRescheduledAt,
     cancellationReason = cancellationReason,
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
@@ -96,6 +104,39 @@ fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailRespo
     resultRecordedByEmail = resultRecordedBy?.email,
 )
 
+fun ApplicationVisit.toCitizenListItemResponse(zone: ZoneId): CitizenApplicationVisitListItemResponse =
+    CitizenApplicationVisitListItemResponse(
+        id = requireNotNull(id),
+        applicationId = requireNotNull(application.id),
+        applicationNumber = requireNotNull(application.applicationNumber),
+        type = type,
+        startsAt = startsAt.atZoneSameInstant(zone).toOffsetDateTime(),
+        endsAt = endsAt.atZoneSameInstant(zone).toOffsetDateTime(),
+        durationMinutes = durationMinutes(),
+        location = location,
+        status = status,
+        rescheduled = lastRescheduledAt != null,
+        lastRescheduledAt = lastRescheduledAt,
+        cancelledAt = cancelledAt,
+    )
+
+fun ApplicationVisit.toCitizenDetailResponse(zone: ZoneId): CitizenApplicationVisitDetailResponse =
+    CitizenApplicationVisitDetailResponse(
+        id = requireNotNull(id),
+        applicationId = requireNotNull(application.id),
+        applicationNumber = requireNotNull(application.applicationNumber),
+        type = type,
+        startsAt = startsAt.atZoneSameInstant(zone).toOffsetDateTime(),
+        endsAt = endsAt.atZoneSameInstant(zone).toOffsetDateTime(),
+        durationMinutes = durationMinutes(),
+        location = location,
+        status = status,
+        rescheduled = lastRescheduledAt != null,
+        lastRescheduledAt = lastRescheduledAt,
+        cancelledAt = cancelledAt,
+        cancellationReason = cancellationReason,
+    )
+
 fun ApplicationVisit.toAuditSnapshot(): Map<String, Any?> = mapOf(
     "id" to id.toString(),
     "applicationId" to application.id.toString(),
@@ -107,6 +148,7 @@ fun ApplicationVisit.toAuditSnapshot(): Map<String, Any?> = mapOf(
     "status" to status.name,
     "responsibleId" to responsible.id,
     "scheduledAt" to scheduledAt.toString(),
+    "lastRescheduledAt" to lastRescheduledAt?.toString(),
     "cancelledAt" to cancelledAt?.toString(),
     "cancelledById" to cancelledBy?.id,
     "resultRecordedAt" to resultRecordedAt?.toString(),

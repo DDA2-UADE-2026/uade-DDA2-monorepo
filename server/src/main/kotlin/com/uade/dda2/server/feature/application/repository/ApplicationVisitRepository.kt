@@ -27,6 +27,29 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
         id: UUID,
     ): Boolean
 
+    @EntityGraph(attributePaths = ["application"])
+    @Query(
+        "select visit from ApplicationVisit visit " +
+            "where visit.application.id = :applicationId and visit.application.user.id = :userId",
+    )
+    fun findAllOwnByApplicationId(
+        @Param("applicationId") applicationId: UUID,
+        @Param("userId") userId: Long,
+        pageable: Pageable,
+    ): Page<ApplicationVisit>
+
+    @EntityGraph(attributePaths = ["application"])
+    @Query(
+        "select visit from ApplicationVisit visit " +
+            "where visit.id = :visitId and visit.application.id = :applicationId " +
+            "and visit.application.user.id = :userId",
+    )
+    fun findOwnDetailById(
+        @Param("visitId") visitId: UUID,
+        @Param("applicationId") applicationId: UUID,
+        @Param("userId") userId: Long,
+    ): ApplicationVisit?
+
     @EntityGraph(
         attributePaths = [
             "responsible",

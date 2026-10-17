@@ -10,7 +10,7 @@ La solicitud pertenece a la persona solicitante, aunque un administrativo la reg
 
 **Presentar no equivale a recibir el beneficio.** La solicitud tampoco representa una incorporación efectiva ni una reserva de cupo.
 
-Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas, cargarlas en nombre del titular, registrar una evaluación social, programar, reprogramar, cancelar o finalizar visitas y entrevistas, y administrar sus respectivas bandejas y detalles. La decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
+Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios, gestionar los documentos protegidos que pide la edición y consultar las visitas o entrevistas asociadas. El personal autorizado puede consultar y revisar entregas, cargarlas en nombre del titular, registrar una evaluación social, programar, reprogramar, cancelar o finalizar actuaciones, y administrar sus respectivas bandejas y detalles. La decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
 
 ## Quién puede presentar y consultar
 
@@ -220,7 +220,11 @@ El mismo trabajador puede usar `PUT /api/applications/{applicationId}/visits/{vi
 
 Una vez alcanzado el fin previsto, el responsable puede registrar una sola vez el resultado mediante `POST /api/applications/{applicationId}/visits/{visitId}/result`, con `applications:visits:results:create`. El estado final es realizada (`REALIZED`) o no realizada (`NOT_REALIZED`). Observaciones y conclusiones son opcionales, se recortan y admiten hasta 2000 caracteres; el servidor guarda además la fecha UTC y el profesional autenticado. Una actuación finalizada deja de ocupar agenda y ya no puede reprogramarse, cancelarse ni volver a finalizarse. Si era la última pendiente, la solicitud vuelve a `IN_EVALUATION`; si queda otra `SCHEDULED`, continúa en `IN_VISIT`.
 
-`GET /api/admin/application-visits` requiere `applications:visits:view` y permite filtrar por solicitud, número, titular, responsable, programa, edición, tipo, estado y ventana temporal superpuesta, con paginación de hasta 100 elementos. Sin filtro de estado incluye programadas, canceladas y finalizadas. El listado muestra quién y cuándo registró el resultado, pero no sus textos sensibles. El orden es por inicio ascendente e identificador. `GET /api/admin/application-visits/{visitId}` devuelve el contexto completo, incluido el lugar, el motivo de cancelación o las observaciones y conclusiones del resultado cuando corresponda. Todavía no hay reactivación, corrección del resultado, cambio de tipo o responsable, notificación ni consulta ciudadana de estas actuaciones.
+La persona titular con `applications:own:visits:view` consulta todas las actuaciones de una solicitud propia mediante `GET /api/applications/{applicationId}/visits` y abre una mediante `GET /api/applications/{applicationId}/visits/{visitId}`. Se muestran el horario vigente, duración, lugar, modalidad y estado. Si hubo reprogramaciones se informa la fecha de la última; si fue cancelada, el listado informa cuándo y el detalle agrega el motivo. Una solicitud o actuación ajena se trata como inexistente.
+
+La vista ciudadana no revela observaciones, conclusiones, correos, identificadores profesionales ni quién registró la cancelación o el resultado. La consulta no modifica la solicitud, la actuación ni la auditoría.
+
+`GET /api/admin/application-visits` requiere `applications:visits:view` y permite filtrar por solicitud, número, titular, responsable, programa, edición, tipo, estado y ventana temporal superpuesta, con paginación de hasta 100 elementos. Sin filtro de estado incluye programadas, canceladas y finalizadas. El listado muestra quién y cuándo registró el resultado, pero no sus textos sensibles. El orden es por inicio ascendente e identificador. `GET /api/admin/application-visits/{visitId}` devuelve el contexto completo, incluido el lugar, el motivo de cancelación o las observaciones y conclusiones del resultado cuando corresponda. Todavía no hay reactivación, corrección del resultado, cambio de tipo o responsable ni notificación.
 
 ## Estados y transiciones
 
@@ -277,6 +281,6 @@ Las cargas, reemplazos, eliminaciones y revisiones documentales también dejan u
 
 Cada evaluación deja constancia de la solicitud, las categorías, el profesional, la fecha y la transición de estado. La recomendación se conserva en la evaluación, pero no se copia al log porque puede contener información social sensible.
 
-Cada visita o entrevista deja constancia de la solicitud, tipo, intervalo, responsable, estado y transición de la solicitud. El lugar se conserva para el detalle autorizado, pero se excluye de auditoría por poder contener un domicilio sensible.
+Cada visita o entrevista deja constancia de la solicitud, tipo, intervalo, responsable, estado, última reprogramación y transición de la solicitud. El lugar se conserva para las vistas autorizadas, pero se excluye de auditoría por poder contener un domicilio sensible.
 
 Las pausas y cierres de recepción no borran esas solicitudes. Los cambios posteriores que afecten la evaluación o el resultado deberán realizarse mediante los flujos que correspondan.

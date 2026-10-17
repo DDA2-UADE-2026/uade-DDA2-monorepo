@@ -10,7 +10,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | --- | --- |
 | [Program — Programas y ediciones](functional/program.md) | Qué ofrece el municipio, cómo configura cada edición, sus beneficios, requisitos, documentos, cupos y estados. |
 | [EnrollmentPeriod — Convocatorias](functional/enrollmentperiod.md) | Cuándo se pueden recibir solicitudes y cómo se abre, pausa, retoma o cierra una convocatoria. |
-| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos y cómo se evalúa, programa y registra el resultado de una visita o entrevista social. |
+| [Application — Solicitudes](functional/application.md) | Cómo una persona presenta y consulta su solicitud, entrega documentos protegidos, consulta sus visitas y cómo el municipio evalúa y gestiona esas actuaciones. |
 | [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
 | [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
@@ -53,7 +53,7 @@ El beneficio es la ayuda ofrecida por una edición, por ejemplo asistencia alime
 
 **Administrativo autorizado para asistencia.** Puede registrar una solicitud para otra persona ya existente en el sistema, sin restricción de jurisdicción. Quedan identificados tanto el titular como quien realizó el registro. El acceso posterior a documentos ajenos requiere permisos administrativos documentales separados.
 
-**Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado, presenta y consulta sus propias solicitudes y entrega sus documentos protegidos. No presenta solicitudes a nombre de otra persona.
+**Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado, presenta y consulta sus propias solicitudes, entrega sus documentos protegidos y revisa el horario y estado de sus visitas o entrevistas. No presenta solicitudes a nombre de otra persona.
 
 **Trabajador social autorizado.** Registra la evaluación, queda asignado a la solicitud, programa sus visitas o entrevistas sin superponer agendas y registra su resultado una vez finalizadas.
 
@@ -76,8 +76,9 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación; la solicitud queda asignada y pasa a evaluación. El personal con permiso de consulta administra luego la bandeja filtrada y el detalle.
 12. Ese mismo trabajador programa una visita domiciliaria o entrevista futura. La primera actuación lleva la solicitud a **En visita** y queda visible en una agenda administrativa filtrable.
 13. Cuando termina la actuación, su responsable registra si fue realizada o no realizada, junto con observaciones o conclusiones opcionales. Si no quedan otras pendientes, la solicitud vuelve a evaluación.
+14. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
 
-La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social y programación, gestión, consulta y resultado de visitas o entrevistas. La aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
+La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social y programación, gestión, consulta administrativa y consulta ciudadana de visitas o entrevistas. La aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
 
 ## Tres decisiones diferentes
 
