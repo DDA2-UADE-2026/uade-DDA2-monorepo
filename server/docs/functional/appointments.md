@@ -12,7 +12,7 @@ Esta guía explica cómo un ciudadano solicita un turno de salud comunitaria. Es
 
 1. El ciudadano elige un servicio municipal con oferta efectiva (centro activo, servicio activo, profesional asignado y agenda vigente).
 2. Elige un centro que ofrece ese servicio y una fecha futura.
-3. El sistema muestra únicamente horarios que ese ciudadano puede obtener: bloques completos según la duración del servicio, con profesional identificado, sin horarios pasados, sin horarios ya ocupados por el profesional y sin horarios superpuestos con otros turnos del ciudadano.
+3. El sistema muestra únicamente horarios que ese ciudadano puede obtener: bloques completos según la duración del servicio, con profesional identificado, sin horarios pasados y sin superposiciones con turnos o visitas/entrevistas sociales del ciudadano o del profesional.
 4. El ciudadano selecciona un horario y lo confirma. Si el horario sigue disponible, el turno queda **confirmado** de inmediato, sin aprobación manual.
 5. El sistema muestra la confirmación: identificador, servicio, centro, dirección, fecha, horario y profesional.
 
@@ -22,6 +22,7 @@ Esta guía explica cómo un ciudadano solicita un turno de salud comunitaria. Es
 | --- | --- |
 | Dos personas eligen el mismo horario | Solo una lo obtiene; la otra recibe un conflicto y la disponibilidad actualizada. |
 | El ciudadano ya tiene un turno superpuesto | La solicitud se rechaza, aunque sea otro servicio, centro o profesional. |
+| El ciudadano o el profesional participa en una visita/entrevista superpuesta | El horario no se ofrece y el alta o reprogramación se rechaza si se intenta con datos desactualizados. |
 | Dos horarios seguidos (por ejemplo 09:00–10:00 y 10:00–11:00) | Se permiten; no se consideran superpuestos. |
 | Se reintenta la misma solicitud (doble clic, error de red) | No se duplica: con la misma clave de idempotencia se devuelve el turno original. |
 | Cambia la agenda o la duración del servicio después | El turno conserva su fecha y horario; el cambio solo afecta nuevas consultas, salvo reprogramación administrativa posterior (HU-19). |
@@ -36,6 +37,8 @@ Solicitar turnos para terceros, listado de "Mis turnos", cancelación, reprogram
 Un `ADMIN` con permisos `appointments:management:view` y `appointments:management:manage` gestiona turnos de cualquier centro. Se considera pendiente de atención un turno `CONFIRMED` cuyo inicio todavía no llegó. Puede buscar turnos por centro y fecha, consultar su detalle, reprogramarlos dentro del mismo centro y servicio a un horario vigente (con otro profesional si corresponde) o cancelarlos.
 
 El turno reprogramado conserva identificador y titular; su horario anterior vuelve a la oferta si sigue siendo válido. Un turno cancelado muestra `CANCELLED` en el detalle propio del ciudadano, pero **retiene** el intervalo del profesional hasta que un administrativo lo habilita manualmente. El turno cancelado no bloquea otros turnos del ciudadano. La habilitación solo quita la retención: la agenda vigente decide si el horario vuelve a ofrecerse.
+
+La validación administrativa de horarios usa la misma agenda compartida: una visita o entrevista social superpuesta impide reprogramar el turno y se descuenta de los resúmenes de disponibilidad.
 
 Contrato administrativo: `GET /api/admin/appointments?centerId={id}&date={YYYY-MM-DD}`, `GET /api/admin/appointments/{id}`, `GET /api/admin/appointments/{id}/slots?date={YYYY-MM-DD}`, `PUT /api/admin/appointments/{id}/schedule`, `PATCH /api/admin/appointments/{id}/cancel`, `PATCH /api/admin/appointments/{id}/release-slot`. La respuesta administrativa incluye titular y `slotRetained`; las consultas ciudadanas siguen limitadas al titular.
 

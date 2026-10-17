@@ -6,5 +6,6 @@ enum class ApplicationStatus {
 
     companion object {
         val ALLOWS_NEW_PERIOD = setOf(REJECTED, CLOSED)
+        val EVALUATION_ALLOWED = setOf(SUBMITTED, IN_VALIDATION, PENDING_DOCUMENTATION, IN_EVALUATION)
     }
 }

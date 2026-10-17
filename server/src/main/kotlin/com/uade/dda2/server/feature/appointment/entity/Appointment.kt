@@ -20,6 +20,7 @@ import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 @Entity
@@ -86,13 +87,13 @@ class Appointment(
 ) {
     @PrePersist
     fun prePersist() {
-        val now = OffsetDateTime.now(ZoneOffset.UTC)
+        val now = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
         createdAt = now
         updatedAt = now
     }
 
     @PreUpdate
     fun preUpdate() {
-        updatedAt = OffsetDateTime.now(ZoneOffset.UTC)
+        updatedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
     }
 }

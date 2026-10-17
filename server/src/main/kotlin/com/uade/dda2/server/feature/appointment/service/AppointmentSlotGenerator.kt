@@ -18,11 +18,14 @@ class AppointmentSlotGenerator {
         citizenAppointments: Collection<Appointment>,
         zone: ZoneId,
         now: OffsetDateTime,
+        additionalBusyIntervals: Collection<AgendaBusyInterval> = emptyList(),
+        citizenId: Long? = citizenAppointments.firstOrNull()?.citizen?.id,
     ): List<AvailableAppointmentSlotResponse> {
         if (durationMinutes <= 0) return emptyList()
         val appointmentsByProfessional = professionalAppointments.groupBy {
             requireNotNull(it.professionalAssignment.professional.id)
         }
+        val additionalBusyByUser = additionalBusyIntervals.groupBy(AgendaBusyInterval::userId)
         return availabilities.flatMap { availability ->
             val assignment = availability.assignment
             val professional = assignment.professional
@@ -36,9 +39,14 @@ class AppointmentSlotGenerator {
                 val inFuture = startsAt.toInstant().isAfter(now.toInstant())
                 val professionalFree = appointmentsByProfessional[professionalId].orEmpty()
                     .none { overlaps(it.startsAt, it.endsAt, startsAt.toOffsetDateTime(), endsAt.toOffsetDateTime()) }
+                    && additionalBusyByUser[professionalId].orEmpty().none {
+                        overlaps(it.startsAt, it.endsAt, startsAt.toOffsetDateTime(), endsAt.toOffsetDateTime())
+                    }
                 val citizenFree = citizenAppointments.none {
                     overlaps(it.startsAt, it.endsAt, startsAt.toOffsetDateTime(), endsAt.toOffsetDateTime())
-                }
+                } && (citizenId == null || additionalBusyByUser[citizenId].orEmpty().none {
+                    overlaps(it.startsAt, it.endsAt, startsAt.toOffsetDateTime(), endsAt.toOffsetDateTime())
+                })
                 if (inFuture && professionalFree && citizenFree) {
                     result += AvailableAppointmentSlotResponse(
                         professionalAssignmentId = requireNotNull(assignment.id),
