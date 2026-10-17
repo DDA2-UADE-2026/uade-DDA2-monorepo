@@ -1,0 +1,118 @@
+# Diagrama de entidades del seguimiento social
+
+Este diagrama resume la parte del modelo utilizada por la evaluación social, las visitas o entrevistas, sus resultados y las solicitudes ciudadanas de reprogramación. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
+
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK
+        varchar name
+        varchar email
+        boolean active
+    }
+
+    PROGRAM_EDITION {
+        uuid id PK
+        uuid program_id FK
+        varchar name
+        varchar status
+    }
+
+    ENROLLMENT_PERIOD {
+        uuid id PK
+        uuid program_edition_id FK
+        date open_date
+        date close_date
+        varchar status
+    }
+
+    APPLICATION {
+        uuid id PK
+        bigint application_number UK
+        bigint user_id FK
+        bigint registered_by_user_id FK
+        bigint assigned_worker_user_id FK
+        uuid program_edition_id FK
+        uuid enrollment_period_id FK
+        varchar status
+        timestamp submitted_at
+        timestamp updated_at
+    }
+
+    APPLICATION_EVALUATION {
+        uuid id PK
+        uuid application_id FK,UK
+        varchar vulnerability
+        varchar priority
+        varchar recommendation
+        bigint professional_user_id FK
+        timestamptz evaluated_at
+    }
+
+    APPLICATION_VISIT {
+        uuid id PK
+        uuid application_id FK
+        varchar type
+        timestamptz starts_at
+        timestamptz ends_at
+        varchar location
+        bigint responsible_user_id FK
+        varchar status
+        timestamptz scheduled_at
+        timestamptz last_rescheduled_at
+        varchar cancellation_reason
+        timestamptz cancelled_at
+        bigint cancelled_by_user_id FK
+        varchar result_observations
+        varchar result_conclusions
+        timestamptz result_recorded_at
+        bigint result_recorded_by_user_id FK
+    }
+
+    APPLICATION_VISIT_RESCHEDULE_REQUEST {
+        uuid id PK
+        uuid visit_id FK
+        bigint requested_by_user_id FK
+        varchar reason
+        varchar status
+        timestamptz requested_at
+        timestamptz original_starts_at
+        timestamptz original_ends_at
+        varchar original_location
+        bigint reviewed_by_user_id FK
+        timestamptz reviewed_at
+        varchar review_comment
+        timestamptz approved_starts_at
+        timestamptz approved_ends_at
+        varchar approved_location
+    }
+
+    PROGRAM_EDITION ||--o{ ENROLLMENT_PERIOD : habilita
+    PROGRAM_EDITION ||--o{ APPLICATION : recibe
+    ENROLLMENT_PERIOD ||--o{ APPLICATION : agrupa
+    USERS ||--o{ APPLICATION : titular
+    USERS ||--o{ APPLICATION : registra
+    USERS o|--o{ APPLICATION : tiene_asignadas
+
+    APPLICATION ||--o| APPLICATION_EVALUATION : posee
+    USERS ||--o{ APPLICATION_EVALUATION : realiza
+
+    APPLICATION ||--o{ APPLICATION_VISIT : programa
+    USERS ||--o{ APPLICATION_VISIT : responsable
+    USERS o|--o{ APPLICATION_VISIT : cancela
+    USERS o|--o{ APPLICATION_VISIT : registra_resultado
+
+    APPLICATION_VISIT ||--o{ APPLICATION_VISIT_RESCHEDULE_REQUEST : recibe
+    USERS ||--o{ APPLICATION_VISIT_RESCHEDULE_REQUEST : solicita
+    USERS o|--o{ APPLICATION_VISIT_RESCHEDULE_REQUEST : revisa
+```
+
+## Decisiones representadas
+
+- `ApplicationEvaluation` es 1:1 con `Application`; la unicidad de `application_id` impide una segunda evaluación.
+- Una solicitud puede tener muchas actuaciones `VISIT` o `INTERVIEW`.
+- Cancelación y resultado forman parte de `ApplicationVisit`; no son entidades independientes. Sus columnas son mutuamente excluyentes mediante `ck_application_visit_lifecycle_data`.
+- La reprogramación aplicada conserva el horario vigente y `last_rescheduled_at` en la visita. La petición ciudadana sí tiene entidad propia para preservar su motivo, snapshot, decisión e historial.
+- Una visita admite muchas peticiones históricas, pero el índice parcial `uk_visit_reschedule_request_pending` permite como máximo una en estado `PENDING`.
+- Las referencias opcionales a usuarios corresponden al trabajador asignado, actor de cancelación, profesional de resultado y revisor. Las claves foráneas impiden eliminar usuarios todavía referenciados.
+- La trazabilidad se guarda en `logs` mediante `entity_type` y `entity_id`; ese vínculo es polimórfico y por eso no se dibuja como una clave foránea inexistente.

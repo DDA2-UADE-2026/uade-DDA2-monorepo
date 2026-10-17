@@ -28,6 +28,7 @@ Recursos principales:
 
 - [Contrato técnico de solicitudes y documentos](technical/solicitudes-beneficios.md)
 - [Análisis de seguridad y preparación para Ciudadanos](technical/seguridad-ciudadanos-analisis.md)
+- [Diagrama de entidades del seguimiento social](database/social-development-entity-diagram.md)
 - [Modelo de datos](database/api-entities.dbml)
 - [Datos iniciales](database/init.sql)
 - [Colección de Postman](postman/program-feature.postman_collection.json)

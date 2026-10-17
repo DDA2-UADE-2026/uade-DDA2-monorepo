@@ -20,13 +20,22 @@ Enum log_entity_type {
   application_visit
   application_visit_reschedule_request
   application_document
+  activity
+  activity_enrollment
   municipal_center
   municipal_service
   center_service
-  center_opening_hour
   professional_assignment
+  center_opening_hour
   professional_availability
   appointment
+  program
+  program_edition
+  program_benefit
+  program_requirement
+  program_document_requirement
+  program_image
+  program_incompatibility
 }
 
 Enum day_of_week {
@@ -541,7 +550,7 @@ Table application {
   registered_by_user_id bigint [not null, ref: > users.id, note: 'Registrado por: actor obtenido del JWT, inmutable. Coincide con user_id en solicitudes propias; en asistidas es el administrativo. No es el trabajador asignado.']
   program_edition_id uuid [not null, ref: > program_edition.id, note: 'Derivada de enrollment_period.program_edition_id; inmutable.']
   enrollment_period_id uuid [not null, ref: > enrollment_period.id]
-  status application_status [not null, note: 'varchar(30). Las altas finalizan en SUBMITTED. Las transiciones pertenecen a futuras historias.']
+  status application_status [not null, note: 'Persistido como varchar(30). Las altas finalizan en SUBMITTED; la evaluacion la lleva a IN_EVALUATION y la primera actuacion programada a IN_VISIT. Al cancelar o finalizar la ultima actuacion SCHEDULED vuelve a IN_EVALUATION.']
   origin_ticket_id varchar(255)
   resolution_reason varchar(1000)
   assigned_worker_user_id bigint [ref: > users.id]
@@ -572,7 +581,7 @@ Table application {
 
 Table application_evaluation {
   id uuid [pk]
-  application_id uuid [not null, unique, ref: > application.id, note: 'Una unica evaluacion vigente por solicitud.']
+  application_id uuid [not null, unique, ref: - application.id, note: 'Relacion 1:1; una unica evaluacion vigente por solicitud.']
   vulnerability vulnerability_level [not null, note: 'Persistido como varchar(20).']
   priority evaluation_priority [not null, note: 'Persistido como varchar(20).']
   recommendation varchar(1000) [not null, note: 'Texto profesional sensible; no se copia al log de auditoria.']
@@ -662,6 +671,13 @@ Table application_visit_reschedule_request {
   }
 
   Note: 'Historial inmutable de solicitudes ciudadanas. PostgreSQL agrega un indice unico parcial uk_visit_reschedule_request_pending sobre visit_id WHERE status = PENDING para admitir una sola pendiente por actuacion.'
+}
+
+TableGroup social_case_management {
+  application
+  application_evaluation
+  application_visit
+  application_visit_reschedule_request
 }
 
 Table document {
