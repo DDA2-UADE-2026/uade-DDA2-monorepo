@@ -1,6 +1,6 @@
 # Solicitudes de beneficios
 
-El backend implementa presentación propia y asistida, listado y detalle propios, listado y detalle administrativos, catálogo documental, documentos protegidos, evaluación social, gestión de visitas o entrevistas y su consulta ciudadana mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan decisiones de aprobación o rechazo, correcciones o reevaluaciones ni integración con Ciudadanos.
+El backend implementa presentación propia y asistida, consultas, documentos protegidos, evaluación social, gestión de visitas o entrevistas, consulta ciudadana y solicitudes ciudadanas de reprogramación mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan decisiones sobre la solicitud social, correcciones o reevaluaciones ni integración con Ciudadanos.
 
 ## Contrato HTTP
 
@@ -103,6 +103,14 @@ El resultado acepta exclusivamente:
 El listado de actuaciones admite `page`, `size`, `applicationId`, `applicationNumber`, `applicantUserId`, `responsibleId`, `programId`, `programEditionId`, `type`, `status`, `windowStart` y `windowEnd`. Sin `status` incluye `SCHEDULED`, `CANCELLED`, `REALIZED` y `NOT_REALIZED`. La ventana es semiabierta y selecciona intervalos superpuestos (`startsAt < windowEnd` y `endsAt > windowStart`). Se ordena por `startsAt` e `id` ascendentes. El listado expone actor y fecha de cancelación o resultado, pero omite motivo, observaciones y conclusiones; el detalle incorpora los textos completos.
 
 La consulta ciudadana restringe siempre por `application.id` y `application.user.id`, tomado del JWT. El listado incluye los cuatro estados y se ordena por `startsAt` e `id` descendentes. Sus DTO solo contienen identificadores de actuación y solicitud, número de solicitud, modalidad, horario vigente, duración, lugar, estado, indicador y fecha de última reprogramación y fecha de cancelación. El detalle agrega únicamente `cancellationReason`; nunca expone observaciones, conclusiones ni actores internos. La paginación admite `page >= 0` y `size` entre 1 y 100.
+
+`ApplicationVisitRescheduleRequest` conserva el historial separado de peticiones ciudadanas. El alta `POST /api/applications/{applicationId}/visits/{visitId}/reschedule-requests` acepta exclusivamente `reason`, recortado de 1 a 1000 caracteres, y snapshot del horario/lugar actual asignado por el servidor. Exige propiedad, solicitud `IN_VISIT`, actuación `SCHEDULED` futura y ausencia de otra `PENDING`; no modifica la visita. Una unicidad parcial PostgreSQL sobre `visit_id WHERE status = 'PENDING'` respalda la regla.
+
+Los endpoints ciudadanos de historial usan `applications:own:visits:view`, ordenan por `requestedAt` e `id` descendentes y restringen simultáneamente por solicitud, visita y titular. El listado omite motivo/comentario y el detalle los incluye sin identidades internas. Las respuestas de visita agregan `latestRescheduleRequest` con id, estado y fechas solamente.
+
+La bandeja `/api/admin/application-visit-reschedule-requests` exige `applications:visits:reschedule-requests:view`, ordena por antigüedad y filtra por estado, solicitud, número, visita, ciudadano, responsable, programa, edición y ventana semiabierta de solicitud. El listado no expone motivo, comentario ni lugares; el detalle sí los muestra al rol autorizado.
+
+La revisión exige `applications:visits:reschedule-requests:review` y coincidencia entre actor, responsable y trabajador asignado. `APPROVED` requiere horario completo, cambio real y agenda libre para responsable y titular; actualiza la visita, `lastRescheduledAt` y `Application.updatedAt`. `REJECTED` prohíbe horario y requiere comentario. Un conflicto o aprobación tardía revierte todo y conserva `PENDING`; cuando el horario original comenzó solo se admite rechazo. Mientras haya una pendiente, reprogramar, cancelar o registrar resultado directamente devuelve `APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING`.
 
 El alta exige evaluación previa, estado `IN_EVALUATION` o `IN_VISIT`, trabajador asignado y coincidencia entre ese trabajador y el actor. La agenda común combina actuaciones donde una persona participa como responsable o titular, turnos `CONFIRMED` del ciudadano y turnos `CONFIRMED` o `CANCELLED` con intervalo retenido del profesional. Los intervalos son semiabiertos: terminar exactamente cuando comienza el siguiente no es conflicto. La misma ocupación se aplica a alta, reprogramación, oferta de horarios y resúmenes administrativos de turnos.
 
@@ -216,7 +224,7 @@ Presentación y log `CREATE` de tipo `application` se confirman en una única tr
 
 El alta de evaluación bloquea la solicitud. Solo admite `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION` o `IN_EVALUATION`, exige que no haya una evaluación previa y no reemplaza un trabajador diferente. Evaluación, asignación, cambio de estado y log `application_evaluation` se confirman juntos. La auditoría guarda categorías, profesional, fecha y transición, pero nunca la recomendación.
 
-El alta y la gestión de una actuación bloquean primero la solicitud, luego responsable y titular en orden por identificador y, para modificar, la propia actuación. Se compara el estado observado antes del bloqueo para rechazar actualizaciones concurrentes obsoletas. Dentro de la transacción se revalidan autorización, etapa, asignación y agenda. La reprogramación excluye la actuación actual del cálculo de ocupación; una cancelada o finalizada deja de ocupar agenda. Actuación, `Application.updatedAt`, transición de estado y log `application_visit` se confirman juntos. La auditoría registra snapshots anterior/posterior y `RESCHEDULE`, `CANCEL` o `RECORD_RESULT`, pero nunca `location`, `cancellationReason`, `resultObservations` ni `resultConclusions`; para los textos del resultado solo conserva indicadores de presencia.
+El alta y la gestión de una actuación bloquean primero la solicitud, luego responsable y titular en orden por identificador y, para modificar, la propia actuación. Las peticiones agregan al final el bloqueo de su propia fila. Se compara el estado observado antes del bloqueo para rechazar actualizaciones concurrentes obsoletas. Dentro de la transacción se revalidan autorización, etapa, asignación y agenda. La reprogramación excluye la actuación actual del cálculo de ocupación; una cancelada o finalizada deja de ocupar agenda. Actuación, petición, `Application.updatedAt` y logs se confirman juntos. `application_visit_reschedule_request` audita `CREATE`/`UPDATE` y una aprobación también audita la visita vinculada; nunca copia motivo, comentario ni lugares.
 
 ## Numeración y esquema
 
@@ -226,13 +234,13 @@ La secuencia garantiza unicidad y crecimiento de los valores asignados. Los núm
 
 Al recrear la base de pruebas, iniciar el backend con la configuración habitual de generación del esquema y luego ejecutar manualmente `docs/database/init.sql`. No es necesario crear la secuencia a mano. El esquema documentado está en `docs/database/api-entities.dbml`.
 
-Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante, registrante, trabajador, profesional evaluador, cargador, revisor, responsable, cancelador o registrador de resultado vinculado; las FK protegen también las referencias a ediciones, convocatorias, requisitos y archivos. Las tablas nuevas se crean con Hibernate al recrear el esquema. Para una PostgreSQL existente deben aplicarse, en orden, `docs/database/migrations/2026-10-10-application-evaluation.sql`, `docs/database/migrations/2026-10-14-application-visits.sql`, `docs/database/migrations/2026-10-14-application-visit-management.sql`, `docs/database/migrations/2026-10-14-application-visit-results.sql` y `docs/database/migrations/2026-10-17-citizen-application-visits.sql`. La última recupera `last_rescheduled_at` desde auditorías `RESCHEDULE` existentes cuando están disponibles.
+Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a cualquier persona referenciada, incluidos solicitante y revisor de una petición de reprogramación; las FK lo respaldan. Para una PostgreSQL existente se aplican las migraciones de evaluación y visitas en orden y, después de `2026-10-17-citizen-application-visits.sql`, `2026-10-17-application-visit-reschedule-requests.sql`, que crea la tabla, checks, FK, índices, unicidad parcial y permisos.
 
 ## Permisos y pruebas manuales
 
-El init incluye `CIUDADANO` con `applications:own:create`, `applications:own:view`, `applications:own:documents:view`, `applications:own:documents:manage` y `applications:own:visits:view`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción anterior de superusuario técnico con todos los permisos.
+El init incluye `CIUDADANO` con sus permisos propios anteriores y `applications:own:visits:reschedule-requests:create`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción de superusuario técnico con todos los permisos.
 
-El init incorpora `applications:management:create`, `applications:management:view`, permisos documentales, `applications:evaluations:create`, `applications:evaluations:view`, `applications:visits:create`, `applications:visits:view`, `applications:visits:manage` y `applications:visits:results:create`, y los incluye en `ADMIN`. No los concede a `CIUDADANO` ni crea nuevos roles: se deben asignar explícitamente a los roles que correspondan mediante la gestión existente. Los endpoints de evaluación y visitas no exigen un nombre de rol concreto.
+El init incorpora además `applications:visits:reschedule-requests:view` y `applications:visits:reschedule-requests:review` para `ADMIN`. Ningún endpoint exige un nombre literal de rol: todos revalidan el permiso del JWT contra el rol activo persistido.
 
 Las cuentas de ejemplo `admin` y `viewer` también reciben `CIUDADANO` al ejecutar el init. En una base nueva, ambas deben seleccionar rol después del login. La gestión de roles del ABM conserva la asignación explícita existente; no se cambió para agregar roles automáticamente.
 
@@ -244,7 +252,7 @@ Las carpetas **Requisitos documentales**, **Documentos de solicitudes propias** 
 
 La carpeta **Evaluaciones sociales** usa `evaluationAccessToken` con los permisos de alta y consulta, y `applicationId` de una solicitud evaluable. La respuesta conserva `applicationEvaluationId`; luego permite listar con filtros, abrir el detalle completo y comprobar que un segundo alta devuelve conflicto.
 
-La carpeta **Visitas y entrevistas sociales** usa `visitAccessToken`, `applicationId` ya evaluado, `applicationVisitStartsAt` y `applicationVisitRescheduledStartsAt`. El alta conserva `applicationVisitId`; luego permite reprogramar, cancelar, filtrar por estado, abrir el detalle y comprobar conflictos del responsable y del titular. Para probar la finalización sin alterar ese flujo se configura por separado `applicationVisitResultId` con una actuación `SCHEDULED` ya terminada. Las consultas propias sobrescriben la autenticación con `citizenAccessToken`, que debe pertenecer al titular y conservar `applications:own:visits:view`; `otherCitizenApplicationId` permite comprobar el `404` sobre una solicitud ajena.
+La carpeta **Visitas y entrevistas sociales** conserva el flujo anterior y agrega crear petición, historial/detalle propio, bandeja/detalle administrativo, aprobación, rechazo, duplicado, conflicto de agenda, visita vencida y acceso ajeno. Usa `applicationVisitRescheduleRequestId`, `applicationVisitRequestedStartsAt` y los tokens ciudadano/trabajador con los permisos nuevos.
 
 CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los orígenes ya configurados. No se modificó el frontend.
 
@@ -259,12 +267,15 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 | 400 | `APPLICATION_VISIT_INVALID_DATA` | Tipo, fecha, duración, lugar, motivo, cuerpo o reprogramación sin cambios inválidos |
 | 400 | `APPLICATION_VISIT_RESULT_INVALID_DATA` | Estado final, observaciones, conclusiones o cuerpo de resultado inválido |
 | 400 | `APPLICATION_VISIT_INVALID_FILTER` | Paginación o ventana temporal de consulta inválida |
+| 400 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA` | Motivo, decisión, horario, comentario o cuerpo inválido |
+| 400 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_FILTER` | Filtros o ventana de solicitud inválidos |
 | 401 | `AUTH_UNAUTHENTICATED` / `AUTH_INVALID_TOKEN` | Falta de autenticación, token inválido o usuario inexistente/inactivo |
 | 403 | `AUTH_FORBIDDEN` | Rol activo sin permiso o ya no asignado |
 | 403 | `APPLICATION_ASSISTED_SELF_NOT_ALLOWED` | Se intentó usar la asistencia para uno mismo, en lugar de la presentación propia |
 | 404 | `APPLICATION_NOT_FOUND` | Solicitud inexistente o ajena |
 | 404 | `APPLICATION_EVALUATION_NOT_FOUND` | Evaluación inexistente |
 | 404 | `APPLICATION_VISIT_NOT_FOUND` | Visita o entrevista inexistente |
+| 404 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_FOUND` | Petición inexistente, ajena o combinada con otra actuación |
 | 409 | `APPLICATION_EVALUATION_ALREADY_EXISTS` | La solicitud ya tiene una evaluación |
 | 409 | `APPLICATION_EVALUATION_STATUS_NOT_ALLOWED` | El estado de la solicitud no admite evaluación |
 | 409 | `APPLICATION_EVALUATION_ASSIGNED_TO_ANOTHER_WORKER` | La solicitud está asignada a otro trabajador |
@@ -273,6 +284,10 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 | 409 | `APPLICATION_VISIT_ASSIGNED_TO_ANOTHER_WORKER` | El actor no es el trabajador asignado |
 | 409 | `APPLICATION_VISIT_NOT_MODIFIABLE` | La actuación está cancelada, comenzó o la solicitud ya no está en visita |
 | 409 | `APPLICATION_VISIT_RESULT_NOT_REGISTRABLE` | La actuación no está programada, todavía no terminó, ya tiene resultado o la solicitud no está en visita |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_ALLOWED` | La actuación propia no está programada, futura y en visita |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_ALREADY_PENDING` | Ya existe una petición pendiente para la actuación |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_REVIEWABLE` | La petición ya fue decidida o no admite aprobación |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING` | Una pendiente bloquea cambios directos sobre la actuación |
 | 409 | `APPLICATION_VISIT_CONCURRENT_MODIFICATION` | Otra operación modificó la actuación o su solicitud |
 | 409 | `APPLICATION_VISIT_RESPONSIBLE_CONFLICT` | La agenda del responsable se superpone |
 | 409 | `APPLICATION_VISIT_APPLICANT_CONFLICT` | La agenda del titular se superpone |
@@ -296,9 +311,9 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 
 ## Verificación automatizada
 
-`ApplicationFlowTest` utiliza HTTP con JWT reales y persistencia real en una base aislada. Cubre permisos y propiedad, validación de fechas/estados, cupo, paginación, campos internos rechazados, unicidad, reintentos concurrentes, convocatorias concurrentes, números globales concurrentes, restricciones de base y rollback de auditoría. `ApplicationDocumentFlowTest` cubre catálogo, pendientes, propiedad, permisos, formatos, firmas, límite, reemplazo, eliminación, descarga inline, revisión, estados finales, concurrencia, auditoría, rollback y ausencia de archivos huérfanos. `ApplicationEvaluationFlowTest` cubre el alta completa, listado filtrado, detalle completo, datos inválidos, seguridad y revocaciones, estados, asignación, duplicados, concurrencia, rollback de auditoría, integridad del profesional y exclusión de la recomendación del listado y del log. `ApplicationVisitFlowTest` cubre alta, reprogramación, cancelación, resultados `REALIZED` y `NOT_REALIZED`, consultas ciudadanas propias, transiciones, filtros, detalle, validaciones, permisos revocados, conflictos de ambos participantes contra visitas y turnos, liberación de agenda, límites contiguos, concurrencia, rollback y exclusión de textos sensibles.
+`ApplicationVisitFlowTest` cubre además alta e historial de peticiones, exposición diferenciada, aprobación/rechazo, solicitudes sucesivas, bloqueos, agenda, seguridad, concurrencia, rollback y exclusión de motivo, comentario y lugares en auditoría.
 
-Verificación del 17 de octubre de 2026: `compileKotlin`, `compileTestKotlin`, `bootJar`, `generateOpenApiDocs` y la suite completa de 256 pruebas finalizan correctamente. La colección Postman incluye alta, reprogramación, cancelación, resultado, consultas administrativas y consultas ciudadanas de visitas propias, y se valida como JSON. En esta ruta que contiene `año`, las tareas de prueba requieren fijar la codificación del worker como muestra el comando siguiente; sin esa opción el worker puede fallar antes de cargar las clases.
+Verificación del 17 de octubre de 2026: `compileKotlin`, `compileTestKotlin`, `bootJar`, `generateOpenApiDocs` y la suite completa de 268 pruebas finalizan correctamente. La colección Postman contiene 124 requests, incluidos los flujos de solicitudes de reprogramación, y se valida como JSON. En esta ruta que contiene `año`, las tareas de prueba requieren fijar la codificación del worker como muestra el comando siguiente; sin esa opción el worker puede fallar antes de cargar las clases.
 
 ```powershell
 .\gradlew.bat compileKotlin compileTestKotlin bootJar

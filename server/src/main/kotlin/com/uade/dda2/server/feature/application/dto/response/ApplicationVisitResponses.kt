@@ -26,6 +26,8 @@ data class ApplicationVisitResponse(
     val rescheduled: Boolean,
     @field:Schema(description = "Instante UTC de la ultima reprogramacion.", nullable = true)
     val lastRescheduledAt: OffsetDateTime?,
+    @field:Schema(description = "Solicitud de reprogramacion mas reciente, sin textos sensibles.", nullable = true)
+    val latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse?,
     @field:Schema(description = "Motivo de cancelacion; null mientras la actuacion siga programada.", nullable = true)
     val cancellationReason: String?,
     @field:Schema(description = "Instante UTC de cancelacion.", nullable = true)
@@ -65,6 +67,7 @@ data class ApplicationVisitListItemResponse(
     val scheduledAt: OffsetDateTime,
     val rescheduled: Boolean,
     val lastRescheduledAt: OffsetDateTime?,
+    val latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse?,
     val cancelledAt: OffsetDateTime?,
     val cancelledById: Long?,
     val cancelledByName: String?,
@@ -108,6 +111,7 @@ data class ApplicationVisitDetailResponse(
     val scheduledAt: OffsetDateTime,
     val rescheduled: Boolean,
     val lastRescheduledAt: OffsetDateTime?,
+    val latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse?,
     @field:Schema(description = "Motivo de cancelacion; no se expone en el listado ni en auditoria.", nullable = true)
     val cancellationReason: String?,
     val cancelledAt: OffsetDateTime?,

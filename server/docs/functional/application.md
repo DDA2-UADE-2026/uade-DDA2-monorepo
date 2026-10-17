@@ -224,6 +224,18 @@ La persona titular con `applications:own:visits:view` consulta todas las actuaci
 
 La vista ciudadana no revela observaciones, conclusiones, correos, identificadores profesionales ni quién registró la cancelación o el resultado. La consulta no modifica la solicitud, la actuación ni la auditoría.
 
+### Solicitar una reprogramación
+
+El titular puede pedir la reprogramación de una visita o entrevista propia futura y `SCHEDULED` mediante `POST /api/applications/{applicationId}/visits/{visitId}/reschedule-requests`, con `applications:own:visits:reschedule-requests:create`. Solo informa un motivo recortado de 1 a 1000 caracteres. La petición queda `PENDING`: el horario, lugar, estado y `lastRescheduledAt` de la actuación no cambian. Solo puede existir una pendiente por actuación.
+
+Con `applications:own:visits:view`, el ciudadano lista el historial en `GET .../reschedule-requests` y abre el detalle en `GET .../reschedule-requests/{requestId}`. El listado omite motivo y comentario; el detalle propio los muestra sin revelar identidades internas. Las respuestas de visita incluyen además el resumen sin textos de la petición más reciente.
+
+El trabajador con `applications:visits:reschedule-requests:view` dispone de la bandeja `GET /api/admin/application-visit-reschedule-requests`, con filtros por estado, solicitud, visita, ciudadano, responsable, programa, edición y ventana de solicitud. Su listado omite motivo, comentario y lugares; el detalle autorizado los incluye.
+
+Solo el responsable que continúa asignado puede revisar una pendiente mediante `PATCH .../reschedule-requests/{requestId}/review`, con `applications:visits:reschedule-requests:review`. Aprobar exige nuevo inicio futuro, duración positiva y lugar, aplica las mismas reglas de agenda y debe introducir un cambio real. Rechazar prohíbe esos datos y exige comentario. Un conflicto o una aprobación tardía conserva la petición `PENDING` y la visita intacta; si el horario original ya comenzó, solo puede rechazarse. Tras una decisión puede presentarse otra petición si la visita sigue programada y futura.
+
+Mientras exista una pendiente, la reprogramación directa, la cancelación y el registro de resultado responden conflicto. No hay retiro ciudadano, expiración automática, reapertura ni propuesta de horarios por parte del ciudadano.
+
 `GET /api/admin/application-visits` requiere `applications:visits:view` y permite filtrar por solicitud, número, titular, responsable, programa, edición, tipo, estado y ventana temporal superpuesta, con paginación de hasta 100 elementos. Sin filtro de estado incluye programadas, canceladas y finalizadas. El listado muestra quién y cuándo registró el resultado, pero no sus textos sensibles. El orden es por inicio ascendente e identificador. `GET /api/admin/application-visits/{visitId}` devuelve el contexto completo, incluido el lugar, el motivo de cancelación o las observaciones y conclusiones del resultado cuando corresponda. Todavía no hay reactivación, corrección del resultado, cambio de tipo o responsable ni notificación.
 
 ## Estados y transiciones
@@ -281,6 +293,6 @@ Las cargas, reemplazos, eliminaciones y revisiones documentales también dejan u
 
 Cada evaluación deja constancia de la solicitud, las categorías, el profesional, la fecha y la transición de estado. La recomendación se conserva en la evaluación, pero no se copia al log porque puede contener información social sensible.
 
-Cada visita o entrevista deja constancia de la solicitud, tipo, intervalo, responsable, estado, última reprogramación y transición de la solicitud. El lugar se conserva para las vistas autorizadas, pero se excluye de auditoría por poder contener un domicilio sensible.
+Cada visita o entrevista deja constancia de la solicitud, tipo, intervalo, responsable, estado, última reprogramación y transición de la solicitud. Cada petición de reprogramación registra solicitante, revisor, fechas, estado y snapshots de agenda. Motivo, comentario y lugares se conservan en la entidad, pero se excluyen de auditoría por ser sensibles.
 
 Las pausas y cierres de recepción no borran esas solicitudes. Los cambios posteriores que afecten la evaluación o el resultado deberán realizarse mediante los flujos que correspondan.

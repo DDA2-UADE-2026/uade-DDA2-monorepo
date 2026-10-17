@@ -9,15 +9,18 @@ import com.uade.dda2.server.feature.application.dto.request.RescheduleApplicatio
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitListResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitResponse
+import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitRescheduleRequestSummaryResponse
 import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitListResponse
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
 import com.uade.dda2.server.feature.application.entity.ApplicationVisit
+import com.uade.dda2.server.feature.application.entity.ApplicationVisitRescheduleRequestStatus
 import com.uade.dda2.server.feature.application.entity.ApplicationVisitStatus
 import com.uade.dda2.server.feature.application.entity.ApplicationVisitType
 import com.uade.dda2.server.feature.application.error.ApplicationErrors
 import com.uade.dda2.server.feature.application.error.ApplicationVisitErrors
+import com.uade.dda2.server.feature.application.error.ApplicationVisitRescheduleRequestErrors
 import com.uade.dda2.server.feature.application.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.application.mapper.toCitizenDetailResponse
 import com.uade.dda2.server.feature.application.mapper.toCitizenListItemResponse
@@ -25,9 +28,11 @@ import com.uade.dda2.server.feature.application.mapper.toCreationAuditSnapshot
 import com.uade.dda2.server.feature.application.mapper.toDetailResponse
 import com.uade.dda2.server.feature.application.mapper.toListItemResponse
 import com.uade.dda2.server.feature.application.mapper.toResponse
+import com.uade.dda2.server.feature.application.mapper.toSummaryResponse
 import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationVisitRescheduleRequestRepository
 import com.uade.dda2.server.feature.application.validator.ApplicationVisitValidator
 import com.uade.dda2.server.feature.appointment.service.AgendaAvailabilityService
 import com.uade.dda2.server.feature.auth.entity.User
@@ -75,6 +80,7 @@ class ApplicationVisitService(
     private val applications: ApplicationRepository,
     private val evaluations: ApplicationEvaluationRepository,
     private val visits: ApplicationVisitRepository,
+    private val rescheduleRequests: ApplicationVisitRescheduleRequestRepository,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
     private val validator: ApplicationVisitValidator,
@@ -150,6 +156,7 @@ class ApplicationVisitService(
     ): ApplicationVisitResponse {
         val principal = authorizeFor(APPLICATION_VISIT_MANAGE_PERMISSION)
         val locked = lockVisit(applicationId, visitId, principal, APPLICATION_VISIT_MANAGE_PERMISSION)
+        ensureNoPendingRescheduleRequest(visitId)
         val now = utcNow()
         validator.validateManageable(locked.application, locked.visit, locked.actor, now)
         val data = validator.validateRescheduleRequest(request, now)
@@ -199,7 +206,7 @@ class ApplicationVisitService(
             previousApplicationStatus = previousApplicationStatus,
             extra = mapOf("locationChanged" to (previousLocation != data.location)),
         )
-        return locked.visit.toResponse(appointmentTime.zone())
+        return locked.visit.toResponse(appointmentTime.zone(), latestRescheduleRequest(visitId))
     }
 
     @Transactional
@@ -211,6 +218,7 @@ class ApplicationVisitService(
         val principal = authorizeFor(APPLICATION_VISIT_MANAGE_PERMISSION)
         val reason = validator.validateCancellationRequest(request)
         val locked = lockVisit(applicationId, visitId, principal, APPLICATION_VISIT_MANAGE_PERMISSION)
+        ensureNoPendingRescheduleRequest(visitId)
         val now = utcNow()
         validator.validateManageable(locked.application, locked.visit, locked.actor, now)
 
@@ -239,7 +247,7 @@ class ApplicationVisitService(
             previousApplicationStatus = previousApplicationStatus,
             extra = mapOf("cancellationReasonRecorded" to true),
         )
-        return locked.visit.toResponse(appointmentTime.zone())
+        return locked.visit.toResponse(appointmentTime.zone(), latestRescheduleRequest(visitId))
     }
 
     @Transactional
@@ -251,6 +259,7 @@ class ApplicationVisitService(
         val principal = authorizeFor(APPLICATION_VISIT_RESULT_CREATE_PERMISSION)
         val result = validator.validateResultRequest(request)
         val locked = lockVisit(applicationId, visitId, principal, APPLICATION_VISIT_RESULT_CREATE_PERMISSION)
+        ensureNoPendingRescheduleRequest(visitId)
         val now = utcNow()
         validator.validateResultRegistrable(locked.application, locked.visit, locked.actor, now)
 
@@ -283,7 +292,7 @@ class ApplicationVisitService(
                 "conclusionsRecorded" to (result.conclusions != null),
             ),
         )
-        return locked.visit.toResponse(appointmentTime.zone())
+        return locked.visit.toResponse(appointmentTime.zone(), latestRescheduleRequest(visitId))
     }
 
     @Transactional(readOnly = true)
@@ -311,8 +320,11 @@ class ApplicationVisitService(
                 Sort.by("startsAt").ascending().and(Sort.by("id").ascending()),
             ),
         )
+        val summaries = latestRescheduleRequests(results.content.mapNotNull { it.id })
         return ApplicationVisitListResponse(
-            content = results.content.map { it.toListItemResponse(appointmentTime.zone()) },
+            content = results.content.map {
+                it.toListItemResponse(appointmentTime.zone(), summaries[it.id])
+            },
             page = results.number,
             size = results.size,
             totalElements = results.totalElements,
@@ -324,7 +336,7 @@ class ApplicationVisitService(
     fun get(id: UUID): ApplicationVisitDetailResponse {
         authorize(APPLICATION_VISIT_VIEW_PERMISSION)
         return (visits.findDetailById(id) ?: throw ApplicationVisitErrors.notFound())
-            .toDetailResponse(appointmentTime.zone())
+            .toDetailResponse(appointmentTime.zone(), latestRescheduleRequest(id))
     }
 
     @Transactional(readOnly = true)
@@ -340,8 +352,11 @@ class ApplicationVisitService(
                 Sort.by("startsAt").descending().and(Sort.by("id").descending()),
             ),
         )
+        val summaries = latestRescheduleRequests(results.content.mapNotNull { it.id })
         return CitizenApplicationVisitListResponse(
-            content = results.content.map { it.toCitizenListItemResponse(appointmentTime.zone()) },
+            content = results.content.map {
+                it.toCitizenListItemResponse(appointmentTime.zone(), summaries[it.id])
+            },
             page = results.number,
             size = results.size,
             totalElements = results.totalElements,
@@ -354,7 +369,30 @@ class ApplicationVisitService(
         val userId = authorizeOwn()
         applications.findByIdAndUserId(applicationId, userId) ?: throw ApplicationErrors.notFound()
         return (visits.findOwnDetailById(visitId, applicationId, userId) ?: throw ApplicationVisitErrors.notFound())
-            .toCitizenDetailResponse(appointmentTime.zone())
+            .toCitizenDetailResponse(appointmentTime.zone(), latestRescheduleRequest(visitId))
+    }
+
+    private fun ensureNoPendingRescheduleRequest(visitId: UUID) {
+        if (
+            rescheduleRequests.existsByVisitIdAndStatus(
+                visitId,
+                ApplicationVisitRescheduleRequestStatus.PENDING,
+            )
+        ) {
+            throw ApplicationVisitRescheduleRequestErrors.pending()
+        }
+    }
+
+    private fun latestRescheduleRequest(visitId: UUID): ApplicationVisitRescheduleRequestSummaryResponse? =
+        latestRescheduleRequests(listOf(visitId))[visitId]
+
+    private fun latestRescheduleRequests(
+        visitIds: Collection<UUID>,
+    ): Map<UUID, ApplicationVisitRescheduleRequestSummaryResponse> {
+        if (visitIds.isEmpty()) return emptyMap()
+        return rescheduleRequests.findLatestCandidates(visitIds)
+            .distinctBy { requireNotNull(it.visit.id) }
+            .associate { requireNotNull(it.visit.id) to it.toSummaryResponse() }
     }
 
     private fun authorize(permission: String) {

@@ -53,7 +53,7 @@ El beneficio es la ayuda ofrecida por una edición, por ejemplo asistencia alime
 
 **Administrativo autorizado para asistencia.** Puede registrar una solicitud para otra persona ya existente en el sistema, sin restricción de jurisdicción. Quedan identificados tanto el titular como quien realizó el registro. El acceso posterior a documentos ajenos requiere permisos administrativos documentales separados.
 
-**Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado, presenta y consulta sus propias solicitudes, entrega sus documentos protegidos y revisa el horario y estado de sus visitas o entrevistas. No presenta solicitudes a nombre de otra persona.
+**Persona solicitante.** Ingresa con su cuenta, consulta la oferta y, cuando opera con un rol habilitado, presenta y consulta sus propias solicitudes, entrega sus documentos protegidos, revisa sus visitas o entrevistas y puede pedir su reprogramación con motivo. No presenta solicitudes a nombre de otra persona.
 
 **Trabajador social autorizado.** Registra la evaluación, queda asignado a la solicitud, programa sus visitas o entrevistas sin superponer agendas y registra su resultado una vez finalizadas.
 
@@ -77,8 +77,9 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 12. Ese mismo trabajador programa una visita domiciliaria o entrevista futura. La primera actuación lleva la solicitud a **En visita** y queda visible en una agenda administrativa filtrable.
 13. Cuando termina la actuación, su responsable registra si fue realizada o no realizada, junto con observaciones o conclusiones opcionales. Si no quedan otras pendientes, la solicitud vuelve a evaluación.
 14. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
+15. Si no puede asistir, solicita la reprogramación con un motivo; la actuación no cambia hasta que el responsable aprueba un nuevo horario, duración y lugar, o rechaza la petición con un comentario.
 
-La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social y programación, gestión, consulta administrativa y consulta ciudadana de visitas o entrevistas. La aprobación, rechazo, lista de espera e incorporación efectiva corresponden a etapas posteriores que todavía no se operan desde estas funcionalidades.
+La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social, gestión de visitas o entrevistas y solicitudes ciudadanas de reprogramación. La aprobación o rechazo de la solicitud social, la lista de espera y la incorporación efectiva corresponden a etapas posteriores.
 
 ## Tres decisiones diferentes
 

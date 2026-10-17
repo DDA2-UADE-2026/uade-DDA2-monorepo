@@ -3,6 +3,7 @@ package com.uade.dda2.server.feature.application.mapper
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitListItemResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitResponse
+import com.uade.dda2.server.feature.application.dto.response.ApplicationVisitRescheduleRequestSummaryResponse
 import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitDetailResponse
 import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationVisitListItemResponse
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
@@ -10,7 +11,10 @@ import com.uade.dda2.server.feature.application.entity.ApplicationVisit
 import java.time.Duration
 import java.time.ZoneId
 
-fun ApplicationVisit.toResponse(zone: ZoneId): ApplicationVisitResponse = ApplicationVisitResponse(
+fun ApplicationVisit.toResponse(
+    zone: ZoneId,
+    latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse? = null,
+): ApplicationVisitResponse = ApplicationVisitResponse(
     id = requireNotNull(id),
     applicationId = requireNotNull(application.id),
     applicationStatus = application.status,
@@ -25,6 +29,7 @@ fun ApplicationVisit.toResponse(zone: ZoneId): ApplicationVisitResponse = Applic
     scheduledAt = scheduledAt,
     rescheduled = lastRescheduledAt != null,
     lastRescheduledAt = lastRescheduledAt,
+    latestRescheduleRequest = latestRescheduleRequest,
     cancellationReason = cancellationReason,
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
@@ -36,7 +41,10 @@ fun ApplicationVisit.toResponse(zone: ZoneId): ApplicationVisitResponse = Applic
     resultRecordedByName = resultRecordedBy?.name,
 )
 
-fun ApplicationVisit.toListItemResponse(zone: ZoneId): ApplicationVisitListItemResponse = ApplicationVisitListItemResponse(
+fun ApplicationVisit.toListItemResponse(
+    zone: ZoneId,
+    latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse? = null,
+): ApplicationVisitListItemResponse = ApplicationVisitListItemResponse(
     id = requireNotNull(id),
     applicationId = requireNotNull(application.id),
     applicationNumber = requireNotNull(application.applicationNumber),
@@ -58,6 +66,7 @@ fun ApplicationVisit.toListItemResponse(zone: ZoneId): ApplicationVisitListItemR
     scheduledAt = scheduledAt,
     rescheduled = lastRescheduledAt != null,
     lastRescheduledAt = lastRescheduledAt,
+    latestRescheduleRequest = latestRescheduleRequest,
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
     cancelledByName = cancelledBy?.name,
@@ -66,7 +75,10 @@ fun ApplicationVisit.toListItemResponse(zone: ZoneId): ApplicationVisitListItemR
     resultRecordedByName = resultRecordedBy?.name,
 )
 
-fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailResponse = ApplicationVisitDetailResponse(
+fun ApplicationVisit.toDetailResponse(
+    zone: ZoneId,
+    latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse? = null,
+): ApplicationVisitDetailResponse = ApplicationVisitDetailResponse(
     id = requireNotNull(id),
     applicationId = requireNotNull(application.id),
     applicationNumber = requireNotNull(application.applicationNumber),
@@ -91,6 +103,7 @@ fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailRespo
     scheduledAt = scheduledAt,
     rescheduled = lastRescheduledAt != null,
     lastRescheduledAt = lastRescheduledAt,
+    latestRescheduleRequest = latestRescheduleRequest,
     cancellationReason = cancellationReason,
     cancelledAt = cancelledAt,
     cancelledById = cancelledBy?.id,
@@ -104,7 +117,10 @@ fun ApplicationVisit.toDetailResponse(zone: ZoneId): ApplicationVisitDetailRespo
     resultRecordedByEmail = resultRecordedBy?.email,
 )
 
-fun ApplicationVisit.toCitizenListItemResponse(zone: ZoneId): CitizenApplicationVisitListItemResponse =
+fun ApplicationVisit.toCitizenListItemResponse(
+    zone: ZoneId,
+    latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse? = null,
+): CitizenApplicationVisitListItemResponse =
     CitizenApplicationVisitListItemResponse(
         id = requireNotNull(id),
         applicationId = requireNotNull(application.id),
@@ -117,10 +133,14 @@ fun ApplicationVisit.toCitizenListItemResponse(zone: ZoneId): CitizenApplication
         status = status,
         rescheduled = lastRescheduledAt != null,
         lastRescheduledAt = lastRescheduledAt,
+        latestRescheduleRequest = latestRescheduleRequest,
         cancelledAt = cancelledAt,
     )
 
-fun ApplicationVisit.toCitizenDetailResponse(zone: ZoneId): CitizenApplicationVisitDetailResponse =
+fun ApplicationVisit.toCitizenDetailResponse(
+    zone: ZoneId,
+    latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse? = null,
+): CitizenApplicationVisitDetailResponse =
     CitizenApplicationVisitDetailResponse(
         id = requireNotNull(id),
         applicationId = requireNotNull(application.id),
@@ -133,6 +153,7 @@ fun ApplicationVisit.toCitizenDetailResponse(zone: ZoneId): CitizenApplicationVi
         status = status,
         rescheduled = lastRescheduledAt != null,
         lastRescheduledAt = lastRescheduledAt,
+        latestRescheduleRequest = latestRescheduleRequest,
         cancelledAt = cancelledAt,
         cancellationReason = cancellationReason,
     )

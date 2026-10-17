@@ -24,6 +24,8 @@ data class CitizenApplicationVisitListItemResponse(
     val rescheduled: Boolean,
     @field:Schema(description = "Instante UTC de la ultima reprogramacion.", nullable = true)
     val lastRescheduledAt: OffsetDateTime?,
+    @field:Schema(description = "Solicitud de reprogramacion mas reciente, sin motivo ni comentario.", nullable = true)
+    val latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse?,
     @field:Schema(description = "Instante UTC de cancelacion.", nullable = true)
     val cancelledAt: OffsetDateTime?,
 )
@@ -55,6 +57,8 @@ data class CitizenApplicationVisitDetailResponse(
     val rescheduled: Boolean,
     @field:Schema(description = "Instante UTC de la ultima reprogramacion.", nullable = true)
     val lastRescheduledAt: OffsetDateTime?,
+    @field:Schema(description = "Solicitud de reprogramacion mas reciente, sin motivo ni comentario.", nullable = true)
+    val latestRescheduleRequest: ApplicationVisitRescheduleRequestSummaryResponse?,
     @field:Schema(description = "Instante UTC de cancelacion.", nullable = true)
     val cancelledAt: OffsetDateTime?,
     @field:Schema(

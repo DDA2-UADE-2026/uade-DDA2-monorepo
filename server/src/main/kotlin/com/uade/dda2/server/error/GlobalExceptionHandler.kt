@@ -73,11 +73,15 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     message = when {
                         request.requestURI == "/api/admin/application-visits" -> "Los filtros de visitas o entrevistas son inválidos."
+                        request.requestURI == "/api/admin/application-visit-reschedule-requests" ->
+                            "Los filtros de solicitudes de reprogramacion son invalidos."
                         request.requestURI == "/api/admin/application-evaluations" -> "Los filtros de evaluaciones son inválidos."
                         else -> "La validación falló."
                     },
                     code = when {
                         request.requestURI == "/api/admin/application-visits" -> "APPLICATION_VISIT_INVALID_FILTER"
+                        request.requestURI == "/api/admin/application-visit-reschedule-requests" ->
+                            "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_FILTER"
                         request.requestURI == "/api/admin/application-evaluations" -> "APPLICATION_EVALUATION_INVALID_FILTER"
                         else -> "VALIDATION_ERROR"
                     },
@@ -100,6 +104,9 @@ class GlobalExceptionHandler {
         val visitResultRequest = request.requestURI.matches(
             Regex("/api/applications/[^/]+/visits/[^/]+/result"),
         )
+        val visitRescheduleRequest = request.requestURI.matches(
+            Regex("/api/applications/[^/]+/visits/[^/]+/reschedule-requests(?:/[^/]+/review)?"),
+        )
         val visitRequest = request.requestURI.matches(
             Regex("/api/applications/[^/]+/visits(?:/[^/]+/(?:schedule|cancel|result))?"),
         )
@@ -110,6 +117,7 @@ class GlobalExceptionHandler {
                     message = when {
                         evaluationRequest -> "Los datos de la evaluacion son invalidos."
                         visitResultRequest -> "Los datos del resultado de la visita o entrevista son invalidos."
+                        visitRescheduleRequest -> "Los datos de la solicitud de reprogramacion son invalidos."
                         visitRequest -> "Los datos de la visita o entrevista son invalidos."
                         else -> "El cuerpo de la solicitud es inválido."
                     },
@@ -117,6 +125,7 @@ class GlobalExceptionHandler {
                         appointmentRequest -> "APPOINTMENT_INVALID_REQUEST"
                         evaluationRequest -> "APPLICATION_EVALUATION_INVALID_DATA"
                         visitResultRequest -> "APPLICATION_VISIT_RESULT_INVALID_DATA"
+                        visitRescheduleRequest -> "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA"
                         visitRequest -> "APPLICATION_VISIT_INVALID_DATA"
                         else -> "INVALID_REQUEST_BODY"
                     },

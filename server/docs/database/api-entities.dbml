@@ -18,6 +18,7 @@ Enum log_entity_type {
   application
   application_evaluation
   application_visit
+  application_visit_reschedule_request
   application_document
   municipal_center
   municipal_service
@@ -81,6 +82,12 @@ Enum application_visit_status {
   CANCELLED
   REALIZED
   NOT_REALIZED
+}
+
+Enum application_visit_reschedule_request_status {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 Enum enrollment_period_status {
@@ -620,7 +627,41 @@ Table application_visit {
     `(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and cancelled_by_user_id is not null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_recorded_at is not null and result_recorded_by_user_id = responsible_user_id and result_recorded_at >= ends_at and (result_observations is null or length(trim(result_observations)) between 1 and 2000) and (result_conclusions is null or length(trim(result_conclusions)) between 1 and 2000))` [name: 'ck_application_visit_lifecycle_data']
   }
 
-  Note: 'Admite varias actuaciones por solicitud evaluada. Las futuras SCHEDULED pueden reprogramarse o cancelarse; una finalizada puede cerrarse una sola vez como REALIZED o NOT_REALIZED. El titular consulta solo actuaciones de sus solicitudes mediante applications:own:visits:view. Cancelar o finalizar la ultima pendiente devuelve la solicitud a IN_EVALUATION.'
+  Note: 'Admite varias actuaciones por solicitud evaluada. Las futuras SCHEDULED pueden reprogramarse o cancelarse; una solicitud ciudadana PENDING bloquea esos cambios directos y el resultado hasta su revision. Una finalizada puede cerrarse una sola vez como REALIZED o NOT_REALIZED. El titular consulta solo actuaciones de sus solicitudes mediante applications:own:visits:view.'
+}
+
+Table application_visit_reschedule_request {
+  id uuid [pk]
+  visit_id uuid [not null, ref: > application_visit.id]
+  requested_by_user_id bigint [not null, ref: > users.id, note: 'Ciudadano autenticado titular de la solicitud.']
+  reason varchar(1000) [not null, note: 'Texto ciudadano sensible; se expone solo en detalles autorizados y no se copia a auditoria.']
+  status application_visit_reschedule_request_status [not null]
+  requested_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+  original_starts_at timestamptz [not null]
+  original_ends_at timestamptz [not null]
+  original_location varchar(300) [not null, note: 'Snapshot sensible del lugar al solicitar.']
+  reviewed_by_user_id bigint [ref: > users.id, note: 'Responsable autenticado que tomo la decision.']
+  reviewed_at timestamptz
+  review_comment varchar(1000) [note: 'Opcional al aprobar y obligatorio al rechazar; no se copia a auditoria.']
+  approved_starts_at timestamptz
+  approved_ends_at timestamptz
+  approved_location varchar(300) [note: 'Snapshot sensible del lugar aplicado al aprobar.']
+
+  indexes {
+    (visit_id, requested_at) [name: 'ix_visit_reschedule_request_visit_time']
+    (status, requested_at) [name: 'ix_visit_reschedule_request_status_time']
+    requested_by_user_id [name: 'ix_visit_reschedule_request_requested_by']
+    reviewed_by_user_id [name: 'ix_visit_reschedule_request_reviewed_by']
+  }
+
+  checks {
+    `status in ('PENDING', 'APPROVED', 'REJECTED')` [name: 'ck_visit_reschedule_request_status']
+    `length(trim(reason)) between 1 and 1000` [name: 'ck_visit_reschedule_request_reason']
+    `original_starts_at < original_ends_at and length(trim(original_location)) between 1 and 300` [name: 'ck_visit_reschedule_request_original_schedule']
+    `(status = 'PENDING' and reviewed_by_user_id is null and reviewed_at is null and review_comment is null and approved_starts_at is null and approved_ends_at is null and approved_location is null) or (status = 'APPROVED' and reviewed_by_user_id is not null and reviewed_at is not null and reviewed_at >= requested_at and approved_starts_at is not null and approved_ends_at is not null and approved_starts_at < approved_ends_at and approved_location is not null and length(trim(approved_location)) between 1 and 300 and (review_comment is null or length(trim(review_comment)) between 1 and 1000)) or (status = 'REJECTED' and reviewed_by_user_id is not null and reviewed_at is not null and reviewed_at >= requested_at and review_comment is not null and length(trim(review_comment)) between 1 and 1000 and approved_starts_at is null and approved_ends_at is null and approved_location is null)` [name: 'ck_visit_reschedule_request_lifecycle']
+  }
+
+  Note: 'Historial inmutable de solicitudes ciudadanas. PostgreSQL agrega un indice unico parcial uk_visit_reschedule_request_pending sobre visit_id WHERE status = PENDING para admitir una sola pendiente por actuacion.'
 }
 
 Table document {

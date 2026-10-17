@@ -137,29 +137,30 @@ class ApplicationVisitValidator {
         return trimmed
     }
 
-    private fun validateSchedule(
+    fun validateSchedule(
         requestedStart: OffsetDateTime?,
         requestedDuration: Int?,
         requestedLocation: String?,
         now: OffsetDateTime,
+        invalidData: (String) -> RuntimeException = ApplicationVisitErrors::invalidData,
     ): ValidatedApplicationVisitSchedule {
-        val rawStart = requestedStart ?: throw ApplicationVisitErrors.invalidData("La fecha de inicio es obligatoria.")
-        val duration = requestedDuration ?: throw ApplicationVisitErrors.invalidData("La duracion es obligatoria.")
-        if (duration <= 0) throw ApplicationVisitErrors.invalidData("La duracion debe ser mayor a cero.")
+        val rawStart = requestedStart ?: throw invalidData("La fecha de inicio es obligatoria.")
+        val duration = requestedDuration ?: throw invalidData("La duracion es obligatoria.")
+        if (duration <= 0) throw invalidData("La duracion debe ser mayor a cero.")
         val location = requestedLocation?.trim()
         if (location.isNullOrEmpty() || location.length > 300) {
-            throw ApplicationVisitErrors.invalidData("El lugar debe tener entre 1 y 300 caracteres.")
+            throw invalidData("El lugar debe tener entre 1 y 300 caracteres.")
         }
         val startsAt = rawStart.toInstant().truncatedTo(ChronoUnit.MICROS).atOffset(ZoneOffset.UTC)
         if (!startsAt.toInstant().isAfter(now.toInstant())) {
-            throw ApplicationVisitErrors.invalidData("La fecha de inicio debe ser futura.")
+            throw invalidData("La fecha de inicio debe ser futura.")
         }
         val endsAt = try {
             startsAt.plusMinutes(duration.toLong())
         } catch (_: DateTimeException) {
-            throw ApplicationVisitErrors.invalidData("La fecha de fin calculada esta fuera del rango admitido.")
+            throw invalidData("La fecha de fin calculada esta fuera del rango admitido.")
         } catch (_: ArithmeticException) {
-            throw ApplicationVisitErrors.invalidData("La fecha de fin calculada esta fuera del rango admitido.")
+            throw invalidData("La fecha de fin calculada esta fuera del rango admitido.")
         }
         return ValidatedApplicationVisitSchedule(startsAt, endsAt, location)
     }

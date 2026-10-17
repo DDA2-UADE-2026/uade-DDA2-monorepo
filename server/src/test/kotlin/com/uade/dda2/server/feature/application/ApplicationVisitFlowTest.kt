@@ -7,11 +7,13 @@ import com.uade.dda2.server.feature.application.dto.response.CitizenApplicationV
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationEvaluation
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
+import com.uade.dda2.server.feature.application.entity.ApplicationVisitRescheduleRequestStatus
 import com.uade.dda2.server.feature.application.entity.EvaluationPriority
 import com.uade.dda2.server.feature.application.entity.VulnerabilityLevel
 import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationVisitRescheduleRequestRepository
 import com.uade.dda2.server.feature.appointment.entity.Appointment
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.auth.entity.Permission
@@ -100,6 +102,7 @@ class ApplicationVisitFlowTest {
     @Autowired lateinit var applications: ApplicationRepository
     @Autowired lateinit var evaluations: ApplicationEvaluationRepository
     @Autowired lateinit var visits: ApplicationVisitRepository
+    @Autowired lateinit var visitRescheduleRequests: ApplicationVisitRescheduleRequestRepository
     @Autowired lateinit var appointments: AppointmentRepository
     @Autowired lateinit var centers: MunicipalCenterRepository
     @Autowired lateinit var municipalServices: MunicipalServiceRepository
@@ -142,17 +145,27 @@ class ApplicationVisitFlowTest {
         val managePermission = permission("applications:visits:manage")
         val resultPermission = permission("applications:visits:results:create")
         val ownViewPermission = permission("applications:own:visits:view")
+        val ownRescheduleRequestPermission = permission("applications:own:visits:reschedule-requests:create")
+        val rescheduleRequestViewPermission = permission("applications:visits:reschedule-requests:view")
+        val rescheduleRequestReviewPermission = permission("applications:visits:reschedule-requests:review")
         val actorRole = roles.save(
             Role(
                 name = "TRABAJADOR_${UUID.randomUUID()}",
-                permissions = mutableSetOf(createPermission, viewPermission, managePermission, resultPermission),
+                permissions = mutableSetOf(
+                    createPermission,
+                    viewPermission,
+                    managePermission,
+                    resultPermission,
+                    rescheduleRequestViewPermission,
+                    rescheduleRequestReviewPermission,
+                ),
             ),
         )
         val unauthorizedRole = roles.save(Role(name = "SIN_VISITAS_${UUID.randomUUID()}"))
         val applicantRole = roles.save(
             Role(
                 name = "CIT_VIS_${UUID.randomUUID()}",
-                permissions = mutableSetOf(ownViewPermission),
+                permissions = mutableSetOf(ownViewPermission, ownRescheduleRequestPermission),
             ),
         )
         val actor = users.saveAndFlush(
@@ -341,6 +354,398 @@ class ApplicationVisitFlowTest {
         val request = get("/api/applications/$applicationId/visits/$visitId")
         if (token != null) request.header("Authorization", "Bearer $token")
         return mvc.perform(request).andReturn()
+    }
+
+    private fun requestReschedule(
+        visitId: UUID,
+        applicationId: UUID = fixture.applicationId,
+        token: String? = fixture.applicantToken,
+        reason: String = "  No podre asistir por un compromiso medico.  ",
+        body: String? = null,
+    ): MvcResult {
+        val request = post(
+            "/api/applications/$applicationId/visits/$visitId/reschedule-requests",
+        )
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body ?: json.writeValueAsString(mapOf("reason" to reason)))
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun reviewRescheduleRequest(
+        visitId: UUID,
+        requestId: UUID,
+        applicationId: UUID = fixture.applicationId,
+        token: String? = fixture.actorToken,
+        status: String = "APPROVED",
+        startsAt: OffsetDateTime? = OffsetDateTime.now(ZoneOffset.UTC).plusDays(6).withNano(0),
+        durationMinutes: Int? = 90,
+        location: String? = "  Centro comunitario  ",
+        comment: String? = "  Horario coordinado telefonicamente.  ",
+        body: String? = null,
+    ): MvcResult {
+        val payload = linkedMapOf<String, Any?>("status" to status, "comment" to comment)
+        if (startsAt != null) payload["startsAt"] = startsAt
+        if (durationMinutes != null) payload["durationMinutes"] = durationMinutes
+        if (location != null) payload["location"] = location
+        val request = patch(
+            "/api/applications/$applicationId/visits/$visitId/reschedule-requests/$requestId/review",
+        )
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body ?: json.writeValueAsString(payload))
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
+    @Test
+    fun `ciudadano solicita reprogramacion sin cambiar visita y consulta historial separado`() {
+        val originalStart = OffsetDateTime.now(ZoneOffset.UTC).plusDays(3).withNano(0)
+        val visit = json.readValue(
+            create(startsAt = originalStart).response.contentAsString,
+            ApplicationVisitResponse::class.java,
+        )
+
+        val createdResult = requestReschedule(visit.id)
+        expect(createdResult, 201)
+        val created = json.readTree(createdResult.response.contentAsString)
+        val requestId = UUID.fromString(created["id"].stringValue())
+        assertEquals("PENDING", created["status"].stringValue())
+        assertEquals("No podre asistir por un compromiso medico.", created["reason"].stringValue())
+        assertEquals(originalStart.toInstant(), OffsetDateTime.parse(created["scheduleAtRequest"]["startsAt"].stringValue()).toInstant())
+
+        val persistedVisit = visits.findById(visit.id).orElseThrow()
+        assertEquals(originalStart.toInstant(), persistedVisit.startsAt.toInstant())
+        assertEquals("Domicilio declarado", persistedVisit.location)
+        assertEquals(null, persistedVisit.lastRescheduledAt)
+
+        val list = mvc.perform(
+            get("/api/applications/${fixture.applicationId}/visits/${visit.id}/reschedule-requests")
+                .header("Authorization", "Bearer ${fixture.applicantToken}"),
+        ).andReturn()
+        expect(list, 200)
+        val item = json.readTree(list.response.contentAsString)["content"][0]
+        assertEquals(requestId.toString(), item["id"].stringValue())
+        assertFalse(item.has("reason"))
+        assertFalse(item.has("reviewComment"))
+
+        val ownVisit = json.readTree(getOwn(visit.id).response.contentAsString)
+        assertEquals(requestId.toString(), ownVisit["latestRescheduleRequest"]["id"].stringValue())
+        assertEquals("PENDING", ownVisit["latestRescheduleRequest"]["status"].stringValue())
+        assertFalse(ownVisit["latestRescheduleRequest"].has("reason"))
+    }
+
+    @Test
+    fun `valida motivo propiedad duplicado y campos desconocidos`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(requestReschedule(visit.id, reason = "   "), 400, "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA")
+        expect(
+            requestReschedule(visit.id, body = """{"reason":"Motivo","visitId":"${visit.id}"}"""),
+            400,
+            "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA",
+        )
+        expect(requestReschedule(visit.id, token = fixture.otherApplicantToken), 404, "APPLICATION_NOT_FOUND")
+        expect(requestReschedule(visit.id), 201)
+        expect(requestReschedule(visit.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_ALREADY_PENDING")
+    }
+
+    @Test
+    fun `pendiente bloquea reprogramacion cancelacion y resultado directos`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(requestReschedule(visit.id), 201)
+        expect(reschedule(visit.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING")
+        expect(cancel(visit.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING")
+        markEnded(visit.id)
+        expect(recordResult(visit.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING")
+    }
+
+    @Test
+    fun `responsable aprueba aplica agenda y conserva textos sensibles fuera de auditoria`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val pending = json.readTree(requestReschedule(visit.id).response.contentAsString)
+        val requestId = UUID.fromString(pending["id"].stringValue())
+        val newStart = OffsetDateTime.now(ZoneOffset.UTC).plusDays(7).withNano(0)
+
+        val reviewedResult = reviewRescheduleRequest(visit.id, requestId, startsAt = newStart)
+        expect(reviewedResult, 200)
+        val reviewed = json.readTree(reviewedResult.response.contentAsString)
+        assertEquals("APPROVED", reviewed["status"].stringValue())
+        assertEquals("Horario coordinado telefonicamente.", reviewed["reviewComment"].stringValue())
+        assertEquals(newStart.toInstant(), OffsetDateTime.parse(reviewed["approvedSchedule"]["startsAt"].stringValue()).toInstant())
+        assertEquals("Centro comunitario", reviewed["approvedSchedule"]["location"].stringValue())
+
+        val persisted = visits.findById(visit.id).orElseThrow()
+        assertEquals(newStart.toInstant(), persisted.startsAt.toInstant())
+        assertNotNull(persisted.lastRescheduledAt)
+        val ownVisit = json.readTree(getOwn(visit.id).response.contentAsString)
+        assertEquals("APPROVED", ownVisit["latestRescheduleRequest"]["status"].stringValue())
+
+        val audit = jdbc.queryForList(
+            "select old_values, new_values from logs where entity_id in (?, ?) order by created_at",
+            visit.id.toString(),
+            requestId.toString(),
+        ).flatMap { row -> row.values.filterNotNull().map(::jsonValue) }
+        val auditText = audit.joinToString(" ") { it.toString() }
+        assertFalse(auditText.contains("No podre asistir"))
+        assertFalse(auditText.contains("Horario coordinado"))
+        assertFalse(auditText.contains("Centro comunitario"))
+        assertTrue(audit.any { it.get("operation")?.stringValue() == "RESCHEDULE_REQUEST_APPROVED" })
+    }
+
+    @Test
+    fun `conflicto al aprobar deja solicitud pendiente y visita intacta`() {
+        val first = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val conflictStart = OffsetDateTime.now(ZoneOffset.UTC).plusDays(8).withNano(0)
+        expect(create(startsAt = conflictStart), 201)
+        val pending = json.readTree(requestReschedule(first.id).response.contentAsString)
+        val requestId = UUID.fromString(pending["id"].stringValue())
+        val originalStart = visits.findById(first.id).orElseThrow().startsAt
+
+        expect(
+            reviewRescheduleRequest(first.id, requestId, startsAt = conflictStart),
+            409,
+            "APPLICATION_VISIT_RESPONSIBLE_CONFLICT",
+        )
+        assertEquals(ApplicationVisitRescheduleRequestStatus.PENDING, visitRescheduleRequests.findById(requestId).orElseThrow().status)
+        assertEquals(originalStart.toInstant(), visits.findById(first.id).orElseThrow().startsAt.toInstant())
+    }
+
+    @Test
+    fun `visita vencida solo permite rechazo manual y luego una decision no se repite`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val pending = json.readTree(requestReschedule(visit.id).response.contentAsString)
+        val requestId = UUID.fromString(pending["id"].stringValue())
+        markEnded(visit.id)
+
+        expect(reviewRescheduleRequest(visit.id, requestId), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_REVIEWABLE")
+        expect(
+            reviewRescheduleRequest(
+                visit.id,
+                requestId,
+                status = "REJECTED",
+                startsAt = null,
+                durationMinutes = null,
+                location = null,
+                comment = "  La fecha original ya comenzo.  ",
+            ),
+            200,
+        )
+        expect(
+            reviewRescheduleRequest(
+                visit.id,
+                requestId,
+                status = "REJECTED",
+                startsAt = null,
+                durationMinutes = null,
+                location = null,
+                comment = "Otra decision",
+            ),
+            409,
+            "APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_REVIEWABLE",
+        )
+    }
+
+    @Test
+    fun `bandeja administrativa filtra y no expone textos ni lugares`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val pending = json.readTree(requestReschedule(visit.id).response.contentAsString)
+        val requestId = pending["id"].stringValue()
+        val list = mvc.perform(
+            get("/api/admin/application-visit-reschedule-requests")
+                .param("status", "PENDING")
+                .param("visitId", visit.id.toString())
+                .header("Authorization", "Bearer ${fixture.actorToken}"),
+        ).andReturn()
+        expect(list, 200)
+        val item = json.readTree(list.response.contentAsString)["content"][0]
+        assertEquals(requestId, item["id"].stringValue())
+        assertFalse(item.has("reason"))
+        assertFalse(item.has("reviewComment"))
+        assertFalse(item.has("originalLocation"))
+        assertFalse(item.has("approvedLocation"))
+
+        val detail = mvc.perform(
+            get("/api/admin/application-visit-reschedule-requests/$requestId")
+                .header("Authorization", "Bearer ${fixture.actorToken}"),
+        ).andReturn()
+        expect(detail, 200)
+        val detailJson = json.readTree(detail.response.contentAsString)
+        assertEquals("No podre asistir por un compromiso medico.", detailJson["reason"].stringValue())
+        assertEquals("Domicilio declarado", detailJson["scheduleAtRequest"]["location"].stringValue())
+    }
+
+    @Test
+    fun `dos solicitudes concurrentes crean una pendiente y un conflicto`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val ready = CountDownLatch(2)
+        val start = CountDownLatch(1)
+        val executor = Executors.newFixedThreadPool(2)
+        try {
+            val results = (1..2).map {
+                executor.submit<Int> {
+                    ready.countDown()
+                    start.await(10, TimeUnit.SECONDS)
+                    requestReschedule(visit.id).response.status
+                }
+            }
+            assertTrue(ready.await(10, TimeUnit.SECONDS))
+            start.countDown()
+            assertEquals(listOf(201, 409), results.map { it.get(15, TimeUnit.SECONDS) }.sorted())
+        } finally {
+            executor.shutdownNow()
+        }
+        assertEquals(
+            1,
+            visitRescheduleRequests.findLatestCandidates(listOf(visit.id))
+                .count { it.status == ApplicationVisitRescheduleRequestStatus.PENDING },
+        )
+    }
+
+    @Test
+    fun `revision valida combinaciones y permite una nueva solicitud despues del rechazo`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val first = json.readTree(requestReschedule(visit.id).response.contentAsString)
+        val firstId = UUID.fromString(first["id"].stringValue())
+        val future = OffsetDateTime.now(ZoneOffset.UTC).plusDays(6).withNano(0)
+        expect(
+            reviewRescheduleRequest(
+                visit.id,
+                firstId,
+                body = """{"status":"APPROVED","comment":"Sin horario"}""",
+            ),
+            400,
+            "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA",
+        )
+        expect(
+            reviewRescheduleRequest(
+                visit.id,
+                firstId,
+                body = """{"status":"REJECTED","startsAt":"$future","durationMinutes":60,"location":"Lugar","comment":"No"}""",
+            ),
+            400,
+            "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA",
+        )
+        expect(
+            reviewRescheduleRequest(
+                visit.id,
+                firstId,
+                body = """{"status":"REJECTED","comment":"   "}""",
+            ),
+            400,
+            "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA",
+        )
+        expect(
+            reviewRescheduleRequest(
+                visit.id,
+                firstId,
+                status = "REJECTED",
+                startsAt = null,
+                durationMinutes = null,
+                location = null,
+                comment = "No existe disponibilidad.",
+            ),
+            200,
+        )
+        val second = requestReschedule(visit.id, reason = "Otra indisponibilidad")
+        expect(second, 201)
+        assertTrue(json.readTree(second.response.contentAsString)["id"].stringValue() != firstId.toString())
+    }
+
+    @Test
+    fun `seguridad revalida permisos de solicitud consulta y revision`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(requestReschedule(visit.id, token = null), 401)
+        expect(requestReschedule(visit.id, token = fixture.unauthorizedToken), 403)
+        tx {
+            roles.findById(fixture.applicantRoleId).orElseThrow().permissions.removeIf {
+                it.name == "applications:own:visits:reschedule-requests:create"
+            }
+        }
+        expect(requestReschedule(visit.id), 403)
+        tx {
+            roles.findById(fixture.applicantRoleId).orElseThrow().permissions.add(
+                permission("applications:own:visits:reschedule-requests:create"),
+            )
+        }
+        val pending = json.readTree(requestReschedule(visit.id).response.contentAsString)
+        val requestId = UUID.fromString(pending["id"].stringValue())
+        tx {
+            roles.findById(fixture.actorRoleId).orElseThrow().permissions.removeIf {
+                it.name == "applications:visits:reschedule-requests:review"
+            }
+        }
+        expect(reviewRescheduleRequest(visit.id, requestId), 403)
+        val adminList = mvc.perform(
+            get("/api/admin/application-visit-reschedule-requests")
+                .header("Authorization", "Bearer ${fixture.unauthorizedToken}"),
+        ).andReturn()
+        expect(adminList, 403)
+    }
+
+    @Test
+    fun `fallo de auditoria revierte alta y aprobacion completas`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        jdbc.execute(
+            "alter table logs add constraint ck_reschedule_request_create_failure " +
+                "check (entity_type <> 'application_visit_reschedule_request' or action <> 'CREATE' " +
+                "or user_id <> ${fixture.applicantId})",
+        )
+        try {
+            expect(requestReschedule(visit.id), 409, "DATA_INTEGRITY_VIOLATION")
+            assertFalse(
+                visitRescheduleRequests.existsByVisitIdAndStatus(
+                    visit.id,
+                    ApplicationVisitRescheduleRequestStatus.PENDING,
+                ),
+            )
+        } finally {
+            jdbc.execute("alter table logs drop constraint ck_reschedule_request_create_failure")
+        }
+
+        val pending = json.readTree(requestReschedule(visit.id).response.contentAsString)
+        val requestId = UUID.fromString(pending["id"].stringValue())
+        val originalStart = visits.findById(visit.id).orElseThrow().startsAt
+        jdbc.execute(
+            "alter table logs add constraint ck_reschedule_request_review_failure " +
+                "check (entity_type <> 'application_visit_reschedule_request' or action <> 'UPDATE' " +
+                "or user_id <> ${fixture.actorId})",
+        )
+        try {
+            expect(reviewRescheduleRequest(visit.id, requestId), 409, "DATA_INTEGRITY_VIOLATION")
+            assertEquals(ApplicationVisitRescheduleRequestStatus.PENDING, visitRescheduleRequests.findById(requestId).orElseThrow().status)
+            assertEquals(originalStart.toInstant(), visits.findById(visit.id).orElseThrow().startsAt.toInstant())
+        } finally {
+            jdbc.execute("alter table logs drop constraint ck_reschedule_request_review_failure")
+        }
+    }
+
+    @Test
+    fun `dos revisiones concurrentes deciden una sola vez`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val requestId = UUID.fromString(
+            json.readTree(requestReschedule(visit.id).response.contentAsString)["id"].stringValue(),
+        )
+        val ready = CountDownLatch(2)
+        val start = CountDownLatch(1)
+        val executor = Executors.newFixedThreadPool(2)
+        try {
+            val results = (1..2).map { index ->
+                executor.submit<Int> {
+                    ready.countDown()
+                    start.await(10, TimeUnit.SECONDS)
+                    reviewRescheduleRequest(
+                        visit.id,
+                        requestId,
+                        startsAt = OffsetDateTime.now(ZoneOffset.UTC).plusDays(7).plusHours(index.toLong()).withNano(0),
+                    ).response.status
+                }
+            }
+            assertTrue(ready.await(10, TimeUnit.SECONDS))
+            start.countDown()
+            assertEquals(listOf(200, 409), results.map { it.get(15, TimeUnit.SECONDS) }.sorted())
+        } finally {
+            executor.shutdownNow()
+        }
+        assertEquals(ApplicationVisitRescheduleRequestStatus.APPROVED, visitRescheduleRequests.findById(requestId).orElseThrow().status)
     }
 
     @Test
