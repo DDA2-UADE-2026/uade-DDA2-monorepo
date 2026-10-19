@@ -102,7 +102,7 @@ class GlobalExceptionHandler {
         val appointmentRequest = request.requestURI == "/api/citizen/appointments"
         val evaluationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/evaluation"))
         val resolutionRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/resolutions"))
-        val benefitGrantRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/benefit-grants"))
+        val benefitGrantRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/benefit-grants(?:/.*)?"))
         val visitResultRequest = request.requestURI.matches(
             Regex("/api/applications/[^/]+/visits/[^/]+/result"),
         )

@@ -75,6 +75,32 @@ erDiagram
         timestamptz assigned_at
     }
 
+    BENEFIT_GRANT_CHANGE {
+        uuid id PK
+        uuid grant_id FK
+        integer sequence_number
+        varchar action
+        varchar previous_status
+        varchar status
+        date previous_start_date
+        date previous_end_date
+        date start_date
+        date end_date
+        varchar reason
+        bigint responsible_user_id FK
+        timestamptz changed_at
+    }
+
+    BENEFIT_GRANT_CHANGE_REQUIREMENT {
+        uuid id PK
+        uuid change_id FK
+        uuid requirement_id
+        varchar type
+        varchar requirement_value
+        varchar description
+        boolean fulfilled
+    }
+
     PROGRAM_BENEFIT {
         uuid id PK
         uuid program_edition_id FK
@@ -145,6 +171,9 @@ erDiagram
     PROGRAM_EDITION ||--o{ PROGRAM_BENEFIT : ofrece
     PROGRAM_BENEFIT ||--o{ BENEFIT_GRANT : origina
     USERS ||--o{ BENEFIT_GRANT : otorga
+    BENEFIT_GRANT ||--o{ BENEFIT_GRANT_CHANGE : registra
+    USERS ||--o{ BENEFIT_GRANT_CHANGE : modifica
+    BENEFIT_GRANT_CHANGE ||--o{ BENEFIT_GRANT_CHANGE_REQUIREMENT : reevalua
     USERS ||--o{ APPLICATION_RESOLUTION : decide
     APPLICATION_RESOLUTION ||--o{ APPLICATION_RESOLUTION_REQUIREMENT : conserva
     USERS ||--o{ APPLICATION_EVALUATION : realiza
@@ -162,6 +191,7 @@ erDiagram
 ## Decisiones representadas
 
 - Cada otorgamiento conserva una copia del beneficio configurado, su vigencia, estado inicial `ACTIVE` y administrativo responsable. La unicidad por solicitud y beneficio evita duplicados; no vuelve a ocupar el cupo reservado al aprobar.
+- El historial inmutable registra asignación, renovación, suspensión y finalización con motivo, responsable y fecha UTC. Renovar extiende el mismo otorgamiento y reevalúa requisitos y documentos. Suspender conserva la reserva; finalizar el último otorgamiento pendiente cierra la solicitud en `CLOSED` y libera exactamente una reserva. `FINALIZED` es definitivo.
 
 - Las resoluciones son inmutables y preservan una copia del requisito evaluado sin FK al catálogo editable. La solicitud mantiene el estado y el responsable de la última resolución; aprobar incrementa el cupo ocupado de la edición.
 

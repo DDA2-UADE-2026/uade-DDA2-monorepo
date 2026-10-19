@@ -198,6 +198,9 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Bound retained Hibernate contexts across the full flow suite instead of exhausting the default test heap.
+    maxHeapSize = "1g"
+    systemProperty("spring.test.context.cache.maxSize", "8")
 }
 
 tasks.register<Test>("generateOpenApiDocs") {

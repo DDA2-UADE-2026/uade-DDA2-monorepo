@@ -45,4 +45,4 @@ Los cambios posteriores del catálogo no cambian el tipo, descripción ni monto 
 
 Registro, actualización de la solicitud y auditoría se confirman en una transacción; un fallo revierte todo. La auditoría conserva identificadores, estado, responsable, vigencia y fecha, sin copiar descripción ni monto. La unicidad en base y los bloqueos evitan duplicados concurrentes.
 
-No se generan otorgamientos al aprobar ni al migrar datos existentes. Esta historia no agrega suspensión, renovación, finalización, vencimiento automático, entregas, pagos, notificaciones ni integración por eventos. `ACTIVE` es el estado inicial registrado; el vencimiento no dispara un cambio automático de estado.
+No se generan otorgamientos al aprobar ni al migrar datos existentes. `ACTIVE` es el estado inicial registrado; el vencimiento no dispara un cambio automático de estado. La renovación, suspensión y finalización de otorgamientos existentes se describen en [Ciclo de vida de beneficios](benefit-grant-lifecycle.md). Entregas, pagos, notificaciones e integración por eventos quedan fuera del alcance.

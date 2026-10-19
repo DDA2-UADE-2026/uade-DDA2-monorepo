@@ -14,6 +14,7 @@ import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRe
 import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationResolutionRepository
 import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantChangeRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRescheduleRequestRepository
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
@@ -53,6 +54,7 @@ class UserManagementService(
     private val applicationEvaluationRepository: ApplicationEvaluationRepository,
     private val applicationResolutionRepository: ApplicationResolutionRepository,
     private val benefitGrantRepository: BenefitGrantRepository,
+    private val benefitGrantChangeRepository: BenefitGrantChangeRepository,
     private val applicationVisitRepository: ApplicationVisitRepository,
     private val applicationVisitRescheduleRequestRepository: ApplicationVisitRescheduleRequestRepository,
     private val documentRepository: DocumentRepository,
@@ -171,6 +173,7 @@ class UserManagementService(
             applicationEvaluationRepository.existsByProfessionalId(id) ||
             applicationResolutionRepository.existsByResolvedById(id) ||
             benefitGrantRepository.existsByAssignedById(id) ||
+            benefitGrantChangeRepository.existsByResponsibleId(id) ||
             applicationVisitRepository.existsByResponsibleId(id) ||
             applicationVisitRepository.existsByResultRecordedById(id) ||
             applicationVisitRescheduleRequestRepository.existsByRequestedByIdOrReviewedById(id, id) ||

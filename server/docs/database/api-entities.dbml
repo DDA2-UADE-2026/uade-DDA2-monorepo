@@ -19,6 +19,7 @@ Enum log_entity_type {
   application_evaluation
   application_resolution
   benefit_grant
+  benefit_grant_change
   application_visit
   application_visit_reschedule_request
   application_document
@@ -512,18 +513,20 @@ Table program_benefit {
 
 Enum benefit_grant_status {
   ACTIVE
+  SUSPENDED
+  FINALIZED
 }
 
 Table benefit_grant {
   id uuid [pk]
-  application_id uuid [not null, ref: > application.id, note: 'Titular derivado de la solicitud, que permanece APPROVED.']
+  application_id uuid [not null, ref: > application.id, note: 'Titular derivado de la solicitud; CLOSED al finalizar su ultimo otorgamiento pendiente.']
   program_benefit_id uuid [not null, ref: > program_benefit.id]
   benefit_type program_benefit_type [not null, note: 'Copia al otorgar; no sigue cambios del catalogo.']
   description varchar(500) [note: 'Copia al otorgar; no se copia al log general.']
   amount decimal(19,2) [note: 'Copia al otorgar; no se copia al log general.']
   start_date date [not null]
   end_date date [not null]
-  status benefit_grant_status [not null, note: 'ACTIVE asignado por servidor. Sin vencimiento automatico en esta historia.']
+  status benefit_grant_status [not null, note: 'ACTIVE inicial; SUSPENDED conserva reserva; FINALIZED definitivo. Sin vencimiento automatico.']
   assigned_by_user_id bigint [not null, ref: > users.id]
   assigned_at timestamptz [not null, note: 'Instante UTC de registro, precision microsegundos.']
 
@@ -535,11 +538,62 @@ Table benefit_grant {
   }
   checks {
     `start_date <= end_date` [name: 'ck_benefit_grant_dates']
-    `status = 'ACTIVE'` [name: 'ck_benefit_grant_status']
+    `status in ('ACTIVE', 'SUSPENDED', 'FINALIZED')` [name: 'ck_benefit_grant_status']
     `amount is null or amount >= 0` [name: 'ck_benefit_grant_amount']
     `benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')` [name: 'ck_benefit_grant_type']
   }
-  Note: 'Exige solicitud APPROVED y edicion ACTIVE. Vigencia inclusiva dentro de la edicion que contenga hoy. No ocupa otro cupo. Bloqueos solicitud, titular y edicion; auditoria en la misma transaccion.'
+  Note: 'Asignar/renovar exige solicitud APPROVED y edicion ACTIVE. Renovar conserva inicio y datos copiados y extiende fin; suspender/finalizar conserva fechas. No ocupa otro cupo. Finalizar ultimo otorgamiento pendiente cierra solicitud y libera una reserva. Bloqueos solicitud, titular, edicion y otorgamiento; historial y auditoria en una transaccion.'
+}
+
+Enum benefit_grant_change_action {
+  ASSIGNED
+  RENEWED
+  SUSPENDED
+  FINALIZED
+}
+
+Table benefit_grant_change {
+  id uuid [pk]
+  grant_id uuid [not null, ref: > benefit_grant.id]
+  sequence_number integer [not null]
+  action benefit_grant_change_action [not null]
+  previous_status benefit_grant_status
+  status benefit_grant_status [not null]
+  previous_start_date date
+  previous_end_date date
+  start_date date [not null]
+  end_date date [not null]
+  reason varchar(1000) [note: 'Obligatorio recortado para cambios; null exclusivamente en ASSIGNED. Privado, excluido de logs.']
+  responsible_user_id bigint [not null, ref: > users.id]
+  changed_at timestamptz [not null, note: 'UTC con precision de microsegundos; finalizacion efectiva inmediata.']
+
+  indexes {
+    (grant_id, sequence_number) [unique, name: 'uk_benefit_grant_change_sequence']
+    responsible_user_id [name: 'ix_benefit_grant_change_responsible']
+  }
+  checks {
+    `start_date <= end_date` [name: 'ck_benefit_grant_change_dates']
+    `(action = 'ASSIGNED' and reason is null) or (action <> 'ASSIGNED' and reason is not null and length(trim(reason)) > 0)` [name: 'ck_benefit_grant_change_reason']
+    `(action = 'ASSIGNED' and sequence_number = 1 and previous_status is null and status = 'ACTIVE' and previous_start_date is null and previous_end_date is null) or (sequence_number > 1 and previous_status is not null and previous_start_date is not null and previous_end_date is not null and start_date = previous_start_date and ((action = 'RENEWED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'ACTIVE' and end_date > previous_end_date) or (action = 'SUSPENDED' and previous_status = 'ACTIVE' and status = 'SUSPENDED' and end_date = previous_end_date) or (action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date)))` [name: 'ck_benefit_grant_change_transition']
+  }
+  Note: 'Historial inmutable ordenado por secuencia. La migracion incorpora solamente la asignacion inicial conocida; no inventa motivos ni cambios previos.'
+}
+
+Table benefit_grant_change_requirement {
+  id uuid [pk]
+  change_id uuid [not null, ref: > benefit_grant_change.id]
+  requirement_id uuid [not null, note: 'Identificador historico sin FK al catalogo editable.']
+  type program_requirement_type [not null]
+  requirement_value varchar(255) [not null]
+  description varchar(500)
+  fulfilled boolean [not null]
+  indexes {
+    (change_id, requirement_id) [unique, name: 'uk_benefit_grant_change_requirement']
+  }
+  checks {
+    `type in ('MIN_AGE', 'MAX_INCOME', 'RESIDENCY_YEARS', 'HAS_CHILDREN')` [name: 'ck_benefit_grant_change_requirement_type']
+  }
+  Note: 'Copia inmutable del requisito vigente y resultado verificado al renovar. Renovacion exige todos cumplidos y documentos obligatorios VALID.'
 }
 
 Table program_requirement {

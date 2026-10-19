@@ -9,6 +9,9 @@ import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.benefit.dto.request.CreateBenefitGrantRequest
 import com.uade.dda2.server.feature.benefit.dto.response.BenefitGrantResponse
 import com.uade.dda2.server.feature.benefit.entity.BenefitGrant
+import com.uade.dda2.server.feature.benefit.entity.BenefitGrantChange
+import com.uade.dda2.server.feature.benefit.entity.BenefitGrantChangeAction
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantChangeRepository
 import com.uade.dda2.server.feature.benefit.error.BenefitGrantErrors
 import com.uade.dda2.server.feature.benefit.mapper.toAuditSnapshot
 import com.uade.dda2.server.feature.benefit.mapper.toResponse
@@ -36,6 +39,7 @@ const val BENEFIT_ASSIGN_PERMISSION = "applications:management:benefits:assign"
 class BenefitGrantService(
     private val applications: ApplicationRepository,
     private val grants: BenefitGrantRepository,
+    private val changes: BenefitGrantChangeRepository,
     private val editions: ProgramEditionRepository,
     private val benefits: ProgramBenefitRepository,
     private val incompatibilities: ProgramIncompatibilityRepository,
@@ -73,6 +77,9 @@ class BenefitGrantService(
             benefitType = benefit.benefitType, description = benefit.description, amount = benefit.amount,
             startDate = data.startDate, endDate = data.endDate, assignedBy = actor, assignedAt = assignedAt))
         application.updatedAt = localTime
+        changes.save(BenefitGrantChange(grant = grant, sequenceNumber = 1, action = BenefitGrantChangeAction.ASSIGNED,
+            previousStatus = null, status = grant.status, previousStartDate = null, previousEndDate = null,
+            startDate = grant.startDate, endDate = grant.endDate, reason = null, responsible = actor, changedAt = assignedAt))
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.BENEFIT_GRANT,
             entityId = requireNotNull(grant.id).toString(), newValues = json.writeValueAsString(grant.toAuditSnapshot()))
         return grant.toResponse()

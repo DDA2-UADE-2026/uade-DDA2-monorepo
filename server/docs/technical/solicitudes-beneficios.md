@@ -1,5 +1,21 @@
 # Solicitudes de beneficios
 
+## Ciclo de vida de otorgamientos
+
+Las rutas `POST /api/admin/applications/{id}/benefit-grants/{grantId}/renew|suspend|finalize` exigen `applications:management:benefits:manage` y devuelven `200` con `BenefitGrantResponse`. `GET .../{grantId}/history` exige `applications:management:view`. Los DTO rechazan campos extra y el servidor determina actor e instante UTC. Se valida permiso en JWT y rol activo vigente, además del usuario activo.
+
+`BenefitGrantLifecycleService` separa coordinación transaccional de validación y mapeo. Admite renovar `ACTIVE/SUSPENDED -> ACTIVE`, suspender `ACTIVE -> SUSPENDED` y finalizar `ACTIVE/SUSPENDED -> FINALIZED`. Exige solicitud aprobada. Renovar conserva inicio y copia del catálogo, extiende el fin e incluye hoy en la zona configurada, dentro de edición activa. Relee checklist actual, exige todos los resultados positivos y documentos obligatorios `VALID` y revalida aprobaciones incompatibles con fechas de edición superpuestas inclusivas. Suspender/finalizar admite edición inactiva o vencida.
+
+El orden explícito de bloqueo es solicitud, titular, edición y otorgamiento, sin fetch joins en las consultas de bloqueo de solicitud/otorgamiento. Asignación y finalización comparten el bloqueo de solicitud; catálogo, requisitos y fechas comparten el de edición. La secuencia del historial se calcula bajo esos bloqueos. La finalización hace flush antes de contar los otorgamientos no finalizados; el último cierra `Application` en `CLOSED` y decrementa una sola reserva, con protección contra contador no positivo. Conserva resolución y trabajador. No se reabre la solicitud.
+
+`benefit_grant_change` y `benefit_grant_change_requirement` son entidades inmutables. La unicidad `(grant_id, sequence_number)` ordena las actuaciones; los CHECK protegen transición, motivo y vigencia. El catálogo de requisitos no tiene FK desde sus copias históricas. Se protege la baja de actores históricos mediante validación y FK. Los cambios, controles, estado, fechas, eventual cierre/cupo y logs participan en una transacción. El log `benefit_grant_change` excluye motivo, descripción y monto; el cierre de solicitud tiene además log `application`.
+
+Antes del despliegue ejecutar [2026-10-19-benefit-grant-lifecycle.sql](../database/migrations/2026-10-19-benefit-grant-lifecycle.sql), **después** de la migración de otorgamientos. Es idempotente y sustituye restricciones CHECK sobre estado, incluida la generada por Hibernate; `ddl-auto=update` no reemplaza esta migración. Registra solo la asignación inicial conocida de los otorgamientos existentes, sin cambios ficticios, sin ajustar cupos ni solicitudes. Agrega el permiso inicial de ADMIN. Las asignaciones nuevas registran su evento inicial en la misma transacción.
+
+Pruebas: `BenefitGrantLifecycleValidatorTest` y `BenefitGrantFlowTest` cubren transiciones, requisitos/documentos, vigencia, privacidad, seguridad, snapshots, cierre/cupos, rollback de auditoría y concurrencia. La tarea existente `testBenefitGrantsPostgres` ejecuta también estas pruebas y las migraciones sobre esquemas privados en PostgreSQL desechable. Contrato funcional: [Ciclo de vida de beneficios](../functional/benefit-grant-lifecycle.md).
+
+Verificación del ciclo de vida (19 de octubre de 2026): suite completa de 434 casos, con 431 aprobados y tres migraciones exclusivas de PostgreSQL omitidas en H2; los 81 casos de flujo de otorgamientos y mantenimiento pasan en PostgreSQL 16.4, sin omisiones. `bootJar` y `generateOpenApiDocs` finalizan correctamente. El proceso de pruebas limita a ocho los contextos de Spring retenidos y utiliza hasta 1 GiB de heap para evitar agotar memoria en la regresión completa.
+
 ## Otorgamientos individuales
 
 `POST /api/admin/applications/{id}/benefit-grants` exige `applications:management:benefits:assign`; `GET` sobre la misma ruta exige `applications:management:view`. Se comprueban usuario activo, rol activo y permiso tanto en JWT como en base de datos. El alta acepta exclusivamente `programBenefitId`, `startDate` y `endDate` y devuelve `201` con `BenefitGrantResponse`; la consulta devuelve una lista ordenada por `assignedAt`/`id`, o `[]`.

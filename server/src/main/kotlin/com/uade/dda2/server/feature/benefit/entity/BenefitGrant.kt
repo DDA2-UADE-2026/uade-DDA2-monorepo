@@ -19,7 +19,7 @@ import java.util.UUID
     Index(name = "ix_benefit_grant_assigned_by", columnList = "assigned_by_user_id"),
 ], check = [
     CheckConstraint(name = "ck_benefit_grant_dates", constraint = "start_date <= end_date"),
-    CheckConstraint(name = "ck_benefit_grant_status", constraint = "status = 'ACTIVE'"),
+    CheckConstraint(name = "ck_benefit_grant_status", constraint = "status in ('ACTIVE', 'SUSPENDED', 'FINALIZED')"),
     CheckConstraint(name = "ck_benefit_grant_amount", constraint = "amount is null or amount >= 0"),
     CheckConstraint(name = "ck_benefit_grant_type", constraint =
         "benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')"),
@@ -42,8 +42,8 @@ class BenefitGrant(
     val amount: BigDecimal?,
     @Column(name = "start_date", nullable = false, updatable = false)
     val startDate: LocalDate,
-    @Column(name = "end_date", nullable = false, updatable = false)
-    val endDate: LocalDate,
+    @Column(name = "end_date", nullable = false)
+    var endDate: LocalDate,
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20)
     var status: BenefitGrantStatus = BenefitGrantStatus.ACTIVE,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
