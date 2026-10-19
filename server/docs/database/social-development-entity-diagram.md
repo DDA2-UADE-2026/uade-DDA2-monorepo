@@ -1,6 +1,6 @@
 # Diagrama de entidades del seguimiento social
 
-Este diagrama resume la parte del modelo utilizada por la evaluación social, las visitas o entrevistas, sus resultados y las solicitudes ciudadanas de reprogramación. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
+Este diagrama resume la evaluación social, las visitas o entrevistas, sus resultados, las solicitudes ciudadanas de reprogramación, las resoluciones y los otorgamientos de beneficios. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
 
 ```mermaid
 erDiagram
@@ -61,6 +61,28 @@ erDiagram
         timestamptz resolved_at
     }
 
+    BENEFIT_GRANT {
+        uuid id PK
+        uuid application_id FK
+        uuid program_benefit_id FK
+        varchar benefit_type
+        varchar description
+        decimal amount
+        date start_date
+        date end_date
+        varchar status
+        bigint assigned_by_user_id FK
+        timestamptz assigned_at
+    }
+
+    PROGRAM_BENEFIT {
+        uuid id PK
+        uuid program_edition_id FK
+        varchar benefit_type
+        varchar description
+        decimal amount
+    }
+
     APPLICATION_RESOLUTION_REQUIREMENT {
         uuid id PK
         uuid resolution_id FK
@@ -119,6 +141,10 @@ erDiagram
 
     APPLICATION ||--o| APPLICATION_EVALUATION : posee
     APPLICATION ||--o{ APPLICATION_RESOLUTION : resuelve
+    APPLICATION ||--o{ BENEFIT_GRANT : recibe
+    PROGRAM_EDITION ||--o{ PROGRAM_BENEFIT : ofrece
+    PROGRAM_BENEFIT ||--o{ BENEFIT_GRANT : origina
+    USERS ||--o{ BENEFIT_GRANT : otorga
     USERS ||--o{ APPLICATION_RESOLUTION : decide
     APPLICATION_RESOLUTION ||--o{ APPLICATION_RESOLUTION_REQUIREMENT : conserva
     USERS ||--o{ APPLICATION_EVALUATION : realiza
@@ -134,6 +160,8 @@ erDiagram
 ```
 
 ## Decisiones representadas
+
+- Cada otorgamiento conserva una copia del beneficio configurado, su vigencia, estado inicial `ACTIVE` y administrativo responsable. La unicidad por solicitud y beneficio evita duplicados; no vuelve a ocupar el cupo reservado al aprobar.
 
 - Las resoluciones son inmutables y preservan una copia del requisito evaluado sin FK al catálogo editable. La solicitud mantiene el estado y el responsable de la última resolución; aprobar incrementa el cupo ocupado de la edición.
 

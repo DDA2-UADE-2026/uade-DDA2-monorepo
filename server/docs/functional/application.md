@@ -258,7 +258,7 @@ Los nombres siguientes ya están contemplados, pero **no constituyen una secuenc
 | Pendiente de documentación (PENDING_DOCUMENTATION) | Etapa prevista para información o documentación pendiente. |
 | En evaluación (IN_EVALUATION) | La solicitud tiene registrada su evaluación social o fue colocada en esta etapa antes del alta. |
 | En visita (IN_VISIT) | Tiene al menos una visita o entrevista social programada. |
-| Aprobada (APPROVED) | Resolución favorable registrada por administración; ocupa un cupo de la edición. La asignación y entrega de beneficios pertenece a otro flujo. |
+| Aprobada (APPROVED) | Resolución favorable registrada por administración; ocupa un cupo de la edición. Habilita el [otorgamiento individual de beneficios](benefit-grants.md), que no ocupa cupos adicionales. La entrega pertenece a otro flujo. |
 | Rechazada (REJECTED) | Resolución desfavorable con motivo y responsable. Permite solicitar otra convocatoria, pero nunca repetir la misma. |
 | En lista de espera (WAITLISTED) | Solicitud elegible que espera disponibilidad de cupo y admite aprobación o rechazo manual posterior. Bloquea una nueva en la misma edición. |
 | Cerrada (CLOSED) | Estado de finalización previsto. Permite solicitar otra convocatoria, sujeto a las demás reglas. |

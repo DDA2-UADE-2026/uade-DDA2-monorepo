@@ -18,6 +18,7 @@ Enum log_entity_type {
   application
   application_evaluation
   application_resolution
+  benefit_grant
   application_visit
   application_visit_reschedule_request
   application_document
@@ -507,6 +508,38 @@ Table program_benefit {
   benefit_type program_benefit_type [not null, note: 'Persistido como varchar(50).']
   description varchar(500)
   amount decimal(19,2)
+}
+
+Enum benefit_grant_status {
+  ACTIVE
+}
+
+Table benefit_grant {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id, note: 'Titular derivado de la solicitud, que permanece APPROVED.']
+  program_benefit_id uuid [not null, ref: > program_benefit.id]
+  benefit_type program_benefit_type [not null, note: 'Copia al otorgar; no sigue cambios del catalogo.']
+  description varchar(500) [note: 'Copia al otorgar; no se copia al log general.']
+  amount decimal(19,2) [note: 'Copia al otorgar; no se copia al log general.']
+  start_date date [not null]
+  end_date date [not null]
+  status benefit_grant_status [not null, note: 'ACTIVE asignado por servidor. Sin vencimiento automatico en esta historia.']
+  assigned_by_user_id bigint [not null, ref: > users.id]
+  assigned_at timestamptz [not null, note: 'Instante UTC de registro, precision microsegundos.']
+
+  indexes {
+    (application_id, program_benefit_id) [unique, name: 'uk_benefit_grant_application_benefit']
+    (application_id, assigned_at, id) [name: 'ix_benefit_grant_application_date']
+    program_benefit_id [name: 'ix_benefit_grant_benefit']
+    assigned_by_user_id [name: 'ix_benefit_grant_assigned_by']
+  }
+  checks {
+    `start_date <= end_date` [name: 'ck_benefit_grant_dates']
+    `status = 'ACTIVE'` [name: 'ck_benefit_grant_status']
+    `amount is null or amount >= 0` [name: 'ck_benefit_grant_amount']
+    `benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')` [name: 'ck_benefit_grant_type']
+  }
+  Note: 'Exige solicitud APPROVED y edicion ACTIVE. Vigencia inclusiva dentro de la edicion que contenga hoy. No ocupa otro cupo. Bloqueos solicitud, titular y edicion; auditoria en la misma transaccion.'
 }
 
 Table program_requirement {

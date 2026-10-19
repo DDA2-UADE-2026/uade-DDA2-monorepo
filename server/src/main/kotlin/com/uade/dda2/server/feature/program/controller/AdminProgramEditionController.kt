@@ -7,6 +7,10 @@ import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionOpt
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramEditionResponse
 import com.uade.dda2.server.feature.program.service.AdminProgramEditionService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import com.uade.dda2.server.error.ErrorResponse
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -86,7 +90,9 @@ class AdminProgramEditionController(
 
     @PreAuthorize("hasAuthority('programs:management:edit')")
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar una edición", description = "Actualiza los datos de la edición indicada.")
+    @Operation(summary = "Actualizar una edición", description = "Actualiza la edicion sin dejar convocatorias u otorgamientos existentes fuera de sus fechas.")
+    @ApiResponse(responseCode = "200", description = "Edicion actualizada.", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "409", description = "Las fechas excluyen convocatorias u otorgamientos existentes, la edicion esta cerrada o el nombre ya existe.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun update(
         @Parameter(description = "UUID de la edición.")
         @PathVariable id: UUID,

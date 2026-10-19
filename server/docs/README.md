@@ -14,6 +14,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
 | [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
+| [Otorgamiento de beneficios](functional/benefit-grants.md) | Registro de beneficios activos y su vigencia para solicitudes aprobadas. |
 
 ## Organización de `/docs`
 
@@ -80,6 +81,8 @@ La etapa de decisión se documenta en [Resolución de solicitudes](functional/ap
 11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación; la solicitud queda asignada y pasa a evaluación. El personal con permiso de consulta administra luego la bandeja filtrada y el detalle.
 12. Ese mismo trabajador programa una visita domiciliaria o entrevista futura. La primera actuación lleva la solicitud a **En visita** y queda visible en una agenda administrativa filtrable.
 13. Cuando termina la actuación, su responsable registra si fue realizada o no realizada, junto con observaciones o conclusiones opcionales. Si no quedan otras pendientes, la solicitud vuelve a evaluación.
+14. El personal autorizado resuelve la evaluación: aprueba, rechaza o envía a lista de espera, conservando motivo, responsable e historial.
+15. Para una solicitud aprobada, el administrativo puede otorgar cada beneficio de su edición con vigencia actual. Queda activo, conserva los datos otorgados y no vuelve a ocupar cupo.
 14. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
 15. Si no puede asistir, solicita la reprogramación con un motivo; la actuación no cambia hasta que el responsable aprueba un nuevo horario, duración y lugar, o rechaza la petición con un comentario.
 

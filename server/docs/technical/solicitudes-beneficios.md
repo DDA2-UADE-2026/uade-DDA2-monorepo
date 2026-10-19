@@ -1,5 +1,26 @@
 # Solicitudes de beneficios
 
+## Otorgamientos individuales
+
+`POST /api/admin/applications/{id}/benefit-grants` exige `applications:management:benefits:assign`; `GET` sobre la misma ruta exige `applications:management:view`. Se comprueban usuario activo, rol activo y permiso tanto en JWT como en base de datos. El alta acepta exclusivamente `programBenefitId`, `startDate` y `endDate` y devuelve `201` con `BenefitGrantResponse`; la consulta devuelve una lista ordenada por `assignedAt`/`id`, o `[]`.
+
+`BenefitGrantService` exige solicitud `APPROVED`, edición `ACTIVE`, beneficio de esa edición, vigencia inclusiva dentro de las fechas de edición que contenga el día actual en la zona configurada y ausencia de aprobaciones incompatibles del titular con fechas de edición superpuestas. Reutiliza la regla de incompatibilidad de resolución; no reevalúa checklist ni documentos. La solicitud conserva estado y resolución y solo cambia `updatedAt`; el cupo no cambia.
+
+`benefit_grant` referencia solicitud, beneficio y administrativo y copia tipo, descripción e importe al momento de otorgar. La unicidad `(application_id, program_benefit_id)` impide repetir un beneficio. La fecha de registro es UTC, con precisión de microsegundos; las vigencias son `date`. El estado inicial es `ACTIVE` y no hay vencimiento automático en esta historia.
+
+La transacción bloquea solicitud, titular y edición, en ese orden. El CRUD de beneficios comparte el bloqueo de edición. Se bloquean bajas de beneficios otorgados y responsables referenciados; cambiar el catálogo no modifica copias existentes. La edición tampoco puede acortarse dejando otorgamientos fuera de rango. Otorgamiento, `updatedAt` y log `benefit_grant` se confirman juntos; el log no copia descripción ni importe.
+
+Antes del despliegue ejecutar `database/migrations/2026-10-19-benefit-grants.sql` desde `/docs`, después del esquema existente. Es idempotente, incorpora el permiso inicial de `ADMIN` y no genera otorgamientos ni modifica cupos anteriores. Contrato y reglas funcionales: [Otorgamiento individual](../functional/benefit-grants.md).
+
+`BenefitGrantValidatorTest` y `BenefitGrantFlowTest` cubren reglas, seguridad, copia de datos, protección de referencias, fechas de edición, rollback y concurrencia. La tarea `testBenefitGrantsPostgres` repite el flujo en **PostgreSQL desechable** `127.0.0.1:55439/benefit_grant_test`, usuario `application_test`, contraseña de `APPLICATION_TEST_POSTGRES_PASSWORD`; usa `create-drop` y nunca `DB_URL`.
+
+Verificación del 19 de octubre de 2026: 386 casos en la suite completa, con 384 aprobados y dos pruebas de migración específicas de PostgreSQL omitidas en H2. Los 38 casos de flujo de otorgamiento pasan en PostgreSQL 16.4, incluida la creación desde cero de la tabla por migración en un esquema aislado, su ejecución repetida y la unicidad. `bootJar` y `generateOpenApiDocs` finalizan correctamente; el servidor desechable queda detenido.
+
+```powershell
+.\gradlew.bat test bootJar generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat testBenefitGrantsPostgres --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+```
+
 ## Resoluciones administrativas
 
 `POST /api/admin/applications/{id}/resolutions` exige `applications:management:resolve` y devuelve `201`.

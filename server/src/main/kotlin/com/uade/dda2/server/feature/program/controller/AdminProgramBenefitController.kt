@@ -7,6 +7,10 @@ import com.uade.dda2.server.feature.program.service.AdminProgramBenefitService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import com.uade.dda2.server.error.ErrorResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
@@ -61,7 +65,7 @@ class AdminProgramBenefitController(
 
     @PreAuthorize("hasAuthority('programs:management:edit')")
     @PutMapping("/{benefitId}")
-    @Operation(summary = "Actualizar un beneficio", description = "Actualiza los datos del beneficio indicado.")
+    @Operation(summary = "Actualizar un beneficio", description = "Actualiza el catalogo para futuros otorgamientos; no modifica las copias ya otorgadas.")
     fun update(
         @Parameter(description = "UUID de la edición.")
         @PathVariable editionId: UUID,
@@ -78,7 +82,9 @@ class AdminProgramBenefitController(
     @PreAuthorize("hasAuthority('programs:management:edit')")
     @DeleteMapping("/{benefitId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Eliminar un beneficio", description = "Elimina el beneficio indicado de la edición.")
+    @Operation(summary = "Eliminar un beneficio", description = "Elimina el beneficio indicado de la edicion si no tiene otorgamientos registrados.")
+    @ApiResponse(responseCode = "204", description = "Beneficio eliminado.")
+    @ApiResponse(responseCode = "409", description = "Beneficio con otorgamientos o edicion cerrada.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun delete(
         @Parameter(description = "UUID de la edición.")
         @PathVariable editionId: UUID,

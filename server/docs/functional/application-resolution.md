@@ -48,4 +48,4 @@ La salida de espera es manual. Al aprobar o rechazar nuevamente se exige un nuev
 
 Cada resolución es inmutable. Guarda identificador, tipo, valor y descripción del requisito al momento de decidir; una modificación o eliminación posterior del catálogo no altera el historial. El motivo no se duplica en los logs generales. Los responsables históricos no pueden eliminarse.
 
-La aprobación ocupa cupo, pero no crea todavía asignaciones ni entregas de beneficios. No hay promoción automática, orden nuevo de prioridad, notificaciones ni publicación de eventos en esta historia.
+La aprobación ocupa cupo, pero no crea automáticamente asignaciones ni entregas de beneficios. El administrativo registra cada asignación mediante el flujo de [Otorgamiento de beneficios](benefit-grants.md), sin ocupar otro cupo. No hay promoción automática, orden nuevo de prioridad, notificaciones ni publicación de eventos en esta historia.
