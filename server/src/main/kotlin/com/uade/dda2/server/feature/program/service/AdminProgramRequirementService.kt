@@ -61,7 +61,7 @@ class AdminProgramRequirementService(
         editionId: UUID,
         request: CreateProgramRequirementRequest,
     ): ProgramRequirementResponse {
-        val edition = findEdition(editionId)
+        val edition = findEditionForUpdate(editionId)
 
         adminProgramEditionValidator.validateCanModify(edition)
         adminProgramRequirementValidator.validateCreate(request)
@@ -88,6 +88,7 @@ class AdminProgramRequirementService(
         requirementId: UUID,
         request: UpdateProgramRequirementRequest,
     ): ProgramRequirementResponse {
+        findEditionForUpdate(editionId)
         val requirement = findRequirement(
             editionId = editionId,
             requirementId = requirementId,
@@ -117,6 +118,7 @@ class AdminProgramRequirementService(
         editionId: UUID,
         requirementId: UUID,
     ) {
+        findEditionForUpdate(editionId)
         val requirement = findRequirement(
             editionId = editionId,
             requirementId = requirementId,
@@ -142,6 +144,9 @@ class AdminProgramRequirementService(
             .orElseThrow {
                 ProgramEditionErrors.notFound(id)
             }
+
+    private fun findEditionForUpdate(id: UUID): ProgramEdition =
+        programEditionRepository.findByIdForUpdate(id) ?: throw ProgramEditionErrors.notFound(id)
 
     private fun findRequirement(
         editionId: UUID,

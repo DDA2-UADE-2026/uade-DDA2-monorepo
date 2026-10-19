@@ -184,7 +184,7 @@ Este listado no muestra solicitudes de otras personas. No es una bandeja municip
 
 El personal municipal con autorización específica de consulta administrativa accede a un listado aparte, que incluye las solicitudes de todas las personas, sin importar quién las registró. Se ordena igual que el listado ciudadano, por número descendente, y se recorre por páginas. Cada solicitud se identifica con el nombre y el correo de su titular.
 
-Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo de una resolución o el trabajador asignado. El registro de la evaluación completa al trabajador; el origen y la resolución pueden permanecer vacíos mientras no existan sus flujos correspondientes.
+Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo y responsable de una resolución o el trabajador asignado. El registro de la evaluación completa al trabajador; motivo, responsable y fecha de resolución se completan al resolver. El trámite de origen puede permanecer vacío.
 
 Esta consulta es solo de lectura: no cambia estados, no asigna responsables y no devuelve archivos. Ver o descargar documentos y registrar una evaluación siguen siendo flujos aparte, cada uno con su propia autorización. Registrar una solicitud asistida tampoco alcanza para consultarlas: son autorizaciones distintas.
 
@@ -258,12 +258,12 @@ Los nombres siguientes ya están contemplados, pero **no constituyen una secuenc
 | Pendiente de documentación (PENDING_DOCUMENTATION) | Etapa prevista para información o documentación pendiente. |
 | En evaluación (IN_EVALUATION) | La solicitud tiene registrada su evaluación social o fue colocada en esta etapa antes del alta. |
 | En visita (IN_VISIT) | Tiene al menos una visita o entrevista social programada. |
-| Aprobada (APPROVED) | Estado previsto para una decisión favorable. Todavía no se implementó su relación operativa con la incorporación efectiva. |
-| Rechazada (REJECTED) | Estado previsto para una decisión desfavorable. Permite solicitar otra convocatoria, pero nunca repetir la misma. |
-| En lista de espera (WAITLISTED) | Estado previsto para solicitudes que siguen pendientes de una oportunidad de incorporación. Bloquea una nueva en la misma edición. |
+| Aprobada (APPROVED) | Resolución favorable registrada por administración; ocupa un cupo de la edición. La asignación y entrega de beneficios pertenece a otro flujo. |
+| Rechazada (REJECTED) | Resolución desfavorable con motivo y responsable. Permite solicitar otra convocatoria, pero nunca repetir la misma. |
+| En lista de espera (WAITLISTED) | Solicitud elegible que espera disponibilidad de cupo y admite aprobación o rechazo manual posterior. Bloquea una nueva en la misma edición. |
 | Cerrada (CLOSED) | Estado de finalización previsto. Permite solicitar otra convocatoria, sujeto a las demás reglas. |
 
-No se describen plazos, motivos obligatorios de rechazo, cálculo automático de prioridad ni pasos de reconsideración porque esas reglas aún no están definidas e implementadas en este flujo.
+Las decisiones exigen motivo y responsable y conservan un historial. Las condiciones completas están en [Resolución de solicitudes](application-resolution.md). No se implementan plazos de resolución, cálculo automático de prioridad ni reconsideración de decisiones finales.
 
 ## Cupo y decisión posterior
 
@@ -280,7 +280,7 @@ El sistema no coloca automáticamente en lista de espera ni rechaza una solicitu
 | Ana no tiene solicitudes de esa edición y elige una convocatoria abierta y vigente. | Puede presentar si su cuenta y rol están habilitados y la edición está activa. |
 | Ana ya se presentó y vuelve a intentarlo en la misma convocatoria. | Se recupera la solicitud si es un reintento reconocido; de lo contrario se rechaza la nueva presentación por duplicada. |
 | Ana tiene una solicitud rechazada y quiere repetir esa convocatoria. | No puede crear otra en la misma. |
-| Ana tiene una solicitud rechazada y se abre una nueva convocatoria de esa edición. | Puede solicitar, siempre que no exista otra solicitud de esa edición en un estado que bloquee. Este caso depende de la futura etapa de resolución. |
+| Ana tiene una solicitud rechazada y se abre una nueva convocatoria de esa edición. | Puede solicitar, siempre que no exista otra solicitud de esa edición en un estado que bloquee. |
 | Bruno tiene una solicitud presentada y se abre otra convocatoria de la misma edición. | No puede presentar otra mientras la anterior siga en ese estado. |
 | Carla tiene una solicitud en la edición 2026 y quiere solicitar la edición 2027. | La solicitud de 2026 no la bloquea por esta regla. Se verifican las condiciones de la nueva convocatoria. |
 | La convocatoria se suspendió después de que Diego consultó el programa, pero antes de presentar. | El nuevo intento se rechaza porque la recepción ya no está abierta. |

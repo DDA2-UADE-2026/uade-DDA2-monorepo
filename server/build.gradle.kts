@@ -226,6 +226,17 @@ tasks.register<Test>("testApplicationsPostgres") {
     )
 }
 
+tasks.register<Test>("testApplicationResolutionsPostgres") {
+    group = "verification"
+    description = "Prueba resoluciones y concurrencia contra PostgreSQL desechable en 127.0.0.1:55439/application_resolution_test (create-drop)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest") }
+    systemProperty("resolution.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/application_resolution_test")
+    systemProperty("resolution.test.postgres-user", "application_test")
+    systemProperty("resolution.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
+}
+
 tasks.register<Test>("testCentersPostgres") {
     group = "verification"
     description =

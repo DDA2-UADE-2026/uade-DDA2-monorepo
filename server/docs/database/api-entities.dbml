@@ -17,6 +17,7 @@ Enum log_entity_type {
   enrollment_period
   application
   application_evaluation
+  application_resolution
   application_visit
   application_visit_reschedule_request
   application_document
@@ -553,6 +554,7 @@ Table application {
   status application_status [not null, note: 'Persistido como varchar(30). Las altas finalizan en SUBMITTED; la evaluacion la lleva a IN_EVALUATION y la primera actuacion programada a IN_VISIT. Al cancelar o finalizar la ultima actuacion SCHEDULED vuelve a IN_EVALUATION.']
   origin_ticket_id varchar(255)
   resolution_reason varchar(1000)
+  resolved_by_user_id bigint [ref: > users.id, note: 'Responsable de la ultima resolucion, obtenido del JWT; no reemplaza al trabajador asignado.']
   assigned_worker_user_id bigint [ref: > users.id]
   submitted_at timestamp [note: 'Asignado por servidor al presentar. Horario de ENROLLMENT_PERIOD_TIME_ZONE, Argentina por defecto.']
   resolved_at timestamp
@@ -577,6 +579,51 @@ Table application {
   }
 
   Note: 'Presentación y auditoría en la misma transacción. El actor debe estar activo y autorizado por su rol activo. La presentación asistida permite elegir otro titular existente sin restricción de jurisdicción. Se exige período OPEN vigente y edición ACTIVE. No exige cupo ni aumenta current_enrollment. Una nueva convocatoria de la misma edición solo admite anteriores REJECTED/CLOSED; ambos flujos se serializan por titular para evitar carreras y comparten idempotencia por titular. Las consultas siempre filtran por el titular autenticado. No se elimina en cascada al eliminar personas, ediciones o convocatorias.'
+}
+
+Enum application_resolution_decision {
+  APPROVED
+  REJECTED
+  WAITLISTED
+}
+
+Table application_resolution {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id]
+  previous_status application_status [not null]
+  decision application_resolution_decision [not null]
+  reason varchar(1000) [not null, note: 'Motivo privado, recortado, no copiado a logs.']
+  resolved_by_user_id bigint [not null, ref: > users.id]
+  resolved_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+
+  indexes {
+    (application_id, previous_status) [unique, name: 'uk_application_resolution_stage']
+    (application_id, resolved_at) [name: 'ix_application_resolution_application']
+    resolved_by_user_id [name: 'ix_application_resolution_responsible']
+  }
+  checks {
+    `(previous_status = 'IN_EVALUATION' and decision in ('APPROVED', 'REJECTED', 'WAITLISTED')) or (previous_status = 'WAITLISTED' and decision in ('APPROVED', 'REJECTED'))` [name: 'ck_application_resolution_transition']
+    `length(trim(reason)) > 0` [name: 'ck_application_resolution_reason']
+  }
+  Note: 'Historial inmutable. Exige evaluacion y ninguna actuacion SCHEDULED. Aprobar ocupa cupo; espera solo con cupo agotado. Ambas requieren elegibilidad y documentos obligatorios VALID. Rechazar admite incumplimientos.'
+}
+
+Table application_resolution_requirement {
+  id uuid [pk]
+  resolution_id uuid [not null, ref: > application_resolution.id]
+  requirement_id uuid [not null, note: 'Identificador historico sin FK al catalogo editable.']
+  type program_requirement_type [not null]
+  requirement_value varchar(255) [not null]
+  description varchar(500)
+  fulfilled boolean [not null]
+
+  indexes {
+    (resolution_id, requirement_id) [unique, name: 'uk_application_resolution_requirement']
+  }
+  checks {
+    `type in ('MIN_AGE', 'MAX_INCOME', 'RESIDENCY_YEARS', 'HAS_CHILDREN')` [name: 'ck_application_resolution_requirement_type']
+  }
+  Note: 'Copia inmutable del requisito y resultado verificado por el responsable al resolver.'
 }
 
 Table application_evaluation {

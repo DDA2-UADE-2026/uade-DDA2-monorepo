@@ -65,6 +65,8 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 
 ## Recorrido completo
 
+La etapa de decisión se documenta en [Resolución de solicitudes](functional/application-resolution.md).
+
 1. El personal municipal crea el programa y describe su objetivo.
 2. Crea una edición con fechas y cupo máximo. La edición comienza en borrador.
 3. Configura los beneficios, requisitos generales y documentos solicitados. También puede registrar incompatibilidades entre programas.

@@ -337,7 +337,7 @@ Los permisos corresponden al rol activo del JWT. Una persona que tenga roles ciu
 18. Cuando alcanza su horario de fin, el responsable registra si fue realizada o no realizada, con observaciones y conclusiones opcionales.
 19. El personal autorizado consulta la agenda de actuaciones y la bandeja de reprogramaciones, aplica filtros y abre sus detalles.
 
-Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION` y la primera actuación a `IN_VISIT`. Cancelar o finalizar la última actuación pendiente devuelve el caso a `IN_EVALUATION`; todavía no existen transiciones de resolución, corrección o reevaluación.
+Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION` y la primera actuación a `IN_VISIT`. Cancelar o finalizar la última actuación pendiente devuelve el caso a `IN_EVALUATION`. El personal con permiso de resolución puede aprobar, rechazar o dejar en espera; desde espera puede aprobar o rechazar manualmente. Cada decisión conserva su historial. Las reglas y contratos están en [Resolución de solicitudes](application-resolution.md). No se permiten correcciones ni reevaluaciones.
 
 ## Límites actuales
 

@@ -1,5 +1,27 @@
 # Solicitudes de beneficios
 
+## Resoluciones administrativas
+
+`POST /api/admin/applications/{id}/resolutions` exige `applications:management:resolve` y devuelve `201`.
+`GET` sobre la misma ruta exige `applications:management:view` y devuelve el historial cronológico, o `[]` si no existe. Ambas operaciones verifican usuario activo y permiso en JWT y rol activo vigente en base de datos.
+
+La capa de negocio exige evaluación y ausencia de actuaciones `SCHEDULED`, valida la transición (`IN_EVALUATION` a aprobado/rechazado/espera; `WAITLISTED` a aprobado/rechazado), motivo de 1–1000 caracteres tras recortar y un booleano por cada requisito vigente. Las decisiones de aprobación y espera requieren todos los controles cumplidos, documentos obligatorios `VALID`, edición `ACTIVE` no vencida e inexistencia de aprobaciones incompatibles del titular con vigencias superpuestas inclusive. Espera exige cupo agotado; aprobación exige disponibilidad y aumenta `currentEnrollment` una vez. Rechazo no aplica estas condiciones adicionales. No se exige convocatoria abierta.
+
+`ApplicationResolutionService` bloquea solicitud, titular y edición en ese orden. Las consultas de bloqueo de `ApplicationRepository` no hacen fetch join de edición para no adquirir su bloqueo antes del titular. Las modificaciones de requisitos de negocio comparten el bloqueo de edición. La aprobación se serializa por titular para evitar aprobaciones incompatibles y por edición para proteger el último cupo. Estado, fechas, último responsable, contador, historial y auditoría se confirman en una transacción.
+
+`application_resolution` conserva estado anterior, decisión, motivo, responsable y fecha UTC; la unicidad `(application_id, previous_status)` impide resolver dos veces una etapa. `application_resolution_requirement` conserva el identificador histórico y una copia de tipo/valor/descripción/resultado, sin FK al catálogo editable. Las entidades históricas son inmutables y no tienen operaciones de corrección o borrado. `application.resolved_by_user_id` identifica al último responsable, sin reemplazar al trabajador asignado. El detalle ciudadano no agrega campos de resolución. La auditoría `application_resolution` guarda identificadores, transición y resultados, pero excluye el motivo.
+
+Antes del despliegue ejecutar `docs/database/migrations/2026-10-18-application-resolutions.sql`; puede repetirse y no inventa resoluciones ni ajusta cupos anteriores. `init.sql` incorpora el permiso inicial para `ADMIN`. La documentación funcional completa está en [Resolución de solicitudes](../functional/application-resolution.md).
+
+Pruebas: `ApplicationResolutionFlowTest` ejecuta seguridad, reglas, historial, privacidad, rollback y concurrencia en H2; la tarea `testApplicationResolutionsPostgres` repite la suite en la base **desechable** `127.0.0.1:55439/application_resolution_test`, usuario `application_test` y contraseña `APPLICATION_TEST_POSTGRES_PASSWORD`. Usa `create-drop` y nunca `DB_URL`.
+
+Verificación del 18 de octubre de 2026: la suite completa ejecuta 344 casos, con 343 aprobados y uno reservado para PostgreSQL omitido en H2. Los 48 casos de flujo de resolución pasan en PostgreSQL 16.4, incluida la ejecución repetida de la migración. `bootJar` y `generateOpenApiDocs` finalizan correctamente. El servidor desechable se detiene al terminar.
+
+```powershell
+.\gradlew.bat test generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat testApplicationResolutionsPostgres --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+```
+
 El backend implementa presentación propia y asistida, consultas, documentos protegidos, evaluación social, gestión de visitas o entrevistas, consulta ciudadana y solicitudes ciudadanas de reprogramación mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan decisiones sobre la solicitud social, correcciones o reevaluaciones ni integración con Ciudadanos.
 
 ## Contrato HTTP

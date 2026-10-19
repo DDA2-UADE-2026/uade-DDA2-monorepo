@@ -52,6 +52,9 @@ class Application(
     @Column(name = "resolution_reason", length = 1000)
     var resolutionReason: String? = null,
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolved_by_user_id")
+    var resolvedBy: User? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_worker_user_id")
     var assignedWorker: User? = null,
     @Column(name = "submitted_at", updatable = false)

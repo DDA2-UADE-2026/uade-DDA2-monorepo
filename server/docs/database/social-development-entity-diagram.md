@@ -32,10 +32,12 @@ erDiagram
         bigint user_id FK
         bigint registered_by_user_id FK
         bigint assigned_worker_user_id FK
+        bigint resolved_by_user_id FK
         uuid program_edition_id FK
         uuid enrollment_period_id FK
         varchar status
         timestamp submitted_at
+        timestamp resolved_at
         timestamp updated_at
     }
 
@@ -47,6 +49,26 @@ erDiagram
         varchar recommendation
         bigint professional_user_id FK
         timestamptz evaluated_at
+    }
+
+    APPLICATION_RESOLUTION {
+        uuid id PK
+        uuid application_id FK
+        varchar previous_status
+        varchar decision
+        varchar reason
+        bigint resolved_by_user_id FK
+        timestamptz resolved_at
+    }
+
+    APPLICATION_RESOLUTION_REQUIREMENT {
+        uuid id PK
+        uuid resolution_id FK
+        uuid requirement_id
+        varchar type
+        varchar requirement_value
+        varchar description
+        boolean fulfilled
     }
 
     APPLICATION_VISIT {
@@ -93,8 +115,12 @@ erDiagram
     USERS ||--o{ APPLICATION : titular
     USERS ||--o{ APPLICATION : registra
     USERS o|--o{ APPLICATION : tiene_asignadas
+    USERS o|--o{ APPLICATION : ultima_resolucion
 
     APPLICATION ||--o| APPLICATION_EVALUATION : posee
+    APPLICATION ||--o{ APPLICATION_RESOLUTION : resuelve
+    USERS ||--o{ APPLICATION_RESOLUTION : decide
+    APPLICATION_RESOLUTION ||--o{ APPLICATION_RESOLUTION_REQUIREMENT : conserva
     USERS ||--o{ APPLICATION_EVALUATION : realiza
 
     APPLICATION ||--o{ APPLICATION_VISIT : programa
@@ -108,6 +134,8 @@ erDiagram
 ```
 
 ## Decisiones representadas
+
+- Las resoluciones son inmutables y preservan una copia del requisito evaluado sin FK al catálogo editable. La solicitud mantiene el estado y el responsable de la última resolución; aprobar incrementa el cupo ocupado de la edición.
 
 - `ApplicationEvaluation` es 1:1 con `Application`; la unicidad de `application_id` impide una segunda evaluación.
 - Una solicitud puede tener muchas actuaciones `VISIT` o `INTERVIEW`.
