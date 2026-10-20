@@ -1,6 +1,6 @@
 import { IconAlertTriangle, IconArrowLeft, IconCalendarCheck, IconCalendarX } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { AdminAttentionSummary } from "@/components/appointments/AdminAttentionSummary"
@@ -42,11 +42,6 @@ import {
 } from "@/lib/appointment-flow"
 
 export const Route = createFileRoute("/_app/gestion/turnos/$turnoId")({
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

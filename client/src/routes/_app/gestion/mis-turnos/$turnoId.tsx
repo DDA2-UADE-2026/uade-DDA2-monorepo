@@ -1,6 +1,6 @@
 import { IconArrowLeft } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { CommunityAttentionForm } from "@/components/appointments/CommunityAttentionForm"
@@ -16,11 +16,6 @@ import { attentionLabel, canRegisterAttention, professionalTurnSearchSchema } fr
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/$turnoId")({
   validateSearch: professionalTurnSearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "PROFESIONAL_CENTRO") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

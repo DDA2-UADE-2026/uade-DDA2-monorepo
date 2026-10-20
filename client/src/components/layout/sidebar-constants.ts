@@ -2,6 +2,7 @@ import {
   IconApi,
   IconBuilding,
   IconCalendarEvent,
+  IconCalendarUser,
   IconChartBar,
   IconClipboardHeart,
   IconFileCheck,
@@ -32,14 +33,16 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
     title: "Mis solicitudes",
     url: "/portal/solicitudes",
     icon: IconFileText,
+    requiredPermissions: ["applications:own:view"],
   },
-  { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift },
+  { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift, requiredPermissions: ["applications:own:view"] },
   {
     title: "Mis turnos",
     url: "/portal/turnos",
     icon: IconCalendarEvent,
+    requiredPermissions: ["appointments:own:view"],
   },
-  { title: "Actividades", url: "/portal/actividades", icon: IconSpeakerphone },
+  { title: "Actividades", url: "/portal/actividades", icon: IconSpeakerphone, requiredPermissions: ["activities:own:view"] },
 ]
 
 // Superset de ítems de las 5 matrices de rol (ver notes/routes.md #7) — falta filtrar por
@@ -52,53 +55,48 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     title: "Centros",
     url: "/gestion/centros",
     icon: IconBuilding,
+    requiredPermissions: ["centers:management:view"],
     items: [
-      { title: "Servicios ofrecidos", url: "/gestion/centros/servicios", icon: IconLibrary },
+      { title: "Servicios ofrecidos", url: "/gestion/centros/servicios", icon: IconLibrary, requiredPermissions: ["services:management:view"] },
     ]
   },
   {
     title: "Programas",
     url: "/gestion/programas",
     icon: IconHeartHandshake,
+    requiredPermissions: ["programs:management:view"],
     items: [
       {
         title: "Solicitudes",
         url: "/gestion/solicitudes",
         icon: IconFileText,
+        requiredPermissions: ["applications:management:view"],
       },
-      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
+      { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck, requiredPermissions: ["applications:management:view"] },
     ]
   },
-  { title: "Actividades", url: "/gestion/actividades", icon: IconSpeakerphone },
-  // { 
-  //   title: "Solicitudes",
-  //   url: "/gestion/solicitudes",
-  //   icon: IconFileText,
-  //   items: [
-  //     { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck },
-  //   ]
-  // },
-  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck },
-  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift },
-  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart },
-
+  { title: "Actividades", url: "/gestion/actividades", icon: IconSpeakerphone, requiredPermissions: ["activities:management:view", "activities:attendance:view"] },
+  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck, requiredPermissions: ["applications:visits:view", "applications:visits:reschedule-requests:view"] },
+  { title: "Evaluaciones", url: "/gestion/casos", icon: IconClipboardHeart, requiredPermissions: ["applications:evaluations:view"] },
+  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift, requiredPermissions: ["programs:management:view"] },
+  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart, requiredPermissions: ["applications:management:view"] },
   {
     title: "Turnos",
     url: "/gestion/turnos",
     icon: IconCalendarEvent,
+    requiredPermissions: ["appointments:management:view"],
+    items: [
+      { title: "Turnos asignados", url: "/gestion/mis-turnos", icon: IconCalendarUser, requiredPermissions: ["appointments:professional:view"] },
+    ],
   },
 ]
 
-export const PROFESSIONAL_APPOINTMENTS_NAV: SidebarNavItem = {
-  title: "Mis turnos", url: "/gestion/mis-turnos", icon: IconCalendarEvent,
-}
-
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [
-  { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers },
-  { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock },
+  { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers, requiredPermissions: ["users:view"] },
+  { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock, requiredPermissions: ["roles:view"] },
   { title: "Indicadores", url: "/gestion/indicadores", icon: IconChartBar },
-  { title: "Auditoría", url: "/gestion/auditoria", icon: IconShieldCheck },
-  { title: "Eventos", url: "/gestion/eventos", icon: IconTimelineEventText },
+  { title: "Auditoría", url: "/gestion/auditoria", icon: IconShieldCheck, requiredPermissions: ["logs:view"] },
+  { title: "Eventos", url: "/gestion/auditoria/eventos", icon: IconTimelineEventText, requiredPermissions: ["logs:view"] },
 ]
 
 export const DEBUG_NAV: readonly SidebarNavItem[] = [

@@ -27,25 +27,25 @@ import java.util.UUID
 @Tag(name = "Atencion comunitaria", description = "Turnos propios y constancia de asistencia del profesional.")
 class ProfessionalAppointmentController(private val service: CommunityAttentionService) {
     @GetMapping
-    @PreAuthorize("hasRole('PROFESIONAL_CENTRO') and hasAuthority('appointments:professional:view')")
+    @PreAuthorize("hasAuthority('appointments:professional:view')")
     @Operation(operationId = "listProfessionalAppointments", summary = "Listar turnos asignados para una fecha")
     fun list(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate): List<ProfessionalAppointmentResponse> =
         service.list(date)
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('PROFESIONAL_CENTRO') and hasAuthority('appointments:professional:view')")
+    @PreAuthorize("hasAuthority('appointments:professional:view')")
     @Operation(operationId = "getProfessionalAppointment", summary = "Consultar un turno asignado y su constancia")
     fun get(@PathVariable id: UUID): ProfessionalAppointmentResponse = service.get(id)
 
     @PostMapping("/{id}/attention")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('PROFESIONAL_CENTRO') and hasAuthority('appointments:professional:manage')")
+    @PreAuthorize("hasAuthority('appointments:professional:manage')")
     @Operation(operationId = "registerCommunityAttention", summary = "Registrar atendido o ausente")
     fun create(@PathVariable id: UUID, @RequestBody request: CreateAttentionRequest): CommunityAttentionResponse =
         service.create(id, request)
 
     @PutMapping("/{id}/attention")
-    @PreAuthorize("hasRole('PROFESIONAL_CENTRO') and hasAuthority('appointments:professional:manage')")
+    @PreAuthorize("hasAuthority('appointments:professional:manage')")
     @Operation(operationId = "correctCommunityAttention", summary = "Corregir la constancia con su version vigente")
     fun correct(@PathVariable id: UUID, @RequestBody request: CorrectAttentionRequest): CommunityAttentionResponse =
         service.correct(id, request)

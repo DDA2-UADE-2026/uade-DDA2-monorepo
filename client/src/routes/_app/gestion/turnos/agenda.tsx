@@ -1,6 +1,6 @@
 import { IconArrowLeft, IconRefresh } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { adminDaySearchSchema } from "@/components/turnos/adminAppointmentFilters"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
@@ -21,11 +21,6 @@ import { appointmentStatusLabels, formatAppointmentDate, formatAppointmentTime, 
 
 export const Route = createFileRoute("/_app/gestion/turnos/agenda")({
   validateSearch: adminDaySearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

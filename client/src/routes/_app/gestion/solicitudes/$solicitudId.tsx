@@ -210,6 +210,11 @@ function RouteComponent() {
                   </Card>
                 </div>
 
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" render={<Link to="/gestion/casos/$solicitudId/evaluacion" params={{ solicitudId }} />}>Evaluación social</Button>
+                  <Button variant="outline" render={<Link to="/gestion/casos/$solicitudId/visitas" params={{ solicitudId }} />}>Visitas y entrevistas</Button>
+                </div>
+
                 <ApplicationDocumentsSection application={{ ...application, id: solicitudId }} />
               </>
             )}

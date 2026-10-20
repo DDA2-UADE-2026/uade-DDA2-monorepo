@@ -443,7 +443,9 @@ Cada layout de rama arma su propio menú, así que el sidebar cambia entero al c
 | Profesional de centro | Inicio, Mi agenda |
 | Auditor | Inicio, Casos (lectura), Indicadores, Auditoría |
 
-Los ítems se derivan de la misma matriz de roles de la sección 3, para no mantener dos listas que puedan divergir. Si un ítem no está en el sidebar, su ruta tampoco es accesible.
+Las entradas de `client/src/components/layout/sidebar-constants.ts` declaran sus permisos de consulta en `requiredPermissions`. `SidebarNavMenu` muestra un candado y deshabilita el enlace cuando el rol activo no tiene ninguno de los permisos indicados. El backend sigue siendo quien autoriza el acceso a los datos.
+
+Al agregar o cambiar una ruta, pantalla o permiso `:view`, actualizar las entradas de `PORTAL_NAV`, `OPERACION_NAV`, `ANALISIS_NAV` y `DEBUG_NAV` que correspondan. Revisar también los submenús y comprobar el resultado con un usuario que tenga el permiso y otro que no lo tenga. Las pantallas sin permiso de consulta asociado quedan sin `requiredPermissions` hasta que el backend defina uno.
 
 El footer del sidebar muestra el nombre, el rol actual y el conmutador de rol cuando corresponde.
 

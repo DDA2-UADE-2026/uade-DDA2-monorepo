@@ -1,6 +1,6 @@
 import { IconCalendarEvent, IconRefresh } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
@@ -15,11 +15,6 @@ import { attentionLabel, professionalTurnSearchSchema } from "@/lib/community-at
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/")({
   validateSearch: professionalTurnSearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "PROFESIONAL_CENTRO") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Link, Outlet, createFileRoute, redirect, useRouterState } from "@tanstack/react-router"
+import { Link, Outlet, createFileRoute, useRouterState } from "@tanstack/react-router"
 
 import {
   OutletNavSidebarTrigger,
@@ -13,11 +13,6 @@ import { getMunicipalCenterOptions } from "@/generated/@tanstack/react-query.gen
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_app/gestion/centros/$centroId")({
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

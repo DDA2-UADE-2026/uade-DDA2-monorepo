@@ -44,7 +44,6 @@ export const Route = createFileRoute("/_app/gestion/actividades/$actividadId/")(
       if (context.user.permissions?.includes("activities:attendance:view")) {
         throw redirect({ to: "/gestion/actividades/$actividadId/asistencia", params, search: { page: 1 }, replace: true })
       }
-      throw redirect({ to: "/403", replace: true })
     }
   },
   component: RouteComponent,
