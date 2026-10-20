@@ -251,6 +251,17 @@ tasks.register<Test>("testBenefitGrantsPostgres") {
     systemProperty("benefit-grant.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
 }
 
+tasks.register<Test>("testInterventionPlansPostgres") {
+    group = "verification"
+    description = "Prueba planes y seguimientos contra PostgreSQL desechable en 127.0.0.1:55439/intervention_plan_test (create-drop)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest") }
+    systemProperty("intervention.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/intervention_plan_test")
+    systemProperty("intervention.test.postgres-user", "application_test")
+    systemProperty("intervention.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
+}
+
 tasks.register<Test>("testCentersPostgres") {
     group = "verification"
     description =

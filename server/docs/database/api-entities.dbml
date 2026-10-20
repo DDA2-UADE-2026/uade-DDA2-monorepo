@@ -17,6 +17,8 @@ Enum log_entity_type {
   enrollment_period
   application
   application_evaluation
+  intervention_plan
+  intervention_follow_up
   application_resolution
   benefit_grant
   benefit_grant_change
@@ -713,6 +715,83 @@ Table application_resolution_requirement {
   Note: 'Copia inmutable del requisito y resultado verificado por el responsable al resolver.'
 }
 
+Enum intervention_action_status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+Table intervention_plan {
+  id uuid [pk]
+  application_id uuid [not null, ref: - application.id, note: 'Caso unico; ciudadano derivado de application.user_id.']
+  responsible_user_id bigint [not null, ref: > users.id]
+  created_at timestamptz [not null, note: 'UTC con precision de microsegundos.']
+  indexes {
+    application_id [unique, name: 'uk_intervention_plan_application']
+    responsible_user_id [name: 'ix_intervention_plan_responsible']
+  }
+  Note: 'Plan unico de caso evaluado, incluso REJECTED/CLOSED. Responsable y estructura inicial inmutables; solo el trabajador asignado y responsable registra seguimientos.'
+}
+
+Table intervention_objective {
+  id uuid [pk]
+  plan_id uuid [not null, ref: > intervention_plan.id]
+  position integer [not null]
+  description varchar(1000) [not null]
+  indexes {
+    (plan_id, position) [unique, name: 'uk_intervention_objective_position']
+  }
+  checks {
+    `position >= 0` [name: 'ck_intervention_objective_position']
+    `length(trim(description)) > 0` [name: 'ck_intervention_objective_description']
+  }
+  Note: 'Objetivo inmutable. Orden recibido desde cero; cada objetivo requiere acciones en la capa de negocio.'
+}
+
+Table intervention_action {
+  id uuid [pk]
+  objective_id uuid [not null, ref: > intervention_objective.id]
+  position integer [not null]
+  description varchar(1000) [not null]
+  start_date date [not null]
+  due_date date [not null]
+  status intervention_action_status [not null]
+  indexes {
+    (objective_id, position) [unique, name: 'uk_intervention_action_position']
+  }
+  checks {
+    `position >= 0` [name: 'ck_intervention_action_position']
+    `length(trim(description)) > 0` [name: 'ck_intervention_action_description']
+    `start_date <= due_date` [name: 'ck_intervention_action_dates']
+    `status in ('PENDING', 'IN_PROGRESS', 'COMPLETED')` [name: 'ck_intervention_action_status']
+  }
+  Note: 'Inicio PENDING. Solo cambia status al registrar seguimientos. Responsable derivado del plan; estructura y fechas fijas, sin reserva de agenda ni dependencia de edicion.'
+}
+
+Table intervention_follow_up {
+  id uuid [pk]
+  action_id uuid [not null, ref: > intervention_action.id]
+  sequence_number integer [not null]
+  previous_status intervention_action_status [not null]
+  status intervention_action_status [not null]
+  occurred_on date [not null, note: 'Desde inicio hasta hoy en zona configurada, sin retroceder respecto al seguimiento previo.']
+  notes varchar(2000) [not null, note: 'Texto privado excluido de logs generales.']
+  result varchar(2000) [note: 'Obligatorio para COMPLETED; privado y excluido de logs.']
+  author_user_id bigint [not null, ref: > users.id]
+  recorded_at timestamptz [not null, note: 'Registro UTC, independiente de la fecha real historica.']
+  indexes {
+    (action_id, sequence_number) [unique, name: 'uk_intervention_follow_up_sequence']
+    author_user_id [name: 'ix_intervention_follow_up_author']
+  }
+  checks {
+    `sequence_number > 0` [name: 'ck_intervention_follow_up_sequence']
+    `length(trim(notes)) > 0` [name: 'ck_intervention_follow_up_notes']
+    `(result is null or length(trim(result)) > 0) and (status <> 'COMPLETED' or result is not null)` [name: 'ck_intervention_follow_up_result']
+    `previous_status in ('PENDING', 'IN_PROGRESS') and status in ('IN_PROGRESS', 'COMPLETED')` [name: 'ck_intervention_follow_up_transition']
+  }
+  Note: 'Historial inmutable. Secuencia serializada por solicitud, plan y accion. COMPLETED definitivo; vencimiento previsto no bloquea seguimiento. No altera estados ni cupos del caso.'
+}
+
 Table application_evaluation {
   id uuid [pk]
   application_id uuid [not null, unique, ref: - application.id, note: 'Relacion 1:1; una unica evaluacion vigente por solicitud.']
@@ -810,6 +889,10 @@ Table application_visit_reschedule_request {
 TableGroup social_case_management {
   application
   application_evaluation
+  intervention_plan
+  intervention_objective
+  intervention_action
+  intervention_follow_up
   application_visit
   application_visit_reschedule_request
 }

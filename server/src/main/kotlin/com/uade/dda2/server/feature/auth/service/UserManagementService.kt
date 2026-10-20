@@ -15,6 +15,8 @@ import com.uade.dda2.server.feature.application.repository.ApplicationEvaluation
 import com.uade.dda2.server.feature.application.repository.ApplicationResolutionRepository
 import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
 import com.uade.dda2.server.feature.benefit.repository.BenefitGrantChangeRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionPlanRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionFollowUpRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRescheduleRequestRepository
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
@@ -55,6 +57,8 @@ class UserManagementService(
     private val applicationResolutionRepository: ApplicationResolutionRepository,
     private val benefitGrantRepository: BenefitGrantRepository,
     private val benefitGrantChangeRepository: BenefitGrantChangeRepository,
+    private val interventionPlanRepository: InterventionPlanRepository,
+    private val interventionFollowUpRepository: InterventionFollowUpRepository,
     private val applicationVisitRepository: ApplicationVisitRepository,
     private val applicationVisitRescheduleRequestRepository: ApplicationVisitRescheduleRequestRepository,
     private val documentRepository: DocumentRepository,
@@ -174,6 +178,8 @@ class UserManagementService(
             applicationResolutionRepository.existsByResolvedById(id) ||
             benefitGrantRepository.existsByAssignedById(id) ||
             benefitGrantChangeRepository.existsByResponsibleId(id) ||
+            interventionPlanRepository.existsByResponsibleId(id) ||
+            interventionFollowUpRepository.existsByAuthorId(id) ||
             applicationVisitRepository.existsByResponsibleId(id) ||
             applicationVisitRepository.existsByResultRecordedById(id) ||
             applicationVisitRescheduleRequestRepository.existsByRequestedByIdOrReviewedById(id, id) ||

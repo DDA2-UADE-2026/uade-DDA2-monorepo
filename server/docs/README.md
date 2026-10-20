@@ -16,6 +16,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
 | [Otorgamiento de beneficios](functional/benefit-grants.md) | Registro de beneficios activos y su vigencia para solicitudes aprobadas. |
 | [Ciclo de vida de beneficios](functional/benefit-grant-lifecycle.md) | Renovación, suspensión, finalización, historial y liberación de cupos. |
+| [Planes de intervención](functional/intervention-plans.md) | Objetivos, acciones, responsables, fechas y seguimientos profesionales por caso. |
 
 ## Organización de `/docs`
 

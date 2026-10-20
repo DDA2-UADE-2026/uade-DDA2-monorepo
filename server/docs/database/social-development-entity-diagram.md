@@ -1,6 +1,6 @@
 # Diagrama de entidades del seguimiento social
 
-Este diagrama resume la evaluación social, las visitas o entrevistas, sus resultados, las solicitudes ciudadanas de reprogramación, las resoluciones y los otorgamientos de beneficios. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
+Este diagrama resume la evaluación social, los planes de intervención y seguimientos, las visitas o entrevistas, sus resultados, las solicitudes ciudadanas de reprogramación, las resoluciones y los otorgamientos de beneficios. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
 
 ```mermaid
 erDiagram
@@ -39,6 +39,43 @@ erDiagram
         timestamp submitted_at
         timestamp resolved_at
         timestamp updated_at
+    }
+
+    INTERVENTION_PLAN {
+        uuid id PK
+        uuid application_id FK,UK
+        bigint responsible_user_id FK
+        timestamptz created_at
+    }
+
+    INTERVENTION_OBJECTIVE {
+        uuid id PK
+        uuid plan_id FK
+        integer position
+        varchar description
+    }
+
+    INTERVENTION_ACTION {
+        uuid id PK
+        uuid objective_id FK
+        integer position
+        varchar description
+        date start_date
+        date due_date
+        varchar status
+    }
+
+    INTERVENTION_FOLLOW_UP {
+        uuid id PK
+        uuid action_id FK
+        integer sequence_number
+        varchar previous_status
+        varchar status
+        date occurred_on
+        varchar notes
+        varchar result
+        bigint author_user_id FK
+        timestamptz recorded_at
     }
 
     APPLICATION_EVALUATION {
@@ -167,6 +204,12 @@ erDiagram
 
     APPLICATION ||--o| APPLICATION_EVALUATION : posee
     APPLICATION ||--o{ APPLICATION_RESOLUTION : resuelve
+    APPLICATION ||--o| INTERVENTION_PLAN : organiza
+    USERS ||--o{ INTERVENTION_PLAN : responsable
+    INTERVENTION_PLAN ||--|{ INTERVENTION_OBJECTIVE : define
+    INTERVENTION_OBJECTIVE ||--|{ INTERVENTION_ACTION : propone
+    INTERVENTION_ACTION ||--o{ INTERVENTION_FOLLOW_UP : registra
+    USERS ||--o{ INTERVENTION_FOLLOW_UP : autor
     APPLICATION ||--o{ BENEFIT_GRANT : recibe
     PROGRAM_EDITION ||--o{ PROGRAM_BENEFIT : ofrece
     PROGRAM_BENEFIT ||--o{ BENEFIT_GRANT : origina
@@ -190,6 +233,7 @@ erDiagram
 
 ## Decisiones representadas
 
+- Cada solicitud evaluada admite un plan de intervención, incluso rechazada o cerrada. El ciudadano se deriva del caso. Objetivos, acciones, responsable y fechas iniciales se conservan; solo cambia el estado de las acciones mediante seguimientos inmutables. Completar acciones no modifica estados ni cupos de la solicitud.
 - Cada otorgamiento conserva una copia del beneficio configurado, su vigencia, estado inicial `ACTIVE` y administrativo responsable. La unicidad por solicitud y beneficio evita duplicados; no vuelve a ocupar el cupo reservado al aprobar.
 - El historial inmutable registra asignación, renovación, suspensión y finalización con motivo, responsable y fecha UTC. Renovar extiende el mismo otorgamiento y reevalúa requisitos y documentos. Suspender conserva la reserva; finalizar el último otorgamiento pendiente cierra la solicitud en `CLOSED` y libera exactamente una reserva. `FINALIZED` es definitivo.
 

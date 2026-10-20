@@ -1,5 +1,28 @@
 # Solicitudes de beneficios
 
+## Planes de intervención y seguimientos
+
+`feature.intervention` separa controladores, servicio transaccional, validador, repositorios y mapeadores. `InterventionPlan` tiene vínculo único e inmutable con `Application`; el ciudadano se deriva de `application.user`. Objetivos y acciones conservan posiciones, textos y fechas iniciales. Solo `InterventionAction.status` cambia; `InterventionFollowUp` es inmutable y tiene secuencia única por acción.
+
+Las escrituras usan `POST /api/applications/{id}/intervention-plan` y `POST .../actions/{actionId}/follow-ups`; devuelven `201`. Las lecturas usan las mismas rutas con prefijo `/api/admin` y devuelven `200`. Los permisos son `applications:interventions:create`, `applications:interventions:follow-ups:create` y `applications:interventions:view`, inicialmente para ADMIN. El validador comprueba usuario activo y permiso del JWT y del rol activo actual. Crear/registrar exige coincidencia con trabajador asignado y responsable guardado; leer no exige coincidencia.
+
+La creación requiere evaluación y admite `IN_EVALUATION/IN_VISIT/WAITLISTED/APPROVED/REJECTED/CLOSED`. Los DTO rechazan campos adicionales también en objetivos y acciones. Descripciones: 1–1000 caracteres recortados; notas y resultado: 1–2000. El resultado es obligatorio para completar. Las fechas previstas son independientes de programas y beneficios. Los seguimientos admiten fechas reales desde el inicio hasta hoy en la zona configurada, sin retroceder respecto al registro previo, incluso antes del alta del plan o después de su fin previsto.
+
+El servicio bloquea solicitud, plan y acción, en ese orden, según corresponda. Las consultas de bloqueo no hacen fetch joins; la pertenencia de acción se valida mediante subconsulta EXISTS para no bloquear otras tablas en la consulta externa. La autorización en base se carga después de esperar los bloqueos. Bajo bloqueo se releen estado y último seguimiento, se calcula la secuencia y se valida cronología. Un cierre de solicitud por beneficios comparte el primer bloqueo y no impide continuar el seguimiento.
+
+Los registros UTC tienen precisión de microsegundos. `Application.updatedAt` usa la zona configurada. Plan/objetivos/acciones o seguimiento/estado, fecha de solicitud y auditoría se confirman juntos. Los logs `intervention_plan` e `intervention_follow_up` excluyen textos profesionales. Las FK y el guard de baja de usuarios protegen responsables/autores. La API no tiene edición, eliminación ni reasignación, y no amplía respuestas ciudadanas.
+
+Antes del despliegue ejecutar [2026-10-19-intervention-plans.sql](../database/migrations/2026-10-19-intervention-plans.sql) sobre el esquema existente. Crea tablas, unicidades, índices, CHECK y permisos de forma idempotente, sin fabricar planes ni seguimientos. Modelo completo en DBML y [contrato funcional](../functional/intervention-plans.md).
+
+Pruebas: `InterventionValidatorTest` y `InterventionPlanFlowTest`. La tarea `testInterventionPlansPostgres` usa exclusivamente PostgreSQL desechable `127.0.0.1:55439/intervention_plan_test`, usuario `application_test`, contraseña de `APPLICATION_TEST_POSTGRES_PASSWORD`, con `create-drop`; nunca usa `DB_URL`. Incluye migración repetida en esquema privado, rollback y concurrencia de alta, avances, finalización y cierre por beneficios.
+
+Verificación del 19 de octubre de 2026: suite completa de 466 casos, con 462 aprobados y cuatro migraciones exclusivas de PostgreSQL omitidas en H2. Los 27 casos de flujo de intervención pasan en PostgreSQL 16.4, sin omisiones. `bootJar` y `generateOpenApiDocs` finalizan correctamente; las rutas y esquemas de entrada publicados incluyen los campos obligatorios, estados permitidos, seguridad y errores documentados. El servidor desechable queda detenido y sus archivos temporales se eliminan.
+
+```powershell
+.\gradlew.bat test bootJar generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat testInterventionPlansPostgres --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+```
+
 ## Ciclo de vida de otorgamientos
 
 Las rutas `POST /api/admin/applications/{id}/benefit-grants/{grantId}/renew|suspend|finalize` exigen `applications:management:benefits:manage` y devuelven `200` con `BenefitGrantResponse`. `GET .../{grantId}/history` exige `applications:management:view`. Los DTO rechazan campos extra y el servidor determina actor e instante UTC. Se valida permiso en JWT y rol activo vigente, además del usuario activo.
