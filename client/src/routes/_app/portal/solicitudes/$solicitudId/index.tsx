@@ -1,13 +1,15 @@
-import { IconCheck, IconClipboardList } from "@tabler/icons-react"
+import { IconCalendarEvent, IconCheck, IconClipboardList } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 
 import { ApplicationDocuments } from "@/components/applications/ApplicationDocuments"
 import { ApplicationError, ApplicationHeading, ApplicationLoading, ApplicationPage, ApplicationStatusBadge } from "@/components/applications/ApplicationUi"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { get2Options } from "@/generated/@tanstack/react-query.gen"
+import { useMe } from "@/hooks/use-auth"
 import { formatApplicationDate, isApplicationResolved } from "@/lib/application-flow"
 
 export const Route = createFileRoute("/_app/portal/solicitudes/$solicitudId/")({
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/_app/portal/solicitudes/$solicitudId/")({
 
 function RouteComponent() {
   const { solicitudId } = Route.useParams()
+  const { data: session } = useMe()
   const validId = z.uuid().safeParse(solicitudId).success
   const query = useQuery({ ...get2Options({ path: { id: solicitudId } }), enabled: validId })
   const application = query.data
@@ -33,6 +36,10 @@ function RouteComponent() {
           <div><p className="text-muted-foreground">Última actualización</p><p className="mt-1 font-medium">{formatApplicationDate(application.updatedAt)}</p></div>
         </CardContent>
       </Card>
+      {session?.user?.permissions?.includes("applications:own:visits:view") && <Card>
+        <CardHeader><CardTitle className="flex items-center gap-2 font-heading text-xl"><IconCalendarEvent className="size-5" />Visitas y entrevistas</CardTitle><CardDescription>Consultá las actuaciones de esta solicitud y el estado de tus pedidos de reprogramación.</CardDescription></CardHeader>
+        <CardContent><Button variant="outline" render={<Link to="/portal/solicitudes/$solicitudId/visitas" params={{ solicitudId }} search={{ page: 1 }} />}>Ver visitas y entrevistas</Button></CardContent>
+      </Card>}
       {!isApplicationResolved(application.status) && (pending > 0 ? <Alert><IconClipboardList /><AlertTitle>Tenés {pending} documento{pending === 1 ? " pendiente" : "s pendientes"}</AlertTitle><AlertDescription>Adjuntá los documentos faltantes o reemplazá los observados para completar tu documentación.</AlertDescription></Alert> : <Alert><IconCheck /><AlertTitle>Sin documentos obligatorios faltantes u observados</AlertTitle><AlertDescription>Las entregas pendientes de revisión se muestran a continuación. Podés volver a consultar el estado desde Mis solicitudes.</AlertDescription></Alert>)}
       <ApplicationDocuments key={solicitudId} application={{ ...application, id: solicitudId }} />
     </> : null}

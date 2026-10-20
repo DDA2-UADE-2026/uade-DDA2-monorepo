@@ -9,12 +9,14 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 export function ProgramDatePicker({
+  id,
   value,
   onChange,
   placeholder = "Seleccionar fecha",
   disabled,
   readOnly = false,
 }: {
+  id?: string
   value: string
   onChange: (value: string) => void
   placeholder?: string
@@ -29,6 +31,7 @@ export function ProgramDatePicker({
       <PopoverTrigger
         render={
           <Button
+            id={id}
             type="button"
             variant="outline"
             disabled={readOnly}

@@ -94,7 +94,7 @@ function RouteComponent() {
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-3xl space-y-4 p-4 lg:p-6">
+          <main className="mx-auto w-full min-w-0 max-w-5xl space-y-6 p-4 lg:p-6">
             <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" />}>
               <IconArrowLeft />Volver a turnos
             </Button>
@@ -209,7 +209,7 @@ function RouteComponent() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-          </div>
+          </main>
         </div>
       </SidebarShellContent>
     </SidebarShell>

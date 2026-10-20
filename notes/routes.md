@@ -156,7 +156,7 @@ src/routes/
 
 # 3. Guards de autenticación y autorización
 
-## Los tres niveles
+## Sesión y rama
 
 Cada nivel resuelve una pregunta distinta y no se pisan entre sí:
 
@@ -164,9 +164,8 @@ Cada nivel resuelve una pregunta distinta y no se pisan entre sí:
 |---|---|---|---|
 | **1. Sesión** | `_app/route.tsx` | ¿Hay una sesión válida? | Redirige a `/login` guardando el destino |
 | **2. Rama** | `_app/portal/route.tsx` · `_app/gestion/route.tsx` | ¿El rol actual corresponde a esta rama? | Redirige a la rama correcta |
-| **3. Rol puntual** | `route.tsx` de la carpeta, o la ruta individual | ¿Este rol específico puede entrar acá? | Redirige a `/403` |
 
-> **Los guards son navegación, no seguridad.** Evitan que el usuario llegue a una pantalla que va a fallar o que no le sirve. **El backend revalida `ROL_ACTUAL` en cada endpoint**, según RNF-02. Un guard de router se saltea escribiendo la URL a mano o llamando la API directamente.
+Estos guards organizan la navegación, no autorizan funcionalidades. Dentro de cada rama, la interfaz consulta `user.permissions` del rol activo para habilitar acciones y enlaces. El backend valida cada operación, incluso cuando alguien accede directamente por URL o llama a la API.
 
 ## Nivel 1 — Sesión
 
@@ -215,68 +214,13 @@ export const Route = createFileRoute('/_app/gestion')({
 })
 ```
 
-Redirigir a la otra rama en vez de mostrar 403 es deliberado: no es un error de permisos, es que la persona está en el modo equivocado. El 403 se reserva para el nivel 3.
+Redirigir a la otra rama es una decisión de navegación de la aplicación. No agregar guards de ruta que filtren por nombres de rol ni redirects a `/403` por falta de permisos. Las acciones de lectura y escritura se muestran o deshabilitan según sus permisos específicos; el backend conserva la autorización efectiva.
 
-## Nivel 3 — Rol puntual
+## Permisos por funcionalidad
 
-Conviene un helper para no repetir la comprobación en cada archivo:
+Cada pantalla y acción usa los permisos del rol activo (`user.permissions`). Si una vista admite varios permisos de consulta alternativos, basta con uno de ellos. La navegación declara los permisos de consulta en `client/src/components/layout/sidebar-constants.ts`; los botones y formularios usan los permisos de su operación concreta. Nunca inferir acceso por `activeRole === "ADMIN"` ni por otro nombre de rol. Al agregar o cambiar permisos en el backend, actualizar la sidebar y las acciones afectadas.
 
-```tsx
-// src/lib/guards.ts
-import { redirect } from '@tanstack/react-router'
-import type { Rol, RouterContext } from '@/types'
-
-export function requiereRol(...roles: Rol[]) {
-  return ({ context }: { context: RouterContext }) => {
-    if (!roles.includes(context.auth.rolActual)) {
-      throw redirect({ to: '/403' })
-    }
-  }
-}
-```
-
-```tsx
-// src/routes/_app/gestion/programas/index.tsx
-export const Route = createFileRoute('/_app/gestion/programas/')({
-  beforeLoad: requiereRol('ADMINISTRATIVO', 'COORDINADOR'),
-  component: ProgramasPage,
-})
-```
-
-Cuando **toda una carpeta** comparte el mismo requisito de rol, el guard va en su `route.tsx` y no se repite en cada hija:
-
-```tsx
-// src/routes/_app/gestion/auditoria/route.tsx
-export const Route = createFileRoute('/_app/gestion/auditoria')({
-  beforeLoad: requiereRol('AUDITOR'),
-  component: AuditoriaLayout,   // cabecera + pestañas: cambios · eventos · DLQ
-})
-```
-
-Con eso, `index.tsx`, `eventos.tsx` y `dlq.tsx` quedan sin `beforeLoad` propio.
-
-## Matriz de rol por ruta
-
-| Ruta | Roles habilitados |
-|---|---|
-| `/gestion` (tablero) | Todos los municipales |
-| `/gestion/casos` | Trabajador social, administrativo, coordinador, auditor (lectura) |
-| `/gestion/casos/$id/evaluacion` | Trabajador social |
-| `/gestion/casos/$id/resolucion` | Coordinador |
-| `/gestion/visitas` | Trabajador social, coordinador |
-| `/gestion/beneficios` | Administrativo, coordinador |
-| `/gestion/intervenciones` | Trabajador social |
-| `/gestion/programas` | Administrativo, coordinador |
-| `/gestion/programas/$id/convocatorias` | Coordinador |
-| `/gestion/centros` | Administrativo |
-| `/gestion/turnos/agenda` | Profesional de centro |
-| `/gestion/actividades` | Administrativo |
-| `/gestion/indicadores` | Coordinador, auditor |
-| `/gestion/auditoria` | Auditor |
-
-El auditor entra en modo lectura a varias rutas: el guard lo deja pasar y la pantalla oculta las acciones de escritura. **El backend igual rechaza cualquier mutación suya**, así que el ocultamiento es comodidad, no control.
-
-## Reglas que no son de rol
+## Reglas que dependen de los datos
 
 Dos restricciones del alcance no se resuelven con guards de router porque dependen de datos, no del rol:
 
@@ -311,7 +255,7 @@ async function cambiarRol(nuevoRol: Rol) {
 
 # 5. Filtros, búsqueda y paginación en la URL
 
-RF-18 exige búsquedas, filtros, ordenamiento y paginación en los listados de volumen variable. Ese estado va en el search param, no en `useState`.
+Toda funcionalidad del frontend que muestre una colección de tamaño variable debe paginarla, incluidas las tablas y los selectores en diálogos. Preferir la paginación del backend si el endpoint la ofrece; si devuelve toda la colección, paginarla en el cliente. Al cambiar búsqueda o filtros, volver a la primera página. En los listados de página, guardar búsqueda, filtros y página en el search param para conservar la URL compartible; en los diálogos transitorios, el estado de página puede ser local.
 
 El schema **no se escribe a mano**: se compone a partir del que genera hey-api desde el OpenAPI del backend, extendido con lo que es puramente de interfaz.
 
@@ -433,15 +377,7 @@ Cada layout de rama arma su propio menú, así que el sidebar cambia entero al c
 
 **Portal (ciudadano)** — Inicio · Programas · Mis solicitudes · Mis beneficios · Mis turnos · Actividades
 
-**Gestión (municipal)** — depende del rol:
-
-| Rol | Ítems del sidebar |
-|---|---|
-| Trabajador social | Inicio, Casos, Visitas, Intervenciones |
-| Administrativo | Inicio, Casos, Beneficios, Programas, Centros, Turnos, Actividades |
-| Coordinador | Inicio, Casos, Visitas, Beneficios, Programas, Indicadores |
-| Profesional de centro | Inicio, Mi agenda |
-| Auditor | Inicio, Casos (lectura), Indicadores, Auditoría |
+**Gestión (municipal)** — muestra las secciones de operación, análisis y depuración. `Turnos` agrupa el calendario administrativo y el subítem `Turnos asignados`. La disponibilidad de cada enlace depende de sus permisos, no de una matriz de nombres de rol.
 
 Las entradas de `client/src/components/layout/sidebar-constants.ts` declaran sus permisos de consulta en `requiredPermissions`. `SidebarNavMenu` muestra un candado y deshabilita el enlace cuando el rol activo no tiene ninguno de los permisos indicados. El backend sigue siendo quien autoriza el acceso a los datos.
 
@@ -471,7 +407,7 @@ export interface RouterContext {
 
 ## Estados de interfaz
 
-RNF-05 exige estados de carga, vacío, éxito y error. TanStack Router los cubre a nivel ruta:
+Todas las funcionalidades usan los componentes shadcn compartidos de `client/src/components/ui` para controles, diálogos, tablas y estados visibles. Por ejemplo, usar `Button`, `Input`, `Dialog`, `Table`, `Card`, `Skeleton`, `Empty` y `Alert` según corresponda. El HTML semántico sigue sirviendo para la estructura. RNF-05 exige estados de carga, vacío, éxito y error. TanStack Router también los cubre a nivel ruta:
 
 - `pendingComponent` — skeleton mientras el loader resuelve.
 - `errorComponent` — error de carga, con acción de reintentar.

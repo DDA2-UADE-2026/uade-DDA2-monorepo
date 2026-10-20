@@ -1,5 +1,5 @@
-import { IconCalendarEvent, IconChevronLeft, IconChevronRight, IconRefresh } from "@tabler/icons-react"
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { IconBuilding, IconCalendarEvent, IconChevronLeft, IconChevronRight, IconRefresh, IconSearch } from "@tabler/icons-react"
+import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 
@@ -11,13 +11,11 @@ import {
   monthTitle,
   shiftMonth,
 } from "@/components/turnos/adminAppointmentFilters"
-import { adminCenterOptions } from "@/components/turnos/adminCenterOptions"
+import { AppointmentCenterSelectionDialog, AppointmentServiceSelectionDialog } from "@/components/turnos/AppointmentSelectionDialogs"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
   getMunicipalCenterOptions,
   listAdminAppointmentMonthlySummaryOptions,
@@ -37,22 +35,12 @@ function RouteComponent() {
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
   const setSearch = (patch: Partial<typeof search>) => navigate({ search: { ...search, ...patch } })
-  const [centerSearchInput, setCenterSearchInput] = useState("")
-  const [centerSearch, setCenterSearch] = useState("")
-
-  const centers = useInfiniteQuery(adminCenterOptions(centerSearch))
-  const centerOptions = Array.from(
-    new Map(centers.data?.pages.flatMap((page) => page.content ?? []).map((center) => [center.id, center]) ?? []).values(),
-  )
+  const [centerDialogOpen, setCenterDialogOpen] = useState(false)
+  const [serviceDialogOpen, setServiceDialogOpen] = useState(false)
   const selectedCenterDetail = useQuery({
     ...getMunicipalCenterOptions({ path: { id: search.centro } }),
     enabled: isUuid(search.centro),
   })
-  const selectedCenter = centerOptions.find((center) => center.id === search.centro) ?? selectedCenterDetail.data
-  const selectOptions = selectedCenter && !centerOptions.some((center) => center.id === selectedCenter.id)
-    ? [selectedCenter, ...centerOptions]
-    : centerOptions
-
   const services = useQuery({
     ...listCenterServicesOptions({ path: { centerId: search.centro } }),
     enabled: isUuid(search.centro),
@@ -86,80 +74,27 @@ function RouteComponent() {
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-2 space-y-4 py-2 sm:mx-4! lg:py-4">
-            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-              <div className="space-y-1.5">
+          <main className="mx-auto w-full min-w-0 max-w-6xl space-y-6 p-4 lg:p-6">
+            <header>
+              <h1 className="font-heading text-2xl font-medium">Turnos</h1>
+              <p className="mt-1 text-sm text-muted-foreground">Consultá la disponibilidad y los turnos de un centro por mes.</p>
+            </header>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="turnos-centro">Centro</Label>
-                <div className="flex gap-2">
-                  <Input
-                    aria-label="Buscar centro por nombre"
-                    placeholder="Buscar centro por nombre…"
-                    value={centerSearchInput}
-                    onChange={(event) => setCenterSearchInput(event.target.value)}
-                    onKeyDown={(event) => { if (event.key === "Enter") setCenterSearch(centerSearchInput.trim()) }}
-                  />
-                  <Button type="button" variant="outline" onClick={() => setCenterSearch(centerSearchInput.trim())}>
-                    Buscar
-                  </Button>
-                </div>
-                <Select
-                  value={search.centro}
-                  onValueChange={(value) => setSearch({ centro: value ?? "", servicio: "" })}
-                  disabled={centers.isPending && !selectedCenter}
-                >
-                  <SelectTrigger id="turnos-centro" aria-label="Centro">
-                    <SelectValue placeholder="Seleccioná un centro">
-                      {() => selectedCenter?.name ?? "Seleccioná un centro"}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {selectOptions.map((center) => (
-                      <SelectItem key={center.id} value={center.id ?? ""}>{center.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {!centers.isPending && !centers.isError && centerOptions.length === 0 && (
-                  <p className="text-xs text-muted-foreground">No hay centros con ese criterio.</p>
-                )}
-                {centers.hasNextPage && (
-                  <Button type="button" size="sm" variant="ghost" disabled={centers.isFetchingNextPage} onClick={() => centers.fetchNextPage()}>
-                    {centers.isFetchingNextPage ? "Cargando centros…" : "Cargar más centros"}
-                  </Button>
-                )}
-                {centers.isFetchNextPageError && (
-                  <p className="text-xs text-destructive">
-                    No se pudieron cargar más centros.{" "}
-                    <button type="button" className="underline" onClick={() => centers.fetchNextPage()}>Reintentar</button>
-                  </p>
-                )}
-                {centers.isError && !centers.isFetchNextPageError && (
-                  <p className="text-xs text-destructive">
-                    No se pudieron cargar los centros.{" "}
-                    <button type="button" className="underline" onClick={() => centers.refetch()}>Reintentar</button>
-                  </p>
-                )}
+                <Button id="turnos-centro" type="button" variant="outline" className="w-full min-w-0 justify-start font-normal" onClick={() => setCenterDialogOpen(true)}>
+                  <IconBuilding />
+                  <span className="truncate">{selectedCenterDetail.data?.name ?? "Seleccionar centro"}</span>
+                  <IconSearch className="ml-auto" />
+                </Button>
               </div>
-              <div className="space-y-1.5">
+              <div className="min-w-0 space-y-1.5">
                 <Label htmlFor="turnos-servicio">Servicio</Label>
-                <Select
-                  value={search.servicio}
-                  onValueChange={(value) => setSearch({ servicio: value ?? "" })}
-                  disabled={!isUuid(search.centro) || services.isPending}
-                >
-                  <SelectTrigger id="turnos-servicio" aria-label="Servicio">
-                    <SelectValue placeholder="Todos los servicios">
-                      {() => selectedService?.service?.name ?? "Todos los servicios"}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Todos los servicios</SelectItem>
-                    {serviceOptions.map((option) => (
-                      <SelectItem key={option.id} value={option.service?.id ?? ""}>
-                        {option.service?.name}{option.active ? "" : " (inactivo)"}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Button id="turnos-servicio" type="button" variant="outline" className="w-full min-w-0 justify-start font-normal" disabled={!isUuid(search.centro)} onClick={() => setServiceDialogOpen(true)}>
+                  <IconCalendarEvent />
+                  <span className="truncate">{selectedService?.service?.name ?? "Todos los servicios"}</span>
+                  <IconSearch className="ml-auto" />
+                </Button>
                 {services.isError && (
                   <p className="text-xs text-destructive">
                     No se pudieron cargar los servicios.{" "}
@@ -176,7 +111,7 @@ function RouteComponent() {
               </p>
             ) : (
               <>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-1">
                     <Button type="button" size="icon-sm" variant="ghost" aria-label="Mes anterior" onClick={() => shift(-1)}>
                       <IconChevronLeft />
@@ -200,7 +135,8 @@ function RouteComponent() {
                   </div>
                 ) : (
                   <>
-                    <div className="grid grid-cols-7 gap-1.5" role="grid" aria-label={`Calendario de ${monthTitle(search.anio, search.mes)}`}>
+                    <div className="overflow-x-auto pb-1">
+                    <div className="grid min-w-[42rem] grid-cols-7 gap-1.5" role="grid" aria-label={`Calendario de ${monthTitle(search.anio, search.mes)}`}>
                       {WEEKDAYS.map((weekday) => (
                         <div key={weekday} className="pb-1 text-center text-xs font-medium text-muted-foreground">
                           {weekday}
@@ -216,6 +152,7 @@ function RouteComponent() {
                         return <DayCell key={iso} day={day} iso={iso} info={info} centro={search.centro} servicio={search.servicio} />
                       })}
                     </div>
+                    </div>
                     <p className="text-xs text-muted-foreground">
                       <span className="font-medium text-blue-700 dark:text-blue-400">conf.</span> = turnos confirmados ·{" "}
                       <span className="font-medium text-emerald-700 dark:text-emerald-400">lib.</span> = horarios disponibles ·{" "}
@@ -225,7 +162,9 @@ function RouteComponent() {
                 )}
               </>
             )}
-          </div>
+            <AppointmentCenterSelectionDialog open={centerDialogOpen} onOpenChange={setCenterDialogOpen} selectedCenterId={search.centro} onSelect={(id) => setSearch({ centro: id, servicio: "" })} />
+            <AppointmentServiceSelectionDialog open={serviceDialogOpen} onOpenChange={setServiceDialogOpen} centerId={search.centro} selectedServiceId={search.servicio} onSelect={(id) => setSearch({ servicio: id })} />
+          </main>
         </div>
       </SidebarShellContent>
     </SidebarShell>
