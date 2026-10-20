@@ -36,6 +36,7 @@ Recursos principales:
 - [Modelo de datos](database/api-entities.dbml)
 - [Datos iniciales](database/init.sql)
 - [Colección de Postman](postman/program-feature.postman_collection.json)
+- [Preparación y recorridos en Postman](postman/README.md)
 
 El orden recomendado es programa, convocatoria y solicitud. Primero se prepara la oferta, luego se habilita su recepción y finalmente las personas se presentan.
 
@@ -85,10 +86,12 @@ La etapa de decisión se documenta en [Resolución de solicitudes](functional/ap
 13. Cuando termina la actuación, su responsable registra si fue realizada o no realizada, junto con observaciones o conclusiones opcionales. Si no quedan otras pendientes, la solicitud vuelve a evaluación.
 14. El personal autorizado resuelve la evaluación: aprueba, rechaza o envía a lista de espera, conservando motivo, responsable e historial.
 15. Para una solicitud aprobada, el administrativo puede otorgar cada beneficio de su edición con vigencia actual. Queda activo, conserva los datos otorgados y no vuelve a ocupar cupo.
-14. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
-15. Si no puede asistir, solicita la reprogramación con un motivo; la actuación no cambia hasta que el responsable aprueba un nuevo horario, duración y lugar, o rechaza la petición con un comentario.
+16. El administrativo mantiene los beneficios otorgados: puede renovarlos, suspenderlos o finalizarlos con motivo e historial. Finalizar el último otorgamiento pendiente cierra la solicitud y libera su reserva.
+17. El trabajador asignado puede crear un plan de intervención con objetivos, acciones y fechas, y registrar sus seguimientos y resultados, incluso después del rechazo o cierre del caso.
+18. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
+19. Si no puede asistir, solicita la reprogramación con un motivo; la actuación no cambia hasta que el responsable aprueba un nuevo horario, duración y lugar, o rechaza la petición con un comentario.
 
-La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social, gestión de visitas o entrevistas y solicitudes ciudadanas de reprogramación. La aprobación o rechazo de la solicitud social, la lista de espera y la incorporación efectiva corresponden a etapas posteriores.
+La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social, visitas o entrevistas, reprogramaciones ciudadanas, resolución de solicitudes, otorgamiento y mantenimiento de beneficios, y planes de intervención con seguimientos. Las entregas, pagos y notificaciones corresponden a historias posteriores.
 
 ## Tres decisiones diferentes
 
@@ -98,7 +101,7 @@ La implementación actual incluye presentación, consulta, revisión de document
 | La convocatoria está abierta, vigente y pertenece a una edición activa. | Se pueden intentar nuevas presentaciones. | Que una persona pueda repetir una solicitud que ya tiene. |
 | La solicitud quedó presentada. | El municipio recibió esa presentación. | Que la persona haya sido aprobada, incorporada o haya recibido el beneficio. |
 
-El cupo máximo corresponde a incorporaciones efectivas. Alcanzarlo no cierra automáticamente una convocatoria ni impide recibir solicitudes.
+La aprobación reserva un cupo de la edición; otorgar o renovar beneficios no ocupa otro. Finalizar el último otorgamiento pendiente libera esa reserva. Alcanzar el cupo máximo no cierra automáticamente una convocatoria ni impide recibir solicitudes.
 
 ## Cómo leer los estados
 
