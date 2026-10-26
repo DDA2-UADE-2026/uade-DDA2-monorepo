@@ -2408,6 +2408,244 @@ export type MunicipalCenterListResponse = {
     totalPages?: number;
 };
 
+export type ActivityIndicators = {
+    enrollments?: number;
+    present?: number;
+    absent?: number;
+    /**
+     * Inscripciones todavía sin asistencia registrada.
+     */
+    unrecorded?: number;
+};
+
+export type ApplicationTrendPoint = {
+    periodStart?: string;
+    submitted?: number;
+    resolved?: number;
+};
+
+export type AppointmentIndicators = {
+    confirmed?: number;
+    cancelled?: number;
+    attended?: number;
+    absent?: number;
+    trend?: Array<AppointmentTrendPoint>;
+};
+
+export type AppointmentTrendPoint = {
+    periodStart?: string;
+    confirmed?: number;
+    cancelled?: number;
+};
+
+export type AttentionIndicators = {
+    /**
+     * Solicitudes activas sin trabajador asignado.
+     */
+    unassigned?: number;
+    /**
+     * Solicitudes sin evaluar con más de staleAfterDays días desde su presentación.
+     */
+    awaitingEvaluation?: number;
+    staleAfterDays?: number;
+    /**
+     * Las solicitudes sin evaluar más antiguas, hasta cinco.
+     */
+    oldestAwaitingEvaluation?: Array<AwaitingApplication>;
+};
+
+export type AwaitingApplication = {
+    applicationId?: string;
+    applicationNumber?: number;
+    programName?: string;
+    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    submittedAt?: string;
+    daysWaiting?: number;
+};
+
+export type DocumentCounts = {
+    pending?: number;
+    valid?: number;
+    observed?: number;
+};
+
+export type EditionCapacity = {
+    editionId?: string;
+    programId?: string;
+    programName?: string;
+    editionName?: string;
+    status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
+    maxCapacity?: number;
+    approved?: number;
+    waitlisted?: number;
+};
+
+export type EvaluationMatrixCell = {
+    /**
+     * Nivel de vulnerabilidad determinado durante la evaluacion social.
+     */
+    vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    /**
+     * Prioridad de intervencion determinada durante la evaluacion social.
+     */
+    priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    count?: number;
+};
+
+/**
+ * Tablero de indicadores del módulo, agregados en el servidor para un período y, opcionalmente, un programa.
+ */
+export type IndicatorsResponse = {
+    /**
+     * Inicio del período, inclusive.
+     */
+    from?: string;
+    /**
+     * Fin del período, inclusive.
+     */
+    to?: string;
+    programId?: string;
+    generatedAt?: string;
+    /**
+     * Agrupación de las series temporales: semanas (lunes) para períodos de hasta 120 días, meses si no.
+     */
+    bucket?: 'WEEK' | 'MONTH';
+    summary?: SummaryIndicators;
+    /**
+     * Solicitudes presentadas y resueltas por intervalo.
+     */
+    applicationsTrend?: Array<ApplicationTrendPoint>;
+    /**
+     * Estado actual de las solicitudes presentadas en el período.
+     */
+    statusDistribution?: Array<StatusCount>;
+    /**
+     * Resoluciones registradas en el período, por resultado.
+     */
+    resolutions?: ResolutionCounts;
+    /**
+     * Solicitudes presentadas en el período por programa y resultado actual.
+     */
+    programs?: Array<ProgramIndicator>;
+    /**
+     * Ocupación actual del cupo de cada edición no borrador; no depende del período.
+     */
+    capacity?: Array<EditionCapacity>;
+    /**
+     * Evaluaciones registradas en el período, por vulnerabilidad y prioridad.
+     */
+    evaluationMatrix?: Array<EvaluationMatrixCell>;
+    /**
+     * Casos que necesitan atención hoy; no depende del período.
+     */
+    attention?: AttentionIndicators;
+    /**
+     * Visitas y entrevistas con inicio en el período, por intervalo y estado.
+     */
+    visitsTrend?: Array<VisitTrendPoint>;
+    /**
+     * Pedidos de reprogramación presentados en el período.
+     */
+    rescheduleRequests?: RescheduleRequestCounts;
+    /**
+     * Casos activos y visitas programadas por trabajador asignado; no depende del período.
+     */
+    workload?: Array<WorkerLoad>;
+    /**
+     * Días promedio entre etapas de las solicitudes resueltas en el período.
+     */
+    stageTimes?: StageTimes;
+    /**
+     * Documentos subidos en el período, por estado de revisión.
+     */
+    documents?: DocumentCounts;
+    /**
+     * Turnos de salud comunitaria con inicio en el período. No se filtra por programa.
+     */
+    appointments?: AppointmentIndicators;
+    /**
+     * Inscripciones a actividades registradas en el período. No se filtra por programa.
+     */
+    activities?: ActivityIndicators;
+};
+
+export type ProgramIndicator = {
+    programId?: string;
+    programName?: string;
+    submitted?: number;
+    /**
+     * Todavía sin resolución definitiva ni lista de espera.
+     */
+    inProgress?: number;
+    approved?: number;
+    waitlisted?: number;
+    rejected?: number;
+};
+
+export type RescheduleRequestCounts = {
+    pending?: number;
+    approved?: number;
+    rejected?: number;
+};
+
+export type ResolutionCounts = {
+    approved?: number;
+    waitlisted?: number;
+    rejected?: number;
+};
+
+export type StageTimes = {
+    averageDaysToEvaluation?: number;
+    averageDaysEvaluationToResolution?: number;
+    averageDaysToResolution?: number;
+    sampleSize?: number;
+};
+
+export type StatusCount = {
+    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    count?: number;
+};
+
+export type SummaryIndicators = {
+    applicationsSubmitted?: number;
+    /**
+     * Presentadas en el período anterior de igual duración.
+     */
+    previousApplicationsSubmitted?: number;
+    resolved?: number;
+    /**
+     * Aprobadas sobre aprobadas más rechazadas, entre las resueltas en el período. Null si no hubo.
+     */
+    approvalRate?: number;
+    /**
+     * Aprobadas sobre el cupo total de las ediciones consideradas. Null si no hay cupo.
+     */
+    capacityUsedRate?: number;
+    approvedTotal?: number;
+    capacityTotal?: number;
+    visitsRealized?: number;
+    previousVisitsRealized?: number;
+    /**
+     * Días promedio desde la presentación hasta la resolución. Null si no hubo resoluciones.
+     */
+    averageDaysToResolution?: number;
+};
+
+export type VisitTrendPoint = {
+    periodStart?: string;
+    scheduled?: number;
+    realized?: number;
+    notRealized?: number;
+    cancelled?: number;
+};
+
+export type WorkerLoad = {
+    userId?: number;
+    name?: string;
+    activeCases?: number;
+    scheduledVisits?: number;
+};
+
 /**
  * Ocupación de un centro en un día para el calendario administrativo.
  */
@@ -9935,6 +10173,56 @@ export type ListProgramEditionOptionsResponses = {
 };
 
 export type ListProgramEditionOptionsResponse = ListProgramEditionOptionsResponses[keyof ListProgramEditionOptionsResponses];
+
+export type GetIndicatorsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Inicio del período, inclusive (ISO-8601).
+         */
+        from?: string;
+        /**
+         * Fin del período, inclusive (ISO-8601).
+         */
+        to?: string;
+        /**
+         * Opcional. Restringe los indicadores de solicitudes a un programa.
+         */
+        programId?: string;
+    };
+    url: '/api/admin/indicators';
+};
+
+export type GetIndicatorsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetIndicatorsError = GetIndicatorsErrors[keyof GetIndicatorsErrors];
+
+export type GetIndicatorsResponses = {
+    /**
+     * Indicadores del período.
+     */
+    200: IndicatorsResponse;
+};
+
+export type GetIndicatorsResponse = GetIndicatorsResponses[keyof GetIndicatorsResponses];
 
 export type ListAdminAppointmentsData = {
     body?: never;
