@@ -148,7 +148,7 @@ function RouteComponent() {
               <p className="text-sm text-muted-foreground">No hay turnos ni horarios para ese día.</p>
               <Button size="xs" variant="ghost" onClick={refetch} disabled={turnos.isFetching || libres.isFetching}>
                 <IconRefresh className={turnos.isFetching || libres.isFetching ? "animate-spin" : undefined} />
-                Actualizar
+                <span className="sr-only sm:not-sr-only">Refrescar</span>
               </Button>
             </div>
           ) : (

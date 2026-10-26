@@ -123,7 +123,7 @@ function RouteComponent() {
                   </div>
                   <Button type="button" size="xs" variant="ghost" onClick={() => summary.refetch()} disabled={summary.isFetching}>
                     <IconRefresh className={summary.isFetching ? "animate-spin" : undefined} />
-                    Actualizar
+                    <span className="sr-only sm:not-sr-only">Refrescar</span>
                   </Button>
                 </div>
                 {summary.isPending ? (

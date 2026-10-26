@@ -54,7 +54,7 @@ function RouteComponent() {
                 </div>
                 <Button variant="outline" onClick={() => void navigate({ search: { fecha: appointmentToday() } })}>Hoy</Button>
                 <Button variant="outline" disabled={turns.isFetching} onClick={() => void turns.refetch()}>
-                  <IconRefresh className={turns.isFetching ? "animate-spin" : undefined} />Actualizar
+                  <IconRefresh className={turns.isFetching ? "animate-spin" : undefined} /><span className="sr-only sm:not-sr-only">Refrescar</span>
                 </Button>
               </div>
             </div>

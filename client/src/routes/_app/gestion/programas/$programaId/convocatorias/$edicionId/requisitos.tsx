@@ -137,7 +137,7 @@ function RouteComponent() {
             disabled={requirements.isFetching}
           >
             <IconRefresh className={requirements.isFetching ? "animate-spin" : undefined} />
-            Actualizar
+            <span className="sr-only sm:not-sr-only">Refrescar</span>
           </Button>
         </div>
       )}

@@ -140,7 +140,7 @@ export function GestionDashboard() {
         <div className="flex flex-wrap items-center gap-2">
           {visibleQueries.length > 0 && (
             <Button variant="outline" size="sm" disabled={isFetching} onClick={() => { void Promise.allSettled(visibleQueries.map((query) => query.refetch())) }}>
-              <IconRefresh className={isFetching ? "animate-spin" : undefined} />{isFetching ? "Actualizando…" : "Actualizar resumen"}
+              <IconRefresh className={isFetching ? "animate-spin" : undefined} /><span className="sr-only sm:not-sr-only">{isFetching ? "Refrescando…" : "Refrescar resumen"}</span>
             </Button>
           )}
           {canCreateApplication && <Button size="sm" render={<Link to="/gestion/solicitudes/asistida" />}><IconFilePlus />Solicitud asistida</Button>}

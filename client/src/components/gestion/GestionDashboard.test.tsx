@@ -78,7 +78,7 @@ describe("resumen de gestión", () => {
     await screen.findByText("Apoyo escolar")
     expect(screen.queryByRole("heading", { name: "Usuarios recientes" })).not.toBeInTheDocument()
     expect(screen.queryByText("Solicitud asistida")).not.toBeInTheDocument()
-    fireEvent.click(screen.getByRole("button", { name: "Actualizar resumen" }))
+    fireEvent.click(screen.getByRole("button", { name: "Refrescar resumen" }))
     await waitFor(() => expect(list1).toHaveBeenCalledTimes(2))
     for (const request of [findAll, list4, list5, listMunicipalCenters]) expect(request).not.toHaveBeenCalled()
   })

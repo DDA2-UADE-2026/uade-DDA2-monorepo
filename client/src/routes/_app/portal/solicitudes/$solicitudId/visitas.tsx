@@ -75,7 +75,7 @@ function RouteComponent() {
         {page > 1 && <Button variant="outline" onClick={() => void navigate({ search: { page: 1 } })}>Primera página</Button>}
       </Empty>
     ) : <div className="space-y-4" aria-busy={visits.isFetching}>
-      <div className="flex justify-end"><Button variant="outline" size="sm" disabled={visits.isFetching} onClick={() => void visits.refetch()}><IconRefresh className={visits.isFetching ? "animate-spin" : undefined} />Actualizar</Button></div>
+      <div className="flex justify-end"><Button variant="outline" size="sm" disabled={visits.isFetching} onClick={() => void visits.refetch()}><IconRefresh className={visits.isFetching ? "animate-spin" : undefined} /><span className="sr-only sm:not-sr-only">Refrescar</span></Button></div>
       {visits.data.content.map((visit) => <VisitCard key={visit.id} visit={visit} onOpen={() => setSelectedVisitId(visit.id)} />)}
       <DataPagination className="rounded-xl border" page={visits.isPlaceholderData ? visits.data.page + 1 : page} totalPages={Math.max(1, visits.data.totalPages)} totalItems={visits.data.totalElements} pageSize={PAGE_SIZE} onPageChange={(nextPage) => { if (!visits.isFetching) void navigate({ search: { page: nextPage } }) }} />
     </div>}

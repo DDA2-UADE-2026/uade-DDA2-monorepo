@@ -27,7 +27,7 @@ export function ActivityAttendance({ activityId, page, onPageChange, canManage }
           <h1 className="font-heading text-2xl font-medium">{activity.data?.name ?? "Asistencia a la actividad"}</h1>
           <p className="text-sm text-muted-foreground">{canManage ? "Marcá presentes y ausentes. Podés corregir un registro; cada cambio queda auditado." : "Consulta de inscripciones y asistencia."}</p>
         </div>
-        <Button variant="outline" size="sm" disabled={activity.isFetching || enrollments.isFetching} onClick={() => { void activity.refetch(); if (activity.isSuccess) void enrollments.refetch() }}><IconRefresh />Actualizar</Button>
+        <Button variant="outline" size="sm" disabled={activity.isFetching || enrollments.isFetching} onClick={() => { void activity.refetch(); if (activity.isSuccess) void enrollments.refetch() }}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar</span></Button>
       </header>
       {activity.isPending ? <p role="status">Cargando actividad…</p> : activity.isError ? (
         <div role="alert" className="space-y-3"><p>{activity.error.message ?? "No se pudo cargar la actividad."}</p><Button variant="outline" onClick={() => activity.refetch()}>Reintentar</Button></div>

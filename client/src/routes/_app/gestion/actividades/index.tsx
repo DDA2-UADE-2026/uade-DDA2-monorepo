@@ -103,7 +103,7 @@ function AdminActivities() {
                 <span>Última actualización: {new Date(dataUpdatedAt).toLocaleTimeString("es-AR")}</span>
                 <Button size="xs" variant="ghost" onClick={() => refetch()} disabled={isFetching}>
                   <IconRefresh className={isFetching ? "animate-spin" : undefined} />
-                  Actualizar
+                  <span className="sr-only sm:not-sr-only">Refrescar</span>
                 </Button>
               </div>
             )}

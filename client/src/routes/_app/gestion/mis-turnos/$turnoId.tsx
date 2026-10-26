@@ -1,4 +1,4 @@
-import { IconAlertCircle, IconArrowLeft, IconCalendarX, IconClock } from "@tabler/icons-react"
+import { IconAlertCircle, IconArrowLeft, IconCalendarX, IconClock, IconRefresh } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
@@ -105,7 +105,7 @@ function RouteComponent() {
                 appointment.status === "CANCELLED" ? (
                   <Alert><IconCalendarX /><AlertTitle>Turno cancelado</AlertTitle><AlertDescription>Este turno no admite registrar asistencia.</AlertDescription></Alert>
                 ) : (
-                  <Alert><IconClock /><AlertTitle>La asistencia aún no está disponible</AlertTitle><AlertDescription className="space-y-2"><p>Podrás registrarla cuando comience el turno.</p><Button size="sm" variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}>Actualizar turno</Button></AlertDescription></Alert>
+                  <Alert><IconClock /><AlertTitle>La asistencia aún no está disponible</AlertTitle><AlertDescription className="space-y-2"><p>Podrás registrarla cuando comience el turno.</p><Button size="sm" variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar turno</span></Button></AlertDescription></Alert>
                 )
               )}
             </>

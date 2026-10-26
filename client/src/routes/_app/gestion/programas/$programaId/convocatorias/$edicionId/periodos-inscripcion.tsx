@@ -192,7 +192,7 @@ function RouteComponent() {
             disabled={periods.isFetching}
           >
             <IconRefresh className={periods.isFetching ? "animate-spin" : undefined} />
-            Actualizar
+            <span className="sr-only sm:not-sr-only">Refrescar</span>
           </Button>
         </div>
       )}

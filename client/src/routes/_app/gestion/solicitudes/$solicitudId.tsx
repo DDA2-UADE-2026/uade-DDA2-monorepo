@@ -262,7 +262,7 @@ function ApplicationDocumentsSection({ application }: { application: AdminApplic
           onClick={() => documents.refetch()}
         >
           <IconRefresh className={documents.isFetching ? "animate-spin" : undefined} />
-          Actualizar
+          <span className="sr-only sm:not-sr-only">Refrescar</span>
         </Button>
       </div>
 
