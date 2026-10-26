@@ -90,7 +90,10 @@ export function VisitDetail({ id, permissions, currentUserId }: { id: string; pe
   const pendingRequest = visit.latestRescheduleRequest?.status === "PENDING"
   const isResponsible = visit.responsibleId === currentUserId
   const canManage = visit.status === "SCHEDULED" && future && !pendingRequest && isResponsible && permissions.includes("applications:visits:manage")
-  const canRecord = visit.status === "SCHEDULED" && visit.applicationStatus === "IN_VISIT" && finished && !pendingRequest && isResponsible && permissions.includes("applications:visits:results:create")
+  const resultAllowed = visit.status === "SCHEDULED" && visit.applicationStatus === "IN_VISIT" && !pendingRequest && isResponsible && permissions.includes("applications:visits:results:create")
+  const canRecord = resultAllowed && finished
+  // El resultado solo se registra después del fin; antes mostramos el botón deshabilitado con el motivo.
+  const recordLater = resultAllowed && !finished
 
   return (
     <div className="space-y-6">
@@ -108,13 +111,16 @@ export function VisitDetail({ id, permissions, currentUserId }: { id: string; pe
             <Button size="sm" variant="outline" render={<Link to="/gestion/casos/$solicitudId/evaluacion" params={{ solicitudId: visit.applicationId }} />}>Evaluación</Button>
           </div>
         </div>
-        {(canManage || canRecord) && (
-          <div className="flex flex-wrap gap-2">
-            {canManage && <>
-              <Button variant="outline" onClick={() => { setAction("reschedule"); setSchedule({ startsAt: dateTimeLocal(visit.startsAt), durationMinutes: visit.durationMinutes, location: visit.location }) }}>Reprogramar</Button>
-              <Button variant="destructive" onClick={() => setAction("cancel")}>Cancelar</Button>
-            </>}
-            {canRecord && <Button onClick={() => setAction("result")}>Registrar resultado</Button>}
+        {(canManage || canRecord || recordLater) && (
+          <div className="flex flex-col items-start gap-1.5 sm:items-end">
+            <div className="flex flex-wrap gap-2">
+              {canManage && <>
+                <Button variant="outline" onClick={() => { setAction("reschedule"); setSchedule({ startsAt: dateTimeLocal(visit.startsAt), durationMinutes: visit.durationMinutes, location: visit.location }) }}>Reprogramar</Button>
+                <Button variant="destructive" onClick={() => setAction("cancel")}>Cancelar</Button>
+              </>}
+              {(canRecord || recordLater) && <Button disabled={recordLater} aria-describedby={recordLater ? "visit-result-hint" : undefined} onClick={() => setAction("result")}>Registrar resultado</Button>}
+            </div>
+            {recordLater && <p id="visit-result-hint" className="text-xs text-muted-foreground">Podés registrar el resultado cuando termine la actuación ({formatSocialDate(visit.endsAt)}).</p>}
           </div>
         )}
       </header>
