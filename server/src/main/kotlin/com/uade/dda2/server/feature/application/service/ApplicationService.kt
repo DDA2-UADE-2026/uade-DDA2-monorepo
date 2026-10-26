@@ -173,6 +173,7 @@ class ApplicationService(
         val application = applications.findByIdForUpdate(id) ?: throw ApplicationErrors.notFound()
         if (application.status !in ASSIGNABLE_STATUSES) throw ApplicationErrors.assignmentStatusNotAllowed()
         val assignee = users.findByIdWithRoles(userId)?.takeIf { it.active } ?: throw ApplicationErrors.assigneeNotFound()
+        if (assignee.id == application.user.id) throw ApplicationErrors.assigneeIsApplicant()
         val required = buildList {
             add(APPLICATION_VISIT_CREATE_PERMISSION)
             if (!evaluations.existsByApplicationId(id)) add(APPLICATION_EVALUATION_CREATE_PERMISSION)

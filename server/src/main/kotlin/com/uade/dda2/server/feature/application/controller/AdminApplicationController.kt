@@ -115,7 +115,7 @@ class AdminApplicationController(private val service: ApplicationService) {
     @PreAuthorize("hasAuthority('$APPLICATION_ASSIGN_PERMISSION')")
     @Operation(operationId = "assignApplicationWorker", summary = "Asignar o reasignar el trabajador de una solicitud", description =
         "Requiere applications:management:assign en el rol activo. El asignado evalúa la solicitud y es responsable de sus " +
-        "visitas. Debe estar activo y tener un rol con applications:visits:create, y también applications:evaluations:create " +
+        "visitas. No puede ser el titular de la solicitud. Debe estar activo y tener un rol con applications:visits:create, y también applications:evaluations:create " +
         "si la solicitud todavía no fue evaluada. Solo admite solicitudes en validación, evaluación o visita, y rechaza la " +
         "reasignación mientras haya visitas o entrevistas programadas. Asignar al mismo trabajador no cambia nada.")
     @ApiResponse(responseCode = "200", description = "Detalle de la solicitud con el trabajador asignado.", useReturnTypeSchema = true)
@@ -123,7 +123,7 @@ class AdminApplicationController(private val service: ApplicationService) {
     @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     @ApiResponse(responseCode = "403", description = "Sin permiso en el rol activo o rol retirado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     @ApiResponse(responseCode = "404", description = "Solicitud o usuario a asignar inexistentes, o usuario inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
-    @ApiResponse(responseCode = "409", description = "Estado no asignable, usuario sin rol habilitado o visitas programadas.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "409", description = "Estado no asignable, usuario titular de la solicitud, usuario sin rol habilitado o visitas programadas.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun assignWorker(
         @PathVariable id: UUID,
         @RequestBody request: AssignApplicationWorkerRequest,

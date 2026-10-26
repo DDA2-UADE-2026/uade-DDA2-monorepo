@@ -243,6 +243,13 @@ class ApplicationAssignmentFlowTest {
         expect(assign(Long.MAX_VALUE), 404, "APPLICATION_ASSIGNEE_NOT_FOUND")
         expect(assign(fixture.workerId, applicationId = UUID.randomUUID()), 404, "APPLICATION_NOT_FOUND")
         expect(assign(fixture.ineligibleId), 409, "APPLICATION_ASSIGNEE_NOT_ELIGIBLE")
+        // El titular nunca trabaja su propia solicitud, aunque tuviera un rol habilitado.
+        val applicantId = tx { applications.findById(fixture.applicationId).map { it.user.id!! }.orElseThrow() }
+        tx {
+            val applicant = users.findById(applicantId).orElseThrow()
+            applicant.roles.addAll(users.findById(fixture.workerId).orElseThrow().roles)
+        }
+        expect(assign(applicantId), 409, "APPLICATION_ASSIGNEE_IS_APPLICANT")
         // Sin evaluacion registrada, el asignado tambien tiene que poder evaluar.
         expect(assign(fixture.visitsOnlyId), 409, "APPLICATION_ASSIGNEE_NOT_ELIGIBLE")
 

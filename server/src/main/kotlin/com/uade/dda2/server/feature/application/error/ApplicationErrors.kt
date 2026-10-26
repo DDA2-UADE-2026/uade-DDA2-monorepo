@@ -18,6 +18,7 @@ object ApplicationErrors {
     fun idempotencyConflict() = ConflictException("APPLICATION_IDEMPOTENCY_CONFLICT", "La clave de idempotencia ya se utilizó con otra convocatoria.")
     fun invalidAssignment(message: String) = BadRequestException("APPLICATION_ASSIGNMENT_INVALID", message)
     fun assigneeNotFound() = NotFoundException("APPLICATION_ASSIGNEE_NOT_FOUND", "El usuario a asignar no existe o está inactivo.")
+    fun assigneeIsApplicant() = ConflictException("APPLICATION_ASSIGNEE_IS_APPLICANT", "El titular no puede ser el trabajador asignado de su propia solicitud.")
     fun assigneeNotEligible() = ConflictException("APPLICATION_ASSIGNEE_NOT_ELIGIBLE", "El usuario no tiene un rol habilitado para evaluar la solicitud y gestionar sus visitas.")
     fun assignmentStatusNotAllowed() = ConflictException("APPLICATION_ASSIGNMENT_STATUS_NOT_ALLOWED", "El estado actual de la solicitud no permite cambiar el trabajador asignado.")
     fun unassignmentAfterEvaluation() = ConflictException("APPLICATION_UNASSIGNMENT_EVALUATED", "La solicitud ya fue evaluada: necesita un trabajador asignado para gestionar sus visitas.")

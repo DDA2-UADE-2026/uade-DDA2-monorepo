@@ -46,6 +46,7 @@ function RouteComponent() {
   const app = application.data
   const blockedReason = !app ? null
     : !EVALUABLE_STATUSES.includes(app.status ?? "") ? "La solicitud ya no está en una etapa que admita evaluación."
+    : app.userId === user.id ? "No podés evaluar una solicitud en la que sos titular."
     : app.assignedWorkerUserId != null && app.assignedWorkerUserId !== user.id ? `La solicitud está asignada a ${app.assignedWorkerName ?? "otro trabajador"}: solo esa persona puede registrar la evaluación.`
     : null
   return <SidebarShell>

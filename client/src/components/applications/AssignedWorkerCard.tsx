@@ -67,6 +67,8 @@ export function AssignedWorkerCard({ application, permissions, evaluated }: { ap
       open
       onOpenChange={(next) => { if (!pending) setOpen(next) }}
       selectedUserId={assignedId}
+      // El titular nunca puede trabajar su propia solicitud.
+      excludeUserId={application.userId}
       title={assignedId ? "Reasignar solicitud" : "Asignar solicitud"}
       description="Elegí a la persona que va a evaluar el caso y hacer sus visitas. Tiene que tener un rol habilitado para evaluaciones y visitas."
       onSelect={(selected) => {
