@@ -18,7 +18,7 @@ data class ResolveApplicationRequest(
     val decision: ApplicationResolutionDecision? = null,
 
     @field:Schema(
-        description = "Motivo visible para el titular, de 1 a 1000 caracteres. Obligatorio para REJECTED y WAITLISTED.",
+        description = "Motivo administrativo, de 1 a 1000 caracteres. Obligatorio para REJECTED y WAITLISTED; no se expone en la consulta ciudadana.",
         example = "Cumple los requisitos y la evaluacion social recomienda el ingreso.",
         maxLength = 1000,
         nullable = true,

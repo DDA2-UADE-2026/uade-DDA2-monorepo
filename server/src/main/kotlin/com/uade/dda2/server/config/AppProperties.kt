@@ -27,6 +27,13 @@ data class EnrollmentPeriodExpirationProperties(
     fun zone(): ZoneId = ZoneId.of(zoneId)
 }
 
+@ConfigurationProperties("app.benefit-grant.expiration")
+data class BenefitGrantExpirationProperties(
+    var enabled: Boolean = true,
+    var cron: String = "0 */5 * * * *",
+    var batchSize: Int = 100,
+)
+
 @ConfigurationProperties("app.appointment")
 data class AppointmentProperties(
     var zoneId: String = "America/Argentina/Buenos_Aires",

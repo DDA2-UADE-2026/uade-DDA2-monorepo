@@ -12,6 +12,12 @@ import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationResolutionRepository
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantChangeRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionPlanRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionFollowUpRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionPublicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationVisitRescheduleRequestRepository
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
@@ -49,6 +55,12 @@ class UserManagementService(
     private val applicationRepository: ApplicationRepository,
     private val applicationDocumentRepository: ApplicationDocumentRepository,
     private val applicationEvaluationRepository: ApplicationEvaluationRepository,
+    private val applicationResolutionRepository: ApplicationResolutionRepository,
+    private val benefitGrantRepository: BenefitGrantRepository,
+    private val benefitGrantChangeRepository: BenefitGrantChangeRepository,
+    private val interventionPlanRepository: InterventionPlanRepository,
+    private val interventionFollowUpRepository: InterventionFollowUpRepository,
+    private val interventionPublicationRepository: InterventionPublicationRepository,
     private val applicationVisitRepository: ApplicationVisitRepository,
     private val applicationVisitRescheduleRequestRepository: ApplicationVisitRescheduleRequestRepository,
     private val documentRepository: DocumentRepository,
@@ -166,6 +178,12 @@ class UserManagementService(
             applicationRepository.existsByResolvedById(id) ||
             applicationDocumentRepository.existsByReviewedById(id) ||
             applicationEvaluationRepository.existsByProfessionalId(id) ||
+            applicationResolutionRepository.existsByResolvedById(id) ||
+            benefitGrantRepository.existsByAssignedById(id) ||
+            benefitGrantChangeRepository.existsByResponsibleId(id) ||
+            interventionPlanRepository.existsByResponsibleId(id) ||
+            interventionFollowUpRepository.existsByAuthorId(id) ||
+            interventionPublicationRepository.existsByUpdatedById(id) ||
             applicationVisitRepository.existsByResponsibleId(id) ||
             applicationVisitRepository.existsByResultRecordedById(id) ||
             applicationVisitRescheduleRequestRepository.existsByRequestedByIdOrReviewedById(id, id) ||

@@ -14,6 +14,12 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | [Activity — Actividades comunitarias](functional/activity.md) | Cómo el personal autorizado crea, publica y cierra actividades comunitarias. |
 | [Flujo completo de solicitudes](functional/application-flow.md) | Recorrido paso a paso de administración, presentación ciudadana, carga de archivos y revisión; incluye cómo definir la documentación requerida. |
 | [Appointment — Turnos](functional/appointments.md) | Cómo un ciudadano consulta horarios disponibles y confirma su turno de salud comunitaria. |
+| [Otorgamiento de beneficios](functional/benefit-grants.md) | Registro de beneficios activos y su vigencia para solicitudes aprobadas. |
+| [Consulta de beneficios propios](functional/citizen-benefit-grants.md) | Estado, vigencia, descripción y monto de los beneficios del ciudadano autenticado. |
+| [Ciclo de vida de beneficios](functional/benefit-grant-lifecycle.md) | Renovación, suspensión, finalización, historial y liberación de cupos. |
+| [Vencimiento automático de beneficios](functional/benefit-grant-expiration.md) | Vencimiento por fecha, historial de sistema y cierre con liberación de reserva. |
+| [Planes de intervención](functional/intervention-plans.md) | Objetivos, acciones, responsables, fechas y seguimientos profesionales por caso. |
+| [Planes propios del ciudadano](functional/citizen-intervention-plans.md) | Progreso, objetivos, acciones y resúmenes de seguimiento publicados por el responsable. |
 
 ## Organización de `/docs`
 
@@ -33,6 +39,7 @@ Recursos principales:
 - [Modelo de datos](database/api-entities.dbml)
 - [Datos iniciales](database/init.sql)
 - [Colección de Postman](postman/program-feature.postman_collection.json)
+- [Preparación y recorridos en Postman](postman/README.md)
 
 El orden recomendado es programa, convocatoria y solicitud. Primero se prepara la oferta, luego se habilita su recepción y finalmente las personas se presentan.
 
@@ -69,6 +76,8 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 
 ## Recorrido completo
 
+La etapa de decisión se documenta en [Resolución de solicitudes](functional/application-resolution.md).
+
 1. El personal municipal crea el programa y describe su objetivo.
 2. Crea una edición con fechas y cupo máximo. La edición comienza en borrador.
 3. Configura los beneficios, requisitos generales y documentos solicitados. También puede registrar incompatibilidades entre programas.
@@ -82,10 +91,14 @@ Una misma persona puede tener funciones municipales y ciudadanas. Debe operar co
 11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación; la solicitud queda asignada y pasa a evaluación. El personal con permiso de consulta administra luego la bandeja filtrada y el detalle.
 12. Ese mismo trabajador programa una visita domiciliaria o entrevista futura. La primera actuación lleva la solicitud a **En visita** y queda visible en una agenda administrativa filtrable.
 13. Cuando termina la actuación, su responsable registra si fue realizada o no realizada, junto con observaciones o conclusiones opcionales. Si no quedan otras pendientes, la solicitud vuelve a evaluación.
-14. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
-15. Si no puede asistir, solicita la reprogramación con un motivo; la actuación no cambia hasta que el responsable aprueba un nuevo horario, duración y lugar, o rechaza la petición con un comentario.
+14. El personal autorizado resuelve la evaluación: aprueba, rechaza o envía a lista de espera, conservando motivo, responsable e historial.
+15. Para una solicitud aprobada, el administrativo puede otorgar cada beneficio de su edición con vigencia actual. Queda activo, conserva los datos otorgados y no vuelve a ocupar cupo.
+16. El administrativo mantiene los beneficios otorgados: puede renovarlos antes de vencer, suspenderlos o finalizarlos con motivo e historial. El sistema vence automáticamente los que superan su fecha final. Finalizar o vencer el último otorgamiento pendiente cierra la solicitud y libera su reserva.
+17. El trabajador asignado puede crear un plan de intervención con objetivos, acciones y fechas, y registrar sus seguimientos y resultados, incluso después del rechazo o cierre del caso.
+18. La persona titular consulta el horario, lugar, modalidad y estado de las actuaciones de su solicitud, incluida su última reprogramación o cancelación, sin acceder a notas sociales internas.
+19. Si no puede asistir, solicita la reprogramación con un motivo; la actuación no cambia hasta que el responsable aprueba un nuevo horario, duración y lugar, o rechaza la petición con un comentario.
 
-La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social, gestión de visitas o entrevistas y solicitudes ciudadanas de reprogramación. La aprobación o rechazo de la solicitud social, la lista de espera y la incorporación efectiva corresponden a etapas posteriores.
+La implementación actual incluye presentación, consulta, revisión de documentos, evaluación social, visitas o entrevistas, reprogramaciones ciudadanas, resolución de solicitudes, otorgamiento y mantenimiento de beneficios, y planes de intervención con seguimientos. Las entregas, pagos y notificaciones corresponden a historias posteriores.
 
 ## Tres decisiones diferentes
 
@@ -95,7 +108,7 @@ La implementación actual incluye presentación, consulta, revisión de document
 | La convocatoria está abierta, vigente y pertenece a una edición activa. | Se pueden intentar nuevas presentaciones. | Que una persona pueda repetir una solicitud que ya tiene. |
 | La solicitud quedó presentada. | El municipio recibió esa presentación. | Que la persona haya sido aprobada, incorporada o haya recibido el beneficio. |
 
-El cupo máximo corresponde a incorporaciones efectivas. Alcanzarlo no cierra automáticamente una convocatoria ni impide recibir solicitudes.
+La aprobación reserva un cupo de la edición; otorgar o renovar beneficios no ocupa otro. Finalizar el último otorgamiento pendiente libera esa reserva. Alcanzar el cupo máximo no cierra automáticamente una convocatoria ni impide recibir solicitudes.
 
 ## Cómo leer los estados
 

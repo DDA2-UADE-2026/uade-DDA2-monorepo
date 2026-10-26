@@ -1,6 +1,6 @@
 # Diagrama de entidades del seguimiento social
 
-Este diagrama resume la parte del modelo utilizada por la evaluación social, las visitas o entrevistas, sus resultados y las solicitudes ciudadanas de reprogramación. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
+Este diagrama resume la evaluación social, los planes de intervención y seguimientos, las visitas o entrevistas, sus resultados, las solicitudes ciudadanas de reprogramación, las resoluciones y los otorgamientos de beneficios. El modelo completo y sus restricciones de base se mantienen en [`api-entities.dbml`](api-entities.dbml).
 
 ```mermaid
 erDiagram
@@ -32,11 +32,50 @@ erDiagram
         bigint user_id FK
         bigint registered_by_user_id FK
         bigint assigned_worker_user_id FK
+        bigint resolved_by_user_id FK
         uuid program_edition_id FK
         uuid enrollment_period_id FK
         varchar status
         timestamp submitted_at
+        timestamp resolved_at
         timestamp updated_at
+    }
+
+    INTERVENTION_PLAN {
+        uuid id PK
+        uuid application_id FK,UK
+        bigint responsible_user_id FK
+        timestamptz created_at
+    }
+
+    INTERVENTION_OBJECTIVE {
+        uuid id PK
+        uuid plan_id FK
+        integer position
+        varchar description
+    }
+
+    INTERVENTION_ACTION {
+        uuid id PK
+        uuid objective_id FK
+        integer position
+        varchar description
+        date start_date
+        date due_date
+        varchar status
+    }
+
+    INTERVENTION_FOLLOW_UP {
+        uuid id PK
+        uuid action_id FK
+        integer sequence_number
+        varchar previous_status
+        varchar status
+        date occurred_on
+        varchar notes
+        varchar result
+        bigint author_user_id FK
+        timestamptz recorded_at
     }
 
     APPLICATION_EVALUATION {
@@ -47,6 +86,84 @@ erDiagram
         varchar recommendation
         bigint professional_user_id FK
         timestamptz evaluated_at
+    }
+
+    APPLICATION_RESOLUTION {
+        uuid id PK
+        uuid application_id FK
+        varchar previous_status
+        varchar decision
+        varchar reason
+        bigint resolved_by_user_id FK
+        timestamptz resolved_at
+    }
+
+    BENEFIT_GRANT {
+        uuid id PK
+        uuid application_id FK
+        uuid program_benefit_id FK
+        varchar benefit_type
+        varchar description
+        decimal amount
+        date start_date
+        date end_date
+        varchar status
+        bigint assigned_by_user_id FK
+        timestamptz assigned_at
+    }
+
+    BENEFIT_GRANT_CHANGE {
+        uuid id PK
+        uuid grant_id FK
+        integer sequence_number
+        varchar action
+        varchar previous_status
+        varchar status
+        date previous_start_date
+        date previous_end_date
+        date start_date
+        date end_date
+        varchar reason
+        bigint responsible_user_id FK
+        timestamptz changed_at
+    }
+
+    BENEFIT_GRANT_CHANGE_REQUIREMENT {
+        uuid id PK
+        uuid change_id FK
+        uuid requirement_id
+        varchar type
+        varchar requirement_value
+        varchar description
+        boolean fulfilled
+    }
+
+    INTERVENTION_FOLLOW_UP_PUBLICATION {
+        uuid id PK
+        uuid follow_up_id FK,UK
+        varchar summary
+        boolean visible
+        timestamptz published_at
+        timestamptz updated_at
+        bigint updated_by_user_id FK
+    }
+
+    PROGRAM_BENEFIT {
+        uuid id PK
+        uuid program_edition_id FK
+        varchar benefit_type
+        varchar description
+        decimal amount
+    }
+
+    APPLICATION_RESOLUTION_REQUIREMENT {
+        uuid id PK
+        uuid resolution_id FK
+        uuid requirement_id
+        varchar type
+        varchar requirement_value
+        varchar description
+        boolean fulfilled
     }
 
     APPLICATION_VISIT {
@@ -93,8 +210,27 @@ erDiagram
     USERS ||--o{ APPLICATION : titular
     USERS ||--o{ APPLICATION : registra
     USERS o|--o{ APPLICATION : tiene_asignadas
+    USERS o|--o{ APPLICATION : ultima_resolucion
 
     APPLICATION ||--o| APPLICATION_EVALUATION : posee
+    APPLICATION ||--o{ APPLICATION_RESOLUTION : resuelve
+    APPLICATION ||--o| INTERVENTION_PLAN : organiza
+    USERS ||--o{ INTERVENTION_PLAN : responsable
+    INTERVENTION_PLAN ||--|{ INTERVENTION_OBJECTIVE : define
+    INTERVENTION_OBJECTIVE ||--|{ INTERVENTION_ACTION : propone
+    INTERVENTION_ACTION ||--o{ INTERVENTION_FOLLOW_UP : registra
+    USERS ||--o{ INTERVENTION_FOLLOW_UP : autor
+    INTERVENTION_FOLLOW_UP ||--o| INTERVENTION_FOLLOW_UP_PUBLICATION : publica_resumen
+    USERS ||--o{ INTERVENTION_FOLLOW_UP_PUBLICATION : ultima_gestion
+    APPLICATION ||--o{ BENEFIT_GRANT : recibe
+    PROGRAM_EDITION ||--o{ PROGRAM_BENEFIT : ofrece
+    PROGRAM_BENEFIT ||--o{ BENEFIT_GRANT : origina
+    USERS ||--o{ BENEFIT_GRANT : otorga
+    BENEFIT_GRANT ||--o{ BENEFIT_GRANT_CHANGE : registra
+    USERS o|--o{ BENEFIT_GRANT_CHANGE : modifica
+    BENEFIT_GRANT_CHANGE ||--o{ BENEFIT_GRANT_CHANGE_REQUIREMENT : reevalua
+    USERS ||--o{ APPLICATION_RESOLUTION : decide
+    APPLICATION_RESOLUTION ||--o{ APPLICATION_RESOLUTION_REQUIREMENT : conserva
     USERS ||--o{ APPLICATION_EVALUATION : realiza
 
     APPLICATION ||--o{ APPLICATION_VISIT : programa
@@ -108,6 +244,14 @@ erDiagram
 ```
 
 ## Decisiones representadas
+
+- El ciudadano consulta exclusivamente sus planes y su estructura acordada. El estado del plan se calcula desde sus acciones, sin columna nueva. Solo se proyectan seguimientos con publicación visible; notas y resultados originales permanecen privados. La publicación es opcional, única por seguimiento y conserva únicamente el resumen actual, incluso retirado. Publicar, corregir o retirar se serializa con solicitud, plan, acción y seguimiento; la auditoría no copia textos. La migración no publica registros anteriores.
+
+- Cada solicitud evaluada admite un plan de intervención, incluso rechazada o cerrada. El ciudadano se deriva del caso. Objetivos, acciones, responsable y fechas iniciales se conservan; solo cambia el estado de las acciones mediante seguimientos inmutables. Completar acciones no modifica estados ni cupos de la solicitud.
+- Cada otorgamiento conserva una copia del beneficio configurado, su vigencia, estado inicial `ACTIVE` y administrativo responsable. La unicidad por solicitud y beneficio evita duplicados; no vuelve a ocupar el cupo reservado al aprobar.
+- El historial inmutable registra asignación, renovación, suspensión, finalización y vencimiento con motivo, responsable y fecha UTC. Renovar extiende el mismo otorgamiento antes de vencer y reevalúa requisitos y documentos. El vencimiento automático cambia `ACTIVE/SUSPENDED` con `endDate < hoy` a `EXPIRED`, con responsable ID null y nombre Sistema. Suspender conserva la reserva; finalizar o vencer el último otorgamiento pendiente cierra la solicitud en `CLOSED` y libera exactamente una reserva. `FINALIZED` y `EXPIRED` son definitivos.
+
+- Las resoluciones son inmutables y preservan una copia del requisito evaluado sin FK al catálogo editable. La solicitud mantiene el estado y el responsable de la última resolución; aprobar incrementa el cupo ocupado de la edición.
 
 - `ApplicationEvaluation` es 1:1 con `Application`; la unicidad de `application_id` impide una segunda evaluación.
 - Una solicitud puede tener muchas actuaciones `VISIT` o `INTERVIEW`.

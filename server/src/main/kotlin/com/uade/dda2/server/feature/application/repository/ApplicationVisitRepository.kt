@@ -15,13 +15,12 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
+    fun existsByApplicationIdAndStatus(applicationId: UUID, status: ApplicationVisitStatus): Boolean
     fun existsByResponsibleId(responsibleId: Long): Boolean
 
     fun existsByResultRecordedById(resultRecordedById: Long): Boolean
 
     fun countByApplicationId(applicationId: UUID): Long
-
-    fun existsByApplicationIdAndStatus(applicationId: UUID, status: ApplicationVisitStatus): Boolean
 
     fun existsByApplicationIdAndStatusAndIdNot(
         applicationId: UUID,

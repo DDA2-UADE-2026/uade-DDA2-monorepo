@@ -101,6 +101,11 @@ class GlobalExceptionHandler {
             ?.let { return handleApiException(it, request) }
         val appointmentRequest = request.requestURI == "/api/citizen/appointments"
         val evaluationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/evaluation"))
+        val resolutionRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/resolutions"))
+        val interventionRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/intervention-plan"))
+        val interventionFollowUpRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/intervention-plan/actions/[^/]+/follow-ups"))
+        val interventionPublicationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/intervention-plan/actions/[^/]+/follow-ups/[^/]+/citizen-publication"))
+        val benefitGrantRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/benefit-grants(?:/.*)?"))
         val visitResultRequest = request.requestURI.matches(
             Regex("/api/applications/[^/]+/visits/[^/]+/result"),
         )
@@ -116,6 +121,11 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     message = when {
                         evaluationRequest -> "Los datos de la evaluacion son invalidos."
+                        resolutionRequest -> "Los datos de la resolucion son invalidos."
+                        interventionRequest -> "Los datos del plan de intervencion son invalidos."
+                        interventionFollowUpRequest -> "Los datos del seguimiento son invalidos."
+                        interventionPublicationRequest -> "Los datos de la publicacion son invalidos."
+                        benefitGrantRequest -> "Los datos del otorgamiento son invalidos."
                         visitResultRequest -> "Los datos del resultado de la visita o entrevista son invalidos."
                         visitRescheduleRequest -> "Los datos de la solicitud de reprogramacion son invalidos."
                         visitRequest -> "Los datos de la visita o entrevista son invalidos."
@@ -124,6 +134,11 @@ class GlobalExceptionHandler {
                     code = when {
                         appointmentRequest -> "APPOINTMENT_INVALID_REQUEST"
                         evaluationRequest -> "APPLICATION_EVALUATION_INVALID_DATA"
+                        resolutionRequest -> "APPLICATION_RESOLUTION_INVALID_DATA"
+                        interventionRequest -> "INTERVENTION_PLAN_INVALID_DATA"
+                        interventionFollowUpRequest -> "INTERVENTION_FOLLOW_UP_INVALID_DATA"
+                        interventionPublicationRequest -> "INTERVENTION_PUBLICATION_INVALID_DATA"
+                        benefitGrantRequest -> "BENEFIT_GRANT_INVALID_DATA"
                         visitResultRequest -> "APPLICATION_VISIT_RESULT_INVALID_DATA"
                         visitRescheduleRequest -> "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA"
                         visitRequest -> "APPLICATION_VISIT_INVALID_DATA"

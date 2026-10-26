@@ -198,6 +198,9 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Bound retained Hibernate contexts across the full flow suite instead of exhausting the default test heap.
+    maxHeapSize = "1g"
+    systemProperty("spring.test.context.cache.maxSize", "8")
 }
 
 tasks.register<Test>("generateOpenApiDocs") {
@@ -224,6 +227,39 @@ tasks.register<Test>("testApplicationsPostgres") {
         "application.test.postgres-password",
         providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get()
     )
+}
+
+tasks.register<Test>("testApplicationResolutionsPostgres") {
+    group = "verification"
+    description = "Prueba resoluciones y concurrencia contra PostgreSQL desechable en 127.0.0.1:55439/application_resolution_test (create-drop)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest") }
+    systemProperty("resolution.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/application_resolution_test")
+    systemProperty("resolution.test.postgres-user", "application_test")
+    systemProperty("resolution.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
+}
+
+tasks.register<Test>("testBenefitGrantsPostgres") {
+    group = "verification"
+    description = "Prueba otorgamientos contra PostgreSQL desechable en 127.0.0.1:55439/benefit_grant_test (create-drop)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest") }
+    systemProperty("benefit-grant.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/benefit_grant_test")
+    systemProperty("benefit-grant.test.postgres-user", "application_test")
+    systemProperty("benefit-grant.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
+}
+
+tasks.register<Test>("testInterventionPlansPostgres") {
+    group = "verification"
+    description = "Prueba planes y seguimientos contra PostgreSQL desechable en 127.0.0.1:55439/intervention_plan_test (create-drop)."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest") }
+    systemProperty("intervention.test.postgres-url", "jdbc:postgresql://127.0.0.1:55439/intervention_plan_test")
+    systemProperty("intervention.test.postgres-user", "application_test")
+    systemProperty("intervention.test.postgres-password", providers.environmentVariable("APPLICATION_TEST_POSTGRES_PASSWORD").orElse("").get())
 }
 
 tasks.register<Test>("testCentersPostgres") {

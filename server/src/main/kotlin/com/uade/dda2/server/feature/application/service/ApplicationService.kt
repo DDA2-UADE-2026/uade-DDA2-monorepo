@@ -46,7 +46,7 @@ import java.util.UUID
 data class ApplicationSubmission(val application: ApplicationResponse, val replayed: Boolean)
 
 const val APPLICATION_ASSIGN_PERMISSION = "applications:management:assign"
-const val APPLICATION_RESOLVE_PERMISSION = "applications:resolutions:create"
+const val APPLICATION_RESOLUTION_CREATE_PERMISSION = "applications:resolutions:create"
 
 // Solicitudes todavía en trabajo social: antes de la resolución final y fuera de borrador.
 // La lista de espera se incluye porque el asignado todavía tiene que aprobarla o rechazarla.
@@ -228,7 +228,7 @@ class ApplicationService(
 
     @Transactional
     fun resolve(id: UUID, request: ResolveApplicationRequest): AdminApplicationResponse {
-        val actor = authorized(APPLICATION_RESOLVE_PERMISSION)
+        val actor = authorized(APPLICATION_RESOLUTION_CREATE_PERMISSION)
         val decision = request.decision ?: throw ApplicationErrors.invalidResolution("La decisión es obligatoria.")
         val reason = request.reason?.trim()?.takeIf { it.isNotEmpty() }
         if (reason != null && reason.length > 1000) {
@@ -264,7 +264,7 @@ class ApplicationService(
 
         val previousStatus = application.status
         val now = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
-        application.status = decision.status
+        application.status = decision.applicationStatus()
         application.resolutionReason = reason
         application.resolvedAt = now
         application.resolvedBy = actor
@@ -277,7 +277,7 @@ class ApplicationService(
             entityId = id.toString(),
             oldValues = json.writeValueAsString(mapOf("status" to previousStatus.name)),
             newValues = json.writeValueAsString(
-                mapOf("operation" to "RESOLVE", "status" to decision.status.name, "reasonRecorded" to (reason != null)),
+                mapOf("operation" to "RESOLVE", "status" to decision.applicationStatus().name, "reasonRecorded" to (reason != null)),
             ),
         )
         return detail(application)
