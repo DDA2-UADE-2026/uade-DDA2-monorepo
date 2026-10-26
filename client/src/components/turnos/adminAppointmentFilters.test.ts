@@ -5,6 +5,7 @@ import {
   adminCalendarSearchSchema,
   daysInMonth,
   leadingBlanks,
+  trailingBlanks,
   monthDayIso,
   shiftMonth,
 } from "@/components/turnos/adminAppointmentFilters"
@@ -62,5 +63,14 @@ describe("utilidades del calendario", () => {
     expect(leadingBlanks(2026, 10)).toBe(3)
     // Junio 2026 empieza un lunes: sin celdas vacías.
     expect(leadingBlanks(2026, 6)).toBe(0)
+  })
+
+  it("completa la última semana de la grilla", () => {
+    // Octubre 2026 termina un sábado: queda el domingo vacío.
+    expect(trailingBlanks(2026, 10)).toBe(1)
+    // Mayo 2026 termina un domingo: sin celdas vacías al final.
+    expect(trailingBlanks(2026, 5)).toBe(0)
+    // Febrero 2027 empieza lunes y tiene 28 días: cuatro semanas exactas.
+    expect(leadingBlanks(2027, 2) + daysInMonth(2027, 2) + trailingBlanks(2027, 2)).toBe(28)
   })
 })
