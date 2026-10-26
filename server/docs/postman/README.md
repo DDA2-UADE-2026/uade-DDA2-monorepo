@@ -17,6 +17,8 @@ Completar el login y, si corresponde, seleccionar el rol activo. Copiar el JWT o
 | Crear plan | `applications:interventions:create` | `interventionAccessToken` |
 | Registrar seguimiento | `applications:interventions:follow-ups:create` | `interventionAccessToken` |
 | Consultar plan o seguimientos | `applications:interventions:view` | `adminAccessToken` |
+| Consultar planes propios y seguimientos publicados | `applications:own:interventions:view` | `citizenAccessToken` |
+| Publicar, corregir o retirar resumen ciudadano | `applications:interventions:follow-ups:publish` | `interventionAccessToken` |
 | Consultar catálogos de requisitos y beneficios | `programs:management:view` | `adminAccessToken` |
 
 Los permisos nuevos se asignan inicialmente a `ADMIN`; se pueden configurar en otros roles. El servidor valida usuario activo, pertenencia al rol activo y permiso vigente en JWT y base de datos. Tener el permiso de escritura de planes no reemplaza la exigencia de ser el trabajador asignado y responsable. La lectura profesional solo exige su permiso.
@@ -84,11 +86,24 @@ El caso debe tener evaluación profesional y trabajador asignado. Admite creaci�
 5. Ejecutar **Registrar avance de acción** o **Completar acción con resultado**. Se admiten avances repetidos mientras no esté completada. Completar requiere resultado y es definitivo. El POST guarda `interventionFollowUpId`.
 6. Consultar el historial de seguimientos para ver su secuencia, estados, fecha real, notas, resultado, autor y registro UTC. Devuelve `[]` cuando todavía no hay seguimientos.
 
-La estructura del plan y los seguimientos anteriores son inmutables. El seguimiento continúa después del rechazo o cierre del caso. Completar una acción no cierra la solicitud ni modifica sus beneficios o cupos. Las consultas ciudadanas mantienen su estructura sin incorporar información profesional.
+La estructura del plan y los seguimientos anteriores son inmutables. El seguimiento continúa después del rechazo o cierre del caso. Completar una acción no cierra la solicitud ni modifica sus beneficios o cupos. Las respuestas existentes de solicitudes conservan su estructura; las rutas ciudadanas de planes usan DTO propios sin información profesional.
+
+## Planes propios y publicación ciudadana de seguimientos
+
+Renovar los JWT mediante login o selección de rol para incorporar los permisos nuevos. La migración y el bootstrap asignan `applications:own:interventions:view` a CIUDADANO y ADMIN, y `applications:interventions:follow-ups:publish` a ADMIN. Pueden configurarse en otros roles. Publicar exige además coincidir con el trabajador actualmente asignado y responsable del plan, aunque el actor sea ADMIN.
+
+1. Con `citizenAccessToken`, ejecutar **Planes propios del ciudadano → Consultar mis planes de intervención**. Incluye planes anteriores, solicitudes asistidas y casos rechazados/cerrados. Copiar el ID elegido a `interventionPlanId`.
+2. Ejecutar **Consultar objetivos y acciones de mi plan**. Copiar la acción elegida a `interventionActionId`. El estado calculado es PENDING si todas están pendientes, COMPLETED si todas terminaron e IN_PROGRESS en cualquier otro caso. Las fechas son las de planificación, sin reservas de agenda.
+3. Ejecutar **Consultar seguimientos habilitados de mi acción**. Solo muestra resúmenes vigentes redactados para el ciudadano, nunca notas o resultados profesionales. Sin publicaciones devuelve el mensaje informativo, aunque existan seguimientos privados. Ambos listados aceptan page desde cero y size entre 1 y 100, con valores predeterminados 0 y 20.
+4. Para habilitar un seguimiento, obtener sus IDs desde el historial profesional y completar `applicationId`, `interventionActionId`, `interventionFollowUpId` e `interventionCitizenSummary`. Usar `interventionAccessToken` del trabajador responsable. Ejecutar **Publicación ciudadana de seguimientos → Publicar corregir o volver a habilitar resumen ciudadano**. El primer PUT devuelve 201; los siguientes, 200.
+5. Cambiar el resumen y repetir para corregirlo. Repetir el mismo resumen visible es idempotente, sin fechas ni auditoría nuevas. **Retirar visibilidad del resumen ciudadano** devuelve 204 y lo oculta también de los totales. Repetir el retiro, o retirar un seguimiento válido nunca publicado, no cambia datos. Volver a ejecutar PUT lo republica. Se permite sobre acciones completadas y casos rechazados/cerrados.
+6. Consultar de nuevo el historial profesional: `citizenPublication` es null si nunca se publicó; si existe conserva resumen, visibilidad y datos de última gestión, incluso retirada. Las notas y el resultado original permanecen iguales. Los POST de plan y seguimiento siguen sin admitir campos de publicación.
+
+La consulta ciudadana no acepta seleccionar otro titular. Planes/acciones ajenos o mal asociados devuelven 404. Los seguimientos anteriores a la migración permanecen privados hasta su publicación explícita. Los mensajes de ausencia total se distinguen de una página fuera de rango: si hay registros, message es null aunque content esté vacío. Los ejemplos guardados incluyen los tres estados calculados, publicaciones vigentes, retirada profesional, ausencia, página fuera de rango y errores de acceso, datos o responsabilidad.
 
 ## Ejemplos y comprobaciones
 
-Las cuatro carpetas nuevas incluyen los 12 contratos HTTP de las historias, variantes de decisión y seguimiento, consultas preparatorias y ejemplos guardados de éxito y errores `400`, `401`, `403`, `404` y `409`. Los ejemplos guardados usan identificadores y fechas ilustrativos; las peticiones usan variables con fechas a completar para el entorno real.
+Las carpetas de resolución, otorgamiento, ciclo de vida y planes profesionales incluyen los 12 contratos HTTP de esas historias, variantes de decisión y seguimiento, consultas preparatorias y ejemplos guardados de éxito y errores `400`, `401`, `403`, `404` y `409`. Las carpetas de consulta propia de beneficios y planes, y publicación de seguimientos, agregan sus contratos específicos. Los ejemplos guardados usan identificadores y fechas ilustrativos; las peticiones usan variables con fechas a completar para el entorno real.
 
 Los scripts comprueban códigos de éxito, asociación con la ruta, estados, vigencias, datos conservados, fechas UTC y orden del historial. Capturan identificadores solo después de respuestas exitosas. Los ejemplos de conflicto documentan las condiciones necesarias; no se ejecutan automáticamente como pruebas negativas ni preparan esos escenarios.
 

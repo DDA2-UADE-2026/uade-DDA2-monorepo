@@ -57,6 +57,9 @@ class AdminUserInitializerTest {
         assertTrue(admin.roles.first { it.name == "CIUDADANO" }.permissions.any { it.name == "activities:own:view" })
         assertTrue(admin.roles.first { it.name == "ADMIN" }.permissions.any { it.name == "users:view" })
         assertTrue(admin.roles.all { role -> role.permissions.any { it.name == "applications:own:benefits:view" } })
+        assertTrue(admin.roles.all { role -> role.permissions.any { it.name == "applications:own:interventions:view" } })
+        assertTrue(admin.roles.first { it.name == "ADMIN" }.permissions.any { it.name == "applications:interventions:follow-ups:publish" })
+        assertTrue(admin.roles.first { it.name == "CIUDADANO" }.permissions.none { it.name == "applications:interventions:follow-ups:publish" })
         val originalHash = admin.passwordHash
 
         initializer.run(DefaultApplicationArguments())

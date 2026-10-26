@@ -34,6 +34,7 @@ class InterventionPlanService(
     private val plans: InterventionPlanRepository,
     private val actions: InterventionActionRepository,
     private val followUps: InterventionFollowUpRepository,
+    private val publications: InterventionPublicationRepository,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
     private val validator: InterventionValidator,
@@ -101,7 +102,10 @@ class InterventionPlanService(
         authorize(INTERVENTION_VIEW_PERMISSION)
         val plan = findPlan(applicationId)
         if (actions.findByIdAndObjectivePlanId(actionId, requireNotNull(plan.id)) == null) throw InterventionErrors.actionNotFound()
-        return followUps.findAllByActionIdOrderBySequenceNumberAsc(actionId).map { it.toResponse() }
+        val entries = followUps.findAllByActionIdOrderBySequenceNumberAsc(actionId)
+        val published = if (entries.isEmpty()) emptyMap() else publications.findAllByFollowUpIdIn(entries.map { requireNotNull(it.id) })
+            .associateBy { requireNotNull(it.followUp.id) }
+        return entries.map { it.toResponse(published[it.id]?.toPublicationResponse()) }
     }
 
     private fun findPlan(applicationId: UUID): InterventionPlan {

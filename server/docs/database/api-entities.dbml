@@ -890,6 +890,25 @@ Table application_visit_reschedule_request {
   Note: 'Historial inmutable de solicitudes ciudadanas. PostgreSQL agrega un indice unico parcial uk_visit_reschedule_request_pending sobre visit_id WHERE status = PENDING para admitir una sola pendiente por actuacion.'
 }
 
+Table intervention_follow_up_publication {
+  id uuid [pk]
+  follow_up_id uuid [not null, ref: > intervention_follow_up.id]
+  summary varchar(2000) [not null, note: 'Resumen expresamente redactado para el ciudadano; nunca copia automatica de notes/result.']
+  visible boolean [not null, note: 'False conserva la version profesional y la excluye de la consulta y totales ciudadanos.']
+  published_at timestamptz [not null, note: 'UTC con microsegundos; ultima publicacion o correccion.']
+  updated_at timestamptz [not null, note: 'UTC con microsegundos; ultima gestion, incluido retiro.']
+  updated_by_user_id bigint [not null, ref: > users.id]
+  indexes {
+    follow_up_id [unique, name: 'uk_intervention_publication_follow_up']
+    updated_by_user_id [name: 'ix_intervention_publication_updated_by']
+  }
+  checks {
+    `length(trim(summary)) > 0` [name: 'ck_intervention_publication_summary']
+    `published_at <= updated_at` [name: 'ck_intervention_publication_dates']
+  }
+  Note: 'Version publica actual opcional por seguimiento. El original permanece inmutable. Sin publicaciones automaticas de datos anteriores ni historial publico de versiones. FK y guard protegen al responsable de ultima gestion.'
+}
+
 TableGroup social_case_management {
   application
   application_evaluation
@@ -897,6 +916,7 @@ TableGroup social_case_management {
   intervention_objective
   intervention_action
   intervention_follow_up
+  intervention_follow_up_publication
   application_visit
   application_visit_reschedule_request
 }

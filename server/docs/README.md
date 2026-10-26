@@ -19,6 +19,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | [Ciclo de vida de beneficios](functional/benefit-grant-lifecycle.md) | Renovación, suspensión, finalización, historial y liberación de cupos. |
 | [Vencimiento automático de beneficios](functional/benefit-grant-expiration.md) | Vencimiento por fecha, historial de sistema y cierre con liberación de reserva. |
 | [Planes de intervención](functional/intervention-plans.md) | Objetivos, acciones, responsables, fechas y seguimientos profesionales por caso. |
+| [Planes propios del ciudadano](functional/citizen-intervention-plans.md) | Progreso, objetivos, acciones y resúmenes de seguimiento publicados por el responsable. |
 
 ## Organización de `/docs`
 

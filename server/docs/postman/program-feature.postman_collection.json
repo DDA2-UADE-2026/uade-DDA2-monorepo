@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles. Incluye resolución de solicitudes, otorgamiento y ciclo de vida de beneficios, planes de intervención y seguimientos. Preparación y permisos: docs/postman/README.md. Las decisiones alternativas se ejecutan individualmente. Incluye la consulta general de beneficios propios del ciudadano, con estado, vigencia, descripción y monto.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles. Incluye resolución de solicitudes, otorgamiento y ciclo de vida de beneficios, planes de intervención y seguimientos. Preparación y permisos: docs/postman/README.md. Las decisiones alternativas se ejecutan individualmente. Incluye la consulta general de beneficios propios del ciudadano, con estado, vigencia, descripción y monto. Incluye planes propios con progreso calculado y publicación, corrección o retiro de resúmenes ciudadanos de seguimiento.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -11988,7 +11988,7 @@
               ],
               "cookie": [],
               "_postman_previewlanguage": "json",
-              "body": "{\n  \"id\": \"4f12cb6b-d697-49d3-bd3c-7288cb1b86a5\",\n  \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"userId\": 12,\n  \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n  \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n  \"sequenceNumber\": 1,\n  \"previousStatus\": \"PENDING\",\n  \"status\": \"IN_PROGRESS\",\n  \"occurredOn\": \"2026-10-19\",\n  \"notes\": \"Se realizó el primer acompañamiento.\",\n  \"result\": null,\n  \"authorUserId\": 8,\n  \"authorUserName\": \"Trabajador Social\",\n  \"recordedAt\": \"2026-10-19T15:30:00.123456Z\"\n}"
+              "body": "{\n  \"id\": \"4f12cb6b-d697-49d3-bd3c-7288cb1b86a5\",\n  \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"userId\": 12,\n  \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n  \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n  \"sequenceNumber\": 1,\n  \"previousStatus\": \"PENDING\",\n  \"status\": \"IN_PROGRESS\",\n  \"occurredOn\": \"2026-10-19\",\n  \"notes\": \"Se realizó el primer acompañamiento.\",\n  \"result\": null,\n  \"authorUserId\": 8,\n  \"authorUserName\": \"Trabajador Social\",\n  \"recordedAt\": \"2026-10-19T15:30:00.123456Z\",\n  \"citizenPublication\": null\n}"
             },
             {
               "name": "400 - INTERVENTION_FOLLOW_UP_INVALID_DATA",
@@ -12455,7 +12455,7 @@
               ],
               "cookie": [],
               "_postman_previewlanguage": "json",
-              "body": "{\n  \"id\": \"54fd20a7-1380-4f1c-bc93-51fd50d71f72\",\n  \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"userId\": 12,\n  \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n  \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n  \"sequenceNumber\": 2,\n  \"previousStatus\": \"IN_PROGRESS\",\n  \"status\": \"COMPLETED\",\n  \"occurredOn\": \"2026-10-19\",\n  \"notes\": \"Se completó el acompañamiento.\",\n  \"result\": \"El ciudadano accedió a los recursos previstos.\",\n  \"authorUserId\": 8,\n  \"authorUserName\": \"Trabajador Social\",\n  \"recordedAt\": \"2026-10-19T16:00:00.123456Z\"\n}"
+              "body": "{\n  \"id\": \"54fd20a7-1380-4f1c-bc93-51fd50d71f72\",\n  \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n  \"userId\": 12,\n  \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n  \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n  \"sequenceNumber\": 2,\n  \"previousStatus\": \"IN_PROGRESS\",\n  \"status\": \"COMPLETED\",\n  \"occurredOn\": \"2026-10-19\",\n  \"notes\": \"Se completó el acompañamiento.\",\n  \"result\": \"El ciudadano accedió a los recursos previstos.\",\n  \"authorUserId\": 8,\n  \"authorUserName\": \"Trabajador Social\",\n  \"recordedAt\": \"2026-10-19T16:00:00.123456Z\",\n  \"citizenPublication\": null\n}"
             },
             {
               "name": "400 - INTERVENTION_FOLLOW_UP_INVALID_DATA",
@@ -12912,7 +12912,7 @@
               ],
               "cookie": [],
               "_postman_previewlanguage": "json",
-              "body": "[\n  {\n    \"id\": \"4f12cb6b-d697-49d3-bd3c-7288cb1b86a5\",\n    \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n    \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n    \"sequenceNumber\": 1,\n    \"previousStatus\": \"PENDING\",\n    \"status\": \"IN_PROGRESS\",\n    \"occurredOn\": \"2026-10-19\",\n    \"notes\": \"Se realizó el primer acompañamiento.\",\n    \"result\": null,\n    \"authorUserId\": 8,\n    \"authorUserName\": \"Trabajador Social\",\n    \"recordedAt\": \"2026-10-19T15:30:00.123456Z\"\n  },\n  {\n    \"id\": \"54fd20a7-1380-4f1c-bc93-51fd50d71f72\",\n    \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n    \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n    \"sequenceNumber\": 2,\n    \"previousStatus\": \"IN_PROGRESS\",\n    \"status\": \"COMPLETED\",\n    \"occurredOn\": \"2026-10-19\",\n    \"notes\": \"Se completó el acompañamiento.\",\n    \"result\": \"El ciudadano accedió a los recursos previstos.\",\n    \"authorUserId\": 8,\n    \"authorUserName\": \"Trabajador Social\",\n    \"recordedAt\": \"2026-10-19T16:00:00.123456Z\"\n  }\n]"
+              "body": "[\n  {\n    \"id\": \"4f12cb6b-d697-49d3-bd3c-7288cb1b86a5\",\n    \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n    \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n    \"sequenceNumber\": 1,\n    \"previousStatus\": \"PENDING\",\n    \"status\": \"IN_PROGRESS\",\n    \"occurredOn\": \"2026-10-19\",\n    \"notes\": \"Se realizó el primer acompañamiento.\",\n    \"result\": null,\n    \"authorUserId\": 8,\n    \"authorUserName\": \"Trabajador Social\",\n    \"recordedAt\": \"2026-10-19T15:30:00.123456Z\",\n    \"citizenPublication\": null\n  },\n  {\n    \"id\": \"54fd20a7-1380-4f1c-bc93-51fd50d71f72\",\n    \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n    \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n    \"sequenceNumber\": 2,\n    \"previousStatus\": \"IN_PROGRESS\",\n    \"status\": \"COMPLETED\",\n    \"occurredOn\": \"2026-10-19\",\n    \"notes\": \"Se completó el acompañamiento.\",\n    \"result\": \"El ciudadano accedió a los recursos previstos.\",\n    \"authorUserId\": 8,\n    \"authorUserName\": \"Trabajador Social\",\n    \"recordedAt\": \"2026-10-19T16:00:00.123456Z\",\n    \"citizenPublication\": null\n  }\n]"
             },
             {
               "name": "Acción sin seguimientos",
@@ -13138,6 +13138,51 @@
               "cookie": [],
               "_postman_previewlanguage": "json",
               "body": "{\n  \"message\": \"La solicitud no tiene plan de intervención.\",\n  \"code\": \"INTERVENTION_PLAN_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-19T17:00:00Z\",\n  \"path\": \"/api/admin/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/intervention-plan/actions/a05ba1ac-c1cf-467e-9249-7841f20f0cdf/follow-ups\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "Publicación retirada conservada solo para consulta profesional",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{adminAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups"
+                  ]
+                },
+                "description": "applications:interventions:view. Secuencia ascendente, datos y resultados inmutables. [] si la acción no tiene seguimientos. Una acción ajena al plan o caso de la ruta devuelve 404. La consulta ciudadana actual no expone esta información profesional."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": \"4f12cb6b-d697-49d3-bd3c-7288cb1b86a5\",\n    \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n    \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n    \"sequenceNumber\": 1,\n    \"previousStatus\": \"PENDING\",\n    \"status\": \"IN_PROGRESS\",\n    \"occurredOn\": \"2026-10-19\",\n    \"notes\": \"Se realizó el primer acompañamiento.\",\n    \"result\": null,\n    \"authorUserId\": 8,\n    \"authorUserName\": \"Trabajador Social\",\n    \"recordedAt\": \"2026-10-19T15:30:00.123456Z\",\n    \"citizenPublication\": {\n      \"id\": \"104b77bc-e07b-47e1-a20d-69aa53c70001\",\n      \"summary\": \"Se acordó continuar el acompañamiento.\",\n      \"visible\": false,\n      \"publishedAt\": \"2026-10-26T16:00:00Z\",\n      \"updatedAt\": \"2026-10-26T18:00:00Z\",\n      \"updatedByUserId\": 12,\n      \"updatedByUserName\": \"Trabajador social\"\n    }\n  },\n  {\n    \"id\": \"54fd20a7-1380-4f1c-bc93-51fd50d71f72\",\n    \"planId\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"objectiveId\": \"04425494-be8a-4dac-9bb7-b196c3a1d38b\",\n    \"actionId\": \"a05ba1ac-c1cf-467e-9249-7841f20f0cdf\",\n    \"sequenceNumber\": 2,\n    \"previousStatus\": \"IN_PROGRESS\",\n    \"status\": \"COMPLETED\",\n    \"occurredOn\": \"2026-10-19\",\n    \"notes\": \"Se completó el acompañamiento.\",\n    \"result\": \"El ciudadano accedió a los recursos previstos.\",\n    \"authorUserId\": 8,\n    \"authorUserName\": \"Trabajador Social\",\n    \"recordedAt\": \"2026-10-19T16:00:00.123456Z\",\n    \"citizenPublication\": null\n  }\n]"
             }
           ]
         }
@@ -13633,6 +13678,1694 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Planes propios del ciudadano",
+      "description": "Listado, detalle y seguimientos públicos propios. Renovar JWT para el permiso applications:own:interventions:view. Nunca incluye notas ni resultados profesionales. Ver docs/functional/citizen-intervention-plans.md.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{citizenAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Consultar mis planes de intervención",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{citizenAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "intervention-plans"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const required = [\"citizenAccessToken\"];",
+                  "if (required.some(key => !pm.variables.get(key))) {",
+                  "  console.warn('Completar ' + required.join(', ') + '. Renovar JWT para incorporar permisos nuevos. Ver docs/postman/README.md.');",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  pm.test('Página propia y mensaje', () => {",
+                  "pm.expect(Object.keys(body).sort()).to.deep.equal(['content','page','size','totalElements','totalPages','message'].sort());",
+                  "pm.expect(body.message).to.equal(body.totalElements === 0 ? \"No tenés planes de intervención registrados.\" : null);",
+                  "pm.expect(body.content).to.be.an('array');",
+                  "if (body.totalElements === 0) pm.expect(body.content).to.deep.equal([]);",
+                  "});",
+                  "  pm.test('Solo cabecera pública y estado calculado', () => body.content.forEach(item => {",
+                  "    pm.expect(Object.keys(item).sort()).to.deep.equal([\"id\",\"applicationId\",\"applicationNumber\",\"programId\",\"programName\",\"programEditionId\",\"programEditionName\",\"createdAt\",\"status\"].sort());",
+                  "    pm.expect(['PENDING','IN_PROGRESS','COMPLETED']).to.include(item.status);",
+                  "    pm.expect(/(?:Z|\\+00:00)$/.test(item.createdAt)).to.equal(true);",
+                  "  }));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Planes propios de cualquier estado del caso",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n      \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db01\",\n      \"applicationNumber\": 1024,\n      \"programId\": \"1c541b74-0620-4184-8578-717b27a34001\",\n      \"programName\": \"Acompañamiento social\",\n      \"programEditionId\": \"6115ab02-cac9-484e-a7c8-e0b4773ba001\",\n      \"programEditionName\": \"2026\",\n      \"createdAt\": \"2026-10-26T15:00:00Z\",\n      \"status\": \"IN_PROGRESS\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            },
+            {
+              "name": "Sin planes registrados",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 0,\n  \"totalPages\": 0,\n  \"message\": \"No tenés planes de intervención registrados.\"\n}"
+            },
+            {
+              "name": "Página fuera de rango conserva total y message null",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [],\n  \"page\": 9,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            },
+            {
+              "name": "400 - VALIDATION_ERROR",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"La validación falló.\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"status\": 400,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/intervention-plans\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "401 - AUTH_UNAUTHENTICATED",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Se requiere autenticación.\",\n  \"code\": \"AUTH_UNAUTHENTICATED\",\n  \"status\": 401,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/intervention-plans\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "403 - AUTH_FORBIDDEN",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view vigente en JWT y rol activo. Titular autenticado, sin selector de ciudadano. Incluye planes anteriores, casos asistidos, rechazados y cerrados. Orden createdAt DESC, id DESC. Paginación page>=0, size 1..100. Estado calculado desde acciones. Guardar el plan elegido en interventionPlanId."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"El rol activo no posee el permiso.\",\n  \"code\": \"AUTH_FORBIDDEN\",\n  \"status\": 403,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/intervention-plans\",\n  \"fields\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar objetivos y acciones de mi plan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{citizenAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "intervention-plans",
+                "{{interventionPlanId}}"
+              ]
+            },
+            "description": "Solo plan del titular autenticado. Incluye objetivos/acciones en orden original, fechas y estado calculado. PENDING: todas pendientes; COMPLETED: todas completadas; IN_PROGRESS: cualquier otra mezcla. No publica responsables ni información profesional. Guardar la acción elegida en interventionActionId. Ajeno o inexistente:404."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const required = [\"citizenAccessToken\",\"interventionPlanId\"];",
+                  "if (required.some(key => !pm.variables.get(key))) {",
+                  "  console.warn('Completar ' + required.join(', ') + '. Renovar JWT para incorporar permisos nuevos. Ver docs/postman/README.md.');",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  pm.test('Estructura pública sin responsables', () => {",
+                  "    pm.expect(Object.keys(body).sort()).to.deep.equal([\"id\",\"applicationId\",\"applicationNumber\",\"programId\",\"programName\",\"programEditionId\",\"programEditionName\",\"createdAt\",\"status\",\"objectives\"].sort());",
+                  "    const actions = [];",
+                  "    body.objectives.forEach(objective => {",
+                  "      pm.expect(Object.keys(objective).sort()).to.deep.equal(['id','description','actions'].sort());",
+                  "      objective.actions.forEach(action => {",
+                  "        pm.expect(Object.keys(action).sort()).to.deep.equal(['id','description','startDate','dueDate','status'].sort());",
+                  "        pm.expect(action.startDate <= action.dueDate).to.equal(true);",
+                  "        actions.push(action);",
+                  "      });",
+                  "    });",
+                  "    const expected = actions.every(a => a.status === 'PENDING') ? 'PENDING' : actions.every(a => a.status === 'COMPLETED') ? 'COMPLETED' : 'IN_PROGRESS';",
+                  "    pm.expect(body.status).to.equal(expected);",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Plan con objetivos y acciones acordados",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}"
+                  ]
+                },
+                "description": "Solo plan del titular autenticado. Incluye objetivos/acciones en orden original, fechas y estado calculado. PENDING: todas pendientes; COMPLETED: todas completadas; IN_PROGRESS: cualquier otra mezcla. No publica responsables ni información profesional. Guardar la acción elegida en interventionActionId. Ajeno o inexistente:404."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db01\",\n  \"applicationNumber\": 1024,\n  \"programId\": \"1c541b74-0620-4184-8578-717b27a34001\",\n  \"programName\": \"Acompañamiento social\",\n  \"programEditionId\": \"6115ab02-cac9-484e-a7c8-e0b4773ba001\",\n  \"programEditionName\": \"2026\",\n  \"createdAt\": \"2026-10-26T15:00:00Z\",\n  \"status\": \"IN_PROGRESS\",\n  \"objectives\": [\n    {\n      \"id\": \"788a50bc-ae99-4127-8799-b663e6030001\",\n      \"description\": \"Fortalecer la autonomía del ciudadano.\",\n      \"actions\": [\n        {\n          \"id\": \"56258771-f974-4515-b060-7750cb262001\",\n          \"description\": \"Acompañar el acceso a recursos municipales.\",\n          \"startDate\": \"2026-10-19\",\n          \"dueDate\": \"2026-11-19\",\n          \"status\": \"IN_PROGRESS\"\n        }\n      ]\n    }\n  ]\n}"
+            },
+            {
+              "name": "Plan PENDING",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}"
+                  ]
+                },
+                "description": "Solo plan del titular autenticado. Incluye objetivos/acciones en orden original, fechas y estado calculado. PENDING: todas pendientes; COMPLETED: todas completadas; IN_PROGRESS: cualquier otra mezcla. No publica responsables ni información profesional. Guardar la acción elegida en interventionActionId. Ajeno o inexistente:404."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db01\",\n  \"applicationNumber\": 1024,\n  \"programId\": \"1c541b74-0620-4184-8578-717b27a34001\",\n  \"programName\": \"Acompañamiento social\",\n  \"programEditionId\": \"6115ab02-cac9-484e-a7c8-e0b4773ba001\",\n  \"programEditionName\": \"2026\",\n  \"createdAt\": \"2026-10-26T15:00:00Z\",\n  \"status\": \"PENDING\",\n  \"objectives\": [\n    {\n      \"id\": \"788a50bc-ae99-4127-8799-b663e6030001\",\n      \"description\": \"Fortalecer la autonomía del ciudadano.\",\n      \"actions\": [\n        {\n          \"id\": \"56258771-f974-4515-b060-7750cb262001\",\n          \"description\": \"Acompañar el acceso a recursos municipales.\",\n          \"startDate\": \"2026-10-19\",\n          \"dueDate\": \"2026-11-19\",\n          \"status\": \"PENDING\"\n        }\n      ]\n    }\n  ]\n}"
+            },
+            {
+              "name": "Plan COMPLETED",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}"
+                  ]
+                },
+                "description": "Solo plan del titular autenticado. Incluye objetivos/acciones en orden original, fechas y estado calculado. PENDING: todas pendientes; COMPLETED: todas completadas; IN_PROGRESS: cualquier otra mezcla. No publica responsables ni información profesional. Guardar la acción elegida en interventionActionId. Ajeno o inexistente:404."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"f448cd2c-341a-46dc-9c42-a106ae864002\",\n  \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db01\",\n  \"applicationNumber\": 1024,\n  \"programId\": \"1c541b74-0620-4184-8578-717b27a34001\",\n  \"programName\": \"Acompañamiento social\",\n  \"programEditionId\": \"6115ab02-cac9-484e-a7c8-e0b4773ba001\",\n  \"programEditionName\": \"2026\",\n  \"createdAt\": \"2026-10-26T15:00:00Z\",\n  \"status\": \"COMPLETED\",\n  \"objectives\": [\n    {\n      \"id\": \"788a50bc-ae99-4127-8799-b663e6030001\",\n      \"description\": \"Fortalecer la autonomía del ciudadano.\",\n      \"actions\": [\n        {\n          \"id\": \"56258771-f974-4515-b060-7750cb262001\",\n          \"description\": \"Acompañar el acceso a recursos municipales.\",\n          \"startDate\": \"2026-10-19\",\n          \"dueDate\": \"2026-11-19\",\n          \"status\": \"COMPLETED\"\n        }\n      ]\n    }\n  ]\n}"
+            },
+            {
+              "name": "404 - INTERVENTION_PLAN_NOT_FOUND",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}"
+                  ]
+                },
+                "description": "Solo plan del titular autenticado. Incluye objetivos/acciones en orden original, fechas y estado calculado. PENDING: todas pendientes; COMPLETED: todas completadas; IN_PROGRESS: cualquier otra mezcla. No publica responsables ni información profesional. Guardar la acción elegida en interventionActionId. Ajeno o inexistente:404."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Plan inexistente o ajeno.\",\n  \"code\": \"INTERVENTION_PLAN_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/intervention-plans/00000000-0000-0000-0000-000000000000\",\n  \"fields\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar seguimientos habilitados de mi acción",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{citizenAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}/actions/{{interventionActionId}}/follow-ups?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "intervention-plans",
+                "{{interventionPlanId}}",
+                "actions",
+                "{{interventionActionId}}",
+                "follow-ups"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "applications:own:interventions:view. Solo publicaciones visibles y vigentes de la acción propia. Orden de secuencia original ascendente, sin exponerla ni contar registros privados/retirados. Nunca publica notes/result ni autores. Los seguimientos anteriores siguen privados hasta su publicación explícita."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const required = [\"citizenAccessToken\",\"interventionPlanId\",\"interventionActionId\"];",
+                  "if (required.some(key => !pm.variables.get(key))) {",
+                  "  console.warn('Completar ' + required.join(', ') + '. Renovar JWT para incorporar permisos nuevos. Ver docs/postman/README.md.');",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const body = pm.response.json();",
+                  "  pm.test('Solo totales visibles y mensaje coherente', () => {",
+                  "pm.expect(Object.keys(body).sort()).to.deep.equal(['content','page','size','totalElements','totalPages','message'].sort());",
+                  "pm.expect(body.message).to.equal(body.totalElements === 0 ? \"No hay seguimientos habilitados para tu visualización.\" : null);",
+                  "pm.expect(body.content).to.be.an('array');",
+                  "if (body.totalElements === 0) pm.expect(body.content).to.deep.equal([]);",
+                  "});",
+                  "  pm.test('Solo resumen publicado y datos públicos', () => body.content.forEach(item => {",
+                  "    pm.expect(Object.keys(item).sort()).to.deep.equal(['id','actionId','occurredOn','status','summary','publishedAt'].sort());",
+                  "    pm.expect(['IN_PROGRESS','COMPLETED']).to.include(item.status);",
+                  "    pm.expect(/(?:Z|\\+00:00)$/.test(item.publishedAt)).to.equal(true);",
+                  "  }));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Resumen expresamente habilitado",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}/actions/{{interventionActionId}}/follow-ups?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view. Solo publicaciones visibles y vigentes de la acción propia. Orden de secuencia original ascendente, sin exponerla ni contar registros privados/retirados. Nunca publica notes/result ni autores. Los seguimientos anteriores siguen privados hasta su publicación explícita."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"a2eb7672-00c3-4a96-9261-54da200bc002\",\n      \"actionId\": \"56258771-f974-4515-b060-7750cb262001\",\n      \"occurredOn\": \"2026-10-26\",\n      \"status\": \"IN_PROGRESS\",\n      \"summary\": \"Se acordó continuar el acompañamiento.\",\n      \"publishedAt\": \"2026-10-26T16:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            },
+            {
+              "name": "Sin publicaciones o todas retiradas",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}/actions/{{interventionActionId}}/follow-ups?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view. Solo publicaciones visibles y vigentes de la acción propia. Orden de secuencia original ascendente, sin exponerla ni contar registros privados/retirados. Nunca publica notes/result ni autores. Los seguimientos anteriores siguen privados hasta su publicación explícita."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 0,\n  \"totalPages\": 0,\n  \"message\": \"No hay seguimientos habilitados para tu visualización.\"\n}"
+            },
+            {
+              "name": "Página fuera de rango con publicaciones en otra página",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}/actions/{{interventionActionId}}/follow-ups?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view. Solo publicaciones visibles y vigentes de la acción propia. Orden de secuencia original ascendente, sin exponerla ni contar registros privados/retirados. Nunca publica notes/result ni autores. Los seguimientos anteriores siguen privados hasta su publicación explícita."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [],\n  \"page\": 9,\n  \"size\": 20,\n  \"totalElements\": 1,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            },
+            {
+              "name": "404 - INTERVENTION_ACTION_NOT_FOUND",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{citizenAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/intervention-plans/{{interventionPlanId}}/actions/{{interventionActionId}}/follow-ups?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "intervention-plans",
+                    "{{interventionPlanId}}",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:interventions:view. Solo publicaciones visibles y vigentes de la acción propia. Orden de secuencia original ascendente, sin exponerla ni contar registros privados/retirados. Nunca publica notes/result ni autores. Los seguimientos anteriores siguen privados hasta su publicación explícita."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Acción inexistente o ajena al plan.\",\n  \"code\": \"INTERVENTION_ACTION_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/intervention-plans/00000000-0000-0000-0000-000000000000/actions/00000000-0000-0000-0000-000000000000/follow-ups\",\n  \"fields\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Publicación ciudadana de seguimientos",
+      "description": "Actuación profesional separada y transaccional. Crear, corregir, retirar y republicar resumen sin cambiar el registro original. No hay publicación automática de seguimientos anteriores.",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{interventionAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Publicar corregir o volver a habilitar resumen ciudadano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{interventionAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "intervention-plan",
+                "actions",
+                "{{interventionActionId}}",
+                "follow-ups",
+                "{{interventionFollowUpId}}",
+                "citizen-publication"
+              ]
+            },
+            "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const required = [\"interventionAccessToken\",\"applicationId\",\"interventionActionId\",\"interventionFollowUpId\",\"interventionCitizenSummary\"];",
+                  "if (required.some(key => !pm.variables.get(key))) {",
+                  "  console.warn('Completar ' + required.join(', ') + '. Renovar JWT para incorporar permisos nuevos. Ver docs/postman/README.md.');",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Creación o actualización', () => pm.expect([200,201]).to.include(pm.response.code));",
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const body = pm.response.json();",
+                  "  pm.test('Publicación visible y resumen explícito', () => {",
+                  "    pm.expect(Object.keys(body).sort()).to.deep.equal(['id','summary','visible','publishedAt','updatedAt','updatedByUserId','updatedByUserName'].sort());",
+                  "    pm.expect(body.visible).to.equal(true);",
+                  "    pm.expect(body.summary).to.equal(String(pm.variables.get('interventionCitizenSummary')).trim());",
+                  "    pm.expect(/(?:Z|\\+00:00)$/.test(body.publishedAt)).to.equal(true);",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Primera publicación",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"104b77bc-e07b-47e1-a20d-69aa53c70001\",\n  \"summary\": \"Se acordó continuar el acompañamiento.\",\n  \"visible\": true,\n  \"publishedAt\": \"2026-10-26T16:00:00Z\",\n  \"updatedAt\": \"2026-10-26T16:00:00Z\",\n  \"updatedByUserId\": 12,\n  \"updatedByUserName\": \"Trabajador social\"\n}"
+            },
+            {
+              "name": "Mismo resumen visible sin cambios",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"104b77bc-e07b-47e1-a20d-69aa53c70001\",\n  \"summary\": \"Se acordó continuar el acompañamiento.\",\n  \"visible\": true,\n  \"publishedAt\": \"2026-10-26T16:00:00Z\",\n  \"updatedAt\": \"2026-10-26T16:00:00Z\",\n  \"updatedByUserId\": 12,\n  \"updatedByUserName\": \"Trabajador social\"\n}"
+            },
+            {
+              "name": "Corrección o republicación",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"id\": \"104b77bc-e07b-47e1-a20d-69aa53c70001\",\n  \"summary\": \"Se acordó una nueva orientación.\",\n  \"visible\": true,\n  \"publishedAt\": \"2026-10-26T17:00:00Z\",\n  \"updatedAt\": \"2026-10-26T17:00:00Z\",\n  \"updatedByUserId\": 12,\n  \"updatedByUserName\": \"Trabajador social\"\n}"
+            },
+            {
+              "name": "400 - INTERVENTION_PUBLICATION_INVALID_DATA",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Solo se admite summary de 1 a 2000 caracteres.\",\n  \"code\": \"INTERVENTION_PUBLICATION_INVALID_DATA\",\n  \"status\": 400,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "401 - AUTH_UNAUTHENTICATED",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Se requiere autenticación.\",\n  \"code\": \"AUTH_UNAUTHENTICATED\",\n  \"status\": 401,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "403 - AUTH_FORBIDDEN",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Permiso ausente del JWT o rol activo.\",\n  \"code\": \"AUTH_FORBIDDEN\",\n  \"status\": 403,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "404 - INTERVENTION_FOLLOW_UP_NOT_FOUND",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Seguimiento inexistente o ajeno a la acción.\",\n  \"code\": \"INTERVENTION_FOLLOW_UP_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "409 - INTERVENTION_PLAN_ASSIGNED_TO_ANOTHER_WORKER",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "applications:interventions:follow-ups:publish en JWT y base. Solo trabajador actualmente asignado y responsable del plan. Admite acciones completadas y casos rechazados/cerrados. Summary recortado de 1..2000. Primera publicación201; corrección/republicación200. Repetir mismo resumen visible devuelve200 sin fechas ni auditoría nueva. No enviar notes/result, visible, responsables o fechas. Cambiar interventionCitizenSummary para corregir, o repetir después del retiro para republicar.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"summary\": \"{{interventionCitizenSummary}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Solo el trabajador asignado y responsable puede realizar esta operación.\",\n  \"code\": \"INTERVENTION_PLAN_ASSIGNED_TO_ANOTHER_WORKER\",\n  \"status\": 409,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retirar visibilidad del resumen ciudadano",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{interventionAccessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "applications",
+                "{{applicationId}}",
+                "intervention-plan",
+                "actions",
+                "{{interventionActionId}}",
+                "follow-ups",
+                "{{interventionFollowUpId}}",
+                "citizen-publication"
+              ]
+            },
+            "description": "Mismo permiso y responsabilidad que publicar. Devuelve204 sin cuerpo. Conserva resumen y seguimiento profesional; desaparece de contenido y totales ciudadanos. Repetir, o retirar un seguimiento válido nunca publicado, es una operación sin cambios ni auditoría adicional. No elimina registros."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const required = [\"interventionAccessToken\",\"applicationId\",\"interventionActionId\",\"interventionFollowUpId\"];",
+                  "if (required.some(key => !pm.variables.get(key))) {",
+                  "  console.warn('Completar ' + required.join(', ') + '. Renovar JWT para incorporar permisos nuevos. Ver docs/postman/README.md.');",
+                  "  pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Retirada o ya no visible', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "response": [
+            {
+              "name": "Retirada o sin cambios",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "Mismo permiso y responsabilidad que publicar. Devuelve204 sin cuerpo. Conserva resumen y seguimiento profesional; desaparece de contenido y totales ciudadanos. Repetir, o retirar un seguimiento válido nunca publicado, es una operación sin cambios ni auditoría adicional. No elimina registros."
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": ""
+            },
+            {
+              "name": "404 - INTERVENTION_FOLLOW_UP_NOT_FOUND",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "Mismo permiso y responsabilidad que publicar. Devuelve204 sin cuerpo. Conserva resumen y seguimiento profesional; desaparece de contenido y totales ciudadanos. Repetir, o retirar un seguimiento válido nunca publicado, es una operación sin cambios ni auditoría adicional. No elimina registros."
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Seguimiento inexistente o ajeno.\",\n  \"code\": \"INTERVENTION_FOLLOW_UP_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "409 - INTERVENTION_PLAN_ASSIGNED_TO_ANOTHER_WORKER",
+              "originalRequest": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "{{interventionAccessToken}}",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/applications/{{applicationId}}/intervention-plan/actions/{{interventionActionId}}/follow-ups/{{interventionFollowUpId}}/citizen-publication",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "applications",
+                    "{{applicationId}}",
+                    "intervention-plan",
+                    "actions",
+                    "{{interventionActionId}}",
+                    "follow-ups",
+                    "{{interventionFollowUpId}}",
+                    "citizen-publication"
+                  ]
+                },
+                "description": "Mismo permiso y responsabilidad que publicar. Devuelve204 sin cuerpo. Conserva resumen y seguimiento profesional; desaparece de contenido y totales ciudadanos. Repetir, o retirar un seguimiento válido nunca publicado, es una operación sin cambios ni auditoría adicional. No elimina registros."
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Solo el trabajador asignado y responsable puede retirar.\",\n  \"code\": \"INTERVENTION_PLAN_ASSIGNED_TO_ANOTHER_WORKER\",\n  \"status\": 409,\n  \"timestamp\": \"2026-10-26T16:00:00Z\",\n  \"path\": \"/api/applications/00000000-0000-0000-0000-000000000000/intervention-plan/actions/00000000-0000-0000-0000-000000000000/follow-ups/00000000-0000-0000-0000-000000000000/citizen-publication\",\n  \"fields\": null\n}"
+            }
+          ]
+        }
+      ]
     }
   ],
   "auth": {
@@ -14115,6 +15848,12 @@
       "value": "",
       "type": "string",
       "description": "Último seguimiento creado durante esta ejecución."
+    },
+    {
+      "key": "interventionCitizenSummary",
+      "value": "Se acordó continuar el acompañamiento.",
+      "type": "string",
+      "description": "Resumen específico para el ciudadano, de 1 a 2000 caracteres. No copiar automáticamente notas ni resultados profesionales."
     }
   ]
 }

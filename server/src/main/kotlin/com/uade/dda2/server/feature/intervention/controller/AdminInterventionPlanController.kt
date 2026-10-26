@@ -24,14 +24,15 @@ class AdminInterventionPlanController(private val service: InterventionPlanServi
     @GetMapping
     @Operation(summary = "Consultar el plan y estados actuales de sus acciones", description =
         "Lectura profesional completa por permiso; no exige ser el trabajador asignado. Conserva orden de objetivos y acciones. " +
-        "Incluye ciudadano del caso, responsable y fecha UTC. No se incorpora a las respuestas ciudadanas.")
+        "Incluye ciudadano del caso, responsable y fecha UTC. La consulta ciudadana usa DTO propios y rutas separadas.")
     @ApiResponse(responseCode = "200", description = "Plan con estructura inicial y estados actuales.", useReturnTypeSchema = true)
     fun get(@PathVariable id: UUID): InterventionPlanResponse = service.get(id)
 
     @GetMapping("/actions/{actionId}/follow-ups")
     @Operation(summary = "Consultar seguimientos y resultados de una accion", description =
         "Historial inmutable en secuencia ascendente. Incluye estados anterior/resultante, fecha real, notas, resultado, autor " +
-        "y registro UTC. Una accion existente sin seguimientos devuelve []. Requiere permiso profesional de lectura.")
+        "y registro UTC. citizenPublication es null si nunca se publico; en otro caso conserva la version actual, incluso retirada, " +
+        "con resumen, visibilidad, ultima publicacion y autor/fecha de gestion. Una accion existente sin seguimientos devuelve []. Requiere permiso profesional de lectura.")
     @ApiResponse(responseCode = "200", description = "Historial completo de la accion.", useReturnTypeSchema = true)
     fun history(@PathVariable id: UUID, @PathVariable actionId: UUID): List<InterventionFollowUpResponse> = service.history(id, actionId)
 }

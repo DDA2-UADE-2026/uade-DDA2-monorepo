@@ -11,11 +11,11 @@ fun InterventionPlan.toResponse() = InterventionPlanResponse(
             action.startDate, action.dueDate, action.status, requireNotNull(responsible.id), responsible.name) }) },
 )
 
-fun InterventionFollowUp.toResponse(): InterventionFollowUpResponse {
+fun InterventionFollowUp.toResponse(publication: InterventionPublicationResponse? = null): InterventionFollowUpResponse {
     val plan = action.objective.plan
     return InterventionFollowUpResponse(requireNotNull(id), requireNotNull(plan.id), requireNotNull(plan.application.id),
         requireNotNull(plan.application.user.id), requireNotNull(action.objective.id), requireNotNull(action.id),
-        sequenceNumber, previousStatus, status, occurredOn, notes, result, requireNotNull(author.id), author.name, recordedAt)
+        sequenceNumber, previousStatus, status, occurredOn, notes, result, requireNotNull(author.id), author.name, recordedAt, publication)
 }
 
 fun InterventionPlan.toAuditSnapshot(): Map<String, Any?> = mapOf(

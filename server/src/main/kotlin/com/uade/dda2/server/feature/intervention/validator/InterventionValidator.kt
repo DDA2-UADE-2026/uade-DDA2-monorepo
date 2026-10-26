@@ -16,6 +16,8 @@ data class ValidatedInterventionFollowUp(val status: InterventionActionStatus, v
 
 @Component
 class InterventionValidator {
+    fun validatePublication(request: PublishInterventionFollowUpRequest): String =
+        text(request.summary, 2000, "El resumen publico", InterventionErrors::invalidPublication)
     fun validateActor(user: User?, principal: JwtPrincipal, permission: String): User {
         if (user == null || !user.active) throw UnauthorizedException("AUTH_UNAUTHENTICATED", "Usuario inexistente o inactivo.")
         val role = user.roles.firstOrNull { it.name == principal.activeRole }

@@ -73,6 +73,14 @@ class InterventionValidatorTest {
         action.status = InterventionActionStatus.COMPLETED
         assertFailsWith<ConflictException> { validator.validateFollowUp(follow(), action, null, today) }
     }
+    @Test fun `resumen publico se recorta exige texto y admite hasta dos mil caracteres`() {
+        assertEquals("Resumen", validator.validatePublication(PublishInterventionFollowUpRequest(" Resumen ")))
+        assertEquals(2000, validator.validatePublication(PublishInterventionFollowUpRequest("x".repeat(2000))).length)
+        listOf(null, "", " \n\t ", "x".repeat(2001)).forEach {
+            assertFailsWith<BadRequestException> { validator.validatePublication(PublishInterventionFollowUpRequest(it)) }
+        }
+    }
+
     @Test fun `responsable del plan debe seguir siendo trabajador asignado aun en caso cerrado`() {
         validator.validateCreation(application, user, true)
         validator.validateResponsibility(application, user, plan)

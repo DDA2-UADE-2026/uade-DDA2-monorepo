@@ -60,6 +60,15 @@ class OpenApiConfig {
             ModelConverters.getInstance()
                 .readAll(ErrorResponse::class.java)
                 .forEach { (name, schema) -> openApi.components.addSchemas(name, schema) }
+            // OpenAPI 3.1 requires a null branch for an optional referenced object.
+            openApi.components.schemas["InterventionFollowUpResponse"]?.properties?.set(
+                "citizenPublication",
+                Schema<Any>().description("Publicación actual para el ciudadano; null si nunca fue publicada. Incluye versiones retiradas solo para consulta profesional.")
+                    .anyOf(listOf(
+                        Schema<Any>().`$ref`("#/components/schemas/InterventionPublicationResponse"),
+                        Schema<Any>().apply { types = setOf("null") },
+                    )),
+            )
             openApi.paths?.forEach { (path, pathItem) ->
                 pathItem.readOperationsMap().forEach { (method, operation) ->
                     actuatorDescriptions[path]?.let { (summary, description) ->

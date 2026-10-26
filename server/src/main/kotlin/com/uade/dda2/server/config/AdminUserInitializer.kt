@@ -53,6 +53,7 @@ class AdminUserInitializer(
     companion object {
         // Keep in sync with the permission catalog in docs/database/init.sql.
         private val CITIZEN_PERMISSIONS = setOf(
+            "applications:own:interventions:view",
             "applications:own:benefits:view",
             "activities:own:view", "activities:own:enroll",
             "applications:own:create", "applications:own:view",
@@ -61,6 +62,7 @@ class AdminUserInitializer(
         )
 
         private val DEFAULT_PERMISSIONS = setOf(
+            "applications:own:interventions:view", "applications:interventions:follow-ups:publish",
             "applications:own:benefits:view",
             "permissions:view",
             "roles:view", "roles:create", "roles:edit", "roles:delete",

@@ -5,6 +5,8 @@ import com.uade.dda2.server.error.*
 object InterventionErrors {
     fun invalidPlan(message: String) = BadRequestException("INTERVENTION_PLAN_INVALID_DATA", message)
     fun invalidFollowUp(message: String) = BadRequestException("INTERVENTION_FOLLOW_UP_INVALID_DATA", message)
+    fun invalidPublication(message: String) = BadRequestException("INTERVENTION_PUBLICATION_INVALID_DATA", message)
+    fun followUpNotFound() = NotFoundException("INTERVENTION_FOLLOW_UP_NOT_FOUND", "Seguimiento inexistente o ajeno a la accion.")
     fun planNotFound() = NotFoundException("INTERVENTION_PLAN_NOT_FOUND", "La solicitud no tiene plan de intervencion.")
     fun actionNotFound() = NotFoundException("INTERVENTION_ACTION_NOT_FOUND", "Accion inexistente o ajena al plan.")
     fun alreadyExists() = ConflictException("INTERVENTION_PLAN_ALREADY_EXISTS", "La solicitud ya tiene un plan de intervencion.")

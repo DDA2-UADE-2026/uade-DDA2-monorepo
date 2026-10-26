@@ -2,7 +2,7 @@
 
 Cada solicitud representa un caso y permite un único plan de intervención. El ciudadano se obtiene de la solicitud; no se elige otro titular al crear el plan.
 
-El trabajador asignado crea el plan y registra todos sus seguimientos. La consulta completa está disponible para personal con permiso profesional de lectura, aunque no sea el responsable. Las respuestas ciudadanas conservan su contrato y no incluyen planes ni información profesional.
+El trabajador asignado crea el plan y registra todos sus seguimientos. La consulta completa está disponible para personal con permiso profesional de lectura, aunque no sea el responsable. La [consulta ciudadana propia](citizen-intervention-plans.md) usa rutas y respuestas separadas: muestra objetivos y acciones acordados, pero solo muestra seguimientos cuando el responsable publica un resumen específico. Las respuestas existentes de solicitudes conservan su contrato.
 
 ## Creación del plan
 
@@ -73,7 +73,7 @@ Cuerpo de seguimiento:
 
 No se admiten campos adicionales en ningún nivel. Los identificadores, ciudadano, responsable/autor y fechas de registro los obtiene el servidor. El detalle contiene identificadores del plan, solicitud, ciudadano, objetivos y acciones; responsable, creación UTC, descripciones, vigencias previstas y estados actuales.
 
-El historial agrega secuencia, estados anterior/resultante, fecha real, notas, resultado, autor y registro UTC. Una acción existente sin seguimientos devuelve `[]`.
+El historial agrega secuencia, estados anterior/resultante, fecha real, notas, resultado, autor y registro UTC. También incluye `citizenPublication`, null si nunca se publicó, o la versión actual con resumen, visibilidad y datos de última gestión, incluso retirada. Una acción existente sin seguimientos devuelve `[]`. Publicar, corregir o retirar ese resumen es una actuación separada: no modifica el registro profesional original.
 
 | Código | Situación |
 | --- | --- |

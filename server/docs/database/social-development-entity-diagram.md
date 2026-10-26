@@ -138,6 +138,16 @@ erDiagram
         boolean fulfilled
     }
 
+    INTERVENTION_FOLLOW_UP_PUBLICATION {
+        uuid id PK
+        uuid follow_up_id FK,UK
+        varchar summary
+        boolean visible
+        timestamptz published_at
+        timestamptz updated_at
+        bigint updated_by_user_id FK
+    }
+
     PROGRAM_BENEFIT {
         uuid id PK
         uuid program_edition_id FK
@@ -210,6 +220,8 @@ erDiagram
     INTERVENTION_OBJECTIVE ||--|{ INTERVENTION_ACTION : propone
     INTERVENTION_ACTION ||--o{ INTERVENTION_FOLLOW_UP : registra
     USERS ||--o{ INTERVENTION_FOLLOW_UP : autor
+    INTERVENTION_FOLLOW_UP ||--o| INTERVENTION_FOLLOW_UP_PUBLICATION : publica_resumen
+    USERS ||--o{ INTERVENTION_FOLLOW_UP_PUBLICATION : ultima_gestion
     APPLICATION ||--o{ BENEFIT_GRANT : recibe
     PROGRAM_EDITION ||--o{ PROGRAM_BENEFIT : ofrece
     PROGRAM_BENEFIT ||--o{ BENEFIT_GRANT : origina
@@ -232,6 +244,8 @@ erDiagram
 ```
 
 ## Decisiones representadas
+
+- El ciudadano consulta exclusivamente sus planes y su estructura acordada. El estado del plan se calcula desde sus acciones, sin columna nueva. Solo se proyectan seguimientos con publicación visible; notas y resultados originales permanecen privados. La publicación es opcional, única por seguimiento y conserva únicamente el resumen actual, incluso retirado. Publicar, corregir o retirar se serializa con solicitud, plan, acción y seguimiento; la auditoría no copia textos. La migración no publica registros anteriores.
 
 - Cada solicitud evaluada admite un plan de intervención, incluso rechazada o cerrada. El ciudadano se deriva del caso. Objetivos, acciones, responsable y fechas iniciales se conservan; solo cambia el estado de las acciones mediante seguimientos inmutables. Completar acciones no modifica estados ni cupos de la solicitud.
 - Cada otorgamiento conserva una copia del beneficio configurado, su vigencia, estado inicial `ACTIVE` y administrativo responsable. La unicidad por solicitud y beneficio evita duplicados; no vuelve a ocupar el cupo reservado al aprobar.
