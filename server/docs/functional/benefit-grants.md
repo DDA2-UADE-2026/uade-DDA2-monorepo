@@ -37,7 +37,7 @@ La respuesta contiene `id`, `applicationId`, `userId`, `programBenefitId`, `bene
 | `404` | Solicitud inexistente, beneficio inexistente o perteneciente a otra edición. |
 | `409` | Solicitud no aprobada, edición no activa, beneficio ya otorgado o incompatibilidad. |
 
-La consulta ciudadana de solicitudes conserva su contrato: no incorpora importes, otorgamientos ni responsables. Esta historia agrega consulta solo administrativa.
+La consulta ciudadana de solicitudes conserva su contrato: no incorpora importes, otorgamientos ni responsables. El [listado general de beneficios propios](citizen-benefit-grants.md) permite al titular consultar por separado estado, vigencia, descripción y monto, sin responsables ni historial administrativo.
 
 ## Conservación y límites
 

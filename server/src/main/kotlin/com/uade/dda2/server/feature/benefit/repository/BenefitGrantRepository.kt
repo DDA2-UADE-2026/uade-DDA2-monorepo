@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Lock
 import jakarta.persistence.LockModeType
 import org.springframework.data.repository.query.Param
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Page
 import com.uade.dda2.server.feature.benefit.entity.BenefitGrantStatus
 import java.time.LocalDate
 import java.util.UUID
@@ -21,6 +22,9 @@ interface BenefitGrantRepository : JpaRepository<BenefitGrant, UUID> {
     fun countUnfinished(@Param("applicationId") applicationId: UUID): Long
     @EntityGraph(attributePaths = ["application.user", "assignedBy"])
     fun findAllByApplicationIdOrderByAssignedAtAscIdAsc(applicationId: UUID): List<BenefitGrant>
+    // Fetch only the case/program context. Catalog values, actors and history are not needed by the citizen mapper.
+    @EntityGraph(attributePaths = ["application.programEdition.program"])
+    fun findAllByApplicationUserId(userId: Long, pageable: Pageable): Page<BenefitGrant>
     fun existsByApplicationIdAndProgramBenefitId(applicationId: UUID, programBenefitId: UUID): Boolean
     fun existsByProgramBenefitId(programBenefitId: UUID): Boolean
     fun existsByAssignedById(userId: Long): Boolean

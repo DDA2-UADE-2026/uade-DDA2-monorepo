@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.io.File
 import tools.jackson.databind.json.JsonMapper
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -39,6 +40,19 @@ class OpenApiDocsGenerationTest {
         assertContains((0 until states.size()).map { states[it].stringValue() }, "EXPIRED")
         assertContains((0 until actions.size()).map { actions[it].stringValue() }, "EXPIRED")
         assertContains((0 until responsibleTypes.size()).map { responsibleTypes[it].stringValue() }, "null")
+        val citizenProperties = schemas.get("CitizenBenefitGrantResponse").get("properties")
+        assertEquals(14, citizenProperties.size())
+        val citizenStates = citizenProperties.get("status").get("enum")
+        assertEquals(setOf("ACTIVE", "SUSPENDED", "FINALIZED", "EXPIRED"),
+            (0 until citizenStates.size()).map { citizenStates[it].stringValue() }.toSet())
+        for (field in listOf("description", "amount")) {
+            val nullableTypes = citizenProperties.get(field).get("type")
+            assertContains((0 until nullableTypes.size()).map { nullableTypes[it].stringValue() }, "null")
+        }
+        val messageTypes = schemas.get("CitizenBenefitGrantListResponse").get("properties").get("message").get("type")
+        assertContains((0 until messageTypes.size()).map { messageTypes[it].stringValue() }, "null")
+        val parameters = json.readTree(spec).get("paths").get("/api/benefit-grants").get("get").get("parameters")
+        assertEquals(setOf("page", "size"), (0 until parameters.size()).map { parameters[it].get("name").stringValue() }.toSet())
         val outputDir = File("build/openapi")
         outputDir.mkdirs()
         File(outputDir, "openapi.json").writeText(spec)

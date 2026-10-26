@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles. Incluye resolución de solicitudes, otorgamiento y ciclo de vida de beneficios, planes de intervención y seguimientos. Preparación y permisos: docs/postman/README.md. Las decisiones alternativas se ejecutan individualmente.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles. Incluye resolución de solicitudes, otorgamiento y ciclo de vida de beneficios, planes de intervención y seguimientos. Preparación y permisos: docs/postman/README.md. Las decisiones alternativas se ejecutan individualmente. Incluye la consulta general de beneficios propios del ciudadano, con estado, vigencia, descripción y monto.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -13138,6 +13138,497 @@
               "cookie": [],
               "_postman_previewlanguage": "json",
               "body": "{\n  \"message\": \"La solicitud no tiene plan de intervención.\",\n  \"code\": \"INTERVENTION_PLAN_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-19T17:00:00Z\",\n  \"path\": \"/api/admin/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/intervention-plan/actions/a05ba1ac-c1cf-467e-9249-7841f20f0cdf/follow-ups\",\n  \"fields\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Beneficios propios del ciudadano",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{citizenAccessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "description": "Listado general paginado de beneficios propios, sin seleccionar titular ni solicitud. Usar JWT operativo con applications:own:benefits:view vigente en rol activo y base de datos. ADMIN y CIUDADANO reciben inicialmente el permiso, pero siempre consultan solo sus propios beneficios. Renovar el token después de incorporar el permiso. Incluye ejemplos de los cuatro estados, monto nulo, ausencia de beneficios y página fuera de rango. Las tres peticiones son de solo lectura; la última espera 400.",
+      "item": [
+        {
+          "name": "Consultar mis beneficios asignados",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('citizenAccessToken')) {",
+                  "    console.warn('Configurar citizenAccessToken con el permiso applications:own:benefits:view vigente.');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    pm.test('Pagina ciudadana y mensaje coherentes', () => {",
+                  "        pm.expect(Object.keys(body).sort()).to.deep.equal(['content', 'page', 'size', 'totalElements', 'totalPages', 'message'].sort());",
+                  "        pm.expect(body.content).to.be.an('array');",
+                  "        pm.expect(body.totalElements).to.be.a('number');",
+                  "        pm.expect(body.message).to.equal(body.totalElements === 0 ? 'No tenés beneficios asignados.' : null);",
+                  "        if (body.totalElements === 0) pm.expect(body.content).to.deep.equal([]);",
+                  "    });",
+                  "    pm.test('Solo datos ciudadanos del otorgamiento', () => {",
+                  "        const fields = ['id', 'applicationId', 'applicationNumber', 'programBenefitId', 'programId', 'programName', 'programEditionId',",
+                  "            'programEditionName', 'benefitType', 'description', 'amount', 'status', 'startDate', 'endDate'].sort();",
+                  "        body.content.forEach(item => {",
+                  "            pm.expect(Object.keys(item).sort()).to.deep.equal(fields);",
+                  "            pm.expect(['ACTIVE', 'SUSPENDED', 'FINALIZED', 'EXPIRED']).to.include(item.status);",
+                  "            pm.expect(item.startDate <= item.endDate).to.equal(true);",
+                  "            pm.expect(item.description === null || typeof item.description === 'string').to.equal(true);",
+                  "            pm.expect(item.amount === null || typeof item.amount === 'number').to.equal(true);",
+                  "        });",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/benefit-grants?page=0&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "benefit-grants"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "applications:own:benefits:view. Titular obtenido del JWT o sesión; no depende de applicationId ni permite seleccionar otro usuario. Incluye todos sus casos y ACTIVE/SUSPENDED/FINALIZED/EXPIRED, incluso solicitudes cerradas y ediciones inactivas. Datos copiados al otorgar, estado y vigencia persistidos. Orden assignedAt/id descendente. No expone responsables, motivos ni historial. Descripción y monto pueden ser null. Si no hay otorgamientos, devuelve mensaje informativo; los cambios administrativos aparecen al volver a consultar. El GET no dispara vencimientos ni modifica datos."
+          },
+          "response": [
+            {
+              "name": "Beneficios propios con importe y monto nulo",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:benefits:view. Titular obtenido del JWT o sesión; no depende de applicationId ni permite seleccionar otro usuario. Incluye todos sus casos y ACTIVE/SUSPENDED/FINALIZED/EXPIRED, incluso solicitudes cerradas y ediciones inactivas. Datos copiados al otorgar, estado y vigencia persistidos. Orden assignedAt/id descendente. No expone responsables, motivos ni historial. Descripción y monto pueden ser null. Si no hay otorgamientos, devuelve mensaje informativo; los cambios administrativos aparecen al volver a consultar. El GET no dispara vencimientos ni modifica datos."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3cb52e5b-d02b-4894-a91e-32f9a8213888\",\n      \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n      \"applicationNumber\": 15432,\n      \"programBenefitId\": \"750e8400-e29b-41d4-a716-446655440002\",\n      \"programId\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"programName\": \"Apoyo alimentario\",\n      \"programEditionId\": \"650e8400-e29b-41d4-a716-446655440001\",\n      \"programEditionName\": \"Edicion 2026\",\n      \"benefitType\": \"FOOD_ASSISTANCE\",\n      \"description\": \"Asistencia alimentaria mensual.\",\n      \"amount\": 25000,\n      \"status\": \"ACTIVE\",\n      \"startDate\": \"2026-10-01\",\n      \"endDate\": \"2026-12-31\"\n    },\n    {\n      \"id\": \"80a0b155-c17f-4e03-b7ac-47ad8659d076\",\n      \"applicationId\": \"aff51e91-1992-495c-a094-616f915485ba\",\n      \"applicationNumber\": 15431,\n      \"programBenefitId\": \"9e82457c-df91-4945-bc80-251f14b65c72\",\n      \"programId\": \"2c14b4de-e04d-4800-92ec-12710f82ef55\",\n      \"programName\": \"Apoyo habitacional\",\n      \"programEditionId\": \"ec136809-2e54-43f0-b609-c44677e9fbdb\",\n      \"programEditionName\": \"Edicion 2026\",\n      \"benefitType\": \"TAX_EXEMPTION\",\n      \"description\": null,\n      \"amount\": null,\n      \"status\": \"FINALIZED\",\n      \"startDate\": \"2026-09-01\",\n      \"endDate\": \"2026-09-30\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 2,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            },
+            {
+              "name": "Beneficios suspendidos y vencidos",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:benefits:view. Titular obtenido del JWT o sesión; no depende de applicationId ni permite seleccionar otro usuario. Incluye todos sus casos y ACTIVE/SUSPENDED/FINALIZED/EXPIRED, incluso solicitudes cerradas y ediciones inactivas. Datos copiados al otorgar, estado y vigencia persistidos. Orden assignedAt/id descendente. No expone responsables, motivos ni historial. Descripción y monto pueden ser null. Si no hay otorgamientos, devuelve mensaje informativo; los cambios administrativos aparecen al volver a consultar. El GET no dispara vencimientos ni modifica datos."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [\n    {\n      \"id\": \"3cb52e5b-d02b-4894-a91e-32f9a8213888\",\n      \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n      \"applicationNumber\": 15432,\n      \"programBenefitId\": \"750e8400-e29b-41d4-a716-446655440002\",\n      \"programId\": \"550e8400-e29b-41d4-a716-446655440000\",\n      \"programName\": \"Apoyo alimentario\",\n      \"programEditionId\": \"650e8400-e29b-41d4-a716-446655440001\",\n      \"programEditionName\": \"Edicion 2026\",\n      \"benefitType\": \"FOOD_ASSISTANCE\",\n      \"description\": \"Asistencia alimentaria mensual.\",\n      \"amount\": 25000,\n      \"status\": \"SUSPENDED\",\n      \"startDate\": \"2026-10-01\",\n      \"endDate\": \"2026-12-31\"\n    },\n    {\n      \"id\": \"80a0b155-c17f-4e03-b7ac-47ad8659d076\",\n      \"applicationId\": \"aff51e91-1992-495c-a094-616f915485ba\",\n      \"applicationNumber\": 15431,\n      \"programBenefitId\": \"9e82457c-df91-4945-bc80-251f14b65c72\",\n      \"programId\": \"2c14b4de-e04d-4800-92ec-12710f82ef55\",\n      \"programName\": \"Apoyo habitacional\",\n      \"programEditionId\": \"ec136809-2e54-43f0-b609-c44677e9fbdb\",\n      \"programEditionName\": \"Edicion 2026\",\n      \"benefitType\": \"TAX_EXEMPTION\",\n      \"description\": null,\n      \"amount\": null,\n      \"status\": \"EXPIRED\",\n      \"startDate\": \"2026-09-01\",\n      \"endDate\": \"2026-09-30\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 2,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            },
+            {
+              "name": "Sin beneficios asignados",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:benefits:view. Titular obtenido del JWT o sesión; no depende de applicationId ni permite seleccionar otro usuario. Incluye todos sus casos y ACTIVE/SUSPENDED/FINALIZED/EXPIRED, incluso solicitudes cerradas y ediciones inactivas. Datos copiados al otorgar, estado y vigencia persistidos. Orden assignedAt/id descendente. No expone responsables, motivos ni historial. Descripción y monto pueden ser null. Si no hay otorgamientos, devuelve mensaje informativo; los cambios administrativos aparecen al volver a consultar. El GET no dispara vencimientos ni modifica datos."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [],\n  \"page\": 0,\n  \"size\": 20,\n  \"totalElements\": 0,\n  \"totalPages\": 0,\n  \"message\": \"No tenés beneficios asignados.\"\n}"
+            },
+            {
+              "name": "401 - AUTH_UNAUTHENTICATED",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:benefits:view. Titular obtenido del JWT o sesión; no depende de applicationId ni permite seleccionar otro usuario. Incluye todos sus casos y ACTIVE/SUSPENDED/FINALIZED/EXPIRED, incluso solicitudes cerradas y ediciones inactivas. Datos copiados al otorgar, estado y vigencia persistidos. Orden assignedAt/id descendente. No expone responsables, motivos ni historial. Descripción y monto pueden ser null. Si no hay otorgamientos, devuelve mensaje informativo; los cambios administrativos aparecen al volver a consultar. El GET no dispara vencimientos ni modifica datos."
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"Usuario inexistente o inactivo.\",\n  \"code\": \"AUTH_UNAUTHENTICATED\",\n  \"status\": 401,\n  \"timestamp\": \"2026-10-26T19:00:00Z\",\n  \"path\": \"/api/benefit-grants\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "403 - AUTH_FORBIDDEN",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=0&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "applications:own:benefits:view. Titular obtenido del JWT o sesión; no depende de applicationId ni permite seleccionar otro usuario. Incluye todos sus casos y ACTIVE/SUSPENDED/FINALIZED/EXPIRED, incluso solicitudes cerradas y ediciones inactivas. Datos copiados al otorgar, estado y vigencia persistidos. Orden assignedAt/id descendente. No expone responsables, motivos ni historial. Descripción y monto pueden ser null. Si no hay otorgamientos, devuelve mensaje informativo; los cambios administrativos aparecen al volver a consultar. El GET no dispara vencimientos ni modifica datos."
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"El rol activo no esta autorizado para esta operacion.\",\n  \"code\": \"AUTH_FORBIDDEN\",\n  \"status\": 403,\n  \"timestamp\": \"2026-10-26T19:00:00Z\",\n  \"path\": \"/api/benefit-grants\",\n  \"fields\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Consultar la pagina siguiente de mis beneficios",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('citizenAccessToken')) {",
+                  "    console.warn('Configurar citizenAccessToken con el permiso applications:own:benefits:view vigente.');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "    const body = pm.response.json();",
+                  "    pm.test('Pagina ciudadana y mensaje coherentes', () => {",
+                  "        pm.expect(Object.keys(body).sort()).to.deep.equal(['content', 'page', 'size', 'totalElements', 'totalPages', 'message'].sort());",
+                  "        pm.expect(body.content).to.be.an('array');",
+                  "        pm.expect(body.totalElements).to.be.a('number');",
+                  "        pm.expect(body.message).to.equal(body.totalElements === 0 ? 'No tenés beneficios asignados.' : null);",
+                  "        if (body.totalElements === 0) pm.expect(body.content).to.deep.equal([]);",
+                  "    });",
+                  "    pm.test('Solo datos ciudadanos del otorgamiento', () => {",
+                  "        const fields = ['id', 'applicationId', 'applicationNumber', 'programBenefitId', 'programId', 'programName', 'programEditionId',",
+                  "            'programEditionName', 'benefitType', 'description', 'amount', 'status', 'startDate', 'endDate'].sort();",
+                  "        body.content.forEach(item => {",
+                  "            pm.expect(Object.keys(item).sort()).to.deep.equal(fields);",
+                  "            pm.expect(['ACTIVE', 'SUSPENDED', 'FINALIZED', 'EXPIRED']).to.include(item.status);",
+                  "            pm.expect(item.startDate <= item.endDate).to.equal(true);",
+                  "            pm.expect(item.description === null || typeof item.description === 'string').to.equal(true);",
+                  "            pm.expect(item.amount === null || typeof item.amount === 'number').to.equal(true);",
+                  "        });",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/benefit-grants?page=1&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "benefit-grants"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Mismo titular y permiso. Si la página solicitada está fuera de rango, content=[] conserva los totales reales y message=null cuando existen beneficios. Si el titular no tiene ninguno, el mensaje informativo sigue aplicando."
+          },
+          "response": [
+            {
+              "name": "Pagina fuera de rango, con otorgamientos en otra pagina",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=1&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Mismo titular y permiso. Si la página solicitada está fuera de rango, content=[] conserva los totales reales y message=null cuando existen beneficios. Si el titular no tiene ninguno, el mensaje informativo sigue aplicando."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"content\": [],\n  \"page\": 1,\n  \"size\": 20,\n  \"totalElements\": 2,\n  \"totalPages\": 1,\n  \"message\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Rechazar pagina negativa de beneficios propios",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('citizenAccessToken')) {",
+                  "    console.warn('Configurar citizenAccessToken con el permiso applications:own:benefits:view vigente.');",
+                  "    pm.execution.skipRequest();",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', () => pm.response.to.have.status(400));",
+                  "if (pm.response.code === 400) pm.test('Paginación inválida', () => pm.expect(pm.response.json().code).to.equal('VALIDATION_ERROR'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/benefit-grants?page=-1&size=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "benefit-grants"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "-1"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Prueba negativa de solo lectura. Con citizenAccessToken autorizado devuelve 400 VALIDATION_ERROR. También son inválidos size=0, size>100 y valores de página/tamaño no enteros."
+          },
+          "response": [
+            {
+              "name": "400 - VALIDATION_ERROR",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/benefit-grants?page=-1&size=20",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "benefit-grants"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "-1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                },
+                "description": "Prueba negativa de solo lectura. Con citizenAccessToken autorizado devuelve 400 VALIDATION_ERROR. También son inválidos size=0, size>100 y valores de página/tamaño no enteros."
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"La validación falló.\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"status\": 400,\n  \"timestamp\": \"2026-10-26T19:00:00Z\",\n  \"path\": \"/api/benefit-grants\",\n  \"fields\": null\n}"
             }
           ]
         }

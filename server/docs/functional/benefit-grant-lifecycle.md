@@ -69,7 +69,7 @@ El historial inmutable comienza con `ASSIGNED` y agrega `RENEWED`, `SUSPENDED`, 
 
 La asignación inicial no tiene motivo ni estado previo. Para otorgamientos anteriores a esta historia, la migración reconstruye solamente esa asignación conocida con sus datos originales; no inventa cambios ni motivos.
 
-Las consultas administrativas existentes muestran la vigencia y el estado actual. Las respuestas ciudadanas mantienen su estructura y no exponen otorgamientos, motivos ni historial.
+Las consultas administrativas existentes muestran la vigencia y el estado actual. El [listado de beneficios propios](citizen-benefit-grants.md) refleja esos cambios para el titular sin exponer motivos, responsables ni historial. Las respuestas existentes de solicitudes mantienen su estructura.
 
 ## Consistencia y límites
 

@@ -56,6 +56,7 @@ class AdminUserInitializerTest {
         assertEquals(setOf("ADMIN", "CIUDADANO"), admin.roles.map { it.name }.toSet())
         assertTrue(admin.roles.first { it.name == "CIUDADANO" }.permissions.any { it.name == "activities:own:view" })
         assertTrue(admin.roles.first { it.name == "ADMIN" }.permissions.any { it.name == "users:view" })
+        assertTrue(admin.roles.all { role -> role.permissions.any { it.name == "applications:own:benefits:view" } })
         val originalHash = admin.passwordHash
 
         initializer.run(DefaultApplicationArguments())

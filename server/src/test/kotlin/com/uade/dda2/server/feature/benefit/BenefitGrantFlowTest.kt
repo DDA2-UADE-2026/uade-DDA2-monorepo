@@ -5,6 +5,11 @@ import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.auth.entity.*
 import com.uade.dda2.server.feature.auth.repository.*
 import com.uade.dda2.server.feature.benefit.dto.response.BenefitGrantResponse
+import com.uade.dda2.server.feature.benefit.dto.response.CitizenBenefitGrantListResponse
+import com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantService
+import com.uade.dda2.server.feature.benefit.service.OWN_BENEFIT_VIEW_PERMISSION
+import jakarta.persistence.EntityManagerFactory
+import org.hibernate.SessionFactory
 import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
 import com.uade.dda2.server.feature.benefit.entity.BenefitGrantStatus
 import com.uade.dda2.server.feature.benefit.service.BenefitGrantExpirationService
@@ -82,6 +87,7 @@ class BenefitGrantFlowTest {
     @Autowired lateinit var transactions: PlatformTransactionManager
     @Autowired lateinit var jdbc: JdbcTemplate
     @Autowired lateinit var expiration: BenefitGrantExpirationService
+    @Autowired lateinit var entityManagerFactory: EntityManagerFactory
     @MockitoBean lateinit var clock: Clock
 
     companion object {
@@ -113,7 +119,7 @@ class BenefitGrantFlowTest {
             permission("applications:management:resolve"),
             permission("programs:management:edit"), permission("programs:management:create"), permission("users:delete"))))
         val actor = users.saveAndFlush(User(name = "Administrativo", email = "admin@example.com", roles = mutableSetOf(role)))
-        val citizenRole = roles.save(Role(name = "CIUDADANO_${UUID.randomUUID()}", permissions = mutableSetOf(permission("applications:own:view"))))
+        val citizenRole = roles.save(Role(name = "CIUDADANO_${UUID.randomUUID()}", permissions = mutableSetOf(permission("applications:own:view"), permission(OWN_BENEFIT_VIEW_PERMISSION))))
         val applicant = if (applicantId == null) users.saveAndFlush(User(name = "Titular", email = "citizen@example.com", roles = mutableSetOf(citizenRole)))
             else users.findById(applicantId).orElseThrow()
         val worker = users.saveAndFlush(User(name = "Evaluador", email = "worker@example.com"))
@@ -1146,6 +1152,228 @@ class BenefitGrantFlowTest {
         assertEquals(1, result.first)
         assertTrue(result.second.response.status in listOf(201, 409))
         assertEquals(if (result.second.response.status == 201) 1 else 0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+    }
+
+    private fun ownGrants(token: String? = f.citizenToken, query: String = ""): MvcResult {
+        val request = get("/api/benefit-grants$query")
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+    private fun ownResponse(result: MvcResult): CitizenBenefitGrantListResponse {
+        expect(result, 200)
+        return json.readValue(result.response.contentAsString, CitizenBenefitGrantListResponse::class.java)
+    }
+
+    @Test fun `listado propio aisla titulares agrega solicitudes y reconoce otorgamiento sobre solicitud asistida`() {
+        val first = assigned()
+        val other = fixture()
+        val alienResult = assign(other)
+        expect(alienResult, 201)
+        val samePerson = fixture(applicantId = f.applicantId)
+        jdbc.update("update application set registered_by_user_id=? where id=?", samePerson.actorId, samePerson.applicationId)
+        val secondResult = assign(samePerson)
+        expect(secondResult, 201)
+        val second = response(secondResult)
+        val own = ownResponse(ownGrants())
+        assertEquals(setOf(first.id, second.id), own.content.map { it.id }.toSet())
+        assertEquals(2L, own.totalElements)
+        assertNull(own.message)
+        assertEquals(setOf(f.programId, samePerson.programId), own.content.map { it.programId }.toSet())
+        assertEquals(setOf(response(alienResult).id), ownResponse(ownGrants(other.citizenToken)).content.map { it.id }.toSet())
+        val manipulated = ownResponse(ownGrants(query = "?userId=${other.applicantId}&citizenId=${other.applicantId}&applicationId=${other.applicationId}"))
+        assertEquals(own.content.map { it.id }.toSet(), manipulated.content.map { it.id }.toSet())
+        val serialized = json.readValue(ownGrants().response.contentAsString, Map::class.java)
+        assertEquals(setOf("content", "page", "size", "totalElements", "totalPages", "message"), serialized.keys)
+        (serialized["content"] as List<*>).forEach { row ->
+            assertEquals(setOf("id", "applicationId", "applicationNumber", "programBenefitId", "programId", "programName", "programEditionId",
+                "programEditionName", "benefitType", "description", "amount", "status", "startDate", "endDate"), (row as Map<*, *>).keys)
+        }
+    }
+
+    @Test fun `renovar suspender finalizar y vencer se reflejan sin perder registros de casos cerrados`() {
+        val first = assigned()
+        assertEquals(BenefitGrantStatus.ACTIVE, ownResponse(ownGrants()).content.single().status)
+        expect(change(first.id, "suspend"), 200)
+        assertEquals(BenefitGrantStatus.SUSPENDED, ownResponse(ownGrants()).content.single().status)
+        expect(change(first.id, "renew", renewal()), 200)
+        val renewed = ownResponse(ownGrants()).content.single()
+        assertEquals(BenefitGrantStatus.ACTIVE, renewed.status)
+        assertEquals(today.plusDays(15), renewed.endDate)
+        assertEquals(first.startDate, renewed.startDate)
+        expect(change(first.id, "finalize"), 200)
+        assertEquals(ApplicationStatus.CLOSED, applications.findById(f.applicationId).orElseThrow().status)
+        tx { editions.findById(f.editionId).orElseThrow().status = ProgramEditionStatus.CLOSED }
+        assertEquals(BenefitGrantStatus.FINALIZED, ownResponse(ownGrants()).content.single().status)
+        val samePerson = fixture(applicantId = f.applicantId)
+        val nextResult = assign(samePerson, content = body(samePerson.benefitId, end = today))
+        expect(nextResult, 201)
+        val next = response(nextResult)
+        overdue(next.id)
+        // GET returns the stored status; only the expiration service changes it.
+        assertEquals(BenefitGrantStatus.ACTIVE, ownResponse(ownGrants()).content.first { it.id == next.id }.status)
+        assertEquals(1, expiration.expireApplication(samePerson.applicationId))
+        val ended = ownResponse(ownGrants())
+        assertEquals(setOf(BenefitGrantStatus.FINALIZED, BenefitGrantStatus.EXPIRED), ended.content.map { it.status }.toSet())
+        assertEquals(today.minusDays(1), ended.content.first { it.id == next.id }.endDate)
+    }
+
+    @Test fun `consulta propia usa copias del otorgamiento y admite descripcion y monto nulos`() {
+        val original = assigned()
+        expect(updateCatalog(), 200)
+        val item = ownResponse(ownGrants()).content.single()
+        assertEquals(original.benefitType, item.benefitType)
+        assertEquals(original.description, item.description)
+        assertEquals(original.amount, item.amount)
+        val secondBenefit = addBenefit()
+        tx { benefits.findById(secondBenefit).orElseThrow().also { it.description = null; it.amount = null } }
+        assigned(secondBenefit)
+        val nullable = ownResponse(ownGrants()).content.first { it.programBenefitId == secondBenefit }
+        assertNull(nullable.description)
+        assertNull(nullable.amount)
+    }
+
+    @Test fun `sin solicitudes o sin otorgamientos devuelve pagina vacia y mensaje sin fabricar beneficios`() {
+        val without = tx {
+            val citizen = users.findByIdWithRoles(f.applicantId)!!
+            val user = users.saveAndFlush(User(name = "Sin solicitudes", roles = citizen.roles.toMutableSet()))
+            jwt.createToken(user, citizen.roles.first())
+        }
+        for (token in listOf(f.citizenToken, without)) {
+            val result = ownResponse(ownGrants(token))
+            assertTrue(result.content.isEmpty())
+            assertEquals(0L, result.totalElements)
+            assertEquals(0, result.totalPages)
+            assertEquals(0, result.page)
+            assertEquals(20, result.size)
+            assertEquals(CitizenBenefitGrantService.EMPTY_MESSAGE, result.message)
+        }
+        assertTrue(grants.findAllByApplicationIdOrderByAssignedAtAscIdAsc(f.applicationId).isEmpty())
+    }
+
+    @Test fun `pagina por fecha e id descendentes y distingue pagina fuera de rango de ausencia total`() {
+        val first = assigned()
+        val second = assigned(addBenefit())
+        val third = assigned(addBenefit())
+        val timestamp = first.assignedAt.plusSeconds(2)
+        jdbc.update("update benefit_grant set assigned_at=? where id in (?,?)", timestamp, second.id, third.id)
+        val tied = jdbc.queryForList("select id from benefit_grant where application_id=? and assigned_at=? order by id desc", UUID::class.java, f.applicationId, timestamp)
+        val firstPage = ownResponse(ownGrants(query = "?page=0&size=2"))
+        assertEquals(tied, firstPage.content.map { it.id })
+        assertEquals(3L, firstPage.totalElements)
+        assertEquals(2, firstPage.totalPages)
+        val secondPage = ownResponse(ownGrants(query = "?page=1&size=2"))
+        assertEquals(listOf(first.id), secondPage.content.map { it.id })
+        assertNull(secondPage.message)
+        val outside = ownResponse(ownGrants(query = "?page=10&size=2"))
+        assertTrue(outside.content.isEmpty())
+        assertEquals(3L, outside.totalElements)
+        assertNull(outside.message)
+        assertEquals(100, ownResponse(ownGrants(query = "?size=100")).size)
+    }
+
+    @ParameterizedTest @ValueSource(strings = ["?page=-1", "?size=0", "?size=101", "?page=x", "?size=x"])
+    fun `paginacion ciudadana invalida devuelve 400`(query: String) {
+        expect(ownGrants(query = query), 400)
+    }
+
+    @Test fun `consulta propia valida usuario rol activo y permiso vigente en JWT y base`() {
+        assigned()
+        expect(ownGrants(token = null), 401)
+        expect(ownGrants(token = "token-invalido"), 401)
+        val citizenRoleId = tx { users.findByIdWithRoles(f.applicantId)!!.roles.first().id!! }
+        tx { roles.findById(citizenRoleId).orElseThrow().permissions.removeIf { it.name == OWN_BENEFIT_VIEW_PERMISSION }; true }
+        expect(ownGrants(), 403)
+        tx { roles.findById(citizenRoleId).orElseThrow().permissions.add(permission(OWN_BENEFIT_VIEW_PERMISSION)); true }
+        expect(ownGrants(), 200)
+        val oldToken = tx {
+            val citizen = users.findByIdWithRoles(f.applicantId)!!
+            val role = citizen.roles.first()
+            role.permissions.removeIf { it.name == OWN_BENEFIT_VIEW_PERMISSION }
+            jwt.createToken(citizen, role)
+        }
+        tx { roles.findById(citizenRoleId).orElseThrow().permissions.add(permission(OWN_BENEFIT_VIEW_PERMISSION)); true }
+        expect(ownGrants(token = oldToken), 403)
+        val wrongRole = tx {
+            val citizen = users.findByIdWithRoles(f.applicantId)!!
+            val role = roles.saveAndFlush(Role(name = "SIN_PERMISO_${UUID.randomUUID()}"))
+            citizen.roles.add(role)
+            jwt.createToken(citizen, role)
+        }
+        expect(ownGrants(token = wrongRole), 403)
+        tx { users.findById(f.applicantId).orElseThrow().roles.removeIf { it.id == citizenRoleId }; true }
+        expect(ownGrants(), 403)
+        tx { users.findById(f.applicantId).orElseThrow().active = false }
+        expect(ownGrants(), 401)
+    }
+
+    @Test fun `otro rol configurable puede consultar solo sus datos con permiso propio`() {
+        val grant = assigned()
+        val token = tx {
+            val citizen = users.findByIdWithRoles(f.applicantId)!!
+            val custom = roles.saveAndFlush(Role(name = "ROL_PROPIO_${UUID.randomUUID()}", permissions = mutableSetOf(permission(OWN_BENEFIT_VIEW_PERMISSION))))
+            citizen.roles.add(custom)
+            jwt.createToken(citizen, custom)
+        }
+        assertEquals(listOf(grant.id), ownResponse(ownGrants(token)).content.map { it.id })
+        tx { roles.findById(f.roleId).orElseThrow().permissions.add(permission(OWN_BENEFIT_VIEW_PERMISSION)); true }
+        val adminToken = tx { val actor = users.findByIdWithRoles(f.actorId)!!; jwt.createToken(actor, actor.roles.first()) }
+        assertTrue(ownResponse(ownGrants(adminToken)).content.isEmpty()) // Own permission never means management access.
+    }
+
+    @Test fun `consulta no cambia fechas cupos historial ni auditoria y mantiene contrato de solicitud`() {
+        val grant = assigned()
+        val before = applications.findById(f.applicationId).orElseThrow().updatedAt
+        val auditCount = jdbc.queryForObject("select count(*) from logs", Long::class.java)
+        repeat(2) { ownResponse(ownGrants()) }
+        assertEquals(before, applications.findById(f.applicationId).orElseThrow().updatedAt)
+        assertEquals(1, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+        assertEquals(1, changes.findAllByGrantIdOrderBySequenceNumberAsc(grant.id).size)
+        assertEquals(auditCount, jdbc.queryForObject("select count(*) from logs", Long::class.java))
+        val application = mvc.perform(get("/api/applications/${f.applicationId}").header("Authorization", "Bearer ${f.citizenToken}")).andReturn()
+        expect(application, 200)
+        assertFalse(application.response.contentAsString.contains("benefitGrants"))
+        assertFalse(application.response.contentAsString.contains("assignedBy"))
+    }
+
+    @Test fun `listado carga contexto de varios programas sin consultas adicionales por elemento`() {
+        assigned()
+        val another = fixture(applicantId = f.applicantId)
+        expect(assign(another), 201)
+        val statistics = entityManagerFactory.unwrap(SessionFactory::class.java).statistics
+        statistics.isStatisticsEnabled = true
+        try {
+            statistics.clear()
+            ownResponse(ownGrants(query = "?size=1"))
+            val one = statistics.prepareStatementCount
+            statistics.clear()
+            ownResponse(ownGrants(query = "?size=2"))
+            val two = statistics.prepareStatementCount
+            assertEquals(one, two)
+            assertTrue(two <= 4, "Se ejecutaron $two consultas para dos elementos")
+        } finally { statistics.isStatisticsEnabled = false }
+    }
+
+    @Test fun `permiso ciudadano se migra repetidamente sin tocar otorgamientos ni dar acceso a otros roles`() {
+        assumeTrue(System.getProperty("benefit-grant.test.postgres-url") != null)
+        val schema = "citizen_grant_migration_" + UUID.randomUUID().toString().replace("-", "")
+        val before = grants.count()
+        jdbc.execute("create schema $schema")
+        try {
+            jdbc.execute("""create table $schema.permissions(id bigserial primary key, name varchar(100) unique);
+                create table $schema.roles(id bigserial primary key, name varchar(100) unique);
+                create table $schema.role_permissions(role_id bigint references $schema.roles(id), permission_id bigint references $schema.permissions(id), primary key(role_id, permission_id));
+                insert into $schema.roles(name) values ('ADMIN'),('CIUDADANO'),('PROFESIONAL');
+                insert into $schema.permissions(name) values ('existente');
+                insert into $schema.role_permissions select r.id,p.id from $schema.roles r cross join $schema.permissions p where r.name='PROFESIONAL';""")
+            val migration = Files.readString(Path.of("docs/database/migrations/2026-10-26-citizen-benefit-grants.sql")).replace("public.", "$schema.")
+            repeat(2) { jdbc.execute(migration) }
+            assertEquals(1L, jdbc.queryForObject("select count(*) from $schema.permissions where name='$OWN_BENEFIT_VIEW_PERMISSION'", Long::class.java))
+            val granted = jdbc.queryForList("""select r.name from $schema.roles r join $schema.role_permissions rp on rp.role_id=r.id
+                join $schema.permissions p on p.id=rp.permission_id where p.name='$OWN_BENEFIT_VIEW_PERMISSION' order by r.name""", String::class.java)
+            assertEquals(listOf("ADMIN", "CIUDADANO"), granted)
+            assertEquals(3L, jdbc.queryForObject("select count(*) from $schema.role_permissions", Long::class.java))
+        } finally { jdbc.execute("drop schema $schema cascade") }
+        assertEquals(before, grants.count())
     }
 
     @Test fun `baja de catalogo y otorgamiento concurrentes conservan referencias validas`() {

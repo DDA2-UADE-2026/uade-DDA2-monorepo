@@ -16,7 +16,7 @@ El proceso se confirma por solicitud: vencimientos, historial, eventual cierre, 
 
 ## Consulta y operación
 
-No hay rutas nuevas. Los GET administrativos de otorgamientos e historial muestran `EXPIRED` y la actuación de sistema con los permisos existentes. Las respuestas ciudadanas mantienen su estructura y no exponen otorgamientos, motivos ni historial profesional.
+El vencimiento no agrega rutas para disparar el proceso. Los GET administrativos de otorgamientos e historial muestran `EXPIRED` y la actuación de sistema con los permisos existentes. El [listado propio de beneficios](citizen-benefit-grants.md) muestra `EXPIRED` sin motivos, responsables ni historial profesional. Las respuestas existentes de solicitudes mantienen su estructura.
 
 La configuración predeterminada es:
 

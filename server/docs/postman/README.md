@@ -65,6 +65,14 @@ Suspender conserva la reserva. Finalizar es definitivo y conserva las fechas pac
 
 El [vencimiento automático](../functional/benefit-grant-expiration.md) pasa a `EXPIRED` los otorgamientos `ACTIVE`/`SUSPENDED` cuya `endDate` ya pasó. Se ejecuta al iniciar y cada cinco minutos; el último día sigue siendo válido. `EXPIRED` también es definitivo y puede cerrar la solicitud y liberar la reserva si era el último pendiente. El historial incluye autor `Sistema`, ID de responsable `null` y motivo automático. Los GET de otorgamientos e historial incluyen ejemplos de estas respuestas. Para comprobarlo en un entorno de prueba se puede otorgar con fin hoy y consultar después del cambio de día y del barrido; no hay endpoint para adelantarlo.
 
+## Beneficios propios del ciudadano
+
+La carpeta **Beneficios propios del ciudadano** consulta `GET /api/benefit-grants?page=0&size=20` usando `citizenAccessToken`, sin depender de `applicationId`. El rol activo necesita `applications:own:benefits:view` vigente en JWT y base de datos. Después de incorporar el permiso, iniciar sesión o seleccionar nuevamente el rol para obtener un token nuevo.
+
+Incluye ejemplos con beneficios de diferentes estados, importe nulo, ausencia de otorgamientos y página fuera de rango, además de errores de paginación y acceso. El listado muestra los datos copiados al otorgar y las fechas/estado persistidos; las actuaciones administrativas y los vencimientos aparecen en la siguiente consulta una vez confirmados. Nunca publica responsables, motivos ni historial.
+
+Cuando `totalElements = 0`, devuelve `message: "No tenés beneficios asignados."`; si existen otorgamientos, `message` es null incluso en una página fuera de rango. El token determina siempre al titular. No hay un parámetro para consultar a otra persona.
+
 ## Planes de intervención y seguimientos
 
 El caso debe tener evaluación profesional y trabajador asignado. Admite creación en `IN_EVALUATION`, `IN_VISIT`, `WAITLISTED`, `APPROVED`, `REJECTED` o `CLOSED`. El trabajador asignado crea el plan y será su responsable.
