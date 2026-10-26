@@ -16,6 +16,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { listProfessionalAppointmentsOptions } from "@/generated/@tanstack/react-query.gen"
 import { appointmentToday, formatAppointmentRange } from "@/lib/appointment-flow"
 import { attentionLabel, professionalTurnSearchSchema } from "@/lib/community-attention"
+import { UserChip } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/")({
   validateSearch: professionalTurnSearchSchema,
@@ -98,7 +99,7 @@ function RouteComponent() {
                       return (
                         <TableRow key={appointment?.id}>
                           <TableCell className="whitespace-nowrap font-medium">{formatAppointmentRange(appointment?.startsAt, appointment?.endsAt)}</TableCell>
-                          <TableCell>{row.citizenName ?? "—"}</TableCell>
+                          <TableCell className="min-w-44"><UserChip user={{ id: row.citizenId, name: row.citizenName }} /></TableCell>
                           <TableCell>{appointment?.serviceName ?? "—"}<span className="block text-xs text-muted-foreground">{appointment?.centerName}</span></TableCell>
                           <TableCell><Badge variant={label === "Cancelado" ? "secondary" : label === "Sin registrar" ? "outline" : "default"}>{label}</Badge></TableCell>
                           <TableCell>

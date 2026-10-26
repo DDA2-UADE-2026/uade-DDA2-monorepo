@@ -1,3 +1,4 @@
+import { UserInline } from "@/components/UserChip"
 import { IconCalendarCheck, IconCalendarX } from "@tabler/icons-react"
 import { Link } from "@tanstack/react-router"
 
@@ -52,7 +53,7 @@ function AppointmentCard({ appointment }: { appointment: AppointmentResponse }) 
       <CardContent className="space-y-2 text-sm">
         <p><span className="font-medium">Fecha:</span> {formatAppointmentDate(appointment.startsAt?.slice(0, 10))}</p>
         <p><span className="font-medium">Horario:</span> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
-        <p><span className="font-medium">Profesional:</span> {appointment.professionalName}</p>
+        <p><span className="font-medium">Profesional:</span> <UserInline user={{ id: appointment.professionalId, name: appointment.professionalName }} /></p>
         <div>
           <Button size="sm" variant="outline" render={<Link to="/portal/turnos/$turnoId" params={{ turnoId: appointment.id ?? "" }} />}>
             Ver detalle

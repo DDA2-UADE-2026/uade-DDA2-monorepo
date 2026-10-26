@@ -23,6 +23,7 @@ import {
   listProfessionalAssignmentsQueryKey,
 } from "@/generated/@tanstack/react-query.gen"
 import type { CenterServiceResponse } from "@/generated/types.gen"
+import { UserChip } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/centros/$centroId/")({
   component: RouteComponent,
@@ -277,11 +278,10 @@ function ServiceProfessionals({ centerServiceId, serviceActive }: {
         <ul className="divide-y rounded-lg border">
           {(assignments.data ?? []).map((assignment) => (
             <li key={assignment.id} className="flex items-center justify-between gap-2 px-3 py-2 text-sm">
-              <span>
-                <span className="font-medium">{assignment.professionalName}</span>
-                <span className="text-muted-foreground"> — {assignment.professionalEmail}</span>
-                {!assignment.active && <span className="text-muted-foreground"> (inactivo)</span>}
-              </span>
+              <UserChip
+                user={{ id: assignment.professionalId, name: assignment.professionalName, email: assignment.professionalEmail }}
+                secondary={<>{assignment.professionalEmail}{!assignment.active && " (inactivo)"}</>}
+              />
             </li>
           ))}
         </ul>

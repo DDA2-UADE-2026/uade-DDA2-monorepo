@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getProfessionalActivityOptions, get4QueryKey, list8QueryKey, listEnrollmentsOptions, listEnrollmentsQueryKey, updateAttendanceMutation } from "@/generated/@tanstack/react-query.gen"
 import type { ProfessionalActivityEnrollmentResponse } from "@/generated/types.gen"
+import { UserChip } from "@/components/UserChip"
 
 export function ActivityAttendance({ activityId, page, onPageChange, canManage }: {
   activityId: string
@@ -72,7 +73,7 @@ function AttendanceRow({ enrollment, activityId, canManage }: { enrollment: Prof
   }
   return (
     <TableRow>
-      <TableCell className="whitespace-normal"><p className="font-medium">{enrollment.citizenName}</p><p className="text-xs text-muted-foreground">Inscripción: {formatActivityDateTime(enrollment.enrolledAt)}</p></TableCell>
+      <TableCell className="whitespace-normal"><UserChip user={{ id: enrollment.citizenId, name: enrollment.citizenName }} secondary={`Inscripción: ${formatActivityDateTime(enrollment.enrolledAt)}`} /></TableCell>
       <TableCell><AttendanceBadge attendance={enrollment.attendance} /></TableCell>
       <TableCell className="whitespace-normal text-xs text-muted-foreground">
         {enrollment.attendanceRecordedAt ? <><p>{enrollment.attendanceRecordedBy?.name}</p><p>{formatActivityDateTime(enrollment.attendanceRecordedAt)}</p></> : "Sin registro"}

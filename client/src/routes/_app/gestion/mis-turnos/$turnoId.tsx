@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getProfessionalAppointmentOptions, getProfessionalAppointmentQueryKey } from "@/generated/@tanstack/react-query.gen"
 import { APPOINTMENT_TIME_ZONE, formatAppointmentDate, formatAppointmentRange, isUuid } from "@/lib/appointment-flow"
 import { attentionLabel, canRegisterAttention, professionalTurnSearchSchema } from "@/lib/community-attention"
+import { UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/$turnoId")({
   validateSearch: professionalTurnSearchSchema,
@@ -75,7 +76,7 @@ function RouteComponent() {
               <Card>
                 <CardHeader><Badge className="w-fit" variant="outline">{attentionLabel(row)}</Badge><CardTitle>{appointment.serviceName}</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <p><strong>Ciudadano:</strong> {row.citizenName ?? "—"}</p>
+                  <p><strong>Ciudadano:</strong> <UserInline user={{ id: row.citizenId, name: row.citizenName }} /></p>
                   <p><strong>Centro:</strong> {appointment.centerName ?? "—"}</p>
                   <p><strong>Fecha:</strong> {formatAppointmentDate(appointment.startsAt)}</p>
                   <p><strong>Horario:</strong> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
