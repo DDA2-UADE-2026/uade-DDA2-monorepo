@@ -9,12 +9,20 @@ import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
+import { z } from "zod"
 
 import { DataPagination } from "@/components/DataPagination"
 import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
 import { DeleteConfirmationButton } from "@/components/programs/DeleteConfirmationButton"
 import { ProgramDocumentRequirements } from "@/components/programs/ProgramDocumentRequirements"
-import { FormField, RoutePanel, requirementLabels } from "@/components/programs/ProgramRouteUi"
+import {
+  FormField,
+  RoutePanel,
+  formatRequirementValue,
+  requirementLabels,
+  requirementValueError,
+  type RequirementType,
+} from "@/components/programs/ProgramRouteUi"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -33,10 +41,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   create4Mutation,
   delete4Mutation,
@@ -53,19 +62,26 @@ import {
 
 const PAGE_SIZE = 10
 
+function validateRequirementValue(
+  value: { type: RequirementType; value: string },
+  context: z.RefinementCtx,
+) {
+  const message = requirementValueError(value.type, value.value)
+  if (message) context.addIssue({ code: "custom", path: ["value"], message })
+}
+
 const createRequirementSchema = zCreateProgramRequirementRequest.extend({
   type: zCreateProgramRequirementRequest.shape.type.unwrap(),
-  value: zCreateProgramRequirementRequest.shape.value.trim().min(1, "Ingresá el valor del requisito."),
   description: zCreateProgramRequirementRequest.shape.description.unwrap(),
-})
+}).superRefine(validateRequirementValue)
 
 const updateRequirementSchema = zUpdateProgramRequirementRequest.extend({
   type: zUpdateProgramRequirementRequest.shape.type.unwrap(),
-  value: zUpdateProgramRequirementRequest.shape.value.trim().min(1, "Ingresá el valor del requisito."),
   description: zUpdateProgramRequirementRequest.shape.description.unwrap(),
-})
+}).superRefine(validateRequirementValue)
 
-type RequirementType = NonNullable<ProgramRequirementResponse["type"]>
+const defaultRequirementValue = (type: RequirementType) => type === "HAS_CHILDREN" ? "true" : ""
+
 type DialogState = { requirement: ProgramRequirementResponse | null } | null
 
 export const Route = createFileRoute(
@@ -184,7 +200,7 @@ function RouteComponent() {
                   <TableCell className="font-medium">
                     {requirement.type ? requirementLabels[requirement.type] : "—"}
                   </TableCell>
-                  <TableCell>{requirement.value}</TableCell>
+                  <TableCell>{formatRequirementValue(requirement.type, requirement.value)}</TableCell>
                   <TableCell className="hidden max-w-md truncate text-muted-foreground md:table-cell">
                     {requirement.description || "—"}
                   </TableCell>
@@ -286,7 +302,8 @@ function RequirementDialog({
   const form = useForm({
     defaultValues: {
       type: (requirement?.type ?? "MIN_AGE") as RequirementType,
-      value: requirement?.value ?? "",
+      // El backend acepta "TRUE"/"False"; se normaliza para que el selector Sí/No lo reconozca.
+      value: requirement?.type === "HAS_CHILDREN" ? (requirement.value ?? "").trim().toLowerCase() : requirement?.value ?? "",
       description: requirement?.description ?? "",
     },
     validators: {
@@ -297,6 +314,7 @@ function RequirementDialog({
       update.reset()
       const body = {
         ...value,
+        value: value.value.trim(),
         description: value.description.trim() || undefined,
       }
       if (requirement?.id) {
@@ -336,7 +354,10 @@ function RequirementDialog({
             form.handleSubmit()
           }}
         >
-          <form.Field name="type" children={(field) => {
+          <form.Field name="type" listeners={{
+            // Cada tipo usa otro formato de valor: al cambiarlo se arranca de cero.
+            onChange: ({ value }) => form.setFieldValue("value", defaultRequirementValue(value)),
+          }} children={(field) => {
             const invalid = field.state.meta.isTouched && !field.state.meta.isValid
             return (
               <FormField label="Tipo" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}>
@@ -359,22 +380,24 @@ function RequirementDialog({
             )
           }} />
 
-          <form.Field name="value" children={(field) => {
-            const invalid = field.state.meta.isTouched && !field.state.meta.isValid
-            return (
-              <FormField label="Valor" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  disabled={disabled || isPending}
-                  onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  aria-invalid={invalid}
-                />
-              </FormField>
-            )
-          }} />
+          <form.Subscribe selector={(state) => state.values.type} children={(type) => (
+            <form.Field name="value" children={(field) => {
+              const invalid = field.state.meta.isTouched && !field.state.meta.isValid
+              return (
+                <FormField label={valueLabels[type]} htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}>
+                  <RequirementValueInput
+                    id={field.name}
+                    type={type}
+                    value={field.state.value}
+                    disabled={disabled || isPending}
+                    invalid={invalid}
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                  />
+                </FormField>
+              )
+            }} />
+          )} />
 
           <form.Field name="description" children={(field) => {
             const invalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -414,6 +437,67 @@ function RequirementDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  )
+}
+
+const valueLabels: Record<RequirementType, string> = {
+  MIN_AGE: "Edad mínima",
+  MAX_INCOME: "Ingreso máximo mensual",
+  RESIDENCY_YEARS: "Años de residencia mínimos",
+  HAS_CHILDREN: "¿Se requiere tener hijos?",
+}
+
+function RequirementValueInput({ id, type, value, disabled, invalid, onBlur, onChange }: {
+  id: string
+  type: RequirementType
+  value: string
+  disabled: boolean
+  invalid: boolean
+  onBlur: () => void
+  onChange: (value: string) => void
+}) {
+  if (type === "HAS_CHILDREN") {
+    return (
+      <ToggleGroup
+        id={id}
+        variant="outline"
+        aria-label={valueLabels[type]}
+        aria-invalid={invalid}
+        disabled={disabled}
+        value={[value]}
+        onValueChange={(next: string[]) => { if (next[0]) onChange(next[0]); onBlur() }}
+      >
+        <ToggleGroupItem value="true">Sí, debe tener hijos</ToggleGroupItem>
+        <ToggleGroupItem value="false">No, no debe tener hijos</ToggleGroupItem>
+      </ToggleGroup>
+    )
+  }
+
+  const isIncome = type === "MAX_INCOME"
+  const preview = isIncome && !requirementValueError(type, value) ? formatRequirementValue(type, value) : null
+  return (
+    <>
+      <InputGroup>
+        {isIncome && <InputGroupAddon><InputGroupText>$</InputGroupText></InputGroupAddon>}
+        <InputGroupInput
+          id={id}
+          name={id}
+          inputMode={isIncome ? "decimal" : "numeric"}
+          autoComplete="off"
+          placeholder={isIncome ? "150000" : type === "MIN_AGE" ? "18" : "2"}
+          value={value}
+          disabled={disabled}
+          aria-invalid={invalid}
+          onBlur={onBlur}
+          // Solo dígitos (y un separador decimal en el ingreso); la coma se convierte en punto para el backend.
+          onChange={(event) => onChange(isIncome
+            ? event.target.value.replace(",", ".").replace(/[^\d.]/g, "")
+            : event.target.value.replace(/\D/g, ""))}
+        />
+        {!isIncome && <InputGroupAddon align="inline-end"><InputGroupText>años</InputGroupText></InputGroupAddon>}
+      </InputGroup>
+      {isIncome && <p className="text-xs text-muted-foreground">{preview ? `Se mostrará como ${preview}.` : "Monto en pesos, sin separador de miles. Podés usar hasta dos decimales."}</p>}
+    </>
   )
 }
 

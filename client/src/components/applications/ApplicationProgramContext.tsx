@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 
 import { ApplicationStatusBadge } from "@/components/applications/ApplicationUi"
-import { benefitLabels, parseLocalDate, requirementLabels, statusLabels } from "@/components/programs/ProgramRouteUi"
+import { benefitLabels, formatRequirementValue, parseLocalDate, requirementLabels, statusLabels } from "@/components/programs/ProgramRouteUi"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -107,7 +107,7 @@ export function ApplicationProgramContext({ application }: { application: AdminA
                   {requirements.data.map((requirement) => (
                     <li key={requirement.id}>
                       <span className="font-medium">{requirement.type ? requirementLabels[requirement.type] : "Requisito"}</span>
-                      {requirement.value != null && requirement.value !== "" && <>: {String(requirement.value)}</>}
+                      {requirement.value != null && requirement.value !== "" && <>: {formatRequirementValue(requirement.type, String(requirement.value))}</>}
                       {requirement.description && <span className="block text-xs text-muted-foreground">{requirement.description}</span>}
                     </li>
                   ))}
