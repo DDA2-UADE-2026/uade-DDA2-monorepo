@@ -5,6 +5,7 @@ import { useState, type ReactNode } from "react"
 import { toast } from "sonner"
 
 import { DateTimePicker } from "@/components/DateTimePicker"
+import { RescheduleRequestDetail } from "@/components/applications/SocialRescheduleInbox"
 import { UserChip } from "@/components/UserChip"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -123,9 +124,18 @@ export function VisitDetail({ id, permissions, currentUserId }: { id: string; pe
           <IconClock />
           <AlertTitle>Reprogramación pendiente</AlertTitle>
           <AlertDescription>
-            El ciudadano pidió reprogramar esta actuación. Resolvé el pedido en la bandeja de reprogramaciones antes de modificarla.
+            El ciudadano pidió reprogramar esta actuación. Resolvé el pedido antes de modificarla.
           </AlertDescription>
         </Alert>
+      )}
+
+      {visit.latestRescheduleRequest && permissions.includes("applications:visits:reschedule-requests:view") && (
+        <RescheduleRequestDetail
+          key={visit.latestRescheduleRequest.id}
+          id={visit.latestRescheduleRequest.id}
+          canReview={permissions.includes("applications:visits:reschedule-requests:review")}
+          currentUserId={currentUserId}
+        />
       )}
 
       {action && (

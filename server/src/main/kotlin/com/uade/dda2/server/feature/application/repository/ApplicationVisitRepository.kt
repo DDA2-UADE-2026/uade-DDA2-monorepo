@@ -27,7 +27,7 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
         id: UUID,
     ): Boolean
 
-    @EntityGraph(attributePaths = ["application"])
+    @EntityGraph(attributePaths = ["application", "application.programEdition", "application.programEdition.program"])
     @Query(
         "select visit from ApplicationVisit visit " +
             "where visit.application.id = :applicationId and visit.application.user.id = :userId",
@@ -35,6 +35,22 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
     fun findAllOwnByApplicationId(
         @Param("applicationId") applicationId: UUID,
         @Param("userId") userId: Long,
+        pageable: Pageable,
+    ): Page<ApplicationVisit>
+
+    @EntityGraph(attributePaths = ["application", "application.programEdition", "application.programEdition.program"])
+    @Query(
+        """
+        select visit from ApplicationVisit visit
+        where visit.application.user.id = :userId
+          and (:status is null or visit.status = :status)
+          and (cast(:endsAfter as OffsetDateTime) is null or visit.endsAt > :endsAfter)
+        """,
+    )
+    fun findAllOwn(
+        @Param("userId") userId: Long,
+        @Param("status") status: ApplicationVisitStatus?,
+        @Param("endsAfter") endsAfter: OffsetDateTime?,
         pageable: Pageable,
     ): Page<ApplicationVisit>
 

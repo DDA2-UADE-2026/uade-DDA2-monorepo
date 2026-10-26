@@ -18,6 +18,8 @@ export type CitizenVisit = {
   id: string
   applicationId: string
   applicationNumber: number
+  /** Solo viene en los listados. */
+  programName?: string
   type: CitizenVisitType
   startsAt: string
   endsAt: string
@@ -62,6 +64,10 @@ async function get<T>(url: string, page?: number, size?: number): Promise<T> {
 }
 
 export const citizenVisits = {
+  listAll: async (upcoming: boolean, page: number, size: number) => {
+    const { data } = await client.get({ url: "/api/applications/visits", query: { upcoming, page, size }, throwOnError: true })
+    return data as Page<CitizenVisit>
+  },
   list: (applicationId: string, page: number, size: number) =>
     get<Page<CitizenVisit>>(visitPath(applicationId), page, size),
   detail: (applicationId: string, visitId: string) =>
@@ -83,6 +89,10 @@ export const citizenVisits = {
 }
 
 export const citizenVisitQueries = {
+  listAll: (upcoming: boolean, page: number, size: number) => queryOptions({
+    queryKey: ["citizen-visits-all", upcoming, page, size],
+    queryFn: () => citizenVisits.listAll(upcoming, page, size),
+  }),
   list: (applicationId: string, page: number, size: number) => queryOptions({
     queryKey: ["citizen-visits", applicationId, page, size],
     queryFn: () => citizenVisits.list(applicationId, page, size),

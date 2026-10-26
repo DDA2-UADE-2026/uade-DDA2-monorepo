@@ -35,6 +35,12 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
     icon: IconFileText,
     requiredPermissions: ["applications:own:view"],
   },
+  {
+    title: "Mis visitas",
+    url: "/portal/visitas",
+    icon: IconHomeCheck,
+    requiredPermissions: ["applications:own:visits:view"],
+  },
   { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift, requiredPermissions: ["applications:own:view"] },
   {
     title: "Mis turnos",

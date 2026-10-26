@@ -28,6 +28,7 @@ import { Route as AppGestionRolesRouteImport } from "./routes/_app/gestion/roles
 import { Route as AppGestionTestErrorRouteImport } from "./routes/_app/gestion/test-error"
 import { Route as AppPortalIndexRouteImport } from "./routes/_app/portal/index"
 import { Route as AppPortalPerfilRouteImport } from "./routes/_app/portal/perfil"
+import { Route as AppPortalVisitasRouteImport } from "./routes/_app/portal/visitas"
 import { Route as AuthGuestLoginRouteImport } from "./routes/_auth/_guest/login"
 import { Route as AuthGuestRegisterRouteImport } from "./routes/_auth/_guest/register"
 import { Route as AppGestionActividadesIndexRouteImport } from "./routes/_app/gestion/actividades/index"
@@ -183,6 +184,11 @@ const AppPortalIndexRoute = AppPortalIndexRouteImport.update({
 const AppPortalPerfilRoute = AppPortalPerfilRouteImport.update({
   id: "/perfil",
   path: "/perfil",
+  getParentRoute: () => AppPortalRouteRoute,
+} as any)
+const AppPortalVisitasRoute = AppPortalVisitasRouteImport.update({
+  id: "/visitas",
+  path: "/visitas",
   getParentRoute: () => AppPortalRouteRoute,
 } as any)
 const AuthGuestLoginRoute = AuthGuestLoginRouteImport.update({
@@ -574,6 +580,7 @@ export interface FileRoutesByFullPath {
   "/gestion/roles": typeof AppGestionRolesRoute
   "/gestion/test-error": typeof AppGestionTestErrorRoute
   "/portal/perfil": typeof AppPortalPerfilRoute
+  "/portal/visitas": typeof AppPortalVisitasRoute
   "/login": typeof AuthGuestLoginRoute
   "/register": typeof AuthGuestRegisterRoute
   "/gestion/": typeof AppGestionIndexRoute
@@ -652,6 +659,7 @@ export interface FileRoutesByTo {
   "/gestion/roles": typeof AppGestionRolesRoute
   "/gestion/test-error": typeof AppGestionTestErrorRoute
   "/portal/perfil": typeof AppPortalPerfilRoute
+  "/portal/visitas": typeof AppPortalVisitasRoute
   "/login": typeof AuthGuestLoginRoute
   "/register": typeof AuthGuestRegisterRoute
   "/gestion": typeof AppGestionIndexRoute
@@ -733,6 +741,7 @@ export interface FileRoutesById {
   "/_app/gestion/roles": typeof AppGestionRolesRoute
   "/_app/gestion/test-error": typeof AppGestionTestErrorRoute
   "/_app/portal/perfil": typeof AppPortalPerfilRoute
+  "/_app/portal/visitas": typeof AppPortalVisitasRoute
   "/_auth/_guest/login": typeof AuthGuestLoginRoute
   "/_auth/_guest/register": typeof AuthGuestRegisterRoute
   "/_app/gestion/": typeof AppGestionIndexRoute
@@ -816,6 +825,7 @@ export interface FileRouteTypes {
     | "/gestion/roles"
     | "/gestion/test-error"
     | "/portal/perfil"
+    | "/portal/visitas"
     | "/login"
     | "/register"
     | "/gestion/"
@@ -894,6 +904,7 @@ export interface FileRouteTypes {
     | "/gestion/roles"
     | "/gestion/test-error"
     | "/portal/perfil"
+    | "/portal/visitas"
     | "/login"
     | "/register"
     | "/gestion"
@@ -974,6 +985,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/roles"
     | "/_app/gestion/test-error"
     | "/_app/portal/perfil"
+    | "/_app/portal/visitas"
     | "/_auth/_guest/login"
     | "/_auth/_guest/register"
     | "/_app/gestion/"
@@ -1183,6 +1195,13 @@ declare module "@tanstack/react-router" {
       path: "/perfil"
       fullPath: "/portal/perfil"
       preLoaderRoute: typeof AppPortalPerfilRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
+    "/_app/portal/visitas": {
+      id: "/_app/portal/visitas"
+      path: "/visitas"
+      fullPath: "/portal/visitas"
+      preLoaderRoute: typeof AppPortalVisitasRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
     "/_auth/_guest/login": {
@@ -1829,6 +1848,7 @@ const AppGestionRouteRouteWithChildren = AppGestionRouteRoute._addFileChildren(
 
 interface AppPortalRouteRouteChildren {
   AppPortalPerfilRoute: typeof AppPortalPerfilRoute
+  AppPortalVisitasRoute: typeof AppPortalVisitasRoute
   AppPortalIndexRoute: typeof AppPortalIndexRoute
   AppPortalActividadesActividadIdRoute: typeof AppPortalActividadesActividadIdRoute
   AppPortalProgramasProgramaIdRoute: typeof AppPortalProgramasProgramaIdRoute
@@ -1847,6 +1867,7 @@ interface AppPortalRouteRouteChildren {
 
 const AppPortalRouteRouteChildren: AppPortalRouteRouteChildren = {
   AppPortalPerfilRoute: AppPortalPerfilRoute,
+  AppPortalVisitasRoute: AppPortalVisitasRoute,
   AppPortalIndexRoute: AppPortalIndexRoute,
   AppPortalActividadesActividadIdRoute: AppPortalActividadesActividadIdRoute,
   AppPortalProgramasProgramaIdRoute: AppPortalProgramasProgramaIdRoute,

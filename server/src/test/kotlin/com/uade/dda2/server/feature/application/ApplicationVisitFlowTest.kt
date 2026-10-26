@@ -346,6 +346,20 @@ class ApplicationVisitFlowTest {
         return mvc.perform(request).andReturn()
     }
 
+    private fun listAllOwn(
+        upcoming: Boolean? = null,
+        token: String? = fixture.applicantToken,
+        page: Int = 0,
+        size: Int = 20,
+    ): MvcResult {
+        val request = get("/api/applications/visits")
+            .param("page", page.toString())
+            .param("size", size.toString())
+        if (upcoming != null) request.param("upcoming", upcoming.toString())
+        if (token != null) request.header("Authorization", "Bearer $token")
+        return mvc.perform(request).andReturn()
+    }
+
     private fun getOwn(
         visitId: UUID,
         applicationId: UUID = fixture.applicationId,
@@ -1053,6 +1067,42 @@ class ApplicationVisitFlowTest {
 
         tx { users.findById(fixture.applicantId).orElseThrow().roles.clear() }
         expect(listOwn(), 403, "AUTH_FORBIDDEN")
+    }
+
+    @Test
+    fun `ciudadano lista visitas de todas sus solicitudes y filtra proximas`() {
+        val base = OffsetDateTime.now(ZoneOffset.UTC).plusDays(10).withNano(0)
+        val later = json.readValue(create(startsAt = base.plusDays(2)).response.contentAsString, ApplicationVisitResponse::class.java)
+        val sooner = json.readValue(create(startsAt = base).response.contentAsString, ApplicationVisitResponse::class.java)
+        val cancelled = json.readValue(create(startsAt = base.plusDays(4)).response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(cancel(cancelled.id), 200)
+        val ended = json.readValue(create(startsAt = base.plusDays(6)).response.contentAsString, ApplicationVisitResponse::class.java)
+        markEnded(ended.id)
+
+        val allResult = listAllOwn()
+        expect(allResult, 200)
+        val all = json.readValue(allResult.response.contentAsString, CitizenApplicationVisitListResponse::class.java)
+        assertEquals(setOf(later.id, sooner.id, cancelled.id, ended.id), all.content.map { it.id }.toSet())
+        all.content.zipWithNext().forEach { (current, next) -> assertTrue(!current.startsAt.isBefore(next.startsAt)) }
+        all.content.forEach {
+            assertEquals(fixture.applicationId, it.applicationId)
+            assertTrue(it.programName.isNotBlank())
+        }
+
+        val upcomingResult = listAllOwn(upcoming = true)
+        expect(upcomingResult, 200)
+        val upcoming = json.readValue(upcomingResult.response.contentAsString, CitizenApplicationVisitListResponse::class.java)
+        assertEquals(listOf(sooner.id, later.id), upcoming.content.map { it.id })
+
+        val other = json.readValue(
+            listAllOwn(token = fixture.otherApplicantToken).response.contentAsString,
+            CitizenApplicationVisitListResponse::class.java,
+        )
+        assertEquals(0L, other.totalElements)
+
+        expect(listAllOwn(token = null), 401, "AUTH_UNAUTHENTICATED")
+        expect(listAllOwn(token = fixture.unauthorizedToken), 403, "AUTH_FORBIDDEN")
+        expect(listAllOwn(size = 101), 400, "VALIDATION_ERROR")
     }
 
     @Test
