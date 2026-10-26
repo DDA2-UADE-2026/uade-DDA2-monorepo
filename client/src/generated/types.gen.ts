@@ -776,6 +776,99 @@ export type AppointmentResponse = {
 };
 
 /**
+ * Trabajador al que se asigna la solicitud para evaluarla y gestionar sus visitas.
+ */
+export type AssignApplicationWorkerRequest = {
+    /**
+     * ID interno del usuario a asignar. Debe estar activo y tener un rol con applications:visits:create (y applications:evaluations:create si la solicitud todavia no fue evaluada).
+     */
+    userId: number;
+};
+
+/**
+ * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
+ */
+export type AdminApplicationResponse = {
+    id?: string;
+    /**
+     * Número global único, generado por secuencia. Puede haber saltos.
+     */
+    applicationNumber?: number;
+    /**
+     * ID interno del usuario titular de la solicitud.
+     */
+    userId?: number;
+    /**
+     * Nombre del titular registrado en users, no en una identidad externa.
+     */
+    userName?: string;
+    userEmail?: string;
+    /**
+     * ID interno de quien registró la solicitud. En una presentación propia coincide con userId.
+     */
+    registeredByUserId?: number;
+    registeredByUserName?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    enrollmentPeriodId?: string;
+    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    /**
+     * Identificador del trámite de origen, cuando la solicitud llegó desde otro canal.
+     */
+    originTicketId?: string;
+    /**
+     * Motivo de la resolución. Todavía no se completa desde ninguna operación.
+     */
+    resolutionReason?: string;
+    /**
+     * Trabajador asignado a la solicitud. Se fija al registrar la evaluación o con PUT /api/admin/applications/{id}/assigned-worker.
+     */
+    assignedWorkerUserId?: number;
+    assignedWorkerName?: string;
+    submittedAt?: string;
+    resolvedAt?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    /**
+     * Clave de idempotencia con la que se presentó la solicitud, solo visible en esta vista administrativa.
+     */
+    idempotencyKey?: string;
+    /**
+     * Hash del cuerpo asociado a la clave de idempotencia. Existe si y solo si existe la clave.
+     */
+    requestHash?: string;
+    /**
+     * Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.
+     */
+    pendingDocuments?: Array<PendingApplicationDocumentResponse>;
+    /**
+     * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
+     */
+    documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+};
+
+/**
+ * Documento solicitado por una edición disponible.
+ */
+export type AvailableProgramDocumentRequirementResponse = {
+    id?: string;
+    code?: string;
+    name?: string;
+    description?: string;
+    required?: boolean;
+};
+
+export type PendingApplicationDocumentResponse = {
+    requirementId?: string;
+    code?: string;
+    name?: string;
+    reason?: 'MISSING' | 'OBSERVED';
+    observation?: string;
+};
+
+/**
  * Datos requeridos para actualizar una actividad comunitaria en borrador.
  */
 export type UpdateActivityRequest = {
@@ -1017,25 +1110,6 @@ export type ApplicationResponse = {
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
-};
-
-/**
- * Documento solicitado por una edición disponible.
- */
-export type AvailableProgramDocumentRequirementResponse = {
-    id?: string;
-    code?: string;
-    name?: string;
-    description?: string;
-    required?: boolean;
-};
-
-export type PendingApplicationDocumentResponse = {
-    requirementId?: string;
-    code?: string;
-    name?: string;
-    reason?: 'MISSING' | 'OBSERVED';
-    observation?: string;
 };
 
 /**
@@ -1938,6 +2012,10 @@ export type CitizenApplicationVisitListItemResponse = {
     applicationId?: string;
     applicationNumber?: number;
     /**
+     * Nombre del programa de la solicitud.
+     */
+    programName?: string;
+    /**
      * Modalidad de la actuacion: VISIT o INTERVIEW.
      */
     type?: 'VISIT' | 'INTERVIEW';
@@ -1971,7 +2049,7 @@ export type CitizenApplicationVisitListItemResponse = {
 };
 
 /**
- * Pagina de visitas y entrevistas de una solicitud propia.
+ * Pagina de visitas y entrevistas de solicitudes propias.
  */
 export type CitizenApplicationVisitListResponse = {
     content?: Array<CitizenApplicationVisitListItemResponse>;
@@ -2387,70 +2465,6 @@ export type AdminApplicationListResponse = {
      * Cantidad total de páginas.
      */
     totalPages?: number;
-};
-
-/**
- * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
- */
-export type AdminApplicationResponse = {
-    id?: string;
-    /**
-     * Número global único, generado por secuencia. Puede haber saltos.
-     */
-    applicationNumber?: number;
-    /**
-     * ID interno del usuario titular de la solicitud.
-     */
-    userId?: number;
-    /**
-     * Nombre del titular registrado en users, no en una identidad externa.
-     */
-    userName?: string;
-    userEmail?: string;
-    /**
-     * ID interno de quien registró la solicitud. En una presentación propia coincide con userId.
-     */
-    registeredByUserId?: number;
-    registeredByUserName?: string;
-    programId?: string;
-    programName?: string;
-    programEditionId?: string;
-    programEditionName?: string;
-    enrollmentPeriodId?: string;
-    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
-    /**
-     * Identificador del trámite de origen, cuando la solicitud llegó desde otro canal.
-     */
-    originTicketId?: string;
-    /**
-     * Motivo de la resolución. Todavía no se completa desde ninguna operación.
-     */
-    resolutionReason?: string;
-    /**
-     * Trabajador asignado a la solicitud. Todavía no se asigna desde ninguna operación.
-     */
-    assignedWorkerUserId?: number;
-    assignedWorkerName?: string;
-    submittedAt?: string;
-    resolvedAt?: string;
-    createdAt?: string;
-    updatedAt?: string;
-    /**
-     * Clave de idempotencia con la que se presentó la solicitud, solo visible en esta vista administrativa.
-     */
-    idempotencyKey?: string;
-    /**
-     * Hash del cuerpo asociado a la clave de idempotencia. Existe si y solo si existe la clave.
-     */
-    requestHash?: string;
-    /**
-     * Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.
-     */
-    pendingDocuments?: Array<PendingApplicationDocumentResponse>;
-    /**
-     * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
-     */
-    documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
 };
 
 /**
@@ -4675,6 +4689,100 @@ export type RescheduleAdminAppointmentResponses = {
 };
 
 export type RescheduleAdminAppointmentResponse = RescheduleAdminAppointmentResponses[keyof RescheduleAdminAppointmentResponses];
+
+export type UnassignApplicationWorkerData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/assigned-worker';
+};
+
+export type UnassignApplicationWorkerErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UnassignApplicationWorkerError = UnassignApplicationWorkerErrors[keyof UnassignApplicationWorkerErrors];
+
+export type UnassignApplicationWorkerResponses = {
+    /**
+     * Detalle de la solicitud sin trabajador asignado.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type UnassignApplicationWorkerResponse = UnassignApplicationWorkerResponses[keyof UnassignApplicationWorkerResponses];
+
+export type AssignApplicationWorkerData = {
+    body: AssignApplicationWorkerRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/assigned-worker';
+};
+
+export type AssignApplicationWorkerErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AssignApplicationWorkerError = AssignApplicationWorkerErrors[keyof AssignApplicationWorkerErrors];
+
+export type AssignApplicationWorkerResponses = {
+    /**
+     * Detalle de la solicitud con el trabajador asignado.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type AssignApplicationWorkerResponse = AssignApplicationWorkerResponses[keyof AssignApplicationWorkerResponses];
 
 export type Put1Data = {
     body?: {
@@ -9578,6 +9686,56 @@ export type ContentResponses = {
 };
 
 export type ContentResponse = ContentResponses[keyof ContentResponses];
+
+export type ListAllOwnVisitsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Solo actuaciones programadas y vigentes.
+         */
+        upcoming?: boolean;
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/applications/visits';
+};
+
+export type ListAllOwnVisitsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAllOwnVisitsError = ListAllOwnVisitsErrors[keyof ListAllOwnVisitsErrors];
+
+export type ListAllOwnVisitsResponses = {
+    /**
+     * Pagina de actuaciones propias.
+     */
+    200: CitizenApplicationVisitListResponse;
+};
+
+export type ListAllOwnVisitsResponse = ListAllOwnVisitsResponses[keyof ListAllOwnVisitsResponses];
 
 export type FindAll5Data = {
     body?: never;

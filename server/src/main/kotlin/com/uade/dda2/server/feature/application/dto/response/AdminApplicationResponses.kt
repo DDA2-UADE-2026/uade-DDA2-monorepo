@@ -69,7 +69,7 @@ data class AdminApplicationResponse(
     val originTicketId: String?,
     @field:Schema(description = "Motivo de la resolución. Todavía no se completa desde ninguna operación.", nullable = true)
     val resolutionReason: String?,
-    @field:Schema(description = "Trabajador asignado a la solicitud. Todavía no se asigna desde ninguna operación.", nullable = true)
+    @field:Schema(description = "Trabajador asignado a la solicitud. Se fija al registrar la evaluación o con PUT /api/admin/applications/{id}/assigned-worker.", nullable = true)
     val assignedWorkerUserId: Long?,
     @field:Schema(nullable = true)
     val assignedWorkerName: String?,

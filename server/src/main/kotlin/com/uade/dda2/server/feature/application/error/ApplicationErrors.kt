@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.application.error
 
+import com.uade.dda2.server.error.BadRequestException
 import com.uade.dda2.server.error.ConflictException
 import com.uade.dda2.server.error.ForbiddenException
 import com.uade.dda2.server.error.NotFoundException
@@ -15,4 +16,10 @@ object ApplicationErrors {
     fun duplicatePeriod() = ConflictException("APPLICATION_ALREADY_EXISTS_FOR_PERIOD", "Ya presentaste una solicitud en esta convocatoria.")
     fun blockingApplication() = ConflictException("APPLICATION_ALREADY_EXISTS_FOR_EDITION", "Existe una solicitud de esta edición que aún impide una nueva presentación.")
     fun idempotencyConflict() = ConflictException("APPLICATION_IDEMPOTENCY_CONFLICT", "La clave de idempotencia ya se utilizó con otra convocatoria.")
+    fun invalidAssignment(message: String) = BadRequestException("APPLICATION_ASSIGNMENT_INVALID", message)
+    fun assigneeNotFound() = NotFoundException("APPLICATION_ASSIGNEE_NOT_FOUND", "El usuario a asignar no existe o está inactivo.")
+    fun assigneeNotEligible() = ConflictException("APPLICATION_ASSIGNEE_NOT_ELIGIBLE", "El usuario no tiene un rol habilitado para evaluar la solicitud y gestionar sus visitas.")
+    fun assignmentStatusNotAllowed() = ConflictException("APPLICATION_ASSIGNMENT_STATUS_NOT_ALLOWED", "El estado actual de la solicitud no permite cambiar el trabajador asignado.")
+    fun unassignmentAfterEvaluation() = ConflictException("APPLICATION_UNASSIGNMENT_EVALUATED", "La solicitud ya fue evaluada: necesita un trabajador asignado para gestionar sus visitas.")
+    fun assignmentWithScheduledVisits() = ConflictException("APPLICATION_ASSIGNMENT_SCHEDULED_VISITS", "La solicitud tiene visitas o entrevistas programadas. Cancelalas o registrá su resultado antes de reasignarla.")
 }

@@ -1,10 +1,12 @@
 package com.uade.dda2.server.feature.application.controller
 
 import com.uade.dda2.server.error.ErrorResponse
+import com.uade.dda2.server.feature.application.dto.request.AssignApplicationWorkerRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateAssistedApplicationRequest
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationListResponse
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
+import com.uade.dda2.server.feature.application.service.APPLICATION_ASSIGN_PERMISSION
 import com.uade.dda2.server.feature.application.service.ApplicationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -19,9 +21,11 @@ import jakarta.validation.constraints.Min
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
@@ -104,4 +108,35 @@ class AdminApplicationController(private val service: ApplicationService) {
     @ApiResponse(responseCode = "403", description = "Sin permiso en el rol activo o rol retirado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     @ApiResponse(responseCode = "404", description = "Solicitud inexistente.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun get(@PathVariable id: UUID): AdminApplicationResponse = service.getAdmin(id)
+
+    @PutMapping("/{id}/assigned-worker", consumes = ["application/json"])
+    @PreAuthorize("hasAuthority('$APPLICATION_ASSIGN_PERMISSION')")
+    @Operation(operationId = "assignApplicationWorker", summary = "Asignar o reasignar el trabajador de una solicitud", description =
+        "Requiere applications:management:assign en el rol activo. El asignado evalúa la solicitud y es responsable de sus " +
+        "visitas. Debe estar activo y tener un rol con applications:visits:create, y también applications:evaluations:create " +
+        "si la solicitud todavía no fue evaluada. Solo admite solicitudes en validación, evaluación o visita, y rechaza la " +
+        "reasignación mientras haya visitas o entrevistas programadas. Asignar al mismo trabajador no cambia nada.")
+    @ApiResponse(responseCode = "200", description = "Detalle de la solicitud con el trabajador asignado.", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400", description = "Cuerpo inválido o sin userId.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "403", description = "Sin permiso en el rol activo o rol retirado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "404", description = "Solicitud o usuario a asignar inexistentes, o usuario inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "409", description = "Estado no asignable, usuario sin rol habilitado o visitas programadas.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    fun assignWorker(
+        @PathVariable id: UUID,
+        @RequestBody request: AssignApplicationWorkerRequest,
+    ): AdminApplicationResponse = service.assignWorker(id, request)
+
+    @DeleteMapping("/{id}/assigned-worker")
+    @PreAuthorize("hasAuthority('$APPLICATION_ASSIGN_PERMISSION')")
+    @Operation(operationId = "unassignApplicationWorker", summary = "Volver a la asignación automática", description =
+        "Requiere applications:management:assign en el rol activo. Quita el trabajador asignado para que quien registre la " +
+        "evaluación quede asignado, como en una solicitud nueva. Solo admite solicitudes todavía sin evaluar, en validación " +
+        "o evaluación. Si no había asignado, no cambia nada.")
+    @ApiResponse(responseCode = "200", description = "Detalle de la solicitud sin trabajador asignado.", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "403", description = "Sin permiso en el rol activo o rol retirado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "404", description = "Solicitud inexistente.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "409", description = "Estado no asignable o solicitud ya evaluada.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    fun unassignWorker(@PathVariable id: UUID): AdminApplicationResponse = service.unassignWorker(id)
 }
