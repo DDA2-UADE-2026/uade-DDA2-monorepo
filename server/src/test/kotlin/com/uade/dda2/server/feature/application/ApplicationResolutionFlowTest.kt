@@ -174,7 +174,8 @@ class ApplicationResolutionFlowTest {
         expect(own, 200)
         val ownJson = json.readTree(own.response.contentAsString)
         assertEquals("APPROVED", ownJson.get("status").stringValue())
-        listOf("reason", "resolutionReason", "resolvedByUserId", "resolvedByUserName", "resolutions").forEach { assertFalse(ownJson.has(it)) }
+        listOf("reason", "resolutionReason", "resolvedAt", "resolvedByUserId", "resolvedByUserName", "resolvedByName", "resolutions")
+            .forEach { assertFalse(ownJson.has(it), "La respuesta ciudadana no debe exponer $it") }
         expect(history(f.citizenToken), 403)
         expect(resolve(), 409, "APPLICATION_RESOLUTION_STATUS_NOT_ALLOWED")
         assertEquals(1, editions.findById(f.editionId).orElseThrow().currentEnrollment)

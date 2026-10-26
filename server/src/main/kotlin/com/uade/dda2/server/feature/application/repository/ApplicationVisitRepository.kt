@@ -22,8 +22,6 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
 
     fun countByApplicationId(applicationId: UUID): Long
 
-    fun existsByApplicationIdAndStatus(applicationId: UUID, status: ApplicationVisitStatus): Boolean
-
     fun existsByApplicationIdAndStatusAndIdNot(
         applicationId: UUID,
         status: ApplicationVisitStatus,

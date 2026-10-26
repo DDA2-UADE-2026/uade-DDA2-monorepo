@@ -8,7 +8,7 @@ import com.uade.dda2.server.feature.application.dto.response.AdminApplicationLis
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.service.APPLICATION_ASSIGN_PERMISSION
-import com.uade.dda2.server.feature.application.service.APPLICATION_RESOLVE_PERMISSION
+import com.uade.dda2.server.feature.application.service.APPLICATION_RESOLUTION_CREATE_PERMISSION
 import com.uade.dda2.server.feature.application.service.ApplicationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -143,13 +143,13 @@ class AdminApplicationController(private val service: ApplicationService) {
     fun unassignWorker(@PathVariable id: UUID): AdminApplicationResponse = service.unassignWorker(id)
 
     @PostMapping("/{id}/resolution", consumes = ["application/json"])
-    @PreAuthorize("hasAuthority('$APPLICATION_RESOLVE_PERMISSION')")
+    @PreAuthorize("hasAuthority('$APPLICATION_RESOLUTION_CREATE_PERMISSION')")
     @Operation(operationId = "resolveApplication", summary = "Resolver una solicitud", description =
         "Requiere applications:resolutions:create en el rol activo y ser el trabajador asignado; nadie resuelve su propia " +
         "solicitud. Admite solicitudes en evaluación (APPROVED, REJECTED o WAITLISTED) o en lista de espera (APPROVED o " +
         "REJECTED). Exige una evaluación registrada y ninguna visita programada. Aprobar exige además la documentación " +
-        "obligatoria completa y cupo disponible en la edición (maxCapacity aprobadas). El motivo es visible para el " +
-        "titular y obligatorio para rechazar o dejar en espera. Rechazar libera al titular para presentarse en otra convocatoria.")
+        "obligatoria completa y cupo disponible en la edición (maxCapacity aprobadas). El motivo es administrativo y " +
+        "obligatorio para rechazar o dejar en espera. Rechazar libera al titular para presentarse en otra convocatoria.")
     @ApiResponse(responseCode = "200", description = "Detalle de la solicitud resuelta.", useReturnTypeSchema = true)
     @ApiResponse(responseCode = "400", description = "Decisión ausente o inválida, motivo faltante o demasiado largo, o campos desconocidos.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])

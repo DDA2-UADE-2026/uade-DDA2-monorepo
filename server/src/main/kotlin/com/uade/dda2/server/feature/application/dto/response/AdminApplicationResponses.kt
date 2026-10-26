@@ -80,8 +80,6 @@ data class AdminApplicationResponse(
     val submittedAt: LocalDateTime,
     @field:Schema(nullable = true)
     val resolvedAt: LocalDateTime?,
-    @field:Schema(description = "Quien registró la última resolución.", nullable = true)
-    val resolvedByUserId: Long?,
     @field:Schema(nullable = true)
     val resolvedByName: String?,
     val createdAt: LocalDateTime,

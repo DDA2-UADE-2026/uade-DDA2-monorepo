@@ -62,9 +62,6 @@ class Application(
     var submittedAt: LocalDateTime,
     @Column(name = "resolved_at")
     var resolvedAt: LocalDateTime? = null,
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resolved_by_user_id")
-    var resolvedBy: User? = null,
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = submittedAt,
     @Column(name = "updated_at", nullable = false)

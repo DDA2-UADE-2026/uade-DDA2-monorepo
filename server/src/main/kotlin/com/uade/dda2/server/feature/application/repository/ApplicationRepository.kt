@@ -31,6 +31,12 @@ interface ApplicationRepository : JpaRepository<Application, UUID> {
     @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "programEdition.program"])
     override fun findAll(pageable: Pageable): Page<Application>
 
+    @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "programEdition.program"])
+    fun findAllByProgramEditionProgramId(programId: UUID, pageable: Pageable): Page<Application>
+
+    fun countByProgramEditionIdAndStatus(programEditionId: UUID, status: ApplicationStatus): Long
+    fun existsByResolvedById(userId: Long): Boolean
+
     @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "resolvedBy", "programEdition.program"])
     fun findDetailById(id: UUID): Application?
 
