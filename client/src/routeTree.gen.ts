@@ -79,6 +79,7 @@ import { Route as AppGestionCentrosCentroIdIndexRouteImport } from "./routes/_ap
 import { Route as AppGestionCentrosCentroIdAgendaRouteImport } from "./routes/_app/gestion/centros/$centroId/agenda"
 import { Route as AppGestionProgramasProgramaIdIndexRouteImport } from "./routes/_app/gestion/programas/$programaId/index"
 import { Route as AppGestionProgramasProgramaIdIncompatibilidadesRouteImport } from "./routes/_app/gestion/programas/$programaId/incompatibilidades"
+import { Route as AppGestionProgramasProgramaIdSolicitudesRouteImport } from "./routes/_app/gestion/programas/$programaId/solicitudes"
 import { Route as AppPortalSolicitudesSolicitudIdIndexRouteImport } from "./routes/_app/portal/solicitudes/$solicitudId/index"
 import { Route as AppPortalSolicitudesSolicitudIdDocumentacionRouteImport } from "./routes/_app/portal/solicitudes/$solicitudId/documentacion"
 import { Route as AppPortalSolicitudesSolicitudIdVisitasRouteImport } from "./routes/_app/portal/solicitudes/$solicitudId/visitas"
@@ -474,6 +475,12 @@ const AppGestionProgramasProgramaIdIncompatibilidadesRoute =
     path: "/incompatibilidades",
     getParentRoute: () => AppGestionProgramasProgramaIdRouteRoute,
   } as any)
+const AppGestionProgramasProgramaIdSolicitudesRoute =
+  AppGestionProgramasProgramaIdSolicitudesRouteImport.update({
+    id: "/solicitudes",
+    path: "/solicitudes",
+    getParentRoute: () => AppGestionProgramasProgramaIdRouteRoute,
+  } as any)
 const AppPortalSolicitudesSolicitudIdIndexRoute =
   AppPortalSolicitudesSolicitudIdIndexRouteImport.update({
     id: "/solicitudes/$solicitudId/",
@@ -609,6 +616,7 @@ export interface FileRoutesByFullPath {
   "/gestion/casos/$solicitudId/visitas": typeof AppGestionCasosSolicitudIdVisitasRoute
   "/gestion/centros/$centroId/agenda": typeof AppGestionCentrosCentroIdAgendaRoute
   "/gestion/programas/$programaId/incompatibilidades": typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
+  "/gestion/programas/$programaId/solicitudes": typeof AppGestionProgramasProgramaIdSolicitudesRoute
   "/portal/solicitudes/$solicitudId/documentacion": typeof AppPortalSolicitudesSolicitudIdDocumentacionRoute
   "/portal/solicitudes/$solicitudId/visitas": typeof AppPortalSolicitudesSolicitudIdVisitasRoute
   "/gestion/actividades/$actividadId/": typeof AppGestionActividadesActividadIdIndexRoute
@@ -682,6 +690,7 @@ export interface FileRoutesByTo {
   "/gestion/casos/$solicitudId/visitas": typeof AppGestionCasosSolicitudIdVisitasRoute
   "/gestion/centros/$centroId/agenda": typeof AppGestionCentrosCentroIdAgendaRoute
   "/gestion/programas/$programaId/incompatibilidades": typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
+  "/gestion/programas/$programaId/solicitudes": typeof AppGestionProgramasProgramaIdSolicitudesRoute
   "/portal/solicitudes/$solicitudId/documentacion": typeof AppPortalSolicitudesSolicitudIdDocumentacionRoute
   "/portal/solicitudes/$solicitudId/visitas": typeof AppPortalSolicitudesSolicitudIdVisitasRoute
   "/gestion/actividades/$actividadId": typeof AppGestionActividadesActividadIdIndexRoute
@@ -764,6 +773,7 @@ export interface FileRoutesById {
   "/_app/gestion/casos/$solicitudId/visitas": typeof AppGestionCasosSolicitudIdVisitasRoute
   "/_app/gestion/centros/$centroId/agenda": typeof AppGestionCentrosCentroIdAgendaRoute
   "/_app/gestion/programas/$programaId/incompatibilidades": typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
+  "/_app/gestion/programas/$programaId/solicitudes": typeof AppGestionProgramasProgramaIdSolicitudesRoute
   "/_app/portal/solicitudes/$solicitudId/documentacion": typeof AppPortalSolicitudesSolicitudIdDocumentacionRoute
   "/_app/portal/solicitudes/$solicitudId/visitas": typeof AppPortalSolicitudesSolicitudIdVisitasRoute
   "/_app/gestion/actividades/$actividadId/": typeof AppGestionActividadesActividadIdIndexRoute
@@ -845,6 +855,7 @@ export interface FileRouteTypes {
     | "/gestion/casos/$solicitudId/visitas"
     | "/gestion/centros/$centroId/agenda"
     | "/gestion/programas/$programaId/incompatibilidades"
+    | "/gestion/programas/$programaId/solicitudes"
     | "/portal/solicitudes/$solicitudId/documentacion"
     | "/portal/solicitudes/$solicitudId/visitas"
     | "/gestion/actividades/$actividadId/"
@@ -918,6 +929,7 @@ export interface FileRouteTypes {
     | "/gestion/casos/$solicitudId/visitas"
     | "/gestion/centros/$centroId/agenda"
     | "/gestion/programas/$programaId/incompatibilidades"
+    | "/gestion/programas/$programaId/solicitudes"
     | "/portal/solicitudes/$solicitudId/documentacion"
     | "/portal/solicitudes/$solicitudId/visitas"
     | "/gestion/actividades/$actividadId"
@@ -999,6 +1011,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/casos/$solicitudId/visitas"
     | "/_app/gestion/centros/$centroId/agenda"
     | "/_app/gestion/programas/$programaId/incompatibilidades"
+    | "/_app/gestion/programas/$programaId/solicitudes"
     | "/_app/portal/solicitudes/$solicitudId/documentacion"
     | "/_app/portal/solicitudes/$solicitudId/visitas"
     | "/_app/gestion/actividades/$actividadId/"
@@ -1516,6 +1529,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionProgramasProgramaIdIncompatibilidadesRouteImport
       parentRoute: typeof AppGestionProgramasProgramaIdRouteRoute
     }
+    "/_app/gestion/programas/$programaId/solicitudes": {
+      id: "/_app/gestion/programas/$programaId/solicitudes"
+      path: "/solicitudes"
+      fullPath: "/gestion/programas/$programaId/solicitudes"
+      preLoaderRoute: typeof AppGestionProgramasProgramaIdSolicitudesRouteImport
+      parentRoute: typeof AppGestionProgramasProgramaIdRouteRoute
+    }
     "/_app/portal/solicitudes/$solicitudId/": {
       id: "/_app/portal/solicitudes/$solicitudId/"
       path: "/solicitudes/$solicitudId"
@@ -1672,6 +1692,7 @@ const AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRouteWithChildren 
 
 interface AppGestionProgramasProgramaIdRouteRouteChildren {
   AppGestionProgramasProgramaIdIncompatibilidadesRoute: typeof AppGestionProgramasProgramaIdIncompatibilidadesRoute
+  AppGestionProgramasProgramaIdSolicitudesRoute: typeof AppGestionProgramasProgramaIdSolicitudesRoute
   AppGestionProgramasProgramaIdIndexRoute: typeof AppGestionProgramasProgramaIdIndexRoute
   AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRoute: typeof AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRouteWithChildren
   AppGestionProgramasProgramaIdConvocatoriasNuevaRoute: typeof AppGestionProgramasProgramaIdConvocatoriasNuevaRoute
@@ -1682,6 +1703,8 @@ const AppGestionProgramasProgramaIdRouteRouteChildren: AppGestionProgramasProgra
   {
     AppGestionProgramasProgramaIdIncompatibilidadesRoute:
       AppGestionProgramasProgramaIdIncompatibilidadesRoute,
+    AppGestionProgramasProgramaIdSolicitudesRoute:
+      AppGestionProgramasProgramaIdSolicitudesRoute,
     AppGestionProgramasProgramaIdIndexRoute:
       AppGestionProgramasProgramaIdIndexRoute,
     AppGestionProgramasProgramaIdConvocatoriasEdicionIdRouteRoute:

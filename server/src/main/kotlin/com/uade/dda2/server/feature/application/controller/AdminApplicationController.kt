@@ -72,6 +72,7 @@ class AdminApplicationController(private val service: ApplicationService) {
     @Operation(summary = "Listar solicitudes de cualquier titular", description =
         "Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los " +
         "titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. " +
+        "programId opcional restringe la página a las solicitudes de las ediciones de ese programa. " +
         "Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en " +
         "GET /api/admin/applications/{id}.")
     @ApiResponse(responseCode = "200", description = "Página de solicitudes.", useReturnTypeSchema = true)
@@ -87,7 +88,10 @@ class AdminApplicationController(private val service: ApplicationService) {
         @Min(value = 1, message = "El tamaño de página debe ser mayor a cero.")
         @Max(value = 100, message = "El tamaño de página no puede superar 100 elementos.")
         @RequestParam(defaultValue = "20") size: Int,
-    ): AdminApplicationListResponse = service.listAdmin(page, size)
+
+        @Parameter(description = "Opcional. UUID del programa cuyas solicitudes se listan, de cualquiera de sus ediciones.")
+        @RequestParam(required = false) programId: UUID?,
+    ): AdminApplicationListResponse = service.listAdmin(page, size, programId)
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('applications:management:view')")

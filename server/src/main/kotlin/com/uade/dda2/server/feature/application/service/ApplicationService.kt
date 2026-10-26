@@ -134,10 +134,12 @@ class ApplicationService(
         }
 
     @Transactional(readOnly = true)
-    fun listAdmin(page: Int, size: Int): AdminApplicationListResponse {
+    fun listAdmin(page: Int, size: Int, programId: UUID? = null): AdminApplicationListResponse {
         authorized("applications:management:view")
-        // Same ordering as the own listing; the page covers every titular, without filters.
-        val results = applications.findAll(PageRequest.of(page, size, Sort.by("applicationNumber").descending()))
+        // Same ordering as the own listing; the page covers every titular, optionally narrowed to one program.
+        val pageable = PageRequest.of(page, size, Sort.by("applicationNumber").descending())
+        val results = if (programId == null) applications.findAll(pageable)
+        else applications.findAllByProgramEditionProgramId(programId, pageable)
         return AdminApplicationListResponse(results.content.map { it.toAdminListItemResponse() },
             results.number, results.size, results.totalElements, results.totalPages)
     }
