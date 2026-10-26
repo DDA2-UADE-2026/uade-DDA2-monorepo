@@ -27,7 +27,10 @@ import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
+
+private const val MAX_RANGE_DAYS = 42L
 
 @Service
 class CommunityAttentionService(
@@ -42,11 +45,16 @@ class CommunityAttentionService(
     private val json: JsonMapper,
 ) {
     @Transactional(readOnly = true)
-    fun list(date: LocalDate): List<ProfessionalAppointmentResponse> {
+    fun list(date: LocalDate, to: LocalDate = date): List<ProfessionalAppointmentResponse> {
         val professional = professional("appointments:professional:view")
+        if (to.isBefore(date)) throw AppointmentErrors.invalidRequest("to no puede ser anterior a date.")
+        // 42 days = six full weeks, the largest month grid the agenda renders.
+        if (ChronoUnit.DAYS.between(date, to) >= MAX_RANGE_DAYS) {
+            throw AppointmentErrors.invalidRequest("El rango no puede superar $MAX_RANGE_DAYS dias.")
+        }
         val zone = properties.zone()
         val start = date.atStartOfDay(zone).toOffsetDateTime()
-        val end = date.plusDays(1).atStartOfDay(zone).toOffsetDateTime()
+        val end = to.plusDays(1).atStartOfDay(zone).toOffsetDateTime()
         val found = appointments.findByProfessionalIdInRange(requireNotNull(professional.id), start, end)
         if (found.isEmpty()) return emptyList()
         val byAppointmentId = attentions.findAllByAppointmentIdIn(found.map { requireNotNull(it.id) })

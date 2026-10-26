@@ -6,6 +6,7 @@ import com.uade.dda2.server.feature.appointment.dto.response.CommunityAttentionR
 import com.uade.dda2.server.feature.appointment.dto.response.ProfessionalAppointmentResponse
 import com.uade.dda2.server.feature.appointment.service.CommunityAttentionService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -28,9 +29,17 @@ import java.util.UUID
 class ProfessionalAppointmentController(private val service: CommunityAttentionService) {
     @GetMapping
     @PreAuthorize("hasAuthority('appointments:professional:view')")
-    @Operation(operationId = "listProfessionalAppointments", summary = "Listar turnos asignados para una fecha")
-    fun list(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate): List<ProfessionalAppointmentResponse> =
-        service.list(date)
+    @Operation(
+        operationId = "listProfessionalAppointments",
+        summary = "Listar turnos asignados para una fecha o un rango",
+        description = "Sin to devuelve los turnos de date. Con to devuelve los turnos desde date hasta to inclusive, " +
+            "ordenados por inicio; el rango admite hasta 42 dias para cubrir una grilla mensual completa.",
+    )
+    fun list(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate,
+        @Parameter(description = "Opcional. Fecha final inclusiva, igual o posterior a date y como maximo 41 dias despues.")
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) to: LocalDate?,
+    ): List<ProfessionalAppointmentResponse> = service.list(date, to ?: date)
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('appointments:professional:view')")

@@ -8959,6 +8959,10 @@ export type ListProfessionalAppointmentsData = {
     path?: never;
     query: {
         date: string;
+        /**
+         * Opcional. Fecha final inclusiva, igual o posterior a date y como maximo 41 dias despues.
+         */
+        to?: string;
     };
     url: '/api/professional/appointments';
 };

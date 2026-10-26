@@ -3451,7 +3451,8 @@ export const zGetAvailableProgramPath = z.object({
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
 
 export const zListProfessionalAppointmentsQuery = z.object({
-    date: z.iso.date()
+    date: z.iso.date(),
+    to: z.iso.date().optional()
 });
 
 /**

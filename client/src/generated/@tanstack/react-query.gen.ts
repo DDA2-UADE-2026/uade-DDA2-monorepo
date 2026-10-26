@@ -2829,7 +2829,9 @@ export const getAvailableProgramOptions = (options: Options<GetAvailableProgramD
 export const listProfessionalAppointmentsQueryKey = (options: Options<ListProfessionalAppointmentsData>) => createQueryKey('listProfessionalAppointments', options);
 
 /**
- * Listar turnos asignados para una fecha
+ * Listar turnos asignados para una fecha o un rango
+ *
+ * Sin to devuelve los turnos de date. Con to devuelve los turnos desde date hasta to inclusive, ordenados por inicio; el rango admite hasta 42 dias para cubrir una grilla mensual completa.
  */
 export const listProfessionalAppointmentsOptions = (options: Options<ListProfessionalAppointmentsData>) => queryOptions<ListProfessionalAppointmentsResponse, ListProfessionalAppointmentsError, ListProfessionalAppointmentsResponse, ReturnType<typeof listProfessionalAppointmentsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_app/gestion/mis-turnos/$turnoId")({
 
 function RouteComponent() {
   const { turnoId } = Route.useParams()
-  const { fecha } = Route.useSearch()
+  const { fecha, vista } = Route.useSearch()
   const queryClient = useQueryClient()
   const [saved, setSaved] = useState(false)
   const [stale, setStale] = useState(false)
@@ -59,7 +59,7 @@ function RouteComponent() {
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
         <main className="mx-auto w-full min-w-0 max-w-5xl space-y-6 p-4 lg:p-6">
-          <Button size="sm" variant="ghost" render={<Link to="/gestion/mis-turnos" search={{ fecha }} />}>
+          <Button size="sm" variant="ghost" render={<Link to="/gestion/mis-turnos" search={{ fecha, vista }} />}>
             <IconArrowLeft />Volver a turnos asignados
           </Button>
           {!isUuid(turnoId) ? (
