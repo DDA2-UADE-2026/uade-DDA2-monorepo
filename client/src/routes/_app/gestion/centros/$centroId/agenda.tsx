@@ -164,7 +164,7 @@ export function OpeningHoursSection({ centroId }: { centroId: string }) {
                 body: { days: value.days, startTime: value.startTime, endTime: value.endTime },
               })
             } else {
-              create.mutate({ path: { centerId: centroId }, body: value })
+              create.mutate({ path: { centerId: centroId }, body: { dayOfWeek: value.days[0], startTime: value.startTime, endTime: value.endTime } })
             }
           }}
           onOpenChange={(open) => { if (!open) setDialog(null) }}
@@ -380,7 +380,7 @@ export function AssignmentAvailability({ assignmentId, professionalId, professio
                 body: { days: value.days, startTime: value.startTime, endTime: value.endTime },
               })
             } else {
-              create.mutate({ path: { assignmentId }, body: value })
+              create.mutate({ path: { assignmentId }, body: { dayOfWeek: value.days[0], startTime: value.startTime, endTime: value.endTime } })
             }
           }}
           onOpenChange={(open) => { if (!open) { setDialog(null); setDuplicateInactiveError(null) } }}

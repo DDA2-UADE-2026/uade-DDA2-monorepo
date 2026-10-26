@@ -59,6 +59,7 @@ import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestio
 import { Route as AppGestionTurnosNuevoRouteImport } from "./routes/_app/gestion/turnos/nuevo"
 import { Route as AppGestionUsuariosIndexRouteImport } from "./routes/_app/gestion/usuarios/index"
 import { Route as AppGestionVisitasIndexRouteImport } from "./routes/_app/gestion/visitas/index"
+import { Route as AppGestionVisitasVisitaIdRouteImport } from "./routes/_app/gestion/visitas/$visitaId"
 import { Route as AppPortalActividadesIndexRouteImport } from "./routes/_app/portal/actividades/index"
 import { Route as AppPortalActividadesActividadIdRouteImport } from "./routes/_app/portal/actividades/$actividadId"
 import { Route as AppPortalBeneficiosIndexRouteImport } from "./routes/_app/portal/beneficios/index"
@@ -359,6 +360,12 @@ const AppGestionVisitasIndexRoute = AppGestionVisitasIndexRouteImport.update({
   path: "/visitas/",
   getParentRoute: () => AppGestionRouteRoute,
 } as any)
+const AppGestionVisitasVisitaIdRoute =
+  AppGestionVisitasVisitaIdRouteImport.update({
+    id: "/visitas/$visitaId",
+    path: "/visitas/$visitaId",
+    getParentRoute: () => AppGestionRouteRoute,
+  } as any)
 const AppPortalActividadesIndexRoute =
   AppPortalActividadesIndexRouteImport.update({
     id: "/actividades/",
@@ -588,6 +595,7 @@ export interface FileRoutesByFullPath {
   "/gestion/turnos/$turnoId": typeof AppGestionTurnosTurnoIdRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
+  "/gestion/visitas/$visitaId": typeof AppGestionVisitasVisitaIdRoute
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
@@ -662,6 +670,7 @@ export interface FileRoutesByTo {
   "/gestion/turnos/$turnoId": typeof AppGestionTurnosTurnoIdRoute
   "/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
+  "/gestion/visitas/$visitaId": typeof AppGestionVisitasVisitaIdRoute
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
@@ -745,6 +754,7 @@ export interface FileRoutesById {
   "/_app/gestion/turnos/$turnoId": typeof AppGestionTurnosTurnoIdRoute
   "/_app/gestion/turnos/agenda": typeof AppGestionTurnosAgendaRoute
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
+  "/_app/gestion/visitas/$visitaId": typeof AppGestionVisitasVisitaIdRoute
   "/_app/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
   "/_app/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/_app/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
@@ -827,6 +837,7 @@ export interface FileRouteTypes {
     | "/gestion/turnos/$turnoId"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
+    | "/gestion/visitas/$visitaId"
     | "/portal/actividades/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
@@ -901,6 +912,7 @@ export interface FileRouteTypes {
     | "/gestion/turnos/$turnoId"
     | "/gestion/turnos/agenda"
     | "/gestion/turnos/nuevo"
+    | "/gestion/visitas/$visitaId"
     | "/portal/actividades/$actividadId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
@@ -983,6 +995,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/turnos/$turnoId"
     | "/_app/gestion/turnos/agenda"
     | "/_app/gestion/turnos/nuevo"
+    | "/_app/gestion/visitas/$visitaId"
     | "/_app/portal/actividades/$actividadId"
     | "/_app/portal/programas/$programaId"
     | "/_app/portal/solicitudes/nueva"
@@ -1389,6 +1402,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppGestionVisitasIndexRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
+    "/_app/gestion/visitas/$visitaId": {
+      id: "/_app/gestion/visitas/$visitaId"
+      path: "/visitas/$visitaId"
+      fullPath: "/gestion/visitas/$visitaId"
+      preLoaderRoute: typeof AppGestionVisitasVisitaIdRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
     "/_app/portal/actividades/": {
       id: "/_app/portal/actividades/"
       path: "/actividades"
@@ -1742,6 +1762,7 @@ interface AppGestionRouteRouteChildren {
   AppGestionTurnosTurnoIdRoute: typeof AppGestionTurnosTurnoIdRoute
   AppGestionTurnosAgendaRoute: typeof AppGestionTurnosAgendaRoute
   AppGestionTurnosNuevoRoute: typeof AppGestionTurnosNuevoRoute
+  AppGestionVisitasVisitaIdRoute: typeof AppGestionVisitasVisitaIdRoute
   AppGestionActividadesIndexRoute: typeof AppGestionActividadesIndexRoute
   AppGestionBeneficiosIndexRoute: typeof AppGestionBeneficiosIndexRoute
   AppGestionCasosIndexRoute: typeof AppGestionCasosIndexRoute
@@ -1784,6 +1805,7 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionTurnosTurnoIdRoute: AppGestionTurnosTurnoIdRoute,
   AppGestionTurnosAgendaRoute: AppGestionTurnosAgendaRoute,
   AppGestionTurnosNuevoRoute: AppGestionTurnosNuevoRoute,
+  AppGestionVisitasVisitaIdRoute: AppGestionVisitasVisitaIdRoute,
   AppGestionActividadesIndexRoute: AppGestionActividadesIndexRoute,
   AppGestionBeneficiosIndexRoute: AppGestionBeneficiosIndexRoute,
   AppGestionCasosIndexRoute: AppGestionCasosIndexRoute,
