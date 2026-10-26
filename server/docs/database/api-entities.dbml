@@ -644,13 +644,14 @@ Table application {
   registered_by_user_id bigint [not null, ref: > users.id, note: 'Registrado por: actor obtenido del JWT, inmutable. Coincide con user_id en solicitudes propias; en asistidas es el administrativo. No es el trabajador asignado.']
   program_edition_id uuid [not null, ref: > program_edition.id, note: 'Derivada de enrollment_period.program_edition_id; inmutable.']
   enrollment_period_id uuid [not null, ref: > enrollment_period.id]
-  status application_status [not null, note: 'Persistido como varchar(30). Las altas finalizan en SUBMITTED; la evaluacion la lleva a IN_EVALUATION y la primera actuacion programada a IN_VISIT. Al cancelar o finalizar la ultima actuacion SCHEDULED vuelve a IN_EVALUATION.']
+  status application_status [not null, note: 'Persistido como varchar(30). Las altas finalizan en SUBMITTED; la evaluacion la lleva a IN_EVALUATION y la primera actuacion programada a IN_VISIT. Al cancelar o finalizar la ultima actuacion SCHEDULED vuelve a IN_EVALUATION. La resolucion la lleva de IN_EVALUATION a APPROVED, REJECTED o WAITLISTED, y de WAITLISTED a APPROVED o REJECTED.']
   origin_ticket_id varchar(255)
   resolution_reason varchar(1000)
   resolved_by_user_id bigint [ref: > users.id, note: 'Responsable de la ultima resolucion, obtenido del JWT; no reemplaza al trabajador asignado.']
   assigned_worker_user_id bigint [ref: > users.id]
   submitted_at timestamp [note: 'Asignado por servidor al presentar. Horario de ENROLLMENT_PERIOD_TIME_ZONE, Argentina por defecto.']
-  resolved_at timestamp
+  resolved_at timestamp [note: 'Ultima resolucion: APPROVED, REJECTED o WAITLISTED. Una solicitud en espera puede resolverse de nuevo.']
+  resolved_by_user_id bigint [ref: > users.id, note: 'Trabajador asignado que registro la ultima resolucion.']
   created_at timestamp [not null]
   updated_at timestamp [not null]
   idempotency_key varchar(128) [note: 'Opcional, ASCII visible sin espacios. Comparación exacta, por usuario; persiste durante la vida de la solicitud. No representa una sesión.']
@@ -665,6 +666,7 @@ Table application {
     program_edition_id [name: 'ix_application_edition']
     assigned_worker_user_id [name: 'ix_application_worker']
     registered_by_user_id [name: 'ix_application_registered_by']
+    resolved_by_user_id [name: 'ix_application_resolved_by']
   }
 
   checks {

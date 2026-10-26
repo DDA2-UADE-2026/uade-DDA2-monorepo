@@ -446,6 +446,29 @@ class ApplicationEvaluationFlowTest {
     }
 
     @Test
+    fun `el titular no puede evaluar su propia solicitud ni quedar asignado`() {
+        val ownApplication = tx {
+            val actor = users.findById(fixture.actorId).orElseThrow()
+            requireNotNull(
+                applications.saveAndFlush(
+                    Application(
+                        user = actor,
+                        registeredBy = actor,
+                        programEdition = editions.getReferenceById(fixture.editionId),
+                        enrollmentPeriod = periods.getReferenceById(fixture.periodId),
+                        submittedAt = LocalDateTime.now().minusDays(1),
+                    ),
+                ).id,
+            )
+        }
+        expect(create(ownApplication), 409, "APPLICATION_EVALUATION_OWN_APPLICATION")
+        val stored = tx { applications.findById(ownApplication).map { (it.assignedWorker?.id ?: -1L) to it.status }.orElseThrow() }
+        assertEquals(-1L, stored.first)
+        assertEquals(ApplicationStatus.SUBMITTED, stored.second)
+        assertFalse(evaluations.existsByApplicationId(ownApplication))
+    }
+
+    @Test
     fun `una segunda evaluacion responde conflicto y conserva la original`() {
         val first = create()
         expect(first, 201)

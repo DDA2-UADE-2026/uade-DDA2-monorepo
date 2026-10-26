@@ -28,6 +28,10 @@ data class ApplicationResponse(
     val programEditionName: String,
     @field:Schema(description = "Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.")
     val documentRequirements: List<AvailableProgramDocumentRequirementResponse>,
+    @field:Schema(description = "Momento de la resolución (aprobada, rechazada o en lista de espera).", nullable = true)
+    val resolvedAt: LocalDateTime? = null,
+    @field:Schema(description = "Motivo de la resolución informado por el trabajador social.", nullable = true)
+    val resolutionReason: String? = null,
 )
 
 data class ApplicationListResponse(

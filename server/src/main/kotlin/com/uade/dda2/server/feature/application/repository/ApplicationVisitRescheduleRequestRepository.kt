@@ -69,8 +69,8 @@ interface ApplicationVisitRescheduleRequestRepository :
           and (:responsibleId is null or request.visit.responsible.id = :responsibleId)
           and (:programId is null or request.visit.application.programEdition.program.id = :programId)
           and (:programEditionId is null or request.visit.application.programEdition.id = :programEditionId)
-          and (:requestedFrom is null or request.requestedAt >= :requestedFrom)
-          and (:requestedTo is null or request.requestedAt < :requestedTo)
+          and (cast(:requestedFrom as OffsetDateTime) is null or request.requestedAt >= :requestedFrom)
+          and (cast(:requestedTo as OffsetDateTime) is null or request.requestedAt < :requestedTo)
         """,
     )
     fun search(

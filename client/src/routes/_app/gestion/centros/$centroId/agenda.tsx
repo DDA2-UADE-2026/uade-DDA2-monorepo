@@ -28,6 +28,7 @@ import {
   updateProfessionalAvailabilityMutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { CenterOpeningHourResponse, ProfessionalAvailabilityResponse } from "@/generated/types.gen"
+import { UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/centros/$centroId/agenda")({
   component: RouteComponent,
@@ -163,7 +164,7 @@ export function OpeningHoursSection({ centroId }: { centroId: string }) {
                 body: { days: value.days, startTime: value.startTime, endTime: value.endTime },
               })
             } else {
-              create.mutate({ path: { centerId: centroId }, body: value })
+              create.mutate({ path: { centerId: centroId }, body: { dayOfWeek: value.days[0], startTime: value.startTime, endTime: value.endTime } })
             }
           }}
           onOpenChange={(open) => { if (!open) setDialog(null) }}
@@ -235,6 +236,7 @@ function ServiceAvailability({ centerServiceId, serviceName }: {
           <AssignmentAvailability
             key={assignment.id}
             assignmentId={assignment.id}
+            professionalId={assignment.professionalId}
             professionalName={assignment.professionalName ?? "Profesional"}
             onChanged={() => queryClient.invalidateQueries({
               queryKey: listProfessionalAvailabilityQueryKey({ path: { assignmentId: assignment.id! } }),
@@ -246,8 +248,9 @@ function ServiceAvailability({ centerServiceId, serviceName }: {
   )
 }
 
-export function AssignmentAvailability({ assignmentId, professionalName, onChanged }: {
+export function AssignmentAvailability({ assignmentId, professionalId, professionalName, onChanged }: {
   assignmentId: string
+  professionalId?: number
   professionalName: string
   onChanged: () => void
 }) {
@@ -277,7 +280,7 @@ export function AssignmentAvailability({ assignmentId, professionalName, onChang
   return (
     <div className="space-y-2 border-t pt-3 first:border-t-0 first:pt-0">
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">{professionalName}</h3>
+        <h3 className="text-sm font-semibold"><UserInline user={{ id: professionalId, name: professionalName }} /></h3>
         <Button size="xs" variant="outline" onClick={() => { create.reset(); createBulk.reset(); update.reset(); setDuplicateInactiveError(null); setDialog({ range: null }) }}>
           <IconPlus />Agregar
         </Button>
@@ -377,7 +380,7 @@ export function AssignmentAvailability({ assignmentId, professionalName, onChang
                 body: { days: value.days, startTime: value.startTime, endTime: value.endTime },
               })
             } else {
-              create.mutate({ path: { assignmentId }, body: value })
+              create.mutate({ path: { assignmentId }, body: { dayOfWeek: value.days[0], startTime: value.startTime, endTime: value.endTime } })
             }
           }}
           onOpenChange={(open) => { if (!open) { setDialog(null); setDuplicateInactiveError(null) } }}

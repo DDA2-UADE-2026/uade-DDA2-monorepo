@@ -34,6 +34,7 @@ function RouteComponent() {
     { label: "Datos", to: base },
     { label: "Ediciones", to: `${base}/convocatorias` },
     { label: "Incompatibilidades", to: `${base}/incompatibilidades` },
+    { label: "Solicitudes", to: `${base}/solicitudes` },
   ]
   const editionTabs = [
     { label: "Datos", to: editionBase },

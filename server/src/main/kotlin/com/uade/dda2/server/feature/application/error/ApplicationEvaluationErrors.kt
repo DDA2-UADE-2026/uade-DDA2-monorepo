@@ -23,6 +23,12 @@ object ApplicationEvaluationErrors {
             "La solicitud esta asignada a otro trabajador.",
         )
 
+    fun ownApplication(): ConflictException =
+        ConflictException(
+            "APPLICATION_EVALUATION_OWN_APPLICATION",
+            "No podes evaluar una solicitud en la que sos titular.",
+        )
+
     fun notFound(): NotFoundException =
         NotFoundException("APPLICATION_EVALUATION_NOT_FOUND", "Evaluacion social no encontrada.")
 

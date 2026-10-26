@@ -1,6 +1,6 @@
-import { IconArrowLeft } from "@tabler/icons-react"
+import { IconAlertCircle, IconArrowLeft, IconCalendarX, IconClock, IconRefresh } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { CommunityAttentionForm } from "@/components/appointments/CommunityAttentionForm"
@@ -10,23 +10,20 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getProfessionalAppointmentOptions, getProfessionalAppointmentQueryKey } from "@/generated/@tanstack/react-query.gen"
 import { APPOINTMENT_TIME_ZONE, formatAppointmentDate, formatAppointmentRange, isUuid } from "@/lib/appointment-flow"
 import { attentionLabel, canRegisterAttention, professionalTurnSearchSchema } from "@/lib/community-attention"
+import { UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/$turnoId")({
   validateSearch: professionalTurnSearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "PROFESIONAL_CENTRO") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const { turnoId } = Route.useParams()
-  const { fecha } = Route.useSearch()
+  const { fecha, vista } = Route.useSearch()
   const queryClient = useQueryClient()
   const [saved, setSaved] = useState(false)
   const [stale, setStale] = useState(false)
@@ -57,25 +54,29 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavBreadcrumbs items={[{ label: "Mis turnos", to: "/gestion/mis-turnos" }, { label: "Detalle" }]} />
+        <OutletNavBreadcrumbs items={[{ label: "Turnos asignados", to: "/gestion/mis-turnos" }, { label: "Detalle" }]} />
       </OutletNavSticky>
       <SidebarShellContent>
-        <main className="mx-auto w-full max-w-3xl space-y-4 p-4 lg:p-6">
-          <Button size="sm" variant="ghost" render={<Link to="/gestion/mis-turnos" search={{ fecha }} />}>
-            <IconArrowLeft />Volver a mis turnos
+        <div className="min-h-0 flex-1 overflow-y-auto">
+        <main className="mx-auto w-full min-w-0 max-w-5xl space-y-6 p-4 lg:p-6">
+          <Button size="sm" variant="ghost" render={<Link to="/gestion/mis-turnos" search={{ fecha, vista }} />}>
+            <IconArrowLeft />Volver a turnos asignados
           </Button>
           {!isUuid(turnoId) ? (
-            <p>No encontramos ese turno.</p>
+            <Alert variant="destructive"><IconAlertCircle /><AlertTitle>No encontramos ese turno</AlertTitle><AlertDescription>El identificador no es válido.</AlertDescription></Alert>
           ) : detail.isPending ? (
-            <p role="status">Cargando turno…</p>
+            <div role="status" aria-label="Cargando turno" className="space-y-4">
+              <Skeleton className="h-36 w-full" />
+              <Skeleton className="h-28 w-full" />
+            </div>
           ) : detail.isError || !appointment ? (
-            <div className="space-y-2"><p>No se pudo cargar el turno.</p><Button variant="outline" onClick={() => void detail.refetch()}>Reintentar</Button></div>
+            <Alert variant="destructive"><IconAlertCircle /><AlertTitle>No se pudo cargar el turno</AlertTitle><AlertDescription><Button size="sm" variant="outline" className="mt-2" onClick={() => void detail.refetch()}>Reintentar</Button></AlertDescription></Alert>
           ) : (
             <>
               <Card>
                 <CardHeader><Badge className="w-fit" variant="outline">{attentionLabel(row)}</Badge><CardTitle>{appointment.serviceName}</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <p><strong>Ciudadano:</strong> {row.citizenName ?? "—"}</p>
+                  <p><strong>Ciudadano:</strong> <UserInline user={{ id: row.citizenId, name: row.citizenName }} /></p>
                   <p><strong>Centro:</strong> {appointment.centerName ?? "—"}</p>
                   <p><strong>Fecha:</strong> {formatAppointmentDate(appointment.startsAt)}</p>
                   <p><strong>Horario:</strong> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
@@ -103,17 +104,15 @@ function RouteComponent() {
                 <CommunityAttentionForm key={row.attention?.version ?? "new"} turnoId={turnoId} row={row} onSaved={onSaved} onConflict={onConflict} />
               ) : (
                 appointment.status === "CANCELLED" ? (
-                  <p className="text-sm text-muted-foreground">Este turno fue cancelado y no admite registrar asistencia.</p>
+                  <Alert><IconCalendarX /><AlertTitle>Turno cancelado</AlertTitle><AlertDescription>Este turno no admite registrar asistencia.</AlertDescription></Alert>
                 ) : (
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                    <p>Podrás registrar la asistencia cuando comience el turno.</p>
-                    <Button variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}>Actualizar turno</Button>
-                  </div>
+                  <Alert><IconClock /><AlertTitle>La asistencia aún no está disponible</AlertTitle><AlertDescription className="space-y-2"><p>Podrás registrarla cuando comience el turno.</p><Button size="sm" variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar turno</span></Button></AlertDescription></Alert>
                 )
               )}
             </>
           )}
         </main>
+        </div>
       </SidebarShellContent>
     </SidebarShell>
   )

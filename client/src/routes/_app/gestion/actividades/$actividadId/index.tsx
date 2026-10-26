@@ -37,6 +37,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { get1Options } from "@/generated/@tanstack/react-query.gen"
+import { UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/actividades/$actividadId/")({
   beforeLoad: ({ context, params }) => {
@@ -44,7 +45,6 @@ export const Route = createFileRoute("/_app/gestion/actividades/$actividadId/")(
       if (context.user.permissions?.includes("activities:attendance:view")) {
         throw redirect({ to: "/gestion/actividades/$actividadId/asistencia", params, search: { page: 1 }, replace: true })
       }
-      throw redirect({ to: "/403", replace: true })
     }
   },
   component: RouteComponent,
@@ -155,7 +155,7 @@ function RouteComponent() {
                     <DetailItem
                       icon={<IconUser />}
                       label="Creada por"
-                      value={activity.createdBy?.name || "—"}
+                      value={<UserInline user={{ id: activity.createdBy?.id, name: activity.createdBy?.name }} className="mt-0.5" />}
                     />
                     <DetailItem
                       icon={<IconCalendarEvent />}
@@ -199,7 +199,7 @@ function statusHint(status?: ActivityStatus) {
   return "Actividad comunitaria."
 }
 
-function DetailItem({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+function DetailItem({ icon, label, value }: { icon: ReactNode; label: string; value: ReactNode }) {
   return (
     <div className="flex min-w-0 items-start gap-2 rounded-lg bg-muted/60 p-3">
       <span className="mt-0.5 shrink-0 text-primary [&_svg]:size-4">{icon}</span>

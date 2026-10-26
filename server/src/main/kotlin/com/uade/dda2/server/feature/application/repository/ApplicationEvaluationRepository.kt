@@ -39,8 +39,8 @@ interface ApplicationEvaluationRepository : JpaRepository<ApplicationEvaluation,
           and (:programEditionId is null or evaluation.application.programEdition.id = :programEditionId)
           and (:vulnerability is null or evaluation.vulnerability = :vulnerability)
           and (:priority is null or evaluation.priority = :priority)
-          and (:evaluatedFrom is null or evaluation.evaluatedAt >= :evaluatedFrom)
-          and (:evaluatedTo is null or evaluation.evaluatedAt <= :evaluatedTo)
+          and (cast(:evaluatedFrom as OffsetDateTime) is null or evaluation.evaluatedAt >= :evaluatedFrom)
+          and (cast(:evaluatedTo as OffsetDateTime) is null or evaluation.evaluatedAt <= :evaluatedTo)
         """,
     )
     fun search(

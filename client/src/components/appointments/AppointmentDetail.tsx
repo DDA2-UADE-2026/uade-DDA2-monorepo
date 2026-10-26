@@ -1,3 +1,4 @@
+import { UserInline } from "@/components/UserChip"
 import { IconCalendarCheck } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
@@ -55,7 +56,7 @@ export function AppointmentDetail({ turnoId }: { turnoId: string }) {
             <CardContent className="space-y-2 text-sm">
               <p><span className="font-medium">Fecha:</span> {formatAppointmentDate(appointment.startsAt?.slice(0, 10))}</p>
               <p><span className="font-medium">Horario:</span> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
-              <p><span className="font-medium">Profesional:</span> {appointment.professionalName}</p>
+              <p><span className="font-medium">Profesional:</span> <UserInline user={{ id: appointment.professionalId, name: appointment.professionalName }} /></p>
               <p className="text-muted-foreground">Número de confirmación: {appointment.id}</p>
             </CardContent>
           </Card>

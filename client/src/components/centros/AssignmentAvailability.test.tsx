@@ -22,6 +22,10 @@ vi.mock("@/components/centros/TimeRangeDialog", () => ({
       <button onClick={() => onSubmit({ dayOfWeek: "MONDAY", days: ["MONDAY", "FRIDAY"], startTime: "10:00", endTime: "12:00" })}>
         Agregar dos días
       </button>
+      {/* Create mode only edits `days`; `dayOfWeek` keeps the dialog's untouched MONDAY default. */}
+      <button onClick={() => onSubmit({ dayOfWeek: "MONDAY", days: ["FRIDAY"], startTime: "08:00", endTime: "20:00" })}>
+        Agregar solo viernes
+      </button>
       {error?.message && <p role="alert">{error.message}</p>}
     </div>
   ),
@@ -172,5 +176,17 @@ describe("disponibilidades profesionales en la agenda", () => {
 
     expect(screen.getByText(/Ya existe una disponibilidad inactiva idéntica para Viernes/)).toBeInTheDocument()
     expect(requests.some((request) => request.method === "POST")).toBe(false)
+  })
+
+  it("crea la franja de un solo día con el día tildado y no con el valor por defecto", async () => {
+    const user = userEvent.setup()
+    renderAvailability()
+    await user.click(await screen.findByRole("button", { name: "Agregar" }))
+    await user.click(screen.getByRole("button", { name: "Agregar solo viernes" }))
+
+    await waitFor(() => expect(requests.filter((request) => request.method === "POST")).toHaveLength(1))
+    const post = requests.find((request) => request.method === "POST")!
+    expect(new URL(post.url).pathname).not.toMatch(/batch/)
+    expect(await post.json()).toEqual({ dayOfWeek: "FRIDAY", startTime: "08:00", endTime: "20:00" })
   })
 })

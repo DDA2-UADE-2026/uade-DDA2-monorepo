@@ -22,13 +22,15 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
 
     fun countByApplicationId(applicationId: UUID): Long
 
+    fun existsByApplicationIdAndStatus(applicationId: UUID, status: ApplicationVisitStatus): Boolean
+
     fun existsByApplicationIdAndStatusAndIdNot(
         applicationId: UUID,
         status: ApplicationVisitStatus,
         id: UUID,
     ): Boolean
 
-    @EntityGraph(attributePaths = ["application"])
+    @EntityGraph(attributePaths = ["application", "application.programEdition", "application.programEdition.program"])
     @Query(
         "select visit from ApplicationVisit visit " +
             "where visit.application.id = :applicationId and visit.application.user.id = :userId",
@@ -36,6 +38,22 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
     fun findAllOwnByApplicationId(
         @Param("applicationId") applicationId: UUID,
         @Param("userId") userId: Long,
+        pageable: Pageable,
+    ): Page<ApplicationVisit>
+
+    @EntityGraph(attributePaths = ["application", "application.programEdition", "application.programEdition.program"])
+    @Query(
+        """
+        select visit from ApplicationVisit visit
+        where visit.application.user.id = :userId
+          and (:status is null or visit.status = :status)
+          and (cast(:endsAfter as OffsetDateTime) is null or visit.endsAt > :endsAfter)
+        """,
+    )
+    fun findAllOwn(
+        @Param("userId") userId: Long,
+        @Param("status") status: ApplicationVisitStatus?,
+        @Param("endsAfter") endsAfter: OffsetDateTime?,
         pageable: Pageable,
     ): Page<ApplicationVisit>
 
@@ -73,8 +91,8 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
           and (:programEditionId is null or visit.application.programEdition.id = :programEditionId)
           and (:type is null or visit.type = :type)
           and (:status is null or visit.status = :status)
-          and (:windowStart is null or visit.endsAt > :windowStart)
-          and (:windowEnd is null or visit.startsAt < :windowEnd)
+          and (cast(:windowStart as OffsetDateTime) is null or visit.endsAt > :windowStart)
+          and (cast(:windowEnd as OffsetDateTime) is null or visit.startsAt < :windowEnd)
         """,
     )
     fun search(

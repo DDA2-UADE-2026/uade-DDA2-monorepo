@@ -35,6 +35,27 @@
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
+  /* Tablero de indicadores. Paleta validada (dataviz/validate_palette.js) contra la card blanca:
+     series 1-3 en cualquier combinación de pares; resultados en el orden en curso → espera → aprobadas → rechazadas. */
+  --viz-1: #2a78d6;
+  --viz-2: #eb6834;
+  --viz-3: #1baf7a;
+  --viz-in-progress: #2a78d6;
+  --viz-waitlisted: #eda100;
+  --viz-approved: #1baf7a;
+  --viz-rejected: #e34948;
+  /* Rampa secuencial (azul) para el mapa de calor: el paso 1 es "casi cero" y se acerca a la superficie. */
+  --viz-seq-1: #cde2fb;
+  --viz-seq-2: #9ec5f4;
+  --viz-seq-3: #6da7ec;
+  --viz-seq-4: #3987e5;
+  --viz-seq-5: #256abf;
+  --viz-seq-6: #184f95;
+  --viz-seq-ink-light: #0b0b0b;
+  --viz-seq-ink-dark: #ffffff;
+  --viz-track: #cde2fb;
+  --viz-warning: #fab219;
+  --viz-critical: #d03b3b;
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
@@ -70,6 +91,26 @@
     --chart-3: oklch(0.546 0.245 262.881);
     --chart-4: oklch(0.488 0.243 264.376);
     --chart-5: oklch(0.424 0.199 265.638);
+    /* Mismos tonos, con los pasos elegidos para la card oscura (#18181b) y validados como conjunto. */
+    --viz-1: #3987e5;
+    --viz-2: #d95926;
+    --viz-3: #199e70;
+    --viz-in-progress: #3987e5;
+    --viz-waitlisted: #c98500;
+    --viz-approved: #199e70;
+    --viz-rejected: #e66767;
+    /* En oscuro la rampa se invierte: "casi cero" es el paso más oscuro, cercano a la superficie. */
+    --viz-seq-1: #104281;
+    --viz-seq-2: #1c5cab;
+    --viz-seq-3: #2a78d6;
+    --viz-seq-4: #5598e7;
+    --viz-seq-5: #86b6ef;
+    --viz-seq-6: #b7d3f6;
+    --viz-seq-ink-light: #ffffff;
+    --viz-seq-ink-dark: #0b0b0b;
+    --viz-track: #184f95;
+    --viz-warning: #fab219;
+    --viz-critical: #d03b3b;
     --sidebar: oklch(0.21 0.006 285.885);
     --sidebar-foreground: oklch(0.985 0 0);
     --sidebar-primary: oklch(0.623 0.214 259.815);

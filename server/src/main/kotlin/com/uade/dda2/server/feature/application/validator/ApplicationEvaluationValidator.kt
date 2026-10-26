@@ -39,6 +39,10 @@ class ApplicationEvaluationValidator {
         if (application.status !in ApplicationStatus.EVALUATION_ALLOWED) {
             throw ApplicationEvaluationErrors.statusNotAllowed()
         }
+        // Quien evalúa queda asignado al caso, y el titular nunca puede trabajar su propia solicitud.
+        if (application.user.id == professional.id) {
+            throw ApplicationEvaluationErrors.ownApplication()
+        }
         if (application.assignedWorker?.id != null && application.assignedWorker?.id != professional.id) {
             throw ApplicationEvaluationErrors.assignedToAnotherWorker()
         }

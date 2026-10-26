@@ -1,6 +1,7 @@
+import { UserInline } from "@/components/UserChip"
 import { IconAlertTriangle, IconArrowLeft, IconCalendarCheck, IconCalendarX } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { AdminAttentionSummary } from "@/components/appointments/AdminAttentionSummary"
@@ -42,11 +43,6 @@ import {
 } from "@/lib/appointment-flow"
 
 export const Route = createFileRoute("/_app/gestion/turnos/$turnoId")({
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 
@@ -99,7 +95,7 @@ function RouteComponent() {
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-3xl space-y-4 p-4 lg:p-6">
+          <main className="mx-auto w-full min-w-0 max-w-5xl space-y-6 p-4 lg:p-6">
             <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" />}>
               <IconArrowLeft />Volver a turnos
             </Button>
@@ -133,7 +129,7 @@ function RouteComponent() {
               <p><span className="font-medium">Ciudadano:</span> {citizenName ?? "—"}</p>
               <p><span className="font-medium">Fecha:</span> {formatAppointmentDate(appointment.startsAt?.slice(0, 10))}</p>
               <p><span className="font-medium">Horario:</span> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
-              <p><span className="font-medium">Profesional:</span> {appointment.professionalName}</p>
+              <p><span className="font-medium">Profesional:</span> <UserInline user={{ id: appointment.professionalId, name: appointment.professionalName }} /></p>
               <p className="text-muted-foreground">Identificador: {appointment.id}</p>
             </CardContent>
           </Card>
@@ -214,7 +210,7 @@ function RouteComponent() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-          </div>
+          </main>
         </div>
       </SidebarShellContent>
     </SidebarShell>
@@ -299,7 +295,7 @@ function RescheduleSection({ turnoId, current, onChanged }: {
                     className={`w-full rounded-lg border p-3 text-left text-sm transition-colors ${active ? "border-primary bg-primary/5" : "hover:border-muted-foreground"}`}
                   >
                     <span className="font-medium">{formatAppointmentTime(slot.startsAt)} – {formatAppointmentTime(slot.endsAt)}</span>
-                    <span className="block text-muted-foreground">{slot.professionalName}</span>
+                    <UserInline user={{ id: slot.professionalId, name: slot.professionalName }} className="mt-1 flex text-muted-foreground" />
                   </button>
                 </li>
               )

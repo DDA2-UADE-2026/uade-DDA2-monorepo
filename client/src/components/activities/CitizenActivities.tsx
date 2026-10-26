@@ -24,7 +24,7 @@ export function CitizenActivities({ page, view, onSearchChange, canEnroll }: {
     <ActivityPage portal pagination={query.data && (query.data.totalElements ?? 0) > 0 && <DataPagination page={page} totalPages={query.data.totalPages ?? 1} totalItems={query.data.totalElements ?? 0} pageSize={PAGE_SIZE} onPageChange={(nextPage) => onSearchChange({ page: nextPage, vista: view })} />}>
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1"><h1 className="font-heading text-2xl font-medium">Actividades comunitarias</h1><p className="text-sm text-muted-foreground">Encontrá talleres, jornadas y campañas. Consultá tus inscripciones y tu asistencia.</p></div>
-        <Button size="sm" variant="outline" disabled={query.isFetching} onClick={() => query.refetch()}><IconRefresh />Actualizar</Button>
+        <Button size="sm" variant="outline" disabled={query.isFetching} onClick={() => query.refetch()}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar</span></Button>
       </header>
       <div className="flex flex-wrap gap-2" role="group" aria-label="Vista de actividades">
         <Button variant={view === "disponibles" ? "default" : "outline"} aria-pressed={view === "disponibles"} onClick={() => onSearchChange({ page: 1, vista: "disponibles" })}>Actividades abiertas</Button>

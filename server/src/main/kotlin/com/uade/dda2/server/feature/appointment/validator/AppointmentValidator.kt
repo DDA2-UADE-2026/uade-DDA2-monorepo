@@ -49,9 +49,8 @@ class AppointmentValidator {
         if (user == null || !user.active) {
             throw UnauthorizedException("AUTH_UNAUTHENTICATED", "Usuario inexistente o inactivo.")
         }
-        val role = user.roles.firstOrNull { it.name.equals("PROFESIONAL_CENTRO", ignoreCase = true) }
-        if (!principal.activeRole.equals("PROFESIONAL_CENTRO", ignoreCase = true) ||
-            role == null || permission !in principal.permissions ||
+        val role = user.roles.firstOrNull { it.name.equals(principal.activeRole, ignoreCase = true) }
+        if (role == null || permission !in principal.permissions ||
             role.permissions.none { it.name == permission }
         ) {
             throw ForbiddenException("AUTH_FORBIDDEN", "El rol activo no esta autorizado para esta operacion.")

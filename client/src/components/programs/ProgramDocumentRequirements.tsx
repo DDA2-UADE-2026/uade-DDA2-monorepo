@@ -90,7 +90,7 @@ export function ProgramDocumentRequirements({ editionId, disabled }: { editionId
         <div className="mb-3 flex justify-end">
           <Button size="xs" variant="ghost" disabled={requirements.isFetching} onClick={() => requirements.refetch()}>
             <IconRefresh className={requirements.isFetching ? "animate-spin" : undefined} />
-            Actualizar documentos
+            <span className="sr-only sm:not-sr-only">Refrescar documentos</span>
           </Button>
         </div>
       )}

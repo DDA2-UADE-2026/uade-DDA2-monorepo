@@ -595,6 +595,24 @@ class AppointmentFlowTest {
     }
 
     @Test
+    fun `permisos profesionales permiten consultar y registrar desde otro rol activo`() {
+        val token = tx {
+            val professional = assignments.findById(fixture.firstAssignmentId).orElseThrow().professional
+            val role = role("OPERADOR_TURNOS_TEST", mutableSetOf(
+                permission("appointments:professional:view"),
+                permission("appointments:professional:manage"),
+            ))
+            professional.roles.add(role)
+            users.saveAndFlush(professional)
+            jwt.createToken(professional, role)
+        }
+        val id = pastAppointment()
+        expect(professionalGet("/api/professional/appointments?date=${LocalDate.now(zone).minusDays(1)}", token), 200)
+        expect(professionalGet("/api/professional/appointments/$id", token), 200)
+        expect(professionalWrite("/api/professional/appointments/$id/attention", """{"result":"AUSENTE"}""", token), 201)
+    }
+
+    @Test
     fun `no registra turnos futuros o cancelados y respeta el profesional reprogramado`() {
         val future = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
         expect(professionalWrite("/api/professional/appointments/${future.id}/attention", """{"result":"AUSENTE"}"""), 409, "ATTENTION_NOT_REGISTRABLE")
@@ -630,6 +648,22 @@ class AppointmentFlowTest {
             idempotencyKey = UUID.randomUUID().toString(),
             requestHash = "past-${UUID.randomUUID()}".take(64),
         )).id)
+    }
+
+    @Test
+    fun `professional lists own appointments over a date range`() {
+        val id = pastAppointment()
+        val date = LocalDate.now(zone).minusDays(1)
+        fun listsId(path: String): Boolean {
+            val result = professionalGet(path)
+            expect(result, 200)
+            return json.readTree(result.response.contentAsString).any { it.path("appointment").path("id").asText() == id.toString() }
+        }
+
+        assertTrue(listsId("/api/professional/appointments?date=${date.minusDays(3)}&to=${date.plusDays(3)}"))
+        assertFalse(listsId("/api/professional/appointments?date=${date.plusDays(1)}&to=${date.plusDays(7)}"))
+        expect(professionalGet("/api/professional/appointments?date=$date&to=${date.minusDays(1)}"), 400, "APPOINTMENT_INVALID_REQUEST")
+        expect(professionalGet("/api/professional/appointments?date=$date&to=${date.plusDays(42)}"), 400, "APPOINTMENT_INVALID_REQUEST")
     }
 
     private fun professionalGet(path: String, token: String = fixture.firstProfessionalToken): MvcResult = mvc.perform(

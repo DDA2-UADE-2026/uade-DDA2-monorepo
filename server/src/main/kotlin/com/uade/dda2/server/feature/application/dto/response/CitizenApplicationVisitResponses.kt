@@ -11,6 +11,8 @@ data class CitizenApplicationVisitListItemResponse(
     val id: UUID,
     val applicationId: UUID,
     val applicationNumber: Long,
+    @field:Schema(description = "Nombre del programa de la solicitud.", example = "Asistencia alimentaria")
+    val programName: String,
     @field:Schema(description = "Modalidad de la actuacion: VISIT o INTERVIEW.", example = "VISIT")
     val type: ApplicationVisitType,
     @field:Schema(description = "Inicio vigente expresado en la zona horaria municipal.", example = "2026-10-20T10:00:00-03:00")
@@ -30,7 +32,7 @@ data class CitizenApplicationVisitListItemResponse(
     val cancelledAt: OffsetDateTime?,
 )
 
-@Schema(description = "Pagina de visitas y entrevistas de una solicitud propia.")
+@Schema(description = "Pagina de visitas y entrevistas de solicitudes propias.")
 data class CitizenApplicationVisitListResponse(
     val content: List<CitizenApplicationVisitListItemResponse>,
     val page: Int,

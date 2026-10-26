@@ -14,6 +14,7 @@ import { findAllOptions, list1Options, list4Options, list5Options, listMunicipal
 import { useMe } from "@/hooks/use-auth"
 import { applicationStatusLabels, formatApplicationDate, isApplicationResolved } from "@/lib/application-flow"
 import { programImageSource } from "@/lib/program-images"
+import { UserInline } from "@/components/UserChip"
 
 const previewQuery = { query: { page: 0, size: 5 } }
 const queryDefaults = { staleTime: 60_000, retry: false } as const
@@ -140,7 +141,7 @@ export function GestionDashboard() {
         <div className="flex flex-wrap items-center gap-2">
           {visibleQueries.length > 0 && (
             <Button variant="outline" size="sm" disabled={isFetching} onClick={() => { void Promise.allSettled(visibleQueries.map((query) => query.refetch())) }}>
-              <IconRefresh className={isFetching ? "animate-spin" : undefined} />{isFetching ? "Actualizando…" : "Actualizar resumen"}
+              <IconRefresh className={isFetching ? "animate-spin" : undefined} /><span className="sr-only sm:not-sr-only">{isFetching ? "Refrescando…" : "Refrescar resumen"}</span>
             </Button>
           )}
           {canCreateApplication && <Button size="sm" render={<Link to="/gestion/solicitudes/asistida" />}><IconFilePlus />Solicitud asistida</Button>}
@@ -171,8 +172,11 @@ export function GestionDashboard() {
                     {applicationItems.map((application) => (
                       <TableRow key={application.id ?? application.applicationNumber}>
                         <TableCell className="max-w-64 whitespace-normal">
-                          <Link to="/gestion/solicitudes/$solicitudId" params={{ solicitudId: application.id ?? "" }} className="font-medium hover:underline">#{application.applicationNumber ?? "—"} · {application.userName || "Sin titular"}</Link>
-                          <p className="mt-1 text-xs text-muted-foreground">{application.programName || "Sin programa"}</p>
+                          <UserInline user={{ id: application.userId, name: application.userName, email: application.userEmail }} fallback="Sin titular" className="flex" />
+                          <span className="flex flex-row gap-1 items-center mt-1.5 -mb-1">
+                            <Link to="/gestion/solicitudes/$solicitudId" params={{ solicitudId: application.id ?? "" }} className="font-medium hover:underline">#{application.applicationNumber ?? "—"}</Link>
+                            <p className="text-xs text-muted-foreground">{application.programName || "Sin programa"}</p>
+                          </span>
                         </TableCell>
                         <TableCell><Badge variant={isApplicationResolved(application.status) ? "secondary" : "outline"}>{application.status ? applicationStatusLabels[application.status] : "Sin estado"}</Badge></TableCell>
                         <TableCell className="text-xs text-muted-foreground">{formatApplicationDate(application.createdAt)}</TableCell>

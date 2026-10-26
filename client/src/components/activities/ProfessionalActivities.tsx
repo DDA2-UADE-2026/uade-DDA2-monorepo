@@ -18,7 +18,7 @@ export function ProfessionalActivities({ page, onPageChange }: { page: number; o
           <h1 className="font-heading text-2xl font-medium">Asistencia a actividades</h1>
           <p className="text-sm text-muted-foreground">Consultá los inscriptos y registrá la asistencia de actividades publicadas o cerradas.</p>
         </div>
-        <Button variant="outline" size="sm" disabled={query.isFetching} onClick={() => query.refetch()}><IconRefresh />Actualizar</Button>
+        <Button variant="outline" size="sm" disabled={query.isFetching} onClick={() => query.refetch()}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar</span></Button>
       </header>
       {query.isPending ? <p role="status">Cargando actividades…</p> : query.isError ? (
         <div role="alert" className="space-y-3"><p>No se pudieron cargar las actividades.</p><Button variant="outline" onClick={() => query.refetch()}>Reintentar</Button></div>

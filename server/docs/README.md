@@ -43,6 +43,10 @@ Recursos principales:
 
 El orden recomendado es programa, convocatoria y solicitud. Primero se prepara la oferta, luego se habilita su recepción y finalmente las personas se presentan.
 
+## Cambios de permisos y navegación
+
+Cuando el backend agregue o cambie un permiso de consulta (`:view`) para una pantalla, actualizar también las sidebars del frontend en `client/src/components/layout/sidebar-constants.ts`. Revisar las entradas del portal y de gestión, incluidos sus submenús, para que `requiredPermissions` coincida con los permisos del rol activo que devuelve `/auth/me`. El candado del menú comunica la falta de acceso; la autorización efectiva sigue en los endpoints del backend.
+
 ## Cuatro conceptos que no conviene confundir
 
 | Concepto | Qué representa | Ejemplo ilustrativo |

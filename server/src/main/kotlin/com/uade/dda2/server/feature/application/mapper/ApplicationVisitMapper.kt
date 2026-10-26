@@ -125,6 +125,7 @@ fun ApplicationVisit.toCitizenListItemResponse(
         id = requireNotNull(id),
         applicationId = requireNotNull(application.id),
         applicationNumber = requireNotNull(application.applicationNumber),
+        programName = application.programEdition.program.name,
         type = type,
         startsAt = startsAt.atZoneSameInstant(zone).toOffsetDateTime(),
         endsAt = endsAt.atZoneSameInstant(zone).toOffsetDateTime(),

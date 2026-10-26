@@ -1,6 +1,6 @@
 import { IconAlertTriangle, IconMail, IconMapPin, IconPencil, IconPhone, IconPlus, IconPower, IconRefresh, IconSearch } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { CenterDialog } from "@/components/centros/CenterDialog"
@@ -33,11 +33,6 @@ import type { MunicipalCenterResponse } from "@/generated/types.gen"
 
 export const Route = createFileRoute("/_app/gestion/centros/")({
   validateSearch: centerSearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 
@@ -92,7 +87,7 @@ function RouteComponent() {
                 <span>Última actualización: {new Date(dataUpdatedAt).toLocaleTimeString("es-AR")}</span>
                 <Button size="xs" variant="ghost" onClick={() => refetch()} disabled={isFetching}>
                   <IconRefresh className={isFetching ? "animate-spin" : undefined} />
-                  Actualizar
+                  <span className="sr-only sm:not-sr-only">Refrescar</span>
                 </Button>
               </div>
             )}

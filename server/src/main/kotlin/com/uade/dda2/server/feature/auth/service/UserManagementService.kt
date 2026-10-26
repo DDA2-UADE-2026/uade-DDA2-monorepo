@@ -175,6 +175,7 @@ class UserManagementService(
 
         if (
             applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id) ||
+            applicationRepository.existsByResolvedById(id) ||
             applicationDocumentRepository.existsByReviewedById(id) ||
             applicationEvaluationRepository.existsByProfessionalId(id) ||
             applicationResolutionRepository.existsByResolvedById(id) ||

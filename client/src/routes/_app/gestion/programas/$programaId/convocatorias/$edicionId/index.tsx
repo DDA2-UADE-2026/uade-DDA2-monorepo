@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list3QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
 import { zUpdateProgramEditionRequest } from "@/generated/zod.gen"
+import { UserChip } from "@/components/UserChip"
 
 const updateEditionSchema = zUpdateProgramEditionRequest.required().extend({
   name: zUpdateProgramEditionRequest.shape.name.trim().min(1, "Ingresá el nombre de la edición."),
@@ -136,6 +137,15 @@ function RouteComponent() {
       return <FormField label="Capacidad máxima" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} type="number" value={field.state.value ?? ""} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value ? Number(event.target.value) : undefined)} aria-invalid={invalid} /></FormField>
     }} />
     <p className="text-sm text-muted-foreground">Inscriptos actuales: {query.data.currentEnrollment ?? 0}</p>
+    {query.data.createdBy && (
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <span className="text-muted-foreground">Creada por</span>
+        <UserChip
+          user={{ id: query.data.createdBy.id, name: query.data.createdBy.name }}
+          secondary={query.data.createdAt ? new Date(query.data.createdAt).toLocaleDateString("es-AR") : undefined}
+        />
+      </div>
+    )}
     <div className="flex justify-between"><DeleteConfirmationButton description="Se eliminará esta edición." disabled={busy || isClosed} onConfirm={() => { resetOperationErrors(); return remove.mutateAsync({ path: { id: edicionId } }) }} /><Button type="submit" disabled={busy || isClosed}>Guardar cambios</Button></div>
   </form>}</RoutePanel>
 }
