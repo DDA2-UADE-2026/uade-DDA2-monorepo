@@ -9,7 +9,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { ActivityDialog } from "@/components/activities/ActivityDialog"
@@ -47,11 +47,6 @@ import type { ActivityListItemResponse } from "@/generated/types.gen"
 
 export const Route = createFileRoute("/_app/gestion/actividades/")({
   validateSearch: activitySearchSchema,
-  beforeLoad: ({ context }) => {
-    if (!context.user.permissions?.some((permission) => ["activities:management:view", "activities:attendance:view"].includes(permission))) {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

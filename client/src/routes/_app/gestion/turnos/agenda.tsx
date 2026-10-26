@@ -1,14 +1,15 @@
-import { IconArrowLeft, IconRefresh } from "@tabler/icons-react"
+import { IconArrowLeft, IconCalendarEvent, IconRefresh, IconSearch } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 
 import { adminDaySearchSchema } from "@/components/turnos/adminAppointmentFilters"
+import { AppointmentServiceSelectionDialog } from "@/components/turnos/AppointmentSelectionDialogs"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
   getMunicipalCenterOptions,
@@ -21,11 +22,6 @@ import { appointmentStatusLabels, formatAppointmentDate, formatAppointmentTime, 
 
 export const Route = createFileRoute("/_app/gestion/turnos/agenda")({
   validateSearch: adminDaySearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 
@@ -36,6 +32,7 @@ type DayRow =
 function RouteComponent() {
   const search = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
+  const [serviceDialogOpen, setServiceDialogOpen] = useState(false)
   const validCenter = isUuid(search.centro)
   const backSearch = {
     centro: search.centro,
@@ -104,7 +101,7 @@ function RouteComponent() {
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-5xl space-y-4 p-4 lg:p-6">
+          <main className="mx-auto w-full min-w-0 max-w-6xl space-y-6 p-4 lg:p-6">
             <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" search={backSearch} />}>
               <IconArrowLeft />Volver al calendario
             </Button>
@@ -130,27 +127,13 @@ function RouteComponent() {
             </p>
           </div>
 
-          <div className="max-w-sm space-y-1.5">
+          <div className="max-w-md space-y-1.5">
             <Label htmlFor="agenda-servicio">Servicio</Label>
-            <Select
-              value={search.servicio}
-              onValueChange={(value) => navigate({ search: { ...search, servicio: value ?? "" } })}
-              disabled={services.isPending}
-            >
-              <SelectTrigger id="agenda-servicio" aria-label="Servicio">
-                <SelectValue placeholder="Todos los servicios">
-                  {() => selectedService?.service?.name ?? "Todos los servicios"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">Todos los servicios</SelectItem>
-                {serviceOptions.map((option) => (
-                  <SelectItem key={option.id} value={option.service?.id ?? ""}>
-                    {option.service?.name}{option.active ? "" : " (inactivo)"}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Button id="agenda-servicio" type="button" variant="outline" className="w-full min-w-0 justify-start font-normal" onClick={() => setServiceDialogOpen(true)}>
+              <IconCalendarEvent />
+              <span className="truncate">{selectedService?.service?.name ?? "Todos los servicios"}</span>
+              <IconSearch className="ml-auto" />
+            </Button>
           </div>
 
           {pending ? (
@@ -169,7 +152,7 @@ function RouteComponent() {
               </Button>
             </div>
           ) : (
-            <Table>
+            <Table className="min-w-[48rem]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Horario</TableHead>
@@ -224,7 +207,8 @@ function RouteComponent() {
           )}
         </>
       )}
-          </div>
+            <AppointmentServiceSelectionDialog open={serviceDialogOpen} onOpenChange={setServiceDialogOpen} centerId={search.centro} selectedServiceId={search.servicio} onSelect={(id) => navigate({ search: { ...search, servicio: id } })} />
+          </main>
         </div>
       </SidebarShellContent>
     </SidebarShell>

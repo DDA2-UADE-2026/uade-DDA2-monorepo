@@ -1,7 +1,7 @@
 import { IconAlertTriangle, IconClock, IconPencil, IconPlus, IconPower, IconRefresh, IconSearch } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
 
@@ -64,11 +64,6 @@ const updateServiceSchema = zUpdateMunicipalServiceRequest.extend({
 
 export const Route = createFileRoute("/_app/gestion/centros/servicios")({
   validateSearch: centerSearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 

@@ -595,6 +595,24 @@ class AppointmentFlowTest {
     }
 
     @Test
+    fun `permisos profesionales permiten consultar y registrar desde otro rol activo`() {
+        val token = tx {
+            val professional = assignments.findById(fixture.firstAssignmentId).orElseThrow().professional
+            val role = role("OPERADOR_TURNOS_TEST", mutableSetOf(
+                permission("appointments:professional:view"),
+                permission("appointments:professional:manage"),
+            ))
+            professional.roles.add(role)
+            users.saveAndFlush(professional)
+            jwt.createToken(professional, role)
+        }
+        val id = pastAppointment()
+        expect(professionalGet("/api/professional/appointments?date=${LocalDate.now(zone).minusDays(1)}", token), 200)
+        expect(professionalGet("/api/professional/appointments/$id", token), 200)
+        expect(professionalWrite("/api/professional/appointments/$id/attention", """{"result":"AUSENTE"}""", token), 201)
+    }
+
+    @Test
     fun `no registra turnos futuros o cancelados y respeta el profesional reprogramado`() {
         val future = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
         expect(professionalWrite("/api/professional/appointments/${future.id}/attention", """{"result":"AUSENTE"}"""), 409, "ATTENTION_NOT_REGISTRABLE")

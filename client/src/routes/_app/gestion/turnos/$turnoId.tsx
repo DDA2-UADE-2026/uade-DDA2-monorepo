@@ -1,6 +1,6 @@
 import { IconAlertTriangle, IconArrowLeft, IconCalendarCheck, IconCalendarX } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect } from "@tanstack/react-router"
+import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
 import { AdminAttentionSummary } from "@/components/appointments/AdminAttentionSummary"
@@ -42,11 +42,6 @@ import {
 } from "@/lib/appointment-flow"
 
 export const Route = createFileRoute("/_app/gestion/turnos/$turnoId")({
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 
@@ -99,7 +94,7 @@ function RouteComponent() {
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div className="mx-auto w-full max-w-3xl space-y-4 p-4 lg:p-6">
+          <main className="mx-auto w-full min-w-0 max-w-5xl space-y-6 p-4 lg:p-6">
             <Button size="sm" variant="ghost" render={<Link to="/gestion/turnos" />}>
               <IconArrowLeft />Volver a turnos
             </Button>
@@ -214,7 +209,7 @@ function RouteComponent() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-          </div>
+          </main>
         </div>
       </SidebarShellContent>
     </SidebarShell>

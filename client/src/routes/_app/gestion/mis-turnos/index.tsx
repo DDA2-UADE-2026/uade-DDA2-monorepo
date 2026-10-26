@@ -1,13 +1,17 @@
-import { IconCalendarEvent, IconRefresh } from "@tabler/icons-react"
+import { IconAlertCircle, IconCalendarUser, IconRefresh } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { ProgramDatePicker } from "@/components/programs/ProgramDatePicker"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Label } from "@/components/ui/label"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { listProfessionalAppointmentsOptions } from "@/generated/@tanstack/react-query.gen"
 import { appointmentToday, formatAppointmentRange } from "@/lib/appointment-flow"
@@ -15,11 +19,6 @@ import { attentionLabel, professionalTurnSearchSchema } from "@/lib/community-at
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/")({
   validateSearch: professionalTurnSearchSchema,
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "PROFESIONAL_CENTRO") {
-      throw redirect({ to: "/403", replace: true })
-    }
-  },
   component: RouteComponent,
 })
 
@@ -32,23 +31,26 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavBreadcrumbs items={[{ label: "Mis turnos" }]} />
+        <OutletNavBreadcrumbs items={[{ label: "Turnos asignados" }]} />
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <main className="mx-auto w-full max-w-5xl space-y-5 p-4 lg:p-6">
+          <main className="mx-auto w-full min-w-0 max-w-6xl space-y-6 p-4 lg:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h1 className="font-heading text-2xl">Mis turnos</h1>
+                <h1 className="font-heading text-2xl font-medium">Turnos asignados</h1>
                 <p className="text-sm text-muted-foreground">Consultá tus turnos y registrá la asistencia del día.</p>
               </div>
               <div className="flex flex-wrap items-end gap-2">
                 <div className="space-y-1">
                   <Label htmlFor="professional-turn-date">Fecha</Label>
-                  <Input id="professional-turn-date" type="date" value={fecha}
-                    onChange={(event) => {
-                      if (event.target.value) void navigate({ search: { fecha: event.target.value } })
-                    }} />
+                  <ProgramDatePicker
+                    id="professional-turn-date"
+                    value={fecha}
+                    onChange={(value) => {
+                      if (value) void navigate({ search: { fecha: value } })
+                    }}
+                  />
                 </div>
                 <Button variant="outline" onClick={() => void navigate({ search: { fecha: appointmentToday() } })}>Hoy</Button>
                 <Button variant="outline" disabled={turns.isFetching} onClick={() => void turns.refetch()}>
@@ -58,20 +60,33 @@ function RouteComponent() {
             </div>
 
             {turns.isPending ? (
-              <p role="status" className="text-sm text-muted-foreground">Cargando turnos…</p>
+              <div role="status" aria-label="Cargando turnos" className="space-y-3">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
             ) : turns.isError ? (
-              <div className="space-y-2 text-sm">
-                <p>No se pudieron cargar tus turnos.</p>
-                <Button variant="outline" onClick={() => void turns.refetch()}>Reintentar</Button>
-              </div>
+              <Alert variant="destructive">
+                <IconAlertCircle />
+                <AlertTitle>No se pudieron cargar tus turnos</AlertTitle>
+                <AlertDescription><Button size="sm" variant="outline" className="mt-2" onClick={() => void turns.refetch()}>Reintentar</Button></AlertDescription>
+              </Alert>
             ) : !turns.data.length ? (
-              <div className="flex flex-col items-center gap-2 rounded-lg border p-8 text-center text-muted-foreground">
-                <IconCalendarEvent className="size-7" />
-                <p>No tenés turnos asignados para esta fecha.</p>
-              </div>
+              <Empty className="border">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon"><IconCalendarUser /></EmptyMedia>
+                  <EmptyTitle>Sin turnos asignados</EmptyTitle>
+                  <EmptyDescription>No tenés turnos asignados para esta fecha.</EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             ) : (
-              <div className="overflow-x-auto rounded-lg border">
-                <Table>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Agenda del día</CardTitle>
+                  <CardDescription>{turns.data.length === 1 ? "1 turno asignado" : `${turns.data.length} turnos asignados`}</CardDescription>
+                </CardHeader>
+                <CardContent className="px-0">
+                <Table className="min-w-[44rem]">
                   <TableHeader><TableRow>
                     <TableHead>Horario</TableHead><TableHead>Ciudadano</TableHead>
                     <TableHead>Servicio y centro</TableHead><TableHead>Resultado</TableHead><TableHead>Acción</TableHead>
@@ -96,7 +111,8 @@ function RouteComponent() {
                     })}
                   </TableBody>
                 </Table>
-              </div>
+                </CardContent>
+              </Card>
             )}
           </main>
         </div>
