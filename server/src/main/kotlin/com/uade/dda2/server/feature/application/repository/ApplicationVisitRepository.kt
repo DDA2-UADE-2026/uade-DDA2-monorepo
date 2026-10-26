@@ -72,8 +72,8 @@ interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
           and (:programEditionId is null or visit.application.programEdition.id = :programEditionId)
           and (:type is null or visit.type = :type)
           and (:status is null or visit.status = :status)
-          and (:windowStart is null or visit.endsAt > :windowStart)
-          and (:windowEnd is null or visit.startsAt < :windowEnd)
+          and (cast(:windowStart as OffsetDateTime) is null or visit.endsAt > :windowStart)
+          and (cast(:windowEnd as OffsetDateTime) is null or visit.startsAt < :windowEnd)
         """,
     )
     fun search(
