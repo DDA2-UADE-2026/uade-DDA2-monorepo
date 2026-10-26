@@ -18,6 +18,7 @@ import java.util.UUID
     Index(name = "ix_application_edition", columnList = "program_edition_id"),
     Index(name = "ix_application_worker", columnList = "assigned_worker_user_id"),
     Index(name = "ix_application_registered_by", columnList = "registered_by_user_id"),
+    Index(name = "ix_application_resolved_by", columnList = "resolved_by_user_id"),
 ], check = [CheckConstraint(name = "ck_application_idempotency", constraint =
     "(idempotency_key is null and request_hash is null) or (idempotency_key is not null and request_hash is not null)")])
 class Application(
@@ -58,6 +59,9 @@ class Application(
     var submittedAt: LocalDateTime,
     @Column(name = "resolved_at")
     var resolvedAt: LocalDateTime? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolved_by_user_id")
+    var resolvedBy: User? = null,
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: LocalDateTime = submittedAt,
     @Column(name = "updated_at", nullable = false)

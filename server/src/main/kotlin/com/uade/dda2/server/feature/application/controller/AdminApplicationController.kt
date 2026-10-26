@@ -3,10 +3,12 @@ package com.uade.dda2.server.feature.application.controller
 import com.uade.dda2.server.error.ErrorResponse
 import com.uade.dda2.server.feature.application.dto.request.AssignApplicationWorkerRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateAssistedApplicationRequest
+import com.uade.dda2.server.feature.application.dto.request.ResolveApplicationRequest
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationListResponse
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.service.APPLICATION_ASSIGN_PERMISSION
+import com.uade.dda2.server.feature.application.service.APPLICATION_RESOLVE_PERMISSION
 import com.uade.dda2.server.feature.application.service.ApplicationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -139,4 +141,23 @@ class AdminApplicationController(private val service: ApplicationService) {
     @ApiResponse(responseCode = "404", description = "Solicitud inexistente.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     @ApiResponse(responseCode = "409", description = "Estado no asignable o solicitud ya evaluada.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun unassignWorker(@PathVariable id: UUID): AdminApplicationResponse = service.unassignWorker(id)
+
+    @PostMapping("/{id}/resolution", consumes = ["application/json"])
+    @PreAuthorize("hasAuthority('$APPLICATION_RESOLVE_PERMISSION')")
+    @Operation(operationId = "resolveApplication", summary = "Resolver una solicitud", description =
+        "Requiere applications:resolutions:create en el rol activo y ser el trabajador asignado; nadie resuelve su propia " +
+        "solicitud. Admite solicitudes en evaluación (APPROVED, REJECTED o WAITLISTED) o en lista de espera (APPROVED o " +
+        "REJECTED). Exige una evaluación registrada y ninguna visita programada. Aprobar exige además la documentación " +
+        "obligatoria completa y cupo disponible en la edición (maxCapacity aprobadas). El motivo es visible para el " +
+        "titular y obligatorio para rechazar o dejar en espera. Rechazar libera al titular para presentarse en otra convocatoria.")
+    @ApiResponse(responseCode = "200", description = "Detalle de la solicitud resuelta.", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400", description = "Decisión ausente o inválida, motivo faltante o demasiado largo, o campos desconocidos.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "401", description = "Sin JWT de acceso válido o administrativo inexistente/inactivo.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "403", description = "Sin permiso, no es el trabajador asignado o es el titular de la solicitud.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "404", description = "Solicitud inexistente.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "409", description = "Estado no resoluble, sin evaluación, visitas programadas, documentación pendiente o cupo agotado.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    fun resolve(
+        @PathVariable id: UUID,
+        @RequestBody request: ResolveApplicationRequest,
+    ): AdminApplicationResponse = service.resolve(id, request)
 }

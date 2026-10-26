@@ -599,6 +599,8 @@ export const zAdminApplicationResponse = z.object({
     assignedWorkerName: z.string().optional(),
     submittedAt: z.iso.datetime().optional(),
     resolvedAt: z.iso.datetime().optional(),
+    resolvedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resolvedByName: z.string().optional(),
     createdAt: z.iso.datetime().optional(),
     updatedAt: z.iso.datetime().optional(),
     idempotencyKey: z.string().optional(),
@@ -776,7 +778,9 @@ export const zApplicationResponse = z.object({
     programId: z.uuid().optional(),
     programName: z.string().optional(),
     programEditionName: z.string().optional(),
-    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional(),
+    resolvedAt: z.iso.datetime().optional(),
+    resolutionReason: z.string().optional()
 });
 
 /**
@@ -1091,6 +1095,18 @@ export const zProfessionalAssignmentResponse = z.object({
 export const zCreateAssistedApplicationRequest = z.object({
     userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }),
     enrollmentPeriodId: z.uuid()
+});
+
+/**
+ * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
+ */
+export const zResolveApplicationRequest = z.object({
+    decision: z.enum([
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED'
+    ]),
+    reason: z.string().max(1000).optional()
 });
 
 /**
@@ -3147,6 +3163,17 @@ export const zSubmit1Headers = z.object({
  * Reintento: devuelve la solicitud existente y conserva al registrante original.
  */
 export const zSubmit1Response = zApplicationResponse;
+
+export const zResolveApplicationBody = zResolveApplicationRequest;
+
+export const zResolveApplicationPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Detalle de la solicitud resuelta.
+ */
+export const zResolveApplicationResponse = zAdminApplicationResponse;
 
 export const zList5Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),

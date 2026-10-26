@@ -819,7 +819,7 @@ export type AdminApplicationResponse = {
      */
     originTicketId?: string;
     /**
-     * Motivo de la resolución. Todavía no se completa desde ninguna operación.
+     * Motivo de la resolución, visible también para el titular. Obligatorio al rechazar o dejar en lista de espera.
      */
     resolutionReason?: string;
     /**
@@ -829,6 +829,11 @@ export type AdminApplicationResponse = {
     assignedWorkerName?: string;
     submittedAt?: string;
     resolvedAt?: string;
+    /**
+     * Quien registró la última resolución.
+     */
+    resolvedByUserId?: number;
+    resolvedByName?: string;
     createdAt?: string;
     updatedAt?: string;
     /**
@@ -1110,6 +1115,14 @@ export type ApplicationResponse = {
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+    /**
+     * Momento de la resolución (aprobada, rechazada o en lista de espera).
+     */
+    resolvedAt?: string;
+    /**
+     * Motivo de la resolución informado por el trabajador social.
+     */
+    resolutionReason?: string;
 };
 
 /**
@@ -1463,6 +1476,20 @@ export type CreateAssistedApplicationRequest = {
      */
     userId: number;
     enrollmentPeriodId: string;
+};
+
+/**
+ * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
+ */
+export type ResolveApplicationRequest = {
+    /**
+     * APPROVED, REJECTED o WAITLISTED. Desde lista de espera solo se admite APPROVED o REJECTED.
+     */
+    decision: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
+    /**
+     * Motivo visible para el titular, de 1 a 1000 caracteres. Obligatorio para REJECTED y WAITLISTED.
+     */
+    reason?: string;
 };
 
 /**
@@ -7488,6 +7515,53 @@ export type Submit1Responses = {
 };
 
 export type Submit1Response = Submit1Responses[keyof Submit1Responses];
+
+export type ResolveApplicationData = {
+    body: ResolveApplicationRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/resolution';
+};
+
+export type ResolveApplicationErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ResolveApplicationError = ResolveApplicationErrors[keyof ResolveApplicationErrors];
+
+export type ResolveApplicationResponses = {
+    /**
+     * Detalle de la solicitud resuelta.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type ResolveApplicationResponse = ResolveApplicationResponses[keyof ResolveApplicationResponses];
 
 export type List5Data = {
     body?: never;

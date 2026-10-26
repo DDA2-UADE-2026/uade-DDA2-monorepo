@@ -21,5 +21,13 @@ object ApplicationErrors {
     fun assigneeNotEligible() = ConflictException("APPLICATION_ASSIGNEE_NOT_ELIGIBLE", "El usuario no tiene un rol habilitado para evaluar la solicitud y gestionar sus visitas.")
     fun assignmentStatusNotAllowed() = ConflictException("APPLICATION_ASSIGNMENT_STATUS_NOT_ALLOWED", "El estado actual de la solicitud no permite cambiar el trabajador asignado.")
     fun unassignmentAfterEvaluation() = ConflictException("APPLICATION_UNASSIGNMENT_EVALUATED", "La solicitud ya fue evaluada: necesita un trabajador asignado para gestionar sus visitas.")
+    fun invalidResolution(message: String) = BadRequestException("APPLICATION_RESOLUTION_INVALID", message)
+    fun resolutionStatusNotAllowed() = ConflictException("APPLICATION_RESOLUTION_STATUS_NOT_ALLOWED", "La solicitud no está en una etapa que admita esta resolución.")
+    fun resolutionRequiresEvaluation() = ConflictException("APPLICATION_RESOLUTION_REQUIRES_EVALUATION", "La solicitud necesita una evaluación social registrada antes de resolverse.")
+    fun resolutionWithScheduledVisits() = ConflictException("APPLICATION_RESOLUTION_SCHEDULED_VISITS", "La solicitud tiene visitas o entrevistas programadas. Cancelalas o registrá su resultado antes de resolverla.")
+    fun resolutionWithPendingDocuments() = ConflictException("APPLICATION_RESOLUTION_PENDING_DOCUMENTS", "La solicitud tiene documentos obligatorios faltantes u observados: no se puede aprobar.")
+    fun resolutionAssignedToAnotherWorker() = ForbiddenException("APPLICATION_RESOLUTION_ASSIGNED_TO_ANOTHER_WORKER", "Solo el trabajador asignado puede resolver la solicitud.")
+    fun resolutionOwnApplication() = ForbiddenException("APPLICATION_RESOLUTION_OWN_APPLICATION", "No podés resolver una solicitud en la que sos titular.")
+    fun editionCapacityReached() = ConflictException("APPLICATION_EDITION_CAPACITY_REACHED", "La edición alcanzó su cupo máximo de solicitudes aprobadas. Podés dejarla en lista de espera.")
     fun assignmentWithScheduledVisits() = ConflictException("APPLICATION_ASSIGNMENT_SCHEDULED_VISITS", "La solicitud tiene visitas o entrevistas programadas. Cancelalas o registrá su resultado antes de reasignarla.")
 }

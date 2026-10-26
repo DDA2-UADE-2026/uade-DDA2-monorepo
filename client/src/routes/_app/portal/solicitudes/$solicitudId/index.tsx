@@ -12,6 +12,12 @@ import { get2Options } from "@/generated/@tanstack/react-query.gen"
 import { useMe } from "@/hooks/use-auth"
 import { formatApplicationDate, isApplicationResolved } from "@/lib/application-flow"
 
+const RESOLUTION_COPY: Record<string, string> = {
+  APPROVED: "Tu solicitud fue aprobada",
+  REJECTED: "Tu solicitud fue rechazada",
+  WAITLISTED: "Tu solicitud quedó en lista de espera",
+}
+
 export const Route = createFileRoute("/_app/portal/solicitudes/$solicitudId/")({
   component: RouteComponent,
 })
@@ -36,6 +42,14 @@ function RouteComponent() {
           <div><p className="text-muted-foreground">Última actualización</p><p className="mt-1 font-medium">{formatApplicationDate(application.updatedAt)}</p></div>
         </CardContent>
       </Card>
+      {application.resolvedAt && RESOLUTION_COPY[application.status ?? ""] && <Alert variant={application.status === "REJECTED" ? "destructive" : "default"}>
+        {application.status === "APPROVED" ? <IconCheck /> : <IconClipboardList />}
+        <AlertTitle>{RESOLUTION_COPY[application.status!]}</AlertTitle>
+        <AlertDescription className="space-y-1">
+          <p>Resuelta el {formatApplicationDate(application.resolvedAt)}.</p>
+          {application.resolutionReason && <p className="whitespace-pre-wrap"><span className="font-medium">Motivo:</span> {application.resolutionReason}</p>}
+        </AlertDescription>
+      </Alert>}
       {session?.user?.permissions?.includes("applications:own:visits:view") && <Card>
         <CardHeader><CardTitle className="flex items-center gap-2 font-heading text-xl"><IconCalendarEvent className="size-5" />Visitas y entrevistas</CardTitle><CardDescription>Consultá las actuaciones de esta solicitud y el estado de tus pedidos de reprogramación.</CardDescription></CardHeader>
         <CardContent><Button variant="outline" render={<Link to="/portal/solicitudes/$solicitudId/visitas" params={{ solicitudId }} search={{ page: 1 }} />}>Ver visitas y entrevistas</Button></CardContent>
