@@ -14,6 +14,7 @@ import { delete2Mutation, deleteProgramImageMutation, findById2Options, findById
 import type { UpdateProgramRequest } from "@/generated/types.gen"
 import { zUpdateProgramRequest } from "@/generated/zod.gen"
 import { programImageSource } from "@/lib/program-images"
+import { UserChip } from "@/components/UserChip"
 
 const updateProgramSchema = zUpdateProgramRequest.extend({
   name: zUpdateProgramRequest.shape.name.trim().min(1, "Ingresá el nombre del programa."),
@@ -59,6 +60,15 @@ function RouteComponent() {
   return <RoutePanel>
     <LoadingOrError pending={query.isPending} error={query.isError} retry={() => query.refetch()} />
     {query.data && <div className="grid gap-6">
+      {query.data.createdBy && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+          <span className="text-muted-foreground">Creado por</span>
+          <UserChip
+            user={{ id: query.data.createdBy.id, name: query.data.createdBy.name }}
+            secondary={query.data.createdAt ? new Date(query.data.createdAt).toLocaleDateString("es-AR") : undefined}
+          />
+        </div>
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Imagen de portada</CardTitle>

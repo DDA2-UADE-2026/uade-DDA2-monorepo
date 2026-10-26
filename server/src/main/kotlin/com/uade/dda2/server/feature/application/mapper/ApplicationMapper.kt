@@ -17,6 +17,7 @@ fun Application.toResponse(
     pendingDocuments = pendingDocuments,
     programId = requireNotNull(programEdition.program.id), programName = programEdition.program.name,
     programEditionName = programEdition.name, documentRequirements = documentRequirements,
+    resolvedAt = resolvedAt, resolutionReason = resolutionReason,
 )
 
 fun Application.toAdminListItemResponse() = AdminApplicationListItemResponse(
@@ -42,7 +43,9 @@ fun Application.toAdminResponse(
     enrollmentPeriodId = requireNotNull(enrollmentPeriod.id), status = status,
     originTicketId = originTicketId, resolutionReason = resolutionReason,
     assignedWorkerUserId = assignedWorker?.id, assignedWorkerName = assignedWorker?.name,
-    submittedAt = submittedAt, resolvedAt = resolvedAt, createdAt = createdAt, updatedAt = updatedAt,
+    submittedAt = submittedAt, resolvedAt = resolvedAt,
+    resolvedByUserId = resolvedBy?.id, resolvedByName = resolvedBy?.name,
+    createdAt = createdAt, updatedAt = updatedAt,
     idempotencyKey = idempotencyKey, requestHash = requestHash,
     pendingDocuments = pendingDocuments, documentRequirements = documentRequirements,
 )

@@ -1,3 +1,4 @@
+import { UserInline } from "@/components/UserChip"
 import { IconAlertTriangle, IconArrowLeft, IconCalendarCheck, IconCalendarX } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
@@ -128,7 +129,7 @@ function RouteComponent() {
               <p><span className="font-medium">Ciudadano:</span> {citizenName ?? "—"}</p>
               <p><span className="font-medium">Fecha:</span> {formatAppointmentDate(appointment.startsAt?.slice(0, 10))}</p>
               <p><span className="font-medium">Horario:</span> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
-              <p><span className="font-medium">Profesional:</span> {appointment.professionalName}</p>
+              <p><span className="font-medium">Profesional:</span> <UserInline user={{ id: appointment.professionalId, name: appointment.professionalName }} /></p>
               <p className="text-muted-foreground">Identificador: {appointment.id}</p>
             </CardContent>
           </Card>
@@ -294,7 +295,7 @@ function RescheduleSection({ turnoId, current, onChanged }: {
                     className={`w-full rounded-lg border p-3 text-left text-sm transition-colors ${active ? "border-primary bg-primary/5" : "hover:border-muted-foreground"}`}
                   >
                     <span className="font-medium">{formatAppointmentTime(slot.startsAt)} – {formatAppointmentTime(slot.endsAt)}</span>
-                    <span className="block text-muted-foreground">{slot.professionalName}</span>
+                    <UserInline user={{ id: slot.professionalId, name: slot.professionalName }} className="mt-1 flex text-muted-foreground" />
                   </button>
                 </li>
               )

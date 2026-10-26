@@ -137,6 +137,24 @@ export type CommunityAttentionResponse = {
 };
 
 /**
+ * Nuevo horario y lugar de una visita o entrevista social pendiente.
+ */
+export type RescheduleApplicationVisitRequest = {
+    /**
+     * Nuevo inicio futuro en ISO-8601 con offset.
+     */
+    startsAt: string;
+    /**
+     * Nueva duracion positiva en minutos.
+     */
+    durationMinutes: number;
+    /**
+     * Nuevo lugar. Se recorta y no se copia al log de auditoria.
+     */
+    location: string;
+};
+
+/**
  * Respuesta estándar de error de la API.
  */
 export type ErrorResponse = {
@@ -178,6 +196,73 @@ export type FieldErrorResponse = {
      * Motivo por el cual el valor fue rechazado.
      */
     message?: string;
+};
+
+/**
+ * Resumen sin textos sensibles de la solicitud de reprogramacion mas reciente.
+ */
+export type ApplicationVisitRescheduleRequestSummaryResponse = {
+    id?: string;
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    requestedAt?: string;
+    reviewedAt?: string;
+};
+
+/**
+ * Estado vigente de una visita o entrevista social programada, cancelada o finalizada.
+ */
+export type ApplicationVisitResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    type?: 'VISIT' | 'INTERVIEW';
+    startsAt?: string;
+    endsAt?: string;
+    durationMinutes?: number;
+    location?: string;
+    status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
+    responsibleId?: number;
+    responsibleName?: string;
+    /**
+     * Instante UTC asignado por el servidor.
+     */
+    scheduledAt?: string;
+    /**
+     * Indica si la actuacion fue reprogramada al menos una vez.
+     */
+    rescheduled?: boolean;
+    /**
+     * Instante UTC de la ultima reprogramacion.
+     */
+    lastRescheduledAt?: string;
+    /**
+     * Solicitud de reprogramacion mas reciente, sin textos sensibles.
+     */
+    latestRescheduleRequest?: ApplicationVisitRescheduleRequestSummaryResponse;
+    /**
+     * Motivo de cancelacion; null mientras la actuacion siga programada.
+     */
+    cancellationReason?: string;
+    /**
+     * Instante UTC de cancelacion.
+     */
+    cancelledAt?: string;
+    cancelledById?: number;
+    cancelledByName?: string;
+    /**
+     * Observaciones del resultado; null mientras la actuacion no haya finalizado.
+     */
+    observations?: string;
+    /**
+     * Conclusiones del resultado; null mientras la actuacion no haya finalizado.
+     */
+    conclusions?: string;
+    /**
+     * Instante UTC en que se registro el resultado.
+     */
+    resultRecordedAt?: string;
+    resultRecordedById?: number;
+    resultRecordedByName?: string;
 };
 
 /**
@@ -691,6 +776,104 @@ export type AppointmentResponse = {
 };
 
 /**
+ * Trabajador al que se asigna la solicitud para evaluarla y gestionar sus visitas.
+ */
+export type AssignApplicationWorkerRequest = {
+    /**
+     * ID interno del usuario a asignar. Debe estar activo y tener un rol con applications:visits:create (y applications:evaluations:create si la solicitud todavia no fue evaluada).
+     */
+    userId: number;
+};
+
+/**
+ * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
+ */
+export type AdminApplicationResponse = {
+    id?: string;
+    /**
+     * Número global único, generado por secuencia. Puede haber saltos.
+     */
+    applicationNumber?: number;
+    /**
+     * ID interno del usuario titular de la solicitud.
+     */
+    userId?: number;
+    /**
+     * Nombre del titular registrado en users, no en una identidad externa.
+     */
+    userName?: string;
+    userEmail?: string;
+    /**
+     * ID interno de quien registró la solicitud. En una presentación propia coincide con userId.
+     */
+    registeredByUserId?: number;
+    registeredByUserName?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    enrollmentPeriodId?: string;
+    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    /**
+     * Identificador del trámite de origen, cuando la solicitud llegó desde otro canal.
+     */
+    originTicketId?: string;
+    /**
+     * Motivo de la resolución, visible también para el titular. Obligatorio al rechazar o dejar en lista de espera.
+     */
+    resolutionReason?: string;
+    /**
+     * Trabajador asignado a la solicitud. Se fija al registrar la evaluación o con PUT /api/admin/applications/{id}/assigned-worker.
+     */
+    assignedWorkerUserId?: number;
+    assignedWorkerName?: string;
+    submittedAt?: string;
+    resolvedAt?: string;
+    /**
+     * Quien registró la última resolución.
+     */
+    resolvedByUserId?: number;
+    resolvedByName?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    /**
+     * Clave de idempotencia con la que se presentó la solicitud, solo visible en esta vista administrativa.
+     */
+    idempotencyKey?: string;
+    /**
+     * Hash del cuerpo asociado a la clave de idempotencia. Existe si y solo si existe la clave.
+     */
+    requestHash?: string;
+    /**
+     * Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.
+     */
+    pendingDocuments?: Array<PendingApplicationDocumentResponse>;
+    /**
+     * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
+     */
+    documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+};
+
+/**
+ * Documento solicitado por una edición disponible.
+ */
+export type AvailableProgramDocumentRequirementResponse = {
+    id?: string;
+    code?: string;
+    name?: string;
+    description?: string;
+    required?: boolean;
+};
+
+export type PendingApplicationDocumentResponse = {
+    requirementId?: string;
+    code?: string;
+    name?: string;
+    reason?: 'MISSING' | 'OBSERVED';
+    observation?: string;
+};
+
+/**
  * Datos requeridos para actualizar una actividad comunitaria en borrador.
  */
 export type UpdateActivityRequest = {
@@ -932,25 +1115,136 @@ export type ApplicationResponse = {
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+    /**
+     * Momento de la resolución (aprobada, rechazada o en lista de espera).
+     */
+    resolvedAt?: string;
+    /**
+     * Motivo de la resolución informado por el trabajador social.
+     */
+    resolutionReason?: string;
 };
 
 /**
- * Documento solicitado por una edición disponible.
+ * Datos para programar una visita o entrevista social. El responsable, fin y fecha de registro se derivan en el servidor.
  */
-export type AvailableProgramDocumentRequirementResponse = {
-    id?: string;
-    code?: string;
-    name?: string;
-    description?: string;
-    required?: boolean;
+export type CreateApplicationVisitRequest = {
+    /**
+     * Tipo de actuacion social.
+     */
+    type: 'VISIT' | 'INTERVIEW';
+    /**
+     * Inicio futuro en ISO-8601 con offset.
+     */
+    startsAt: string;
+    /**
+     * Duracion positiva en minutos.
+     */
+    durationMinutes: number;
+    /**
+     * Lugar de la visita o entrevista. Se recorta antes de persistir y no se copia al log de auditoria.
+     */
+    location: string;
 };
 
-export type PendingApplicationDocumentResponse = {
-    requirementId?: string;
-    code?: string;
-    name?: string;
-    reason?: 'MISSING' | 'OBSERVED';
-    observation?: string;
+/**
+ * Resultado final de una visita o entrevista social. El profesional y la fecha se derivan del servidor.
+ */
+export type RecordApplicationVisitResultRequest = {
+    /**
+     * Estado final de la actuacion.
+     */
+    status: 'REALIZED' | 'NOT_REALIZED';
+    /**
+     * Observaciones profesionales opcionales. Se recortan y no se copian a listados ni auditoria.
+     */
+    observations?: string;
+    /**
+     * Conclusiones profesionales opcionales. Se recortan y no se copian a listados ni auditoria.
+     */
+    conclusions?: string;
+};
+
+/**
+ * Motivo ciudadano para solicitar la reprogramacion de una visita o entrevista propia.
+ */
+export type CreateApplicationVisitRescheduleRequest = {
+    /**
+     * Motivo de la solicitud. Se recorta y no se copia a auditoria.
+     */
+    reason: string;
+};
+
+/**
+ * Horario historico de una visita o entrevista.
+ */
+export type ApplicationVisitRescheduleScheduleResponse = {
+    startsAt?: string;
+    endsAt?: string;
+    durationMinutes?: number;
+    location?: string;
+};
+
+/**
+ * Detalle ciudadano de una solicitud de reprogramacion propia.
+ */
+export type CitizenApplicationVisitRescheduleRequestDetailResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    visitId?: string;
+    visitType?: 'VISIT' | 'INTERVIEW';
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    reason?: string;
+    requestedAt?: string;
+    scheduleAtRequest?: ApplicationVisitRescheduleScheduleResponse;
+    reviewedAt?: string;
+    reviewComment?: string;
+    approvedSchedule?: ApplicationVisitRescheduleScheduleResponse;
+};
+
+/**
+ * Evaluacion social de una solicitud. El profesional y la fecha se obtienen del servidor.
+ */
+export type CreateApplicationEvaluationRequest = {
+    /**
+     * Nivel de vulnerabilidad detectado.
+     */
+    vulnerability: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    /**
+     * Prioridad de intervencion.
+     */
+    priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    /**
+     * Recomendacion profesional. Se recorta antes de persistir y no se copia al log de auditoria.
+     */
+    recommendation: string;
+};
+
+/**
+ * Evaluacion social registrada para una solicitud.
+ */
+export type ApplicationEvaluationResponse = {
+    id?: string;
+    applicationId?: string;
+    /**
+     * Nivel de vulnerabilidad determinado durante la evaluacion social.
+     */
+    vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    /**
+     * Prioridad de intervencion determinada durante la evaluacion social.
+     */
+    priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    recommendation?: string;
+    /**
+     * Usuario autenticado que registro la evaluacion.
+     */
+    professionalId?: number;
+    professionalName?: string;
+    /**
+     * Instante UTC asignado por el servidor.
+     */
+    evaluatedAt?: string;
 };
 
 /**
@@ -1185,6 +1479,20 @@ export type CreateAssistedApplicationRequest = {
 };
 
 /**
+ * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
+ */
+export type ResolveApplicationRequest = {
+    /**
+     * APPROVED, REJECTED o WAITLISTED. Desde lista de espera solo se admite APPROVED o REJECTED.
+     */
+    decision: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
+    /**
+     * Motivo visible para el titular, de 1 a 1000 caracteres. Obligatorio para REJECTED y WAITLISTED.
+     */
+    reason?: string;
+};
+
+/**
  * Datos requeridos para crear una actividad comunitaria.
  */
 export type CreateActivityRequest = {
@@ -1255,6 +1563,75 @@ export type ProfessionalActivityEnrollmentResponse = {
 };
 
 /**
+ * Decision del responsable sobre una solicitud ciudadana de reprogramacion.
+ */
+export type ReviewApplicationVisitRescheduleRequest = {
+    /**
+     * Decision final: APPROVED o REJECTED.
+     */
+    status: 'APPROVED' | 'REJECTED';
+    /**
+     * Nuevo inicio futuro, obligatorio al aprobar.
+     */
+    startsAt?: string;
+    /**
+     * Nueva duracion positiva, obligatoria al aprobar.
+     */
+    durationMinutes?: number;
+    /**
+     * Nuevo lugar, obligatorio al aprobar.
+     */
+    location?: string;
+    /**
+     * Comentario opcional al aprobar y obligatorio al rechazar. No se copia a auditoria.
+     */
+    comment?: string;
+};
+
+/**
+ * Detalle administrativo completo de una solicitud de reprogramacion.
+ */
+export type AdminApplicationVisitRescheduleRequestDetailResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    visitId?: string;
+    visitType?: 'VISIT' | 'INTERVIEW';
+    applicantUserId?: number;
+    applicantName?: string;
+    applicantEmail?: string;
+    responsibleId?: number;
+    responsibleName?: string;
+    responsibleEmail?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    requestedById?: number;
+    requestedByName?: string;
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    reason?: string;
+    requestedAt?: string;
+    scheduleAtRequest?: ApplicationVisitRescheduleScheduleResponse;
+    reviewedById?: number;
+    reviewedByName?: string;
+    reviewedByEmail?: string;
+    reviewedAt?: string;
+    reviewComment?: string;
+    approvedSchedule?: ApplicationVisitRescheduleScheduleResponse;
+};
+
+/**
+ * Motivo requerido para cancelar una visita o entrevista social pendiente.
+ */
+export type CancelApplicationVisitRequest = {
+    /**
+     * Motivo de cancelacion. Se recorta y no se copia al log de auditoria.
+     */
+    reason: string;
+};
+
+/**
  * Resultado de la revisión administrativa de un documento pendiente.
  */
 export type ReviewApplicationDocumentRequest = {
@@ -1313,7 +1690,7 @@ export type LogResponse = {
     /**
      * Tipo de entidad afectada.
      */
-    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
     /**
      * Identificador de la entidad afectada.
      */
@@ -1648,6 +2025,133 @@ export type AppointmentCenterResponse = {
 
 export type ApplicationListResponse = {
     content?: Array<ApplicationResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Resumen ciudadano de una visita o entrevista asociada a una solicitud propia.
+ */
+export type CitizenApplicationVisitListItemResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    /**
+     * Nombre del programa de la solicitud.
+     */
+    programName?: string;
+    /**
+     * Modalidad de la actuacion: VISIT o INTERVIEW.
+     */
+    type?: 'VISIT' | 'INTERVIEW';
+    /**
+     * Inicio vigente expresado en la zona horaria municipal.
+     */
+    startsAt?: string;
+    /**
+     * Fin vigente expresado en la zona horaria municipal.
+     */
+    endsAt?: string;
+    durationMinutes?: number;
+    location?: string;
+    status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
+    /**
+     * Indica si el horario o lugar fue reprogramado al menos una vez.
+     */
+    rescheduled?: boolean;
+    /**
+     * Instante UTC de la ultima reprogramacion.
+     */
+    lastRescheduledAt?: string;
+    /**
+     * Solicitud de reprogramacion mas reciente, sin motivo ni comentario.
+     */
+    latestRescheduleRequest?: ApplicationVisitRescheduleRequestSummaryResponse;
+    /**
+     * Instante UTC de cancelacion.
+     */
+    cancelledAt?: string;
+};
+
+/**
+ * Pagina de visitas y entrevistas de solicitudes propias.
+ */
+export type CitizenApplicationVisitListResponse = {
+    content?: Array<CitizenApplicationVisitListItemResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Detalle ciudadano de una visita o entrevista asociada a una solicitud propia.
+ */
+export type CitizenApplicationVisitDetailResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    /**
+     * Modalidad de la actuacion: VISIT o INTERVIEW.
+     */
+    type?: 'VISIT' | 'INTERVIEW';
+    /**
+     * Inicio vigente expresado en la zona horaria municipal.
+     */
+    startsAt?: string;
+    /**
+     * Fin vigente expresado en la zona horaria municipal.
+     */
+    endsAt?: string;
+    durationMinutes?: number;
+    location?: string;
+    status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
+    /**
+     * Indica si el horario o lugar fue reprogramado al menos una vez.
+     */
+    rescheduled?: boolean;
+    /**
+     * Instante UTC de la ultima reprogramacion.
+     */
+    lastRescheduledAt?: string;
+    /**
+     * Solicitud de reprogramacion mas reciente, sin motivo ni comentario.
+     */
+    latestRescheduleRequest?: ApplicationVisitRescheduleRequestSummaryResponse;
+    /**
+     * Instante UTC de cancelacion.
+     */
+    cancelledAt?: string;
+    /**
+     * Motivo de cancelacion visible solo para el titular en el detalle.
+     */
+    cancellationReason?: string;
+};
+
+/**
+ * Solicitud propia de reprogramacion incluida en el historial ciudadano.
+ */
+export type CitizenApplicationVisitRescheduleRequestListItemResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    visitId?: string;
+    visitType?: 'VISIT' | 'INTERVIEW';
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    requestedAt?: string;
+    reviewedAt?: string;
+    approvedStartsAt?: string;
+    approvedEndsAt?: string;
+    approvedDurationMinutes?: number;
+};
+
+/**
+ * Pagina del historial ciudadano de solicitudes de reprogramacion.
+ */
+export type CitizenApplicationVisitRescheduleRequestListResponse = {
+    content?: Array<CitizenApplicationVisitRescheduleRequestListItemResponse>;
     page?: number;
     size?: number;
     totalElements?: number;
@@ -1991,67 +2495,213 @@ export type AdminApplicationListResponse = {
 };
 
 /**
- * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
+ * Actuacion incluida en la agenda administrativa de solicitudes.
  */
-export type AdminApplicationResponse = {
+export type ApplicationVisitListItemResponse = {
     id?: string;
-    /**
-     * Número global único, generado por secuencia. Puede haber saltos.
-     */
+    applicationId?: string;
     applicationNumber?: number;
-    /**
-     * ID interno del usuario titular de la solicitud.
-     */
-    userId?: number;
-    /**
-     * Nombre del titular registrado en users, no en una identidad externa.
-     */
-    userName?: string;
-    userEmail?: string;
-    /**
-     * ID interno de quien registró la solicitud. En una presentación propia coincide con userId.
-     */
-    registeredByUserId?: number;
-    registeredByUserName?: string;
+    applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    applicantUserId?: number;
+    applicantName?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    type?: 'VISIT' | 'INTERVIEW';
+    startsAt?: string;
+    endsAt?: string;
+    durationMinutes?: number;
+    location?: string;
+    status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
+    responsibleId?: number;
+    responsibleName?: string;
+    scheduledAt?: string;
+    rescheduled?: boolean;
+    lastRescheduledAt?: string;
+    latestRescheduleRequest?: ApplicationVisitRescheduleRequestSummaryResponse;
+    cancelledAt?: string;
+    cancelledById?: number;
+    cancelledByName?: string;
+    resultRecordedAt?: string;
+    resultRecordedById?: number;
+    resultRecordedByName?: string;
+};
+
+/**
+ * Pagina de visitas y entrevistas sociales ordenada cronologicamente.
+ */
+export type ApplicationVisitListResponse = {
+    content?: Array<ApplicationVisitListItemResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Detalle administrativo de una visita o entrevista y su solicitud asociada.
+ */
+export type ApplicationVisitDetailResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    applicantUserId?: number;
+    applicantName?: string;
+    applicantEmail?: string;
     programId?: string;
     programName?: string;
     programEditionId?: string;
     programEditionName?: string;
     enrollmentPeriodId?: string;
-    status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    type?: 'VISIT' | 'INTERVIEW';
+    startsAt?: string;
+    endsAt?: string;
+    durationMinutes?: number;
+    location?: string;
+    status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
+    responsibleId?: number;
+    responsibleName?: string;
+    responsibleEmail?: string;
+    scheduledAt?: string;
+    rescheduled?: boolean;
+    lastRescheduledAt?: string;
+    latestRescheduleRequest?: ApplicationVisitRescheduleRequestSummaryResponse;
     /**
-     * Identificador del trámite de origen, cuando la solicitud llegó desde otro canal.
+     * Motivo de cancelacion; no se expone en el listado ni en auditoria.
      */
-    originTicketId?: string;
+    cancellationReason?: string;
+    cancelledAt?: string;
+    cancelledById?: number;
+    cancelledByName?: string;
+    cancelledByEmail?: string;
     /**
-     * Motivo de la resolución. Todavía no se completa desde ninguna operación.
+     * Observaciones sensibles del resultado, visibles solo en el detalle autorizado.
      */
-    resolutionReason?: string;
+    observations?: string;
     /**
-     * Trabajador asignado a la solicitud. Todavía no se asigna desde ninguna operación.
+     * Conclusiones sensibles del resultado, visibles solo en el detalle autorizado.
      */
-    assignedWorkerUserId?: number;
-    assignedWorkerName?: string;
-    submittedAt?: string;
-    resolvedAt?: string;
-    createdAt?: string;
-    updatedAt?: string;
+    conclusions?: string;
+    resultRecordedAt?: string;
+    resultRecordedById?: number;
+    resultRecordedByName?: string;
+    resultRecordedByEmail?: string;
+};
+
+/**
+ * Solicitud de reprogramacion incluida en la bandeja administrativa.
+ */
+export type AdminApplicationVisitRescheduleRequestListItemResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    visitId?: string;
+    visitType?: 'VISIT' | 'INTERVIEW';
+    applicantUserId?: number;
+    applicantName?: string;
+    responsibleId?: number;
+    responsibleName?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    requestedAt?: string;
+    reviewedAt?: string;
+    originalStartsAt?: string;
+    originalEndsAt?: string;
+    originalDurationMinutes?: number;
+    approvedStartsAt?: string;
+    approvedEndsAt?: string;
+    approvedDurationMinutes?: number;
+};
+
+/**
+ * Pagina filtrada de solicitudes de reprogramacion.
+ */
+export type AdminApplicationVisitRescheduleRequestListResponse = {
+    content?: Array<AdminApplicationVisitRescheduleRequestListItemResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Resumen administrativo de una evaluacion social. La recomendacion se consulta solo en el detalle.
+ */
+export type ApplicationEvaluationListItemResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    applicantUserId?: number;
+    applicantName?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
     /**
-     * Clave de idempotencia con la que se presentó la solicitud, solo visible en esta vista administrativa.
+     * Nivel de vulnerabilidad determinado durante la evaluacion social.
      */
-    idempotencyKey?: string;
+    vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
-     * Hash del cuerpo asociado a la clave de idempotencia. Existe si y solo si existe la clave.
+     * Prioridad de intervencion determinada durante la evaluacion social.
      */
-    requestHash?: string;
+    priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    professionalId?: number;
+    professionalName?: string;
+    evaluatedAt?: string;
+};
+
+/**
+ * Pagina administrativa de evaluaciones sociales, ordenada por fecha descendente.
+ */
+export type ApplicationEvaluationListResponse = {
+    content?: Array<ApplicationEvaluationListItemResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * Detalle administrativo completo de una evaluacion social y su solicitud asociada.
+ */
+export type ApplicationEvaluationDetailResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    applicantUserId?: number;
+    applicantName?: string;
+    applicantEmail?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    enrollmentPeriodId?: string;
     /**
-     * Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.
+     * Nivel de vulnerabilidad determinado durante la evaluacion social.
      */
-    pendingDocuments?: Array<PendingApplicationDocumentResponse>;
+    vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
-     * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
+     * Prioridad de intervencion determinada durante la evaluacion social.
      */
-    documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+    priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+    /**
+     * Recomendacion profesional sensible, visible solo en el detalle autorizado.
+     */
+    recommendation?: string;
+    professionalId?: number;
+    professionalName?: string;
+    professionalEmail?: string;
+    /**
+     * Instante UTC asignado por el servidor.
+     */
+    evaluatedAt?: string;
 };
 
 /**
@@ -2617,6 +3267,54 @@ export type CorrectCommunityAttentionResponses = {
 };
 
 export type CorrectCommunityAttentionResponse = CorrectCommunityAttentionResponses[keyof CorrectCommunityAttentionResponses];
+
+export type RescheduleApplicationVisitData = {
+    body: RescheduleApplicationVisitRequest;
+    path: {
+        applicationId: string;
+        visitId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}/schedule';
+};
+
+export type RescheduleApplicationVisitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type RescheduleApplicationVisitError = RescheduleApplicationVisitErrors[keyof RescheduleApplicationVisitErrors];
+
+export type RescheduleApplicationVisitResponses = {
+    /**
+     * Actuacion reprogramada.
+     */
+    200: ApplicationVisitResponse;
+};
+
+export type RescheduleApplicationVisitResponse = RescheduleApplicationVisitResponses[keyof RescheduleApplicationVisitResponses];
 
 export type PutData = {
     body?: {
@@ -4019,6 +4717,100 @@ export type RescheduleAdminAppointmentResponses = {
 
 export type RescheduleAdminAppointmentResponse = RescheduleAdminAppointmentResponses[keyof RescheduleAdminAppointmentResponses];
 
+export type UnassignApplicationWorkerData = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/assigned-worker';
+};
+
+export type UnassignApplicationWorkerErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type UnassignApplicationWorkerError = UnassignApplicationWorkerErrors[keyof UnassignApplicationWorkerErrors];
+
+export type UnassignApplicationWorkerResponses = {
+    /**
+     * Detalle de la solicitud sin trabajador asignado.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type UnassignApplicationWorkerResponse = UnassignApplicationWorkerResponses[keyof UnassignApplicationWorkerResponses];
+
+export type AssignApplicationWorkerData = {
+    body: AssignApplicationWorkerRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/assigned-worker';
+};
+
+export type AssignApplicationWorkerErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AssignApplicationWorkerError = AssignApplicationWorkerErrors[keyof AssignApplicationWorkerErrors];
+
+export type AssignApplicationWorkerResponses = {
+    /**
+     * Detalle de la solicitud con el trabajador asignado.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type AssignApplicationWorkerResponse = AssignApplicationWorkerResponses[keyof AssignApplicationWorkerResponses];
+
 export type Put1Data = {
     body?: {
         file: Blob | File;
@@ -4776,6 +5568,301 @@ export type SubmitResponses = {
 };
 
 export type SubmitResponse = SubmitResponses[keyof SubmitResponses];
+
+export type ListOwnApplicationVisitsData = {
+    body?: never;
+    path: {
+        applicationId: string;
+    };
+    query?: {
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/applications/{applicationId}/visits';
+};
+
+export type ListOwnApplicationVisitsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListOwnApplicationVisitsError = ListOwnApplicationVisitsErrors[keyof ListOwnApplicationVisitsErrors];
+
+export type ListOwnApplicationVisitsResponses = {
+    /**
+     * Pagina de actuaciones propias.
+     */
+    200: CitizenApplicationVisitListResponse;
+};
+
+export type ListOwnApplicationVisitsResponse = ListOwnApplicationVisitsResponses[keyof ListOwnApplicationVisitsResponses];
+
+export type CreateApplicationVisitData = {
+    body: CreateApplicationVisitRequest;
+    path: {
+        applicationId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits';
+};
+
+export type CreateApplicationVisitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateApplicationVisitError = CreateApplicationVisitErrors[keyof CreateApplicationVisitErrors];
+
+export type CreateApplicationVisitResponses = {
+    /**
+     * Visita o entrevista programada.
+     */
+    201: ApplicationVisitResponse;
+};
+
+export type CreateApplicationVisitResponse = CreateApplicationVisitResponses[keyof CreateApplicationVisitResponses];
+
+export type RecordApplicationVisitResultData = {
+    body: RecordApplicationVisitResultRequest;
+    path: {
+        applicationId: string;
+        visitId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}/result';
+};
+
+export type RecordApplicationVisitResultErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type RecordApplicationVisitResultError = RecordApplicationVisitResultErrors[keyof RecordApplicationVisitResultErrors];
+
+export type RecordApplicationVisitResultResponses = {
+    /**
+     * Resultado registrado.
+     */
+    201: ApplicationVisitResponse;
+};
+
+export type RecordApplicationVisitResultResponse = RecordApplicationVisitResultResponses[keyof RecordApplicationVisitResultResponses];
+
+export type ListOwnApplicationVisitRescheduleRequestsData = {
+    body?: never;
+    path: {
+        applicationId: string;
+        visitId: string;
+    };
+    query?: {
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests';
+};
+
+export type ListOwnApplicationVisitRescheduleRequestsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListOwnApplicationVisitRescheduleRequestsError = ListOwnApplicationVisitRescheduleRequestsErrors[keyof ListOwnApplicationVisitRescheduleRequestsErrors];
+
+export type ListOwnApplicationVisitRescheduleRequestsResponses = {
+    /**
+     * Pagina del historial propio.
+     */
+    200: CitizenApplicationVisitRescheduleRequestListResponse;
+};
+
+export type ListOwnApplicationVisitRescheduleRequestsResponse = ListOwnApplicationVisitRescheduleRequestsResponses[keyof ListOwnApplicationVisitRescheduleRequestsResponses];
+
+export type CreateOwnApplicationVisitRescheduleRequestData = {
+    body: CreateApplicationVisitRescheduleRequest;
+    path: {
+        applicationId: string;
+        visitId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests';
+};
+
+export type CreateOwnApplicationVisitRescheduleRequestErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateOwnApplicationVisitRescheduleRequestError = CreateOwnApplicationVisitRescheduleRequestErrors[keyof CreateOwnApplicationVisitRescheduleRequestErrors];
+
+export type CreateOwnApplicationVisitRescheduleRequestResponses = {
+    /**
+     * Solicitud registrada.
+     */
+    201: CitizenApplicationVisitRescheduleRequestDetailResponse;
+};
+
+export type CreateOwnApplicationVisitRescheduleRequestResponse = CreateOwnApplicationVisitRescheduleRequestResponses[keyof CreateOwnApplicationVisitRescheduleRequestResponses];
+
+export type CreateApplicationEvaluationData = {
+    body: CreateApplicationEvaluationRequest;
+    path: {
+        applicationId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/evaluation';
+};
+
+export type CreateApplicationEvaluationErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CreateApplicationEvaluationError = CreateApplicationEvaluationErrors[keyof CreateApplicationEvaluationErrors];
+
+export type CreateApplicationEvaluationResponses = {
+    /**
+     * Evaluacion registrada.
+     */
+    201: ApplicationEvaluationResponse;
+};
+
+export type CreateApplicationEvaluationResponse = CreateApplicationEvaluationResponses[keyof CreateApplicationEvaluationResponses];
 
 export type List1Data = {
     body?: never;
@@ -6336,6 +7423,10 @@ export type List4Data = {
          * Cantidad de elementos por página, entre 1 y 100.
          */
         size?: number;
+        /**
+         * Opcional. UUID del programa cuyas solicitudes se listan, de cualquiera de sus ediciones.
+         */
+        programId?: string;
     };
     url: '/api/admin/applications';
 };
@@ -6424,6 +7515,53 @@ export type Submit1Responses = {
 };
 
 export type Submit1Response = Submit1Responses[keyof Submit1Responses];
+
+export type ResolveApplicationData = {
+    body: ResolveApplicationRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/resolution';
+};
+
+export type ResolveApplicationErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ResolveApplicationError = ResolveApplicationErrors[keyof ResolveApplicationErrors];
+
+export type ResolveApplicationResponses = {
+    /**
+     * Detalle de la solicitud resuelta.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type ResolveApplicationResponse = ResolveApplicationResponses[keyof ResolveApplicationResponses];
 
 export type List5Data = {
     body?: never;
@@ -6606,6 +7744,103 @@ export type UpdateAttendanceResponses = {
 };
 
 export type UpdateAttendanceResponse = UpdateAttendanceResponses[keyof UpdateAttendanceResponses];
+
+export type ReviewApplicationVisitRescheduleRequestData = {
+    body: ReviewApplicationVisitRescheduleRequest;
+    path: {
+        applicationId: string;
+        visitId: string;
+        requestId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests/{requestId}/review';
+};
+
+export type ReviewApplicationVisitRescheduleRequestErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ReviewApplicationVisitRescheduleRequestError = ReviewApplicationVisitRescheduleRequestErrors[keyof ReviewApplicationVisitRescheduleRequestErrors];
+
+export type ReviewApplicationVisitRescheduleRequestResponses = {
+    /**
+     * Solicitud revisada.
+     */
+    200: AdminApplicationVisitRescheduleRequestDetailResponse;
+};
+
+export type ReviewApplicationVisitRescheduleRequestResponse = ReviewApplicationVisitRescheduleRequestResponses[keyof ReviewApplicationVisitRescheduleRequestResponses];
+
+export type CancelApplicationVisitData = {
+    body: CancelApplicationVisitRequest;
+    path: {
+        applicationId: string;
+        visitId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}/cancel';
+};
+
+export type CancelApplicationVisitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type CancelApplicationVisitError = CancelApplicationVisitErrors[keyof CancelApplicationVisitErrors];
+
+export type CancelApplicationVisitResponses = {
+    /**
+     * Actuacion cancelada.
+     */
+    200: ApplicationVisitResponse;
+};
+
+export type CancelApplicationVisitResponse = CancelApplicationVisitResponses[keyof CancelApplicationVisitResponses];
 
 export type SuspendData = {
     body?: never;
@@ -7666,7 +8901,7 @@ export type ListLogsByEntityData = {
         /**
          * Tipo de entidad auditada.
          */
-        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
         /**
          * Identificador de la entidad auditada.
          */
@@ -7906,6 +9141,10 @@ export type ListProfessionalAppointmentsData = {
     path?: never;
     query: {
         date: string;
+        /**
+         * Opcional. Fecha final inclusiva, igual o posterior a date y como maximo 41 dias despues.
+         */
+        to?: string;
     };
     url: '/api/professional/appointments';
 };
@@ -8346,6 +9585,95 @@ export type Get2Responses = {
 
 export type Get2Response = Get2Responses[keyof Get2Responses];
 
+export type GetOwnApplicationVisitData = {
+    body?: never;
+    path: {
+        applicationId: string;
+        visitId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}';
+};
+
+export type GetOwnApplicationVisitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetOwnApplicationVisitError = GetOwnApplicationVisitErrors[keyof GetOwnApplicationVisitErrors];
+
+export type GetOwnApplicationVisitResponses = {
+    /**
+     * Detalle ciudadano de la actuacion.
+     */
+    200: CitizenApplicationVisitDetailResponse;
+};
+
+export type GetOwnApplicationVisitResponse = GetOwnApplicationVisitResponses[keyof GetOwnApplicationVisitResponses];
+
+export type GetOwnApplicationVisitRescheduleRequestData = {
+    body?: never;
+    path: {
+        applicationId: string;
+        visitId: string;
+        requestId: string;
+    };
+    query?: never;
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests/{requestId}';
+};
+
+export type GetOwnApplicationVisitRescheduleRequestErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetOwnApplicationVisitRescheduleRequestError = GetOwnApplicationVisitRescheduleRequestErrors[keyof GetOwnApplicationVisitRescheduleRequestErrors];
+
+export type GetOwnApplicationVisitRescheduleRequestResponses = {
+    /**
+     * Detalle de la solicitud propia.
+     */
+    200: CitizenApplicationVisitRescheduleRequestDetailResponse;
+};
+
+export type GetOwnApplicationVisitRescheduleRequestResponse = GetOwnApplicationVisitRescheduleRequestResponses[keyof GetOwnApplicationVisitRescheduleRequestResponses];
+
 export type List6Data = {
     body?: never;
     path: {
@@ -8432,6 +9760,56 @@ export type ContentResponses = {
 };
 
 export type ContentResponse = ContentResponses[keyof ContentResponses];
+
+export type ListAllOwnVisitsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Solo actuaciones programadas y vigentes.
+         */
+        upcoming?: boolean;
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/applications/visits';
+};
+
+export type ListAllOwnVisitsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAllOwnVisitsError = ListAllOwnVisitsErrors[keyof ListAllOwnVisitsErrors];
+
+export type ListAllOwnVisitsResponses = {
+    /**
+     * Pagina de actuaciones propias.
+     */
+    200: CitizenApplicationVisitListResponse;
+};
+
+export type ListAllOwnVisitsResponse = ListAllOwnVisitsResponses[keyof ListAllOwnVisitsResponses];
 
 export type FindAll5Data = {
     body?: never;
@@ -8898,6 +10276,345 @@ export type Content1Responses = {
 };
 
 export type Content1Response = Content1Responses[keyof Content1Responses];
+
+export type ListApplicationVisitsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+        applicationId?: string;
+        applicationNumber?: number;
+        applicantUserId?: number;
+        responsibleId?: number;
+        programId?: string;
+        programEditionId?: string;
+        /**
+         * Tipo exacto de actuacion.
+         */
+        type?: 'VISIT' | 'INTERVIEW';
+        /**
+         * Estado exacto: SCHEDULED, CANCELLED, REALIZED o NOT_REALIZED.
+         */
+        status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
+        /**
+         * Inicio inclusivo de la ventana ISO-8601 con offset.
+         */
+        windowStart?: string;
+        /**
+         * Fin exclusivo de la ventana ISO-8601 con offset.
+         */
+        windowEnd?: string;
+    };
+    url: '/api/admin/application-visits';
+};
+
+export type ListApplicationVisitsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListApplicationVisitsError = ListApplicationVisitsErrors[keyof ListApplicationVisitsErrors];
+
+export type ListApplicationVisitsResponses = {
+    /**
+     * Pagina filtrada de actuaciones sociales.
+     */
+    200: ApplicationVisitListResponse;
+};
+
+export type ListApplicationVisitsResponse = ListApplicationVisitsResponses[keyof ListApplicationVisitsResponses];
+
+export type GetApplicationVisitData = {
+    body?: never;
+    path: {
+        visitId: string;
+    };
+    query?: never;
+    url: '/api/admin/application-visits/{visitId}';
+};
+
+export type GetApplicationVisitErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetApplicationVisitError = GetApplicationVisitErrors[keyof GetApplicationVisitErrors];
+
+export type GetApplicationVisitResponses = {
+    /**
+     * Detalle completo de la actuacion.
+     */
+    200: ApplicationVisitDetailResponse;
+};
+
+export type GetApplicationVisitResponse = GetApplicationVisitResponses[keyof GetApplicationVisitResponses];
+
+export type ListApplicationVisitRescheduleRequestsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+        status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+        applicationId?: string;
+        applicationNumber?: number;
+        visitId?: string;
+        applicantUserId?: number;
+        responsibleId?: number;
+        programId?: string;
+        programEditionId?: string;
+        /**
+         * Inicio inclusivo de la ventana de solicitud.
+         */
+        requestedFrom?: string;
+        /**
+         * Fin exclusivo de la ventana de solicitud.
+         */
+        requestedTo?: string;
+    };
+    url: '/api/admin/application-visit-reschedule-requests';
+};
+
+export type ListApplicationVisitRescheduleRequestsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListApplicationVisitRescheduleRequestsError = ListApplicationVisitRescheduleRequestsErrors[keyof ListApplicationVisitRescheduleRequestsErrors];
+
+export type ListApplicationVisitRescheduleRequestsResponses = {
+    /**
+     * Pagina filtrada de solicitudes.
+     */
+    200: AdminApplicationVisitRescheduleRequestListResponse;
+};
+
+export type ListApplicationVisitRescheduleRequestsResponse = ListApplicationVisitRescheduleRequestsResponses[keyof ListApplicationVisitRescheduleRequestsResponses];
+
+export type GetApplicationVisitRescheduleRequestData = {
+    body?: never;
+    path: {
+        requestId: string;
+    };
+    query?: never;
+    url: '/api/admin/application-visit-reschedule-requests/{requestId}';
+};
+
+export type GetApplicationVisitRescheduleRequestErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetApplicationVisitRescheduleRequestError = GetApplicationVisitRescheduleRequestErrors[keyof GetApplicationVisitRescheduleRequestErrors];
+
+export type GetApplicationVisitRescheduleRequestResponses = {
+    /**
+     * Detalle administrativo.
+     */
+    200: AdminApplicationVisitRescheduleRequestDetailResponse;
+};
+
+export type GetApplicationVisitRescheduleRequestResponse = GetApplicationVisitRescheduleRequestResponses[keyof GetApplicationVisitRescheduleRequestResponses];
+
+export type ListApplicationEvaluationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+        /**
+         * ID exacto de la solicitud asociada.
+         */
+        applicationId?: string;
+        /**
+         * Numero global exacto de la solicitud.
+         */
+        applicationNumber?: number;
+        /**
+         * ID interno exacto del titular.
+         */
+        applicantUserId?: number;
+        /**
+         * ID interno exacto del profesional evaluador.
+         */
+        professionalId?: number;
+        /**
+         * ID exacto del programa.
+         */
+        programId?: string;
+        /**
+         * ID exacto de la edicion del programa.
+         */
+        programEditionId?: string;
+        /**
+         * Nivel de vulnerabilidad determinado durante la evaluacion social.
+         */
+        vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+        /**
+         * Prioridad de intervencion determinada durante la evaluacion social.
+         */
+        priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+        /**
+         * Inicio inclusivo en ISO-8601 con offset.
+         */
+        evaluatedFrom?: string;
+        /**
+         * Fin inclusivo en ISO-8601 con offset.
+         */
+        evaluatedTo?: string;
+    };
+    url: '/api/admin/application-evaluations';
+};
+
+export type ListApplicationEvaluationsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListApplicationEvaluationsError = ListApplicationEvaluationsErrors[keyof ListApplicationEvaluationsErrors];
+
+export type ListApplicationEvaluationsResponses = {
+    /**
+     * Pagina filtrada de evaluaciones.
+     */
+    200: ApplicationEvaluationListResponse;
+};
+
+export type ListApplicationEvaluationsResponse = ListApplicationEvaluationsResponses[keyof ListApplicationEvaluationsResponses];
+
+export type GetApplicationEvaluationData = {
+    body?: never;
+    path: {
+        evaluationId: string;
+    };
+    query?: never;
+    url: '/api/admin/application-evaluations/{evaluationId}';
+};
+
+export type GetApplicationEvaluationErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetApplicationEvaluationError = GetApplicationEvaluationErrors[keyof GetApplicationEvaluationErrors];
+
+export type GetApplicationEvaluationResponses = {
+    /**
+     * Detalle completo de la evaluacion.
+     */
+    200: ApplicationEvaluationDetailResponse;
+};
+
+export type GetApplicationEvaluationResponse = GetApplicationEvaluationResponses[keyof GetApplicationEvaluationResponses];
 
 export type List8Data = {
     body?: never;

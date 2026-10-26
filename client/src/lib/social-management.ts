@@ -103,6 +103,23 @@ export const visitStatusLabel: Record<VisitStatus, string> = { SCHEDULED: "Progr
 export const requestStatusLabel: Record<RequestStatus, string> = { PENDING: "Pendiente", APPROVED: "Aprobada", REJECTED: "Rechazada" }
 export const levelLabel: Record<Level, string> = { LOW: "Baja", MEDIUM: "Media", HIGH: "Alta", CRITICAL: "Crítica" }
 export const priorityLabel: Record<Priority, string> = { LOW: "Baja", MEDIUM: "Media", HIGH: "Alta", URGENT: "Urgente" }
+
+// Vulnerability and priority share one four-step scale: green, yellow, red, dark violet for the top level.
+export type Severity = Level | Priority
+export const severityBadgeClass: Record<Severity, string> = {
+  LOW: "border-emerald-600/30 bg-emerald-500/15 text-emerald-800 dark:border-emerald-400/30 dark:bg-emerald-400/15 dark:text-emerald-300",
+  MEDIUM: "border-yellow-600/40 bg-yellow-400/25 text-yellow-900 dark:border-yellow-300/30 dark:bg-yellow-300/15 dark:text-yellow-200",
+  HIGH: "border-red-600/30 bg-red-500/15 text-red-800 dark:border-red-400/30 dark:bg-red-400/15 dark:text-red-300",
+  CRITICAL: "border-violet-950 bg-violet-900 text-violet-50 dark:border-violet-500/50 dark:bg-violet-950 dark:text-violet-200",
+  URGENT: "border-violet-950 bg-violet-900 text-violet-50 dark:border-violet-500/50 dark:bg-violet-950 dark:text-violet-200",
+}
+export const severityDotClass: Record<Severity, string> = {
+  LOW: "bg-emerald-500 dark:bg-emerald-400",
+  MEDIUM: "bg-yellow-500 dark:bg-yellow-300",
+  HIGH: "bg-red-600 dark:bg-red-400",
+  CRITICAL: "bg-violet-900 ring-1 ring-violet-400/60 dark:bg-violet-500",
+  URGENT: "bg-violet-900 ring-1 ring-violet-400/60 dark:bg-violet-500",
+}
 export const formatSocialDate = (value: string | null | undefined) => value ? new Date(value).toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" }) : "—"
 export const dateTimeLocal = (value: string) => {
   const date = new Date(value)

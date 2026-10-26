@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, CancelAdminAppointmentData, CancelAdminAppointmentErrors, CancelAdminAppointmentResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, CorrectCommunityAttentionData, CorrectCommunityAttentionErrors, CorrectCommunityAttentionResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchErrors, CreateCenterOpeningHoursBatchResponses, CreateCitizenAppointmentData, CreateCitizenAppointmentErrors, CreateCitizenAppointmentResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchErrors, CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, GetAdminAppointmentData, GetAdminAppointmentErrors, GetAdminAppointmentResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetCitizenAppointmentData, GetCitizenAppointmentErrors, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetProfessionalActivityData, GetProfessionalActivityErrors, GetProfessionalActivityResponses, GetProfessionalAppointmentData, GetProfessionalAppointmentErrors, GetProfessionalAppointmentResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityErrors, ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryErrors, ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentsData, ListAdminAppointmentsErrors, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsErrors, ListAdminAppointmentSlotsResponses, ListAdminAppointmentsResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersErrors, ListCitizenAppointmentCentersResponses, ListCitizenAppointmentsData, ListCitizenAppointmentsErrors, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesErrors, ListCitizenAppointmentServicesResponses, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsErrors, ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListProfessionalAppointmentsData, ListProfessionalAppointmentsErrors, ListProfessionalAppointmentsResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PublishData, PublishErrors, PublishResponses, Put1Data, Put1Errors, Put1Responses, PutData, PutErrors, PutResponses, RegisterCommunityAttentionData, RegisterCommunityAttentionErrors, RegisterCommunityAttentionResponses, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotErrors, ReleaseAdminAppointmentSlotResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, RescheduleAdminAppointmentData, RescheduleAdminAppointmentErrors, RescheduleAdminAppointmentResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SessionCsrfData, SessionCsrfErrors, SessionCsrfResponses, SessionLoginData, SessionLoginErrors, SessionLoginResponses, SessionLogoutData, SessionLogoutErrors, SessionLogoutResponses, SessionRoleSelectionData, SessionRoleSelectionErrors, SessionRoleSelectionResponses, SessionSelectRoleData, SessionSelectRoleErrors, SessionSelectRoleResponses, SessionSwitchRoleData, SessionSwitchRoleErrors, SessionSwitchRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignApplicationWorkerData, AssignApplicationWorkerErrors, AssignApplicationWorkerResponses, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, CancelAdminAppointmentData, CancelAdminAppointmentErrors, CancelAdminAppointmentResponses, CancelApplicationVisitData, CancelApplicationVisitErrors, CancelApplicationVisitResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, CorrectCommunityAttentionData, CorrectCommunityAttentionErrors, CorrectCommunityAttentionResponses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, CreateApplicationEvaluationData, CreateApplicationEvaluationErrors, CreateApplicationEvaluationResponses, CreateApplicationVisitData, CreateApplicationVisitErrors, CreateApplicationVisitResponses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchErrors, CreateCenterOpeningHoursBatchResponses, CreateCitizenAppointmentData, CreateCitizenAppointmentErrors, CreateCitizenAppointmentResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateOwnApplicationVisitRescheduleRequestData, CreateOwnApplicationVisitRescheduleRequestErrors, CreateOwnApplicationVisitRescheduleRequestResponses, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchErrors, CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, GetAdminAppointmentData, GetAdminAppointmentErrors, GetAdminAppointmentResponses, GetApplicationEvaluationData, GetApplicationEvaluationErrors, GetApplicationEvaluationResponses, GetApplicationVisitData, GetApplicationVisitErrors, GetApplicationVisitRescheduleRequestData, GetApplicationVisitRescheduleRequestErrors, GetApplicationVisitRescheduleRequestResponses, GetApplicationVisitResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetCitizenAppointmentData, GetCitizenAppointmentErrors, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetOwnApplicationVisitData, GetOwnApplicationVisitErrors, GetOwnApplicationVisitRescheduleRequestData, GetOwnApplicationVisitRescheduleRequestErrors, GetOwnApplicationVisitRescheduleRequestResponses, GetOwnApplicationVisitResponses, GetProfessionalActivityData, GetProfessionalActivityErrors, GetProfessionalActivityResponses, GetProfessionalAppointmentData, GetProfessionalAppointmentErrors, GetProfessionalAppointmentResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityErrors, ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryErrors, ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentsData, ListAdminAppointmentsErrors, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsErrors, ListAdminAppointmentSlotsResponses, ListAdminAppointmentsResponses, ListAllOwnVisitsData, ListAllOwnVisitsErrors, ListAllOwnVisitsResponses, ListApplicationEvaluationsData, ListApplicationEvaluationsErrors, ListApplicationEvaluationsResponses, ListApplicationVisitRescheduleRequestsData, ListApplicationVisitRescheduleRequestsErrors, ListApplicationVisitRescheduleRequestsResponses, ListApplicationVisitsData, ListApplicationVisitsErrors, ListApplicationVisitsResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersErrors, ListCitizenAppointmentCentersResponses, ListCitizenAppointmentsData, ListCitizenAppointmentsErrors, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesErrors, ListCitizenAppointmentServicesResponses, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsErrors, ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListOwnApplicationVisitRescheduleRequestsData, ListOwnApplicationVisitRescheduleRequestsErrors, ListOwnApplicationVisitRescheduleRequestsResponses, ListOwnApplicationVisitsData, ListOwnApplicationVisitsErrors, ListOwnApplicationVisitsResponses, ListProfessionalAppointmentsData, ListProfessionalAppointmentsErrors, ListProfessionalAppointmentsResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, PublishData, PublishErrors, PublishResponses, Put1Data, Put1Errors, Put1Responses, PutData, PutErrors, PutResponses, RecordApplicationVisitResultData, RecordApplicationVisitResultErrors, RecordApplicationVisitResultResponses, RegisterCommunityAttentionData, RegisterCommunityAttentionErrors, RegisterCommunityAttentionResponses, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotErrors, ReleaseAdminAppointmentSlotResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, RescheduleAdminAppointmentData, RescheduleAdminAppointmentErrors, RescheduleAdminAppointmentResponses, RescheduleApplicationVisitData, RescheduleApplicationVisitErrors, RescheduleApplicationVisitResponses, ResolveApplicationData, ResolveApplicationErrors, ResolveApplicationResponses, ReviewApplicationVisitRescheduleRequestData, ReviewApplicationVisitRescheduleRequestErrors, ReviewApplicationVisitRescheduleRequestResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SessionCsrfData, SessionCsrfErrors, SessionCsrfResponses, SessionLoginData, SessionLoginErrors, SessionLoginResponses, SessionLogoutData, SessionLogoutErrors, SessionLogoutResponses, SessionRoleSelectionData, SessionRoleSelectionErrors, SessionRoleSelectionResponses, SessionSelectRoleData, SessionSelectRoleErrors, SessionSelectRoleResponses, SessionSwitchRoleData, SessionSwitchRoleErrors, SessionSwitchRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, UnassignApplicationWorkerData, UnassignApplicationWorkerErrors, UnassignApplicationWorkerResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -143,6 +143,25 @@ export const correctCommunityAttention = <ThrowOnError extends boolean = false>(
             type: 'apiKey'
         }],
     url: '/api/professional/appointments/{id}/attention',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Reprogramar una visita o entrevista social
+ *
+ * Requiere applications:visits:manage en el rol activo. Solo el responsable que continua asignado a la solicitud puede cambiar el horario, la duracion y el lugar de una actuacion futura SCHEDULED.
+ */
+export const rescheduleApplicationVisit = <ThrowOnError extends boolean = false>(options: Options<RescheduleApplicationVisitData, ThrowOnError>): RequestResult<RescheduleApplicationVisitResponses, RescheduleApplicationVisitErrors, ThrowOnError> => (options.client ?? client).put<RescheduleApplicationVisitResponses, RescheduleApplicationVisitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/schedule',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -608,6 +627,40 @@ export const rescheduleAdminAppointment = <ThrowOnError extends boolean = false>
 });
 
 /**
+ * Volver a la asignación automática
+ *
+ * Requiere applications:management:assign en el rol activo. Quita el trabajador asignado para que quien registre la evaluación quede asignado, como en una solicitud nueva. Solo admite solicitudes todavía sin evaluar, en validación o evaluación. Si no había asignado, no cambia nada.
+ */
+export const unassignApplicationWorker = <ThrowOnError extends boolean = false>(options: Options<UnassignApplicationWorkerData, ThrowOnError>): RequestResult<UnassignApplicationWorkerResponses, UnassignApplicationWorkerErrors, ThrowOnError> => (options.client ?? client).delete<UnassignApplicationWorkerResponses, UnassignApplicationWorkerErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/applications/{id}/assigned-worker',
+    ...options
+});
+
+/**
+ * Asignar o reasignar el trabajador de una solicitud
+ *
+ * Requiere applications:management:assign en el rol activo. El asignado evalúa la solicitud y es responsable de sus visitas. Debe estar activo y tener un rol con applications:visits:create, y también applications:evaluations:create si la solicitud todavía no fue evaluada. Solo admite solicitudes en validación, evaluación o visita, y rechaza la reasignación mientras haya visitas o entrevistas programadas. Asignar al mismo trabajador no cambia nada.
+ */
+export const assignApplicationWorker = <ThrowOnError extends boolean = false>(options: Options<AssignApplicationWorkerData, ThrowOnError>): RequestResult<AssignApplicationWorkerResponses, AssignApplicationWorkerErrors, ThrowOnError> => (options.client ?? client).put<AssignApplicationWorkerResponses, AssignApplicationWorkerErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/applications/{id}/assigned-worker',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Cargar o reemplazar un documento en nombre del titular
  *
  * Entrega asistida para completar un trámite iniciado en la ventanilla. Admite PDF, JPEG o PNG de hasta 10 MB. Reemplazar conserva la entrega y reinicia su revisión a PENDING. El archivo queda atribuido al administrativo que lo sube.
@@ -879,6 +932,112 @@ export const submit = <ThrowOnError extends boolean = false>(options: Options<Su
             type: 'apiKey'
         }],
     url: '/api/applications',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Listar visitas y entrevistas de una solicitud propia
+ *
+ * Requiere applications:own:visits:view en el rol activo. La identidad se obtiene del JWT; una solicitud ajena se responde como inexistente. Incluye todos los estados y ordena por inicio descendente.
+ */
+export const listOwnApplicationVisits = <ThrowOnError extends boolean = false>(options: Options<ListOwnApplicationVisitsData, ThrowOnError>): RequestResult<ListOwnApplicationVisitsResponses, ListOwnApplicationVisitsErrors, ThrowOnError> => (options.client ?? client).get<ListOwnApplicationVisitsResponses, ListOwnApplicationVisitsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits',
+    ...options
+});
+
+/**
+ * Programar una visita o entrevista social
+ *
+ * Requiere applications:visits:create en el rol activo. La solicitud debe tener una evaluacion y estar asignada al usuario autenticado. El servidor calcula el fin y registra la actuacion como SCHEDULED.
+ */
+export const createApplicationVisit = <ThrowOnError extends boolean = false>(options: Options<CreateApplicationVisitData, ThrowOnError>): RequestResult<CreateApplicationVisitResponses, CreateApplicationVisitErrors, ThrowOnError> => (options.client ?? client).post<CreateApplicationVisitResponses, CreateApplicationVisitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Registrar el resultado de una visita o entrevista social
+ *
+ * Requiere applications:visits:results:create en el rol activo. Solo el responsable que continua asignado puede finalizar una actuacion SCHEDULED una vez alcanzado su horario de fin.
+ */
+export const recordApplicationVisitResult = <ThrowOnError extends boolean = false>(options: Options<RecordApplicationVisitResultData, ThrowOnError>): RequestResult<RecordApplicationVisitResultResponses, RecordApplicationVisitResultErrors, ThrowOnError> => (options.client ?? client).post<RecordApplicationVisitResultResponses, RecordApplicationVisitResultErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/result',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Consultar el historial propio de solicitudes de reprogramacion
+ *
+ * Ordena por fecha e identificador descendentes y omite motivo y comentario.
+ */
+export const listOwnApplicationVisitRescheduleRequests = <ThrowOnError extends boolean = false>(options: Options<ListOwnApplicationVisitRescheduleRequestsData, ThrowOnError>): RequestResult<ListOwnApplicationVisitRescheduleRequestsResponses, ListOwnApplicationVisitRescheduleRequestsErrors, ThrowOnError> => (options.client ?? client).get<ListOwnApplicationVisitRescheduleRequestsResponses, ListOwnApplicationVisitRescheduleRequestsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests',
+    ...options
+});
+
+/**
+ * Solicitar la reprogramacion de una visita propia
+ *
+ * La identidad se obtiene del JWT. La visita debe estar programada y ser futura. La solicitud queda PENDING y no modifica su horario ni lugar.
+ */
+export const createOwnApplicationVisitRescheduleRequest = <ThrowOnError extends boolean = false>(options: Options<CreateOwnApplicationVisitRescheduleRequestData, ThrowOnError>): RequestResult<CreateOwnApplicationVisitRescheduleRequestResponses, CreateOwnApplicationVisitRescheduleRequestErrors, ThrowOnError> => (options.client ?? client).post<CreateOwnApplicationVisitRescheduleRequestResponses, CreateOwnApplicationVisitRescheduleRequestErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Registrar la evaluacion social de una solicitud
+ *
+ * Requiere applications:evaluations:create en el rol activo. Registra una unica evaluacion, asigna la solicitud al usuario autenticado y cambia su estado a IN_EVALUATION.
+ */
+export const createApplicationEvaluation = <ThrowOnError extends boolean = false>(options: Options<CreateApplicationEvaluationData, ThrowOnError>): RequestResult<CreateApplicationEvaluationResponses, CreateApplicationEvaluationErrors, ThrowOnError> => (options.client ?? client).post<CreateApplicationEvaluationResponses, CreateApplicationEvaluationErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/evaluation',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1393,7 +1552,7 @@ export const assignProfessional = <ThrowOnError extends boolean = false>(options
 /**
  * Listar solicitudes de cualquier titular
  *
- * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
+ * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. programId opcional restringe la página a las solicitudes de las ediciones de ese programa. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
  */
 export const list4 = <ThrowOnError extends boolean = false>(options?: Options<List4Data, ThrowOnError>): RequestResult<List4Responses, List4Errors, ThrowOnError> => (options?.client ?? client).get<List4Responses, List4Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
@@ -1417,6 +1576,25 @@ export const submit1 = <ThrowOnError extends boolean = false>(options: Options<S
             type: 'apiKey'
         }],
     url: '/api/admin/applications',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Resolver una solicitud
+ *
+ * Requiere applications:resolutions:create en el rol activo y ser el trabajador asignado; nadie resuelve su propia solicitud. Admite solicitudes en evaluación (APPROVED, REJECTED o WAITLISTED) o en lista de espera (APPROVED o REJECTED). Exige una evaluación registrada y ninguna visita programada. Aprobar exige además la documentación obligatoria completa y cupo disponible en la edición (maxCapacity aprobadas). El motivo es visible para el titular y obligatorio para rechazar o dejar en espera. Rechazar libera al titular para presentarse en otra convocatoria.
+ */
+export const resolveApplication = <ThrowOnError extends boolean = false>(options: Options<ResolveApplicationData, ThrowOnError>): RequestResult<ResolveApplicationResponses, ResolveApplicationErrors, ThrowOnError> => (options.client ?? client).post<ResolveApplicationResponses, ResolveApplicationErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/applications/{id}/resolution',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1483,6 +1661,44 @@ export const updateAttendance = <ThrowOnError extends boolean = false>(options: 
             type: 'apiKey'
         }],
     url: '/api/professional/activities/{activityId}/enrollments/{enrollmentId}/attendance',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Aprobar o rechazar una solicitud de reprogramacion
+ *
+ * Solo puede decidir el responsable que continua asignado. Aprobar exige un horario completo sin conflictos; rechazar exige comentario. Una decision exitosa es definitiva.
+ */
+export const reviewApplicationVisitRescheduleRequest = <ThrowOnError extends boolean = false>(options: Options<ReviewApplicationVisitRescheduleRequestData, ThrowOnError>): RequestResult<ReviewApplicationVisitRescheduleRequestResponses, ReviewApplicationVisitRescheduleRequestErrors, ThrowOnError> => (options.client ?? client).patch<ReviewApplicationVisitRescheduleRequestResponses, ReviewApplicationVisitRescheduleRequestErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests/{requestId}/review',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Cancelar una visita o entrevista social
+ *
+ * Requiere applications:visits:manage en el rol activo. La cancelacion exige un motivo, libera la agenda y puede devolver la solicitud a IN_EVALUATION.
+ */
+export const cancelApplicationVisit = <ThrowOnError extends boolean = false>(options: Options<CancelApplicationVisitData, ThrowOnError>): RequestResult<CancelApplicationVisitResponses, CancelApplicationVisitErrors, ThrowOnError> => (options.client ?? client).patch<CancelApplicationVisitResponses, CancelApplicationVisitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/cancel',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1886,7 +2102,9 @@ export const getAvailableProgram = <ThrowOnError extends boolean = false>(option
 });
 
 /**
- * Listar turnos asignados para una fecha
+ * Listar turnos asignados para una fecha o un rango
+ *
+ * Sin to devuelve los turnos de date. Con to devuelve los turnos desde date hasta to inclusive, ordenados por inicio; el rango admite hasta 42 dias para cubrir una grilla mensual completa.
  */
 export const listProfessionalAppointments = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAppointmentsData, ThrowOnError>): RequestResult<ListProfessionalAppointmentsResponses, ListProfessionalAppointmentsErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAppointmentsResponses, ListProfessionalAppointmentsErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
@@ -2025,6 +2243,36 @@ export const get2 = <ThrowOnError extends boolean = false>(options: Options<Get2
 });
 
 /**
+ * Consultar una visita o entrevista de una solicitud propia
+ *
+ * Requiere applications:own:visits:view en el rol activo. Devuelve el horario vigente y, si fue cancelada, el motivo. Nunca expone observaciones ni conclusiones sociales.
+ */
+export const getOwnApplicationVisit = <ThrowOnError extends boolean = false>(options: Options<GetOwnApplicationVisitData, ThrowOnError>): RequestResult<GetOwnApplicationVisitResponses, GetOwnApplicationVisitErrors, ThrowOnError> => (options.client ?? client).get<GetOwnApplicationVisitResponses, GetOwnApplicationVisitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}',
+    ...options
+});
+
+/**
+ * Consultar una solicitud propia de reprogramacion
+ *
+ * Incluye motivo y comentario de revision, sin identidades internas de trabajadores.
+ */
+export const getOwnApplicationVisitRescheduleRequest = <ThrowOnError extends boolean = false>(options: Options<GetOwnApplicationVisitRescheduleRequestData, ThrowOnError>): RequestResult<GetOwnApplicationVisitRescheduleRequestResponses, GetOwnApplicationVisitRescheduleRequestErrors, ThrowOnError> => (options.client ?? client).get<GetOwnApplicationVisitRescheduleRequestResponses, GetOwnApplicationVisitRescheduleRequestErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/{applicationId}/visits/{visitId}/reschedule-requests/{requestId}',
+    ...options
+});
+
+/**
  * Listar los documentos entregados en una solicitud propia
  */
 export const list6 = <ThrowOnError extends boolean = false>(options: Options<List6Data, ThrowOnError>): RequestResult<List6Responses, List6Errors, ThrowOnError> => (options.client ?? client).get<List6Responses, List6Errors, ThrowOnError>({
@@ -2049,6 +2297,21 @@ export const content = <ThrowOnError extends boolean = false>(options: Options<C
             type: 'apiKey'
         }],
     url: '/api/applications/{applicationId}/documents/{applicationDocumentId}/content',
+    ...options
+});
+
+/**
+ * Listar visitas y entrevistas de todas las solicitudes propias
+ *
+ * Requiere applications:own:visits:view en el rol activo. La identidad se obtiene del JWT. Con upcoming=true devuelve solo actuaciones programadas que aun no terminaron, ordenadas por inicio ascendente; si no, todas ordenadas por inicio descendente.
+ */
+export const listAllOwnVisits = <ThrowOnError extends boolean = false>(options?: Options<ListAllOwnVisitsData, ThrowOnError>): RequestResult<ListAllOwnVisitsResponses, ListAllOwnVisitsErrors, ThrowOnError> => (options?.client ?? client).get<ListAllOwnVisitsResponses, ListAllOwnVisitsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/applications/visits',
     ...options
 });
 
@@ -2202,6 +2465,96 @@ export const content1 = <ThrowOnError extends boolean = false>(options: Options<
             type: 'apiKey'
         }],
     url: '/api/admin/applications/{applicationId}/documents/{applicationDocumentId}/content',
+    ...options
+});
+
+/**
+ * Listar visitas y entrevistas sociales
+ *
+ * Requiere applications:visits:view en el rol activo. Los filtros son opcionales; la ventana temporal usa intervalos semiabiertos y devuelve actuaciones que se superponen con ella. El resultado se ordena por startsAt ascendente.
+ */
+export const listApplicationVisits = <ThrowOnError extends boolean = false>(options?: Options<ListApplicationVisitsData, ThrowOnError>): RequestResult<ListApplicationVisitsResponses, ListApplicationVisitsErrors, ThrowOnError> => (options?.client ?? client).get<ListApplicationVisitsResponses, ListApplicationVisitsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/application-visits',
+    ...options
+});
+
+/**
+ * Consultar una visita o entrevista social
+ *
+ * Requiere applications:visits:view en el rol activo y devuelve la actuacion, su resultado cuando existe y el contexto completo de la solicitud.
+ */
+export const getApplicationVisit = <ThrowOnError extends boolean = false>(options: Options<GetApplicationVisitData, ThrowOnError>): RequestResult<GetApplicationVisitResponses, GetApplicationVisitErrors, ThrowOnError> => (options.client ?? client).get<GetApplicationVisitResponses, GetApplicationVisitErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/application-visits/{visitId}',
+    ...options
+});
+
+/**
+ * Listar solicitudes de reprogramacion
+ *
+ * Aplica filtros opcionales y ordena por antiguedad ascendente. El listado no expone motivo, comentario ni lugares.
+ */
+export const listApplicationVisitRescheduleRequests = <ThrowOnError extends boolean = false>(options?: Options<ListApplicationVisitRescheduleRequestsData, ThrowOnError>): RequestResult<ListApplicationVisitRescheduleRequestsResponses, ListApplicationVisitRescheduleRequestsErrors, ThrowOnError> => (options?.client ?? client).get<ListApplicationVisitRescheduleRequestsResponses, ListApplicationVisitRescheduleRequestsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/application-visit-reschedule-requests',
+    ...options
+});
+
+/**
+ * Consultar una solicitud de reprogramacion
+ *
+ * Devuelve el motivo, comentario y contexto completo solo a usuarios autorizados.
+ */
+export const getApplicationVisitRescheduleRequest = <ThrowOnError extends boolean = false>(options: Options<GetApplicationVisitRescheduleRequestData, ThrowOnError>): RequestResult<GetApplicationVisitRescheduleRequestResponses, GetApplicationVisitRescheduleRequestErrors, ThrowOnError> => (options.client ?? client).get<GetApplicationVisitRescheduleRequestResponses, GetApplicationVisitRescheduleRequestErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/application-visit-reschedule-requests/{requestId}',
+    ...options
+});
+
+/**
+ * Listar evaluaciones sociales
+ *
+ * Requiere applications:evaluations:view en el rol activo y vuelve a validar el permiso almacenado. Todos los filtros son opcionales, el rango de fecha es inclusivo y el resultado se ordena por evaluatedAt descendente. El listado omite la recomendacion sensible; se obtiene mediante el detalle.
+ */
+export const listApplicationEvaluations = <ThrowOnError extends boolean = false>(options?: Options<ListApplicationEvaluationsData, ThrowOnError>): RequestResult<ListApplicationEvaluationsResponses, ListApplicationEvaluationsErrors, ThrowOnError> => (options?.client ?? client).get<ListApplicationEvaluationsResponses, ListApplicationEvaluationsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/application-evaluations',
+    ...options
+});
+
+/**
+ * Consultar una evaluacion social
+ *
+ * Requiere applications:evaluations:view en el rol activo. Devuelve la evaluacion completa, incluida la recomendacion, el titular, el programa, la edicion y el profesional responsable.
+ */
+export const getApplicationEvaluation = <ThrowOnError extends boolean = false>(options: Options<GetApplicationEvaluationData, ThrowOnError>): RequestResult<GetApplicationEvaluationResponses, GetApplicationEvaluationErrors, ThrowOnError> => (options.client ?? client).get<GetApplicationEvaluationResponses, GetApplicationEvaluationErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/application-evaluations/{evaluationId}',
     ...options
 });
 

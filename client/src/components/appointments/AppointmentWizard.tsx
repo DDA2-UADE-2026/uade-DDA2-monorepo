@@ -1,3 +1,4 @@
+import { UserInline } from "@/components/UserChip"
 import { IconArrowLeft, IconCalendarCheck, IconCheck } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, useNavigate } from "@tanstack/react-router"
@@ -172,7 +173,7 @@ export function AppointmentWizard({ userId }: { userId: number }) {
                     <ItemMedia variant="icon"><IconCalendarCheck /></ItemMedia>
                     <ItemContent>
                       <ItemTitle>{formatAppointmentRange(item.startsAt, item.endsAt)}</ItemTitle>
-                      <ItemDescription>Profesional: {item.professionalName}</ItemDescription>
+                      <ItemDescription className="flex items-center gap-1.5">Profesional: <UserInline user={{ id: item.professionalId, name: item.professionalName }} /></ItemDescription>
                     </ItemContent>
                     <Button variant={selected ? "default" : "outline"} aria-pressed={selected} onClick={() => pickSlot(item)}>
                       {selected ? "Seleccionado" : "Elegir"}
@@ -261,7 +262,7 @@ export function AppointmentConfirmation({ userId, service, center, date, slot, o
         <CardContent className="space-y-3 text-sm">
           <p><span className="font-medium">Fecha:</span> {formatAppointmentDate(date)}</p>
           <p><span className="font-medium">Horario:</span> {formatAppointmentRange(slot.startsAt, slot.endsAt)}</p>
-          <p><span className="font-medium">Profesional:</span> {slot.professionalName}</p>
+          <p><span className="font-medium">Profesional:</span> <UserInline user={{ id: slot.professionalId, name: slot.professionalName }} /></p>
           <p className="pt-2 text-muted-foreground">Los horarios se muestran en hora de Buenos Aires.</p>
         </CardContent>
       </Card>

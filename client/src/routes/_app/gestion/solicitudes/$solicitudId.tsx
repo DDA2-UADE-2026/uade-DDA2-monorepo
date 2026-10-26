@@ -213,6 +213,7 @@ function RouteComponent() {
                 <div className="flex flex-wrap gap-2">
                   <Button variant="outline" render={<Link to="/gestion/casos/$solicitudId/evaluacion" params={{ solicitudId }} />}>Evaluación social</Button>
                   <Button variant="outline" render={<Link to="/gestion/casos/$solicitudId/visitas" params={{ solicitudId }} />}>Visitas y entrevistas</Button>
+                  <Button variant="outline" render={<Link to="/gestion/casos/$solicitudId/resolucion" params={{ solicitudId }} />}>Resolución</Button>
                 </div>
 
                 <ApplicationDocumentsSection application={{ ...application, id: solicitudId }} />
@@ -262,7 +263,7 @@ function ApplicationDocumentsSection({ application }: { application: AdminApplic
           onClick={() => documents.refetch()}
         >
           <IconRefresh className={documents.isFetching ? "animate-spin" : undefined} />
-          Actualizar
+          <span className="sr-only sm:not-sr-only">Refrescar</span>
         </Button>
       </div>
 

@@ -1,4 +1,4 @@
-import { IconAlertCircle, IconArrowLeft, IconCalendarX, IconClock } from "@tabler/icons-react"
+import { IconAlertCircle, IconArrowLeft, IconCalendarX, IconClock, IconRefresh } from "@tabler/icons-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getProfessionalAppointmentOptions, getProfessionalAppointmentQueryKey } from "@/generated/@tanstack/react-query.gen"
 import { APPOINTMENT_TIME_ZONE, formatAppointmentDate, formatAppointmentRange, isUuid } from "@/lib/appointment-flow"
 import { attentionLabel, canRegisterAttention, professionalTurnSearchSchema } from "@/lib/community-attention"
+import { UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/mis-turnos/$turnoId")({
   validateSearch: professionalTurnSearchSchema,
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/_app/gestion/mis-turnos/$turnoId")({
 
 function RouteComponent() {
   const { turnoId } = Route.useParams()
-  const { fecha } = Route.useSearch()
+  const { fecha, vista } = Route.useSearch()
   const queryClient = useQueryClient()
   const [saved, setSaved] = useState(false)
   const [stale, setStale] = useState(false)
@@ -58,7 +59,7 @@ function RouteComponent() {
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-y-auto">
         <main className="mx-auto w-full min-w-0 max-w-5xl space-y-6 p-4 lg:p-6">
-          <Button size="sm" variant="ghost" render={<Link to="/gestion/mis-turnos" search={{ fecha }} />}>
+          <Button size="sm" variant="ghost" render={<Link to="/gestion/mis-turnos" search={{ fecha, vista }} />}>
             <IconArrowLeft />Volver a turnos asignados
           </Button>
           {!isUuid(turnoId) ? (
@@ -75,7 +76,7 @@ function RouteComponent() {
               <Card>
                 <CardHeader><Badge className="w-fit" variant="outline">{attentionLabel(row)}</Badge><CardTitle>{appointment.serviceName}</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
-                  <p><strong>Ciudadano:</strong> {row.citizenName ?? "—"}</p>
+                  <p><strong>Ciudadano:</strong> <UserInline user={{ id: row.citizenId, name: row.citizenName }} /></p>
                   <p><strong>Centro:</strong> {appointment.centerName ?? "—"}</p>
                   <p><strong>Fecha:</strong> {formatAppointmentDate(appointment.startsAt)}</p>
                   <p><strong>Horario:</strong> {formatAppointmentRange(appointment.startsAt, appointment.endsAt)}</p>
@@ -105,7 +106,7 @@ function RouteComponent() {
                 appointment.status === "CANCELLED" ? (
                   <Alert><IconCalendarX /><AlertTitle>Turno cancelado</AlertTitle><AlertDescription>Este turno no admite registrar asistencia.</AlertDescription></Alert>
                 ) : (
-                  <Alert><IconClock /><AlertTitle>La asistencia aún no está disponible</AlertTitle><AlertDescription className="space-y-2"><p>Podrás registrarla cuando comience el turno.</p><Button size="sm" variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}>Actualizar turno</Button></AlertDescription></Alert>
+                  <Alert><IconClock /><AlertTitle>La asistencia aún no está disponible</AlertTitle><AlertDescription className="space-y-2"><p>Podrás registrarla cuando comience el turno.</p><Button size="sm" variant="outline" disabled={detail.isFetching} onClick={() => void detail.refetch()}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar turno</span></Button></AlertDescription></Alert>
                 )
               )}
             </>

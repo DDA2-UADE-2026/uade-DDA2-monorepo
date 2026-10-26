@@ -192,7 +192,7 @@ function RouteComponent() {
             disabled={periods.isFetching}
           >
             <IconRefresh className={periods.isFetching ? "animate-spin" : undefined} />
-            Actualizar
+            <span className="sr-only sm:not-sr-only">Refrescar</span>
           </Button>
         </div>
       )}
@@ -331,6 +331,15 @@ function EnrollmentPeriodDialog({
     ...getEnrollmentPeriodOptions({ path: periodPath }),
     enabled: isEditing,
   })
+  // Todos los períodos de la edición (el backend no permite superponerlos), sin el que se edita.
+  const siblings = useQuery(listEnrollmentPeriodsOptions({
+    path: { programId, editionId },
+    query: { page: 0, size: 100 },
+  }))
+  const occupied = (siblings.data?.content ?? [])
+    .filter((item) => item.id !== enrollmentPeriodId && item.openDate && item.closeDate)
+    .map((item) => ({ from: parseLocalDate(item.openDate!)!, to: parseLocalDate(item.closeDate!)! }))
+    .sort((a, b) => a.from.getTime() - b.from.getTime())
 
   const invalidateList = () => queryClient.invalidateQueries({
     queryKey: listEnrollmentPeriodsQueryKey({ path: { programId, editionId } }),
@@ -522,6 +531,8 @@ function EnrollmentPeriodDialog({
                         onChange={field.handleChange}
                         disabled={dateBounds}
                         readOnly={isClosed || isPending}
+                        occupied={occupied}
+                        occupiedLabel="Usado por otro período"
                       />
                     </FormField>
                   )
@@ -534,8 +545,10 @@ function EnrollmentPeriodDialog({
                         <ProgramDatePicker
                           value={field.state.value}
                           onChange={field.handleChange}
-                          disabled={createDateBounds(openDate || editionStartDate, editionEndDate)}
+                          disabled={closeDateBounds(openDate, editionStartDate, editionEndDate, occupied)}
                           readOnly={isClosed || isPending}
+                          occupied={occupied}
+                          occupiedLabel="Usado por otro período"
                         />
                       </FormField>
                     )
@@ -645,5 +658,19 @@ function createDateBounds(
   const maximumDate = maximum ? parseLocalDate(maximum) : undefined
   if (minimumDate) bounds.push({ before: minimumDate })
   if (maximumDate) bounds.push({ after: maximumDate })
+  return bounds
+}
+
+// El cierre no puede quedar del otro lado del próximo período ocupado: el rango lo envolvería.
+function closeDateBounds(
+  openDate: string,
+  editionStartDate: string | undefined,
+  editionEndDate: string | undefined,
+  occupied: Array<{ from: Date; to: Date }>,
+): ComponentProps<typeof ProgramDatePicker>["disabled"] {
+  const bounds = createDateBounds(openDate || editionStartDate, editionEndDate) as Array<{ before: Date } | { after: Date }>
+  const open = openDate ? parseLocalDate(openDate) : undefined
+  const next = open && occupied.find((range) => range.from > open)
+  if (next) bounds.push({ after: next.from })
   return bounds
 }

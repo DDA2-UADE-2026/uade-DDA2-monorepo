@@ -650,6 +650,22 @@ class AppointmentFlowTest {
         )).id)
     }
 
+    @Test
+    fun `professional lists own appointments over a date range`() {
+        val id = pastAppointment()
+        val date = LocalDate.now(zone).minusDays(1)
+        fun listsId(path: String): Boolean {
+            val result = professionalGet(path)
+            expect(result, 200)
+            return json.readTree(result.response.contentAsString).any { it.path("appointment").path("id").asText() == id.toString() }
+        }
+
+        assertTrue(listsId("/api/professional/appointments?date=${date.minusDays(3)}&to=${date.plusDays(3)}"))
+        assertFalse(listsId("/api/professional/appointments?date=${date.plusDays(1)}&to=${date.plusDays(7)}"))
+        expect(professionalGet("/api/professional/appointments?date=$date&to=${date.minusDays(1)}"), 400, "APPOINTMENT_INVALID_REQUEST")
+        expect(professionalGet("/api/professional/appointments?date=$date&to=${date.plusDays(42)}"), 400, "APPOINTMENT_INVALID_REQUEST")
+    }
+
     private fun professionalGet(path: String, token: String = fixture.firstProfessionalToken): MvcResult = mvc.perform(
         get(path).header("Authorization", "Bearer $token"),
     ).andReturn()

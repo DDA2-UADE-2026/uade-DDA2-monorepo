@@ -365,6 +365,32 @@ class ApplicationVisitService(
     }
 
     @Transactional(readOnly = true)
+    fun listAllOwn(upcoming: Boolean, page: Int, size: Int): CitizenApplicationVisitListResponse {
+        val userId = authorizeOwn()
+        val sort = if (upcoming) {
+            Sort.by("startsAt").ascending().and(Sort.by("id").ascending())
+        } else {
+            Sort.by("startsAt").descending().and(Sort.by("id").descending())
+        }
+        val results = visits.findAllOwn(
+            userId = userId,
+            status = if (upcoming) ApplicationVisitStatus.SCHEDULED else null,
+            endsAfter = if (upcoming) utcNow() else null,
+            pageable = PageRequest.of(page, size, sort),
+        )
+        val summaries = latestRescheduleRequests(results.content.mapNotNull { it.id })
+        return CitizenApplicationVisitListResponse(
+            content = results.content.map {
+                it.toCitizenListItemResponse(appointmentTime.zone(), summaries[it.id])
+            },
+            page = results.number,
+            size = results.size,
+            totalElements = results.totalElements,
+            totalPages = results.totalPages,
+        )
+    }
+
+    @Transactional(readOnly = true)
     fun getOwn(applicationId: UUID, visitId: UUID): CitizenApplicationVisitDetailResponse {
         val userId = authorizeOwn()
         applications.findByIdAndUserId(applicationId, userId) ?: throw ApplicationErrors.notFound()

@@ -60,6 +60,11 @@ export function leadingBlanks(anio: number, mes: number) {
   return (new Date(Date.UTC(anio, mes - 1, 1)).getUTCDay() + 6) % 7
 }
 
+// Empty cells after the last day so the final week row is complete.
+export function trailingBlanks(anio: number, mes: number) {
+  return (7 - ((leadingBlanks(anio, mes) + daysInMonth(anio, mes)) % 7)) % 7
+}
+
 export function shiftMonth(anio: number, mes: number, delta: -1 | 1) {
   const shifted = new Date(Date.UTC(anio, mes - 1 + delta, 1))
   return { anio: shifted.getUTCFullYear(), mes: shifted.getUTCMonth() + 1 }

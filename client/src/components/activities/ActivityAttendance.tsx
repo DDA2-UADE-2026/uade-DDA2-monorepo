@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getProfessionalActivityOptions, get4QueryKey, list8QueryKey, listEnrollmentsOptions, listEnrollmentsQueryKey, updateAttendanceMutation } from "@/generated/@tanstack/react-query.gen"
 import type { ProfessionalActivityEnrollmentResponse } from "@/generated/types.gen"
+import { UserChip } from "@/components/UserChip"
 
 export function ActivityAttendance({ activityId, page, onPageChange, canManage }: {
   activityId: string
@@ -27,7 +28,7 @@ export function ActivityAttendance({ activityId, page, onPageChange, canManage }
           <h1 className="font-heading text-2xl font-medium">{activity.data?.name ?? "Asistencia a la actividad"}</h1>
           <p className="text-sm text-muted-foreground">{canManage ? "Marcá presentes y ausentes. Podés corregir un registro; cada cambio queda auditado." : "Consulta de inscripciones y asistencia."}</p>
         </div>
-        <Button variant="outline" size="sm" disabled={activity.isFetching || enrollments.isFetching} onClick={() => { void activity.refetch(); if (activity.isSuccess) void enrollments.refetch() }}><IconRefresh />Actualizar</Button>
+        <Button variant="outline" size="sm" disabled={activity.isFetching || enrollments.isFetching} onClick={() => { void activity.refetch(); if (activity.isSuccess) void enrollments.refetch() }}><IconRefresh /><span className="sr-only sm:not-sr-only">Refrescar</span></Button>
       </header>
       {activity.isPending ? <p role="status">Cargando actividad…</p> : activity.isError ? (
         <div role="alert" className="space-y-3"><p>{activity.error.message ?? "No se pudo cargar la actividad."}</p><Button variant="outline" onClick={() => activity.refetch()}>Reintentar</Button></div>
@@ -72,7 +73,7 @@ function AttendanceRow({ enrollment, activityId, canManage }: { enrollment: Prof
   }
   return (
     <TableRow>
-      <TableCell className="whitespace-normal"><p className="font-medium">{enrollment.citizenName}</p><p className="text-xs text-muted-foreground">Inscripción: {formatActivityDateTime(enrollment.enrolledAt)}</p></TableCell>
+      <TableCell className="whitespace-normal"><UserChip user={{ id: enrollment.citizenId, name: enrollment.citizenName }} secondary={`Inscripción: ${formatActivityDateTime(enrollment.enrolledAt)}`} /></TableCell>
       <TableCell><AttendanceBadge attendance={enrollment.attendance} /></TableCell>
       <TableCell className="whitespace-normal text-xs text-muted-foreground">
         {enrollment.attendanceRecordedAt ? <><p>{enrollment.attendanceRecordedBy?.name}</p><p>{formatActivityDateTime(enrollment.attendanceRecordedAt)}</p></> : "Sin registro"}

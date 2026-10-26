@@ -70,6 +70,15 @@ export const zCommunityAttentionResponse = z.object({
 });
 
 /**
+ * Nuevo horario y lugar de una visita o entrevista social pendiente.
+ */
+export const zRescheduleApplicationVisitRequest = z.object({
+    startsAt: z.iso.datetime(),
+    durationMinutes: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+    location: z.string().min(1).max(300)
+});
+
+/**
  * Detalle de un campo que no superó la validación.
  */
 export const zFieldErrorResponse = z.object({
@@ -87,6 +96,66 @@ export const zErrorResponse = z.object({
     timestamp: z.iso.datetime().optional(),
     path: z.string().optional(),
     fields: z.array(zFieldErrorResponse).optional()
+});
+
+/**
+ * Resumen sin textos sensibles de la solicitud de reprogramacion mas reciente.
+ */
+export const zApplicationVisitRescheduleRequestSummaryResponse = z.object({
+    id: z.uuid().optional(),
+    status: z.enum([
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ]).optional(),
+    requestedAt: z.iso.datetime().optional(),
+    reviewedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Estado vigente de una visita o entrevista social programada, cancelada o finalizada.
+ */
+export const zApplicationVisitResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationStatus: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    type: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'CANCELLED',
+        'REALIZED',
+        'NOT_REALIZED'
+    ]).optional(),
+    responsibleId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleName: z.string().optional(),
+    scheduledAt: z.iso.datetime().optional(),
+    rescheduled: z.boolean().optional(),
+    lastRescheduledAt: z.iso.datetime().optional(),
+    latestRescheduleRequest: zApplicationVisitRescheduleRequestSummaryResponse.optional(),
+    cancellationReason: z.string().optional(),
+    cancelledAt: z.iso.datetime().optional(),
+    cancelledById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    cancelledByName: z.string().optional(),
+    observations: z.string().optional(),
+    conclusions: z.string().optional(),
+    resultRecordedAt: z.iso.datetime().optional(),
+    resultRecordedById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resultRecordedByName: z.string().optional()
 });
 
 /**
@@ -471,6 +540,76 @@ export const zAdminAppointmentResponse = z.object({
 });
 
 /**
+ * Trabajador al que se asigna la solicitud para evaluarla y gestionar sus visitas.
+ */
+export const zAssignApplicationWorkerRequest = z.object({
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })
+});
+
+/**
+ * Documento solicitado por una edición disponible.
+ */
+export const zAvailableProgramDocumentRequirementResponse = z.object({
+    id: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    required: z.boolean().optional()
+});
+
+export const zPendingApplicationDocumentResponse = z.object({
+    requirementId: z.uuid().optional(),
+    code: z.string().optional(),
+    name: z.string().optional(),
+    reason: z.enum(['MISSING', 'OBSERVED']).optional(),
+    observation: z.string().optional()
+});
+
+/**
+ * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
+ */
+export const zAdminApplicationResponse = z.object({
+    id: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userName: z.string().optional(),
+    userEmail: z.string().optional(),
+    registeredByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    registeredByUserName: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    enrollmentPeriodId: z.uuid().optional(),
+    status: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    originTicketId: z.string().optional(),
+    resolutionReason: z.string().optional(),
+    assignedWorkerUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    assignedWorkerName: z.string().optional(),
+    submittedAt: z.iso.datetime().optional(),
+    resolvedAt: z.iso.datetime().optional(),
+    resolvedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resolvedByName: z.string().optional(),
+    createdAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional(),
+    idempotencyKey: z.string().optional(),
+    requestHash: z.string().optional(),
+    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional(),
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
+});
+
+/**
  * Datos requeridos para actualizar una actividad comunitaria en borrador.
  */
 export const zUpdateActivityRequest = z.object({
@@ -611,25 +750,6 @@ export const zCreateApplicationRequest = z.object({
 });
 
 /**
- * Documento solicitado por una edición disponible.
- */
-export const zAvailableProgramDocumentRequirementResponse = z.object({
-    id: z.uuid().optional(),
-    code: z.string().optional(),
-    name: z.string().optional(),
-    description: z.string().optional(),
-    required: z.boolean().optional()
-});
-
-export const zPendingApplicationDocumentResponse = z.object({
-    requirementId: z.uuid().optional(),
-    code: z.string().optional(),
-    name: z.string().optional(),
-    reason: z.enum(['MISSING', 'OBSERVED']).optional(),
-    observation: z.string().optional()
-});
-
-/**
  * Solicitud y referencias a su titular y registrante. No expone datos personales ni internos de idempotencia.
  */
 export const zApplicationResponse = z.object({
@@ -658,7 +778,110 @@ export const zApplicationResponse = z.object({
     programId: z.uuid().optional(),
     programName: z.string().optional(),
     programEditionName: z.string().optional(),
-    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional(),
+    resolvedAt: z.iso.datetime().optional(),
+    resolutionReason: z.string().optional()
+});
+
+/**
+ * Datos para programar una visita o entrevista social. El responsable, fin y fecha de registro se derivan en el servidor.
+ */
+export const zCreateApplicationVisitRequest = z.object({
+    type: z.enum(['VISIT', 'INTERVIEW']),
+    startsAt: z.iso.datetime(),
+    durationMinutes: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+    location: z.string().min(1).max(300)
+});
+
+/**
+ * Resultado final de una visita o entrevista social. El profesional y la fecha se derivan del servidor.
+ */
+export const zRecordApplicationVisitResultRequest = z.object({
+    status: z.enum(['REALIZED', 'NOT_REALIZED']),
+    observations: z.string().min(1).max(2000).optional(),
+    conclusions: z.string().min(1).max(2000).optional()
+});
+
+/**
+ * Motivo ciudadano para solicitar la reprogramacion de una visita o entrevista propia.
+ */
+export const zCreateApplicationVisitRescheduleRequest = z.object({
+    reason: z.string().min(1).max(1000)
+});
+
+/**
+ * Horario historico de una visita o entrevista.
+ */
+export const zApplicationVisitRescheduleScheduleResponse = z.object({
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().optional()
+});
+
+/**
+ * Detalle ciudadano de una solicitud de reprogramacion propia.
+ */
+export const zCitizenApplicationVisitRescheduleRequestDetailResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    visitId: z.uuid().optional(),
+    visitType: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    status: z.enum([
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ]).optional(),
+    reason: z.string().optional(),
+    requestedAt: z.iso.datetime().optional(),
+    scheduleAtRequest: zApplicationVisitRescheduleScheduleResponse.optional(),
+    reviewedAt: z.iso.datetime().optional(),
+    reviewComment: z.string().optional(),
+    approvedSchedule: zApplicationVisitRescheduleScheduleResponse.optional()
+});
+
+/**
+ * Evaluacion social de una solicitud. El profesional y la fecha se obtienen del servidor.
+ */
+export const zCreateApplicationEvaluationRequest = z.object({
+    vulnerability: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ]),
+    priority: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'URGENT'
+    ]),
+    recommendation: z.string().min(1).max(1000)
+});
+
+/**
+ * Evaluacion social registrada para una solicitud.
+ */
+export const zApplicationEvaluationResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    vulnerability: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ]).optional(),
+    priority: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'URGENT'
+    ]).optional(),
+    recommendation: z.string().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    evaluatedAt: z.iso.datetime().optional()
 });
 
 /**
@@ -875,6 +1098,18 @@ export const zCreateAssistedApplicationRequest = z.object({
 });
 
 /**
+ * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
+ */
+export const zResolveApplicationRequest = z.object({
+    decision: z.enum([
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED'
+    ]),
+    reason: z.string().max(1000).optional()
+});
+
+/**
  * Datos requeridos para crear una actividad comunitaria.
  */
 export const zCreateActivityRequest = z.object({
@@ -927,6 +1162,61 @@ export const zProfessionalActivityEnrollmentResponse = z.object({
 });
 
 /**
+ * Decision del responsable sobre una solicitud ciudadana de reprogramacion.
+ */
+export const zReviewApplicationVisitRescheduleRequest = z.object({
+    status: z.enum(['APPROVED', 'REJECTED']),
+    startsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().min(1).max(300).optional(),
+    comment: z.string().min(1).max(1000).optional()
+});
+
+/**
+ * Detalle administrativo completo de una solicitud de reprogramacion.
+ */
+export const zAdminApplicationVisitRescheduleRequestDetailResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    visitId: z.uuid().optional(),
+    visitType: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    applicantUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantName: z.string().optional(),
+    applicantEmail: z.string().optional(),
+    responsibleId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleName: z.string().optional(),
+    responsibleEmail: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    requestedById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    requestedByName: z.string().optional(),
+    status: z.enum([
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ]).optional(),
+    reason: z.string().optional(),
+    requestedAt: z.iso.datetime().optional(),
+    scheduleAtRequest: zApplicationVisitRescheduleScheduleResponse.optional(),
+    reviewedById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    reviewedByName: z.string().optional(),
+    reviewedByEmail: z.string().optional(),
+    reviewedAt: z.iso.datetime().optional(),
+    reviewComment: z.string().optional(),
+    approvedSchedule: zApplicationVisitRescheduleScheduleResponse.optional()
+});
+
+/**
+ * Motivo requerido para cancelar una visita o entrevista social pendiente.
+ */
+export const zCancelApplicationVisitRequest = z.object({
+    reason: z.string().min(1).max(1000)
+});
+
+/**
  * Resultado de la revisión administrativa de un documento pendiente.
  */
 export const zReviewApplicationDocumentRequest = z.object({
@@ -969,6 +1259,9 @@ export const zLogResponse = z.object({
         'USER',
         'ENROLLMENT_PERIOD',
         'APPLICATION',
+        'APPLICATION_EVALUATION',
+        'APPLICATION_VISIT',
+        'APPLICATION_VISIT_RESCHEDULE_REQUEST',
         'APPLICATION_DOCUMENT',
         'ACTIVITY',
         'ACTIVITY_ENROLLMENT',
@@ -1205,6 +1498,99 @@ export const zApplicationListResponse = z.object({
 });
 
 /**
+ * Resumen ciudadano de una visita o entrevista asociada a una solicitud propia.
+ */
+export const zCitizenApplicationVisitListItemResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programName: z.string().optional(),
+    type: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'CANCELLED',
+        'REALIZED',
+        'NOT_REALIZED'
+    ]).optional(),
+    rescheduled: z.boolean().optional(),
+    lastRescheduledAt: z.iso.datetime().optional(),
+    latestRescheduleRequest: zApplicationVisitRescheduleRequestSummaryResponse.optional(),
+    cancelledAt: z.iso.datetime().optional()
+});
+
+/**
+ * Pagina de visitas y entrevistas de solicitudes propias.
+ */
+export const zCitizenApplicationVisitListResponse = z.object({
+    content: z.array(zCitizenApplicationVisitListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Detalle ciudadano de una visita o entrevista asociada a una solicitud propia.
+ */
+export const zCitizenApplicationVisitDetailResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    type: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'CANCELLED',
+        'REALIZED',
+        'NOT_REALIZED'
+    ]).optional(),
+    rescheduled: z.boolean().optional(),
+    lastRescheduledAt: z.iso.datetime().optional(),
+    latestRescheduleRequest: zApplicationVisitRescheduleRequestSummaryResponse.optional(),
+    cancelledAt: z.iso.datetime().optional(),
+    cancellationReason: z.string().optional()
+});
+
+/**
+ * Solicitud propia de reprogramacion incluida en el historial ciudadano.
+ */
+export const zCitizenApplicationVisitRescheduleRequestListItemResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    visitId: z.uuid().optional(),
+    visitType: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    status: z.enum([
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ]).optional(),
+    requestedAt: z.iso.datetime().optional(),
+    reviewedAt: z.iso.datetime().optional(),
+    approvedStartsAt: z.iso.datetime().optional(),
+    approvedEndsAt: z.iso.datetime().optional(),
+    approvedDurationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Pagina del historial ciudadano de solicitudes de reprogramacion.
+ */
+export const zCitizenApplicationVisitRescheduleRequestListResponse = z.object({
+    content: z.array(zCitizenApplicationVisitRescheduleRequestListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
  * Resumen de un programa incluido en un listado.
  */
 export const zProgramListItemResponse = z.object({
@@ -1400,22 +1786,13 @@ export const zAdminApplicationListResponse = z.object({
 });
 
 /**
- * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
+ * Actuacion incluida en la agenda administrativa de solicitudes.
  */
-export const zAdminApplicationResponse = z.object({
+export const zApplicationVisitListItemResponse = z.object({
     id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
     applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    userName: z.string().optional(),
-    userEmail: z.string().optional(),
-    registeredByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    registeredByUserName: z.string().optional(),
-    programId: z.uuid().optional(),
-    programName: z.string().optional(),
-    programEditionId: z.uuid().optional(),
-    programEditionName: z.string().optional(),
-    enrollmentPeriodId: z.uuid().optional(),
-    status: z.enum([
+    applicationStatus: z.enum([
         'DRAFT',
         'SUBMITTED',
         'IN_VALIDATION',
@@ -1427,18 +1804,246 @@ export const zAdminApplicationResponse = z.object({
         'WAITLISTED',
         'CLOSED'
     ]).optional(),
-    originTicketId: z.string().optional(),
-    resolutionReason: z.string().optional(),
-    assignedWorkerUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
-    assignedWorkerName: z.string().optional(),
-    submittedAt: z.iso.datetime().optional(),
-    resolvedAt: z.iso.datetime().optional(),
-    createdAt: z.iso.datetime().optional(),
-    updatedAt: z.iso.datetime().optional(),
-    idempotencyKey: z.string().optional(),
-    requestHash: z.string().optional(),
-    pendingDocuments: z.array(zPendingApplicationDocumentResponse).optional(),
-    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
+    applicantUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantName: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    type: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'CANCELLED',
+        'REALIZED',
+        'NOT_REALIZED'
+    ]).optional(),
+    responsibleId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleName: z.string().optional(),
+    scheduledAt: z.iso.datetime().optional(),
+    rescheduled: z.boolean().optional(),
+    lastRescheduledAt: z.iso.datetime().optional(),
+    latestRescheduleRequest: zApplicationVisitRescheduleRequestSummaryResponse.optional(),
+    cancelledAt: z.iso.datetime().optional(),
+    cancelledById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    cancelledByName: z.string().optional(),
+    resultRecordedAt: z.iso.datetime().optional(),
+    resultRecordedById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resultRecordedByName: z.string().optional()
+});
+
+/**
+ * Pagina de visitas y entrevistas sociales ordenada cronologicamente.
+ */
+export const zApplicationVisitListResponse = z.object({
+    content: z.array(zApplicationVisitListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Detalle administrativo de una visita o entrevista y su solicitud asociada.
+ */
+export const zApplicationVisitDetailResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicationStatus: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    applicantUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantName: z.string().optional(),
+    applicantEmail: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    enrollmentPeriodId: z.uuid().optional(),
+    type: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    startsAt: z.iso.datetime().optional(),
+    endsAt: z.iso.datetime().optional(),
+    durationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    location: z.string().optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'CANCELLED',
+        'REALIZED',
+        'NOT_REALIZED'
+    ]).optional(),
+    responsibleId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleName: z.string().optional(),
+    responsibleEmail: z.string().optional(),
+    scheduledAt: z.iso.datetime().optional(),
+    rescheduled: z.boolean().optional(),
+    lastRescheduledAt: z.iso.datetime().optional(),
+    latestRescheduleRequest: zApplicationVisitRescheduleRequestSummaryResponse.optional(),
+    cancellationReason: z.string().optional(),
+    cancelledAt: z.iso.datetime().optional(),
+    cancelledById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    cancelledByName: z.string().optional(),
+    cancelledByEmail: z.string().optional(),
+    observations: z.string().optional(),
+    conclusions: z.string().optional(),
+    resultRecordedAt: z.iso.datetime().optional(),
+    resultRecordedById: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resultRecordedByName: z.string().optional(),
+    resultRecordedByEmail: z.string().optional()
+});
+
+/**
+ * Solicitud de reprogramacion incluida en la bandeja administrativa.
+ */
+export const zAdminApplicationVisitRescheduleRequestListItemResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    visitId: z.uuid().optional(),
+    visitType: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    applicantUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantName: z.string().optional(),
+    responsibleId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleName: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    status: z.enum([
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ]).optional(),
+    requestedAt: z.iso.datetime().optional(),
+    reviewedAt: z.iso.datetime().optional(),
+    originalStartsAt: z.iso.datetime().optional(),
+    originalEndsAt: z.iso.datetime().optional(),
+    originalDurationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    approvedStartsAt: z.iso.datetime().optional(),
+    approvedEndsAt: z.iso.datetime().optional(),
+    approvedDurationMinutes: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Pagina filtrada de solicitudes de reprogramacion.
+ */
+export const zAdminApplicationVisitRescheduleRequestListResponse = z.object({
+    content: z.array(zAdminApplicationVisitRescheduleRequestListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Resumen administrativo de una evaluacion social. La recomendacion se consulta solo en el detalle.
+ */
+export const zApplicationEvaluationListItemResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicationStatus: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    applicantUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantName: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    vulnerability: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ]).optional(),
+    priority: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'URGENT'
+    ]).optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    evaluatedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Pagina administrativa de evaluaciones sociales, ordenada por fecha descendente.
+ */
+export const zApplicationEvaluationListResponse = z.object({
+    content: z.array(zApplicationEvaluationListItemResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+/**
+ * Detalle administrativo completo de una evaluacion social y su solicitud asociada.
+ */
+export const zApplicationEvaluationDetailResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicationStatus: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    applicantUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantName: z.string().optional(),
+    applicantEmail: z.string().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    enrollmentPeriodId: z.uuid().optional(),
+    vulnerability: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ]).optional(),
+    priority: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'URGENT'
+    ]).optional(),
+    recommendation: z.string().optional(),
+    professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalName: z.string().optional(),
+    professionalEmail: z.string().optional(),
+    evaluatedAt: z.iso.datetime().optional()
 });
 
 /**
@@ -1654,6 +2259,18 @@ export const zCorrectCommunityAttentionPath = z.object({
  * OK
  */
 export const zCorrectCommunityAttentionResponse = zCommunityAttentionResponse;
+
+export const zRescheduleApplicationVisitBody = zRescheduleApplicationVisitRequest;
+
+export const zRescheduleApplicationVisitPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid()
+});
+
+/**
+ * Actuacion reprogramada.
+ */
+export const zRescheduleApplicationVisitResponse = zApplicationVisitResponse;
 
 export const zPutBody = z.object({
     file: z.string()
@@ -1955,6 +2572,26 @@ export const zRescheduleAdminAppointmentPath = z.object({
  */
 export const zRescheduleAdminAppointmentResponse = zAdminAppointmentResponse;
 
+export const zUnassignApplicationWorkerPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Detalle de la solicitud sin trabajador asignado.
+ */
+export const zUnassignApplicationWorkerResponse = zAdminApplicationResponse;
+
+export const zAssignApplicationWorkerBody = zAssignApplicationWorkerRequest;
+
+export const zAssignApplicationWorkerPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Detalle de la solicitud con el trabajador asignado.
+ */
+export const zAssignApplicationWorkerResponse = zAdminApplicationResponse;
+
 export const zPut1Body = z.object({
     file: z.string()
 });
@@ -2096,6 +2733,81 @@ export const zSubmitHeaders = z.object({
  * Reintento: se devuelve la solicitud original sin crear otra ni repetir la auditoría.
  */
 export const zSubmitResponse = zApplicationResponse;
+
+export const zListOwnApplicationVisitsPath = z.object({
+    applicationId: z.uuid()
+});
+
+export const zListOwnApplicationVisitsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Pagina de actuaciones propias.
+ */
+export const zListOwnApplicationVisitsResponse = zCitizenApplicationVisitListResponse;
+
+export const zCreateApplicationVisitBody = zCreateApplicationVisitRequest;
+
+export const zCreateApplicationVisitPath = z.object({
+    applicationId: z.uuid()
+});
+
+/**
+ * Visita o entrevista programada.
+ */
+export const zCreateApplicationVisitResponse = zApplicationVisitResponse;
+
+export const zRecordApplicationVisitResultBody = zRecordApplicationVisitResultRequest;
+
+export const zRecordApplicationVisitResultPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid()
+});
+
+/**
+ * Resultado registrado.
+ */
+export const zRecordApplicationVisitResultResponse = zApplicationVisitResponse;
+
+export const zListOwnApplicationVisitRescheduleRequestsPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid()
+});
+
+export const zListOwnApplicationVisitRescheduleRequestsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Pagina del historial propio.
+ */
+export const zListOwnApplicationVisitRescheduleRequestsResponse = zCitizenApplicationVisitRescheduleRequestListResponse;
+
+export const zCreateOwnApplicationVisitRescheduleRequestBody = zCreateApplicationVisitRescheduleRequest;
+
+export const zCreateOwnApplicationVisitRescheduleRequestPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid()
+});
+
+/**
+ * Solicitud registrada.
+ */
+export const zCreateOwnApplicationVisitRescheduleRequestResponse = zCitizenApplicationVisitRescheduleRequestDetailResponse;
+
+export const zCreateApplicationEvaluationBody = zCreateApplicationEvaluationRequest;
+
+export const zCreateApplicationEvaluationPath = z.object({
+    applicationId: z.uuid()
+});
+
+/**
+ * Evaluacion registrada.
+ */
+export const zCreateApplicationEvaluationResponse = zApplicationEvaluationResponse;
 
 export const zList1Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
@@ -2432,7 +3144,8 @@ export const zAssignProfessionalResponse = zProfessionalAssignmentResponse;
 
 export const zList4Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
-    size: z.int().gte(1).lte(100).optional().default(20)
+    size: z.int().gte(1).lte(100).optional().default(20),
+    programId: z.uuid().optional()
 });
 
 /**
@@ -2450,6 +3163,17 @@ export const zSubmit1Headers = z.object({
  * Reintento: devuelve la solicitud existente y conserva al registrante original.
  */
 export const zSubmit1Response = zApplicationResponse;
+
+export const zResolveApplicationBody = zResolveApplicationRequest;
+
+export const zResolveApplicationPath = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Detalle de la solicitud resuelta.
+ */
+export const zResolveApplicationResponse = zAdminApplicationResponse;
 
 export const zList5Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
@@ -2488,6 +3212,31 @@ export const zUpdateAttendancePath = z.object({
  * OK
  */
 export const zUpdateAttendanceResponse = zProfessionalActivityEnrollmentResponse;
+
+export const zReviewApplicationVisitRescheduleRequestBody = zReviewApplicationVisitRescheduleRequest;
+
+export const zReviewApplicationVisitRescheduleRequestPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid(),
+    requestId: z.uuid()
+});
+
+/**
+ * Solicitud revisada.
+ */
+export const zReviewApplicationVisitRescheduleRequestResponse = zAdminApplicationVisitRescheduleRequestDetailResponse;
+
+export const zCancelApplicationVisitBody = zCancelApplicationVisitRequest;
+
+export const zCancelApplicationVisitPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid()
+});
+
+/**
+ * Actuacion cancelada.
+ */
+export const zCancelApplicationVisitResponse = zApplicationVisitResponse;
 
 export const zSuspendPath = z.object({
     id: z.uuid()
@@ -2693,6 +3442,9 @@ export const zListLogsByEntityPath = z.object({
         'USER',
         'ENROLLMENT_PERIOD',
         'APPLICATION',
+        'APPLICATION_EVALUATION',
+        'APPLICATION_VISIT',
+        'APPLICATION_VISIT_RESCHEDULE_REQUEST',
         'APPLICATION_DOCUMENT',
         'ACTIVITY',
         'ACTIVITY_ENROLLMENT',
@@ -2754,7 +3506,8 @@ export const zGetAvailableProgramPath = z.object({
 export const zGetAvailableProgramResponse = zAvailableProgramDetailResponse;
 
 export const zListProfessionalAppointmentsQuery = z.object({
-    date: z.iso.date()
+    date: z.iso.date(),
+    to: z.iso.date().optional()
 });
 
 /**
@@ -2850,6 +3603,27 @@ export const zGet2Path = z.object({
  */
 export const zGet2Response = zApplicationResponse;
 
+export const zGetOwnApplicationVisitPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid()
+});
+
+/**
+ * Detalle ciudadano de la actuacion.
+ */
+export const zGetOwnApplicationVisitResponse = zCitizenApplicationVisitDetailResponse;
+
+export const zGetOwnApplicationVisitRescheduleRequestPath = z.object({
+    applicationId: z.uuid(),
+    visitId: z.uuid(),
+    requestId: z.uuid()
+});
+
+/**
+ * Detalle de la solicitud propia.
+ */
+export const zGetOwnApplicationVisitRescheduleRequestResponse = zCitizenApplicationVisitRescheduleRequestDetailResponse;
+
 export const zList6Path = z.object({
     applicationId: z.uuid()
 });
@@ -2868,6 +3642,17 @@ export const zContentPath = z.object({
  * Contenido del archivo.
  */
 export const zContentResponse = z.string();
+
+export const zListAllOwnVisitsQuery = z.object({
+    upcoming: z.boolean().optional().default(false),
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Pagina de actuaciones propias.
+ */
+export const zListAllOwnVisitsResponse = zCitizenApplicationVisitListResponse;
 
 export const zFindAll5Path = z.object({
     programId: z.uuid()
@@ -2974,6 +3759,112 @@ export const zContent1Path = z.object({
  * Contenido del archivo.
  */
 export const zContent1Response = z.string();
+
+export const zListApplicationVisitsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantUserId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programId: z.uuid().optional(),
+    programEditionId: z.uuid().optional(),
+    type: z.enum(['VISIT', 'INTERVIEW']).optional(),
+    status: z.enum([
+        'SCHEDULED',
+        'CANCELLED',
+        'REALIZED',
+        'NOT_REALIZED'
+    ]).optional(),
+    windowStart: z.iso.datetime().optional(),
+    windowEnd: z.iso.datetime().optional()
+});
+
+/**
+ * Pagina filtrada de actuaciones sociales.
+ */
+export const zListApplicationVisitsResponse = zApplicationVisitListResponse;
+
+export const zGetApplicationVisitPath = z.object({
+    visitId: z.uuid()
+});
+
+/**
+ * Detalle completo de la actuacion.
+ */
+export const zGetApplicationVisitResponse = zApplicationVisitDetailResponse;
+
+export const zListApplicationVisitRescheduleRequestsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    status: z.enum([
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ]).optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    visitId: z.uuid().optional(),
+    applicantUserId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programId: z.uuid().optional(),
+    programEditionId: z.uuid().optional(),
+    requestedFrom: z.iso.datetime().optional(),
+    requestedTo: z.iso.datetime().optional()
+});
+
+/**
+ * Pagina filtrada de solicitudes.
+ */
+export const zListApplicationVisitRescheduleRequestsResponse = zAdminApplicationVisitRescheduleRequestListResponse;
+
+export const zGetApplicationVisitRescheduleRequestPath = z.object({
+    requestId: z.uuid()
+});
+
+/**
+ * Detalle administrativo.
+ */
+export const zGetApplicationVisitRescheduleRequestResponse = zAdminApplicationVisitRescheduleRequestDetailResponse;
+
+export const zListApplicationEvaluationsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    applicantUserId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    professionalId: z.coerce.bigint().gt(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programId: z.uuid().optional(),
+    programEditionId: z.uuid().optional(),
+    vulnerability: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'CRITICAL'
+    ]).optional(),
+    priority: z.enum([
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'URGENT'
+    ]).optional(),
+    evaluatedFrom: z.iso.datetime().optional(),
+    evaluatedTo: z.iso.datetime().optional()
+});
+
+/**
+ * Pagina filtrada de evaluaciones.
+ */
+export const zListApplicationEvaluationsResponse = zApplicationEvaluationListResponse;
+
+export const zGetApplicationEvaluationPath = z.object({
+    evaluationId: z.uuid()
+});
+
+/**
+ * Detalle completo de la evaluacion.
+ */
+export const zGetApplicationEvaluationResponse = zApplicationEvaluationDetailResponse;
 
 export const zList8Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),

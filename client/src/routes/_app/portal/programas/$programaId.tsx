@@ -22,6 +22,7 @@ import {
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { formatRequirementValue } from "@/components/programs/ProgramRouteUi"
 import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -403,7 +404,7 @@ function EditionRequirements({ requirements }: { requirements: AvailableProgramR
         <ItemGroup>
           {requirements.map((requirement) => {
             const details = [
-              requirement.value ? `Valor requerido: ${requirement.value}` : undefined,
+              requirement.value ? `Valor requerido: ${formatRequirementValue(requirement.type, requirement.value)}` : undefined,
               requirement.description,
             ].filter(Boolean).join(" · ")
 

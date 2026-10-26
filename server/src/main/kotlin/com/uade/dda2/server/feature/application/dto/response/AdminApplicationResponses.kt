@@ -67,15 +67,19 @@ data class AdminApplicationResponse(
     val status: ApplicationStatus,
     @field:Schema(description = "Identificador del trámite de origen, cuando la solicitud llegó desde otro canal.", nullable = true)
     val originTicketId: String?,
-    @field:Schema(description = "Motivo de la resolución. Todavía no se completa desde ninguna operación.", nullable = true)
+    @field:Schema(description = "Motivo de la resolución, visible también para el titular. Obligatorio al rechazar o dejar en lista de espera.", nullable = true)
     val resolutionReason: String?,
-    @field:Schema(description = "Trabajador asignado a la solicitud. Todavía no se asigna desde ninguna operación.", nullable = true)
+    @field:Schema(description = "Trabajador asignado a la solicitud. Se fija al registrar la evaluación o con PUT /api/admin/applications/{id}/assigned-worker.", nullable = true)
     val assignedWorkerUserId: Long?,
     @field:Schema(nullable = true)
     val assignedWorkerName: String?,
     val submittedAt: LocalDateTime,
     @field:Schema(nullable = true)
     val resolvedAt: LocalDateTime?,
+    @field:Schema(description = "Quien registró la última resolución.", nullable = true)
+    val resolvedByUserId: Long?,
+    @field:Schema(nullable = true)
+    val resolvedByName: String?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     @field:Schema(description = "Clave de idempotencia con la que se presentó la solicitud, solo visible en esta vista administrativa.", nullable = true)

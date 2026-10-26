@@ -19,6 +19,7 @@ import {
 } from "@/generated/@tanstack/react-query.gen"
 import type { AdminAppointmentResponse, AdminFreeSlotResponse } from "@/generated/types.gen"
 import { appointmentStatusLabels, formatAppointmentDate, formatAppointmentTime, isUuid } from "@/lib/appointment-flow"
+import { UserChip, UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/turnos/agenda")({
   validateSearch: adminDaySearchSchema,
@@ -148,7 +149,7 @@ function RouteComponent() {
               <p className="text-sm text-muted-foreground">No hay turnos ni horarios para ese día.</p>
               <Button size="xs" variant="ghost" onClick={refetch} disabled={turnos.isFetching || libres.isFetching}>
                 <IconRefresh className={turnos.isFetching || libres.isFetching ? "animate-spin" : undefined} />
-                Actualizar
+                <span className="sr-only sm:not-sr-only">Refrescar</span>
               </Button>
             </div>
           ) : (
@@ -170,7 +171,7 @@ function RouteComponent() {
                       {formatAppointmentTime(row.slot.startsAt)} – {formatAppointmentTime(row.slot.endsAt)}
                     </TableCell>
                     <TableCell className="text-muted-foreground">{row.slot.serviceName ?? "—"}</TableCell>
-                    <TableCell className="text-muted-foreground">{row.slot.professionalName ?? "—"}</TableCell>
+                    <TableCell className="text-muted-foreground"><UserInline user={{ id: row.slot.professionalId, name: row.slot.professionalName }} /></TableCell>
                     <TableCell className="text-muted-foreground">—</TableCell>
                     <TableCell><Badge variant="outline">Libre</Badge></TableCell>
                     <TableCell />
@@ -181,8 +182,8 @@ function RouteComponent() {
                       {formatAppointmentTime(row.turno.appointment?.startsAt)} – {formatAppointmentTime(row.turno.appointment?.endsAt)}
                     </TableCell>
                     <TableCell className="text-muted-foreground">{row.turno.appointment?.serviceName ?? "—"}</TableCell>
-                    <TableCell className="text-muted-foreground">{row.turno.appointment?.professionalName ?? "—"}</TableCell>
-                    <TableCell>{row.turno.citizenName ?? "—"}</TableCell>
+                    <TableCell className="text-muted-foreground"><UserInline user={{ id: row.turno.appointment?.professionalId, name: row.turno.appointment?.professionalName }} /></TableCell>
+                    <TableCell className="min-w-44"><UserChip user={{ id: row.turno.citizenId, name: row.turno.citizenName }} /></TableCell>
                     <TableCell>
                       <span className="flex flex-wrap gap-1">
                         <Badge variant={row.turno.appointment?.status === "CANCELLED" ? "secondary" : "default"}>

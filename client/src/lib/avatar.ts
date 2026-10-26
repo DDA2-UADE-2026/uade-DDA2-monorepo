@@ -6,7 +6,7 @@ interface AvatarOptions {
 }
 
 export interface AvatarUser {
-  id?: string | number
+  id?: string | number | null
   username?: string
   email?: string
   name?: string
@@ -102,7 +102,8 @@ function generateAvatar(text: string, options: AvatarOptions = {}): string {
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Could not get 2D context");
+  // No canvas (jsdom, blocked fingerprinting): an empty src lets <AvatarFallback> show the initials.
+  if (!ctx) return "";
 
   const colors = textToColorDefs(seed);
   const layoutRandom = createSeededRandom(hashText(`${seed}\0layout`));
@@ -167,8 +168,10 @@ export function getAvatar(text: string, options: AvatarOptions = {}): string {
   return avatarCache.get(key)!;
 }
 
+// The id comes first: it is the only field every API response carries for a person
+// (some only expose id + name), so it keeps one avatar per user across screens.
 export function getAvatarUserIdentity(user: AvatarUser): string {
-  return user.username || user.email || user.name || String(user.id ?? "user")
+  return (user.id != null ? `id:${user.id}` : "") || user.username || user.email || user.name || "user"
 }
 
 export function getAvatarUserLabel(user: AvatarUser): string {
