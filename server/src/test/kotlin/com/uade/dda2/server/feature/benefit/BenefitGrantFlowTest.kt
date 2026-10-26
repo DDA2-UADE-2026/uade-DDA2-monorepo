@@ -7,6 +7,12 @@ import com.uade.dda2.server.feature.auth.repository.*
 import com.uade.dda2.server.feature.benefit.dto.response.BenefitGrantResponse
 import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
 import com.uade.dda2.server.feature.benefit.entity.BenefitGrantStatus
+import com.uade.dda2.server.feature.benefit.service.BenefitGrantExpirationService
+import com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationScheduler
+import com.uade.dda2.server.config.BenefitGrantExpirationProperties
+import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.mockito.Mockito.`when`
 import com.uade.dda2.server.feature.benefit.repository.BenefitGrantChangeRepository
 import com.uade.dda2.server.feature.document.entity.Document
 import com.uade.dda2.server.feature.document.repository.DocumentRepository
@@ -75,6 +81,8 @@ class BenefitGrantFlowTest {
     @Autowired lateinit var evaluations: ApplicationEvaluationRepository
     @Autowired lateinit var transactions: PlatformTransactionManager
     @Autowired lateinit var jdbc: JdbcTemplate
+    @Autowired lateinit var expiration: BenefitGrantExpirationService
+    @MockitoBean lateinit var clock: Clock
 
     companion object {
         @JvmStatic @DynamicPropertySource fun database(registry: DynamicPropertyRegistry) {
@@ -93,7 +101,10 @@ class BenefitGrantFlowTest {
     private val today get() = LocalDate.now(ZoneId.of("America/Argentina/Buenos_Aires"))
     private fun <T : Any> tx(action: () -> T): T = TransactionTemplate(transactions).execute { action() }!!
     private fun permission(name: String) = permissions.findByNameIn(setOf(name)).firstOrNull() ?: permissions.save(Permission(name = name))
-    @BeforeEach fun setup() { f = fixture() }
+    @BeforeEach fun setup() {
+        `when`(clock.instant()).thenAnswer { Instant.now() }
+        f = fixture()
+    }
 
     private fun fixture(applicantId: Long? = null, editionId: UUID? = null): Fixture = tx {
         val role = roles.save(Role(name = "ADMIN_${UUID.randomUUID()}", permissions = mutableSetOf(
@@ -450,6 +461,29 @@ class BenefitGrantFlowTest {
             assertFailsWith<DataIntegrityViolationException> {
                 jdbc.execute("insert into $schema.benefit_grant_change select * from $schema.benefit_grant_change")
             }
+            // Legacy Hibernate enum checks on history must also be replaced, not only the explicit transition check.
+            jdbc.execute("alter table $schema.benefit_grant_change add constraint old_history_action check (action in ('ASSIGNED','RENEWED','SUSPENDED','FINALIZED'))")
+            jdbc.execute("alter table $schema.benefit_grant_change add constraint old_history_status check (status in ('ACTIVE','SUSPENDED','FINALIZED'))")
+            jdbc.execute("alter table $schema.benefit_grant_change add constraint old_history_previous check (previous_status in ('ACTIVE','SUSPENDED','FINALIZED'))")
+            val expirationMigration = Files.readString(Path.of("docs/database/migrations/2026-10-26-benefit-grant-expiration.sql")).replace("public.", "$schema.")
+            repeat(2) { jdbc.execute(expirationMigration) }
+            assertEquals("FINALIZED", jdbc.queryForObject("select status from $schema.benefit_grant", String::class.java))
+            assertEquals(1L, jdbc.queryForObject("select count(*) from $schema.benefit_grant_change", Long::class.java))
+            assertEquals(assignedAt.toInstant(), jdbc.queryForObject("select changed_at from $schema.benefit_grant_change", OffsetDateTime::class.java)!!.toInstant())
+            assertEquals(1L, jdbc.queryForObject("select responsible_user_id from $schema.benefit_grant_change", Long::class.java))
+            jdbc.update("update $schema.benefit_grant set status = 'EXPIRED' where id = ?", grantId)
+            jdbc.update("""insert into $schema.benefit_grant_change
+                (id,grant_id,sequence_number,action,previous_status,status,previous_start_date,previous_end_date,start_date,end_date,reason,responsible_user_id,changed_at)
+                select ?,grant_id,2,'EXPIRED','ACTIVE','EXPIRED',start_date,end_date,start_date,end_date,?,null,changed_at
+                from $schema.benefit_grant_change where sequence_number=1""", UUID.randomUUID(), BenefitGrantExpirationService.EXPIRATION_REASON)
+            jdbc.execute(expirationMigration)
+            assertEquals(2L, jdbc.queryForObject("select count(*) from $schema.benefit_grant_change", Long::class.java))
+            assertNull(jdbc.queryForObject("select responsible_user_id from $schema.benefit_grant_change where action='EXPIRED'", Long::class.java))
+            assertFailsWith<DataIntegrityViolationException> { jdbc.execute("update $schema.benefit_grant_change set responsible_user_id=1 where action='EXPIRED'") }
+            assertFailsWith<DataIntegrityViolationException> { jdbc.execute("update $schema.benefit_grant_change set responsible_user_id=null where action='ASSIGNED'") }
+            assertFailsWith<DataIntegrityViolationException> { jdbc.execute("update $schema.benefit_grant_change set previous_status='FINALIZED' where action='EXPIRED'") }
+            assertFailsWith<DataIntegrityViolationException> { jdbc.execute("update $schema.benefit_grant_change set reason=null where action='EXPIRED'") }
+            assertFailsWith<DataIntegrityViolationException> { jdbc.update("update $schema.benefit_grant set end_date = ? where id = ?", today.minusDays(11), grantId) }
         } finally { jdbc.execute("drop schema $schema cascade") }
         unchanged()
     }
@@ -643,15 +677,15 @@ class BenefitGrantFlowTest {
     }
 
     @ParameterizedTest @ValueSource(booleans = [false, true])
-    fun `renueva otorgamientos vencidos activos o suspendidos hasta hoy inclusive`(suspended: Boolean) {
+    fun `rechaza renovar vencidos activos o suspendidos aunque no corrio el barrido`(suspended: Boolean) {
         val grant = assigned(end = today)
         // Simulate a grant whose agreed end has elapsed, keeping its factual initial event consistent.
         jdbc.update("update benefit_grant set end_date = ? where id = ?", today.minusDays(1), grant.id)
         jdbc.update("update benefit_grant_change set end_date = ? where grant_id = ?", today.minusDays(1), grant.id)
         if (suspended) expect(change(grant.id, "suspend"), 200)
-        expect(change(grant.id, "renew", renewal(today)), 200)
-        assertEquals(BenefitGrantStatus.ACTIVE, grants.findById(grant.id).orElseThrow().status)
-        assertEquals(today, grants.findById(grant.id).orElseThrow().endDate)
+        expect(change(grant.id, "renew", renewal(today.plusDays(2))), 409, "BENEFIT_GRANT_INVALID_TRANSITION")
+        assertEquals(if (suspended) BenefitGrantStatus.SUSPENDED else BenefitGrantStatus.ACTIVE, grants.findById(grant.id).orElseThrow().status)
+        assertEquals(today.minusDays(1), grants.findById(grant.id).orElseThrow().endDate)
         assertEquals(1, editions.findById(f.editionId).orElseThrow().currentEnrollment)
     }
 
@@ -903,6 +937,215 @@ class BenefitGrantFlowTest {
         expect(approve(candidate), 201)
         assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
         assertEquals(1, editions.findById(candidate.editionId).orElseThrow().currentEnrollment)
+    }
+
+    private fun overdue(grantId: UUID) {
+        jdbc.update("update benefit_grant set end_date = ? where id = ?", today.minusDays(1), grantId)
+        jdbc.update("update benefit_grant_change set end_date = ? where grant_id = ?", today.minusDays(1), grantId)
+    }
+
+    private fun <A, B> race(first: () -> A, second: () -> B): Pair<A, B> {
+        val start = CountDownLatch(1)
+        val executor = Executors.newFixedThreadPool(2)
+        try {
+            val a = executor.submit(Callable { start.await(); first() })
+            val b = executor.submit(Callable { start.await(); second() })
+            start.countDown()
+            return a.get(30, TimeUnit.SECONDS) to b.get(30, TimeUnit.SECONDS)
+        } finally { executor.shutdownNow() }
+    }
+
+    @ParameterizedTest @ValueSource(booleans = [false, true])
+    fun `vence activo o suspendido con historial de sistema sin perder datos y libera una sola reserva`(suspended: Boolean) {
+        val original = assigned(end = today)
+        overdue(original.id)
+        if (suspended) expect(change(original.id, "suspend"), 200)
+        val now = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS).plusSeconds(1).plusNanos(123456789)
+        `when`(clock.instant()).thenReturn(now)
+        assertEquals(1, expiration.expireApplication(f.applicationId))
+        assertEquals(0, expiration.expireApplication(f.applicationId))
+        val history = json.readTree(grantHistory(original.id).response.contentAsString)
+        val event = history[history.size() - 1]
+        assertEquals("EXPIRED", event.get("action").stringValue())
+        assertEquals("EXPIRED", event.get("status").stringValue())
+        assertEquals(if (suspended) "SUSPENDED" else "ACTIVE", event.get("previousStatus").stringValue())
+        assertTrue(event.get("responsibleUserId").isNull)
+        assertEquals("Sistema", event.get("responsibleUserName").stringValue())
+        assertEquals(BenefitGrantExpirationService.EXPIRATION_REASON, event.get("reason").stringValue())
+        assertEquals(0, event.get("requirementChecks").size())
+        assertEquals(now.truncatedTo(java.time.temporal.ChronoUnit.MICROS), OffsetDateTime.parse(event.get("changedAt").stringValue()).toInstant())
+        assertEquals(if (suspended) 3 else 2, history.size())
+        tx {
+            val current = grants.findById(original.id).orElseThrow()
+            assertEquals(BenefitGrantStatus.EXPIRED, current.status)
+            assertEquals(original.startDate, current.startDate)
+            assertEquals(today.minusDays(1), current.endDate)
+            assertEquals(original.description, current.description)
+            assertEquals(original.amount, current.amount)
+            assertEquals(original.benefitType, current.benefitType)
+            assertEquals(original.assignedAt, current.assignedAt)
+            assertEquals(original.assignedByUserId, current.assignedBy.id)
+            val a = applications.findDetailById(f.applicationId)!!
+            assertEquals(ApplicationStatus.CLOSED, a.status)
+            assertEquals("Motivo privado", a.resolutionReason)
+            assertEquals(f.workerId, a.resolvedBy?.id)
+            assertEquals(f.workerId, a.assignedWorker?.id)
+            assertEquals(today.minusDays(1).atStartOfDay(), a.resolvedAt)
+            assertEquals(LocalDateTime.ofInstant(now.truncatedTo(java.time.temporal.ChronoUnit.MICROS), ZoneId.of("America/Argentina/Buenos_Aires")), a.updatedAt)
+            assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+        }
+        val audit = jdbc.queryForMap("select user_id, new_values::text as snapshot from logs where entity_type = 'benefit_grant_change' and entity_id = ?", event.get("id").stringValue())
+        assertNull(audit["user_id"])
+        val snapshot = audit["snapshot"].toString()
+        assertTrue(snapshot.contains("EXPIRED"))
+        listOf("Descripcion reservada", "1250.50", "Motivo privado", BenefitGrantExpirationService.EXPIRATION_REASON).forEach { assertFalse(snapshot.contains(it)) }
+        listOf("renew", "suspend", "finalize").forEach { expect(change(original.id, it, if (it == "renew") renewal() else """{"reason":"x"}"""), 409) }
+        val own = mvc.perform(get("/api/applications/${f.applicationId}").header("Authorization", "Bearer ${f.citizenToken}")).andReturn()
+        expect(own, 200)
+        assertFalse(own.response.contentAsString.contains("Sistema"))
+        assertFalse(own.response.contentAsString.contains("benefitGrants"))
+    }
+
+    @Test fun `ultimo dia sigue vigente en zona local aunque UTC ya sea el dia siguiente`() {
+        val grant = assigned(end = today)
+        val midnight = today.plusDays(1).atStartOfDay(ZoneId.of("America/Argentina/Buenos_Aires")).toInstant()
+        `when`(clock.instant()).thenReturn(midnight.minusNanos(1000))
+        assertEquals(0, expiration.expireApplication(f.applicationId))
+        expect(change(grant.id, "renew", renewal(today.plusDays(1))), 200)
+        `when`(clock.instant()).thenReturn(midnight)
+        assertEquals(0, expiration.expireApplication(f.applicationId)) // Re-read the renewed date, not a stale candidate.
+        `when`(clock.instant()).thenReturn(midnight.plusSeconds(86400))
+        assertEquals(1, expiration.expireApplication(f.applicationId))
+    }
+
+    @Test fun `vence juntos los pendientes y solo cierra al terminar el ultimo incluso suspendido`() {
+        val first = assigned(end = today)
+        overdue(first.id)
+        val second = assigned(addBenefit(), end = today)
+        overdue(second.id)
+        expect(change(second.id, "suspend"), 200)
+        val third = assigned(addBenefit(), end = today.plusDays(2))
+        expect(change(third.id, "suspend"), 200)
+        assertEquals(2, expiration.expireApplication(f.applicationId))
+        assertEquals(1, grants.countUnfinished(f.applicationId))
+        assertEquals(ApplicationStatus.APPROVED, applications.findById(f.applicationId).orElseThrow().status)
+        assertEquals(1, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+        listOf("renew", "suspend", "finalize").forEach { expect(change(first.id, it, if (it == "renew") renewal() else """{"reason":"x"}"""), 409, "BENEFIT_GRANT_INVALID_TRANSITION") }
+        expect(change(third.id, "finalize"), 200)
+        assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+        assertEquals(ApplicationStatus.CLOSED, applications.findById(f.applicationId).orElseThrow().status)
+    }
+
+    @ParameterizedTest @EnumSource(ProgramEditionStatus::class)
+    fun `vencimiento no depende del estado o vigencia de la edicion`(status: ProgramEditionStatus) {
+        val grant = assigned(end = today)
+        overdue(grant.id)
+        tx { editions.findById(f.editionId).orElseThrow().also { it.status = status; it.endDate = today.minusDays(1) } }
+        assertEquals(1, expiration.expireApplication(f.applicationId))
+        assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+    }
+
+    @ParameterizedTest @ValueSource(strings = ["benefit_grant_change", "application"])
+    fun `fallo de auditoria automatica revierte todo el caso y permite reintento`(entityType: String) {
+        val first = assigned(end = today)
+        overdue(first.id)
+        val second = assigned(addBenefit(), end = today)
+        overdue(second.id)
+        val before = applications.findById(f.applicationId).orElseThrow().updatedAt
+        jdbc.execute("""alter table logs add constraint ck_expiration_test_audit check (entity_type <> '$entityType'
+            or user_id is not null or (entity_id <> '${f.applicationId}' and new_values::text not like '%${f.applicationId}%'))""")
+        try {
+            assertFails { expiration.expireApplication(f.applicationId) }
+            assertEquals(before, applications.findById(f.applicationId).orElseThrow().updatedAt)
+            assertEquals(ApplicationStatus.APPROVED, applications.findById(f.applicationId).orElseThrow().status)
+            assertEquals(1, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+            listOf(first, second).forEach {
+                assertEquals(BenefitGrantStatus.ACTIVE, grants.findById(it.id).orElseThrow().status)
+                assertEquals(1, changes.findAllByGrantIdOrderBySequenceNumberAsc(it.id).size)
+            }
+        } finally { jdbc.execute("alter table logs drop constraint ck_expiration_test_audit") }
+        assertEquals(2, expiration.expireApplication(f.applicationId))
+    }
+
+    @Test fun `contador inconsistente revierte vencimiento automatico sin perder historia`() {
+        val grant = assigned(end = today)
+        overdue(grant.id)
+        tx { editions.findById(f.editionId).orElseThrow().currentEnrollment = 0 }
+        assertFails { expiration.expireApplication(f.applicationId) }
+        assertEquals(BenefitGrantStatus.ACTIVE, grants.findById(grant.id).orElseThrow().status)
+        assertEquals(1, changes.findAllByGrantIdOrderBySequenceNumberAsc(grant.id).size)
+        assertEquals(ApplicationStatus.APPROVED, applications.findById(f.applicationId).orElseThrow().status)
+    }
+
+    @Test fun `barrido recupera atrasados por lotes y continua despues de un caso fallido`() {
+        val bad = assigned(end = today)
+        overdue(bad.id)
+        tx { editions.findById(f.editionId).orElseThrow().currentEnrollment = 0 }
+        val other = fixture()
+        val result = assign(other, content = body(other.benefitId, end = today))
+        expect(result, 201)
+        val healthy = response(result)
+        overdue(healthy.id)
+        val scheduler = BenefitGrantExpirationScheduler(grants, expiration, BenefitGrantExpirationProperties(batchSize = 1),
+            EnrollmentPeriodExpirationProperties(), Clock.systemUTC())
+        scheduler.expireBenefits()
+        assertEquals(BenefitGrantStatus.EXPIRED, grants.findById(healthy.id).orElseThrow().status)
+        assertEquals(ApplicationStatus.CLOSED, applications.findById(other.applicationId).orElseThrow().status)
+        assertEquals(BenefitGrantStatus.ACTIVE, grants.findById(bad.id).orElseThrow().status)
+        assertEquals(1, changes.findAllByGrantIdOrderBySequenceNumberAsc(bad.id).size)
+        tx { editions.findById(f.editionId).orElseThrow().currentEnrollment = 1 }
+        scheduler.expireBenefits()
+        assertEquals(BenefitGrantStatus.EXPIRED, grants.findById(bad.id).orElseThrow().status)
+        assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+    }
+
+    @Test fun `dos procesadores vencen el mismo caso una vez incluso con varios beneficios`() {
+        val first = assigned(end = today)
+        overdue(first.id)
+        val second = assigned(addBenefit(), end = today)
+        overdue(second.id)
+        val result = race({ expiration.expireApplication(f.applicationId) }, { expiration.expireApplication(f.applicationId) })
+        assertEquals(listOf(0, 2), listOf(result.first, result.second).sorted())
+        assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+        listOf(first, second).forEach { assertEquals(2, changes.findAllByGrantIdOrderBySequenceNumberAsc(it.id).size) }
+    }
+
+    @ParameterizedTest @ValueSource(strings = ["renew", "suspend", "finalize"])
+    fun `vencimiento compite con actuaciones manuales sin reabrir ni duplicar reserva`(action: String) {
+        val grant = assigned(end = today)
+        overdue(grant.id)
+        val result = race({ expiration.expireApplication(f.applicationId) }, { change(grant.id, action, if (action == "renew") renewal() else """{"reason":"x"}""") })
+        if (action == "renew") expect(result.second, 409)
+        else assertTrue(result.second.response.status in listOf(200, 409))
+        assertEquals(if (action == "suspend" || action == "renew") BenefitGrantStatus.EXPIRED else
+            if (result.second.response.status == 200) BenefitGrantStatus.FINALIZED else BenefitGrantStatus.EXPIRED,
+            grants.findById(grant.id).orElseThrow().status)
+        assertEquals(ApplicationStatus.CLOSED, applications.findById(f.applicationId).orElseThrow().status)
+        assertEquals(0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+    }
+
+    @Test fun `vencimiento y nueva asignacion conservan reserva solo si el alta gana el bloqueo`() {
+        val grant = assigned(end = today)
+        overdue(grant.id)
+        val benefit = addBenefit()
+        val result = race({ expiration.expireApplication(f.applicationId) }, { assign(content = body(benefit)) })
+        assertEquals(1, result.first)
+        assertTrue(result.second.response.status in listOf(201, 409))
+        val created = result.second.response.status == 201
+        assertEquals(if (created) ApplicationStatus.APPROVED else ApplicationStatus.CLOSED, applications.findById(f.applicationId).orElseThrow().status)
+        assertEquals(if (created) 1 else 0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
+    }
+
+    @Test fun `vencimiento y aprobacion concurrentes no sobreocupan el ultimo cupo`() {
+        val grant = assigned(end = today)
+        overdue(grant.id)
+        val candidate = fixture(editionId = f.editionId)
+        prepareEvaluation(candidate)
+        tx { editions.findById(f.editionId).orElseThrow().also { it.currentEnrollment = 1; it.maxCapacity = 1 } }
+        val result = race({ expiration.expireApplication(f.applicationId) }, { approve(candidate) })
+        assertEquals(1, result.first)
+        assertTrue(result.second.response.status in listOf(201, 409))
+        assertEquals(if (result.second.response.status == 201) 1 else 0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
     }
 
     @Test fun `baja de catalogo y otorgamiento concurrentes conservan referencias validas`() {

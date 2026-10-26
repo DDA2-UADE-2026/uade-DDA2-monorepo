@@ -17,9 +17,10 @@ import java.util.UUID
     Index(name = "ix_benefit_grant_application_date", columnList = "application_id, assigned_at, id"),
     Index(name = "ix_benefit_grant_benefit", columnList = "program_benefit_id"),
     Index(name = "ix_benefit_grant_assigned_by", columnList = "assigned_by_user_id"),
+    Index(name = "ix_benefit_grant_expiration", columnList = "status, end_date, application_id"),
 ], check = [
     CheckConstraint(name = "ck_benefit_grant_dates", constraint = "start_date <= end_date"),
-    CheckConstraint(name = "ck_benefit_grant_status", constraint = "status in ('ACTIVE', 'SUSPENDED', 'FINALIZED')"),
+    CheckConstraint(name = "ck_benefit_grant_status", constraint = "status in ('ACTIVE', 'SUSPENDED', 'FINALIZED', 'EXPIRED')"),
     CheckConstraint(name = "ck_benefit_grant_amount", constraint = "amount is null or amount >= 0"),
     CheckConstraint(name = "ck_benefit_grant_type", constraint =
         "benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')"),

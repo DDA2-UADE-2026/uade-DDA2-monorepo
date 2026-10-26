@@ -45,6 +45,8 @@ class BenefitGrantLifecycleService(
     private val logs: LogService,
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
+    private val clock: Clock,
+    private val closure: BenefitGrantClosureService,
 ) {
     @Transactional
     fun renew(applicationId: UUID, grantId: UUID, request: RenewBenefitGrantRequest): BenefitGrantResponse =
@@ -78,7 +80,7 @@ class BenefitGrantLifecycleService(
         val grant = grants.findByIdAndApplicationIdForUpdate(grantId, applicationId) ?: throw BenefitGrantErrors.notFound()
         val normalizedReason = validator.reason(reason)
         validator.validateStage(grant, action)
-        val changedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
+        val changedAt = OffsetDateTime.ofInstant(clock.instant(), ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
         val localTime = LocalDateTime.ofInstant(changedAt.toInstant(), timeProperties.zone())
         val previousStatus = grant.status
         val previousEnd = grant.endDate
@@ -93,7 +95,7 @@ class BenefitGrantLifecycleService(
             BenefitGrantChangeAction.RENEWED -> BenefitGrantStatus.ACTIVE
             BenefitGrantChangeAction.SUSPENDED -> BenefitGrantStatus.SUSPENDED
             BenefitGrantChangeAction.FINALIZED -> BenefitGrantStatus.FINALIZED
-            BenefitGrantChangeAction.ASSIGNED -> throw BenefitGrantErrors.invalidTransition()
+            BenefitGrantChangeAction.ASSIGNED, BenefitGrantChangeAction.EXPIRED -> throw BenefitGrantErrors.invalidTransition()
         }
         val event = BenefitGrantChange(grant = grant, sequenceNumber = changes.lastSequence(grantId) + 1,
             action = action, previousStatus = previousStatus, status = grant.status,
@@ -107,17 +109,7 @@ class BenefitGrantLifecycleService(
         }
         // Flush the new status before counting. The application lock serializes every grant of this application.
         val saved = changes.saveAndFlush(event)
-        if (action == BenefitGrantChangeAction.FINALIZED && grants.countUnfinished(applicationId) == 0L) {
-            if (edition.currentEnrollment <= 0) throw BenefitGrantErrors.inconsistentEnrollment()
-            edition.currentEnrollment -= 1
-            application.status = ApplicationStatus.CLOSED
-            logs.record(user = actor, action = LogAction.UPDATE, entityType = LogEntityType.APPLICATION,
-                entityId = applicationId.toString(),
-                oldValues = json.writeValueAsString(mapOf("status" to ApplicationStatus.APPROVED)),
-                newValues = json.writeValueAsString(mapOf("status" to ApplicationStatus.CLOSED,
-                    "grantChangeId" to saved.id, "responsibleUserId" to actor.id, "changedAt" to changedAt,
-                    "editionId" to editionId, "currentEnrollment" to edition.currentEnrollment)))
-        }
+        if (action == BenefitGrantChangeAction.FINALIZED) closure.closeIfFinished(application, edition, actor, changedAt, requireNotNull(saved.id))
         application.updatedAt = localTime
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.BENEFIT_GRANT_CHANGE,
             entityId = requireNotNull(saved.id).toString(), newValues = json.writeValueAsString(saved.toAuditSnapshot()))

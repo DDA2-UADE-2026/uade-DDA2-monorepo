@@ -24,13 +24,14 @@ class BenefitGrantLifecycleValidator {
 
     fun validateStage(grant: BenefitGrant, action: BenefitGrantChangeAction) {
         if (grant.application.status != ApplicationStatus.APPROVED) throw BenefitGrantErrors.applicationNotApproved()
-        if (grant.status == BenefitGrantStatus.FINALIZED ||
+        if (grant.status in setOf(BenefitGrantStatus.FINALIZED, BenefitGrantStatus.EXPIRED) ||
             (action == BenefitGrantChangeAction.SUSPENDED && grant.status != BenefitGrantStatus.ACTIVE) ||
-            action == BenefitGrantChangeAction.ASSIGNED) throw BenefitGrantErrors.invalidTransition()
+            action in setOf(BenefitGrantChangeAction.ASSIGNED, BenefitGrantChangeAction.EXPIRED)) throw BenefitGrantErrors.invalidTransition()
     }
 
     fun validateRenewal(request: RenewBenefitGrantRequest, grant: BenefitGrant, edition: ProgramEdition,
         today: LocalDate, requirements: List<ProgramRequirement>): ValidatedBenefitRenewal {
+        if (grant.endDate < today) throw BenefitGrantErrors.invalidTransition()
         val reason = reason(request.reason)
         val end = request.endDate ?: throw BenefitGrantErrors.invalidData("La fecha de fin es obligatoria.")
         if (end <= grant.endDate || end < today || end > edition.endDate || grant.startDate < edition.startDate || grant.startDate > today)

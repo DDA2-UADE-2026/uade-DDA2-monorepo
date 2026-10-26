@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDateTime
+import java.time.Clock
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
@@ -49,6 +50,7 @@ class BenefitGrantService(
     private val logs: LogService,
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
+    private val clock: Clock,
 ) {
     @Transactional
     fun create(applicationId: UUID, request: CreateBenefitGrantRequest): BenefitGrantResponse {
@@ -60,7 +62,7 @@ class BenefitGrantService(
         val editionId = requireNotNull(application.programEdition.id)
         val edition = requireNotNull(editions.findByIdForUpdate(editionId))
         validator.validateStage(application, edition)
-        val assignedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
+        val assignedAt = OffsetDateTime.ofInstant(clock.instant(), ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
         val localTime = LocalDateTime.ofInstant(assignedAt.toInstant(), timeProperties.zone())
         val data = validator.validateRequest(request, edition, localTime.toLocalDate())
         val benefit = benefits.findByIdAndProgramEditionId(data.programBenefitId, editionId)

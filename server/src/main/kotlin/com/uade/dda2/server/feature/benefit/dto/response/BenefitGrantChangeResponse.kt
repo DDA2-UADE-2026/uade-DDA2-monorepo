@@ -22,7 +22,9 @@ data class BenefitGrantChangeResponse(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val reason: String?,
-    val responsibleUserId: Long,
+    @field:Schema(description = "Responsable humano; null exclusivamente en vencimientos automaticos.", types = ["integer", "null"], format = "int64")
+    val responsibleUserId: Long?,
+    @field:Schema(description = "Nombre del responsable, o Sistema en vencimientos automaticos.")
     val responsibleUserName: String,
     @field:Schema(description = "Instante UTC de la actuacion. La finalizacion tiene efecto inmediato.")
     val changedAt: OffsetDateTime,

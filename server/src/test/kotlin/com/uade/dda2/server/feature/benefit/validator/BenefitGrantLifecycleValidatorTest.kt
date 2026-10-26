@@ -56,11 +56,11 @@ class BenefitGrantLifecycleValidatorTest {
         val result = validator.validateRenewal(request.copy(requirementChecks = listOf(check)), grant, edition, today, listOf(requirement))
         assertEquals(mapOf(requireNotNull(requirement.id) to true), result.checks)
     }
-    @Test fun `acepta extension inclusiva y usa hoy recibido incluso si otorgamiento vencio`() {
-        grant.endDate = today.minusDays(1)
-        assertEquals(today, validator.validateRenewal(request.copy(endDate = today), grant, edition, today, emptyList()).endDate)
+    @Test fun `acepta renovar el ultimo dia inclusivo pero rechaza despues del vencimiento`() {
+        grant.endDate = today
+        assertEquals(today.plusDays(1), validator.validateRenewal(request.copy(endDate = today.plusDays(1)), grant, edition, today, emptyList()).endDate)
         assertEquals(edition.endDate, validator.validateRenewal(request.copy(endDate = edition.endDate), grant, edition, today, emptyList()).endDate)
-        assertFailsWith<BadRequestException> { validator.validateRenewal(request.copy(endDate = today), grant, edition, today.plusDays(1), emptyList()) }
+        assertFailsWith<ConflictException> { validator.validateRenewal(request.copy(endDate = edition.endDate), grant, edition, today.plusDays(1), emptyList()) }
         assertFailsWith<BadRequestException> { validator.validateRenewal(request.copy(endDate = today.minusDays(1)), grant, edition, today, emptyList()) }
         assertFailsWith<BadRequestException> { validator.validateRenewal(request.copy(endDate = edition.endDate.plusDays(1)), grant, edition, today, emptyList()) }
         assertFailsWith<BadRequestException> { validator.validateRenewal(request, grant, edition, grant.startDate.minusDays(1), emptyList()) }
@@ -75,6 +75,8 @@ class BenefitGrantLifecycleValidatorTest {
         assertFailsWith<ConflictException> { validator.validateStage(grant, BenefitGrantChangeAction.SUSPENDED) }
         assertFailsWith<ConflictException> { validator.validateStage(grant, BenefitGrantChangeAction.ASSIGNED) }
         grant.status = BenefitGrantStatus.FINALIZED
+        BenefitGrantChangeAction.entries.forEach { assertFailsWith<ConflictException> { validator.validateStage(grant, it) } }
+        grant.status = BenefitGrantStatus.EXPIRED
         BenefitGrantChangeAction.entries.forEach { assertFailsWith<ConflictException> { validator.validateStage(grant, it) } }
         grant.status = BenefitGrantStatus.ACTIVE
         application.status = ApplicationStatus.CLOSED

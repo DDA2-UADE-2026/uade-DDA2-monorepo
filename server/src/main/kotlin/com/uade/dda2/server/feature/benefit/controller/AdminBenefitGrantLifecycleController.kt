@@ -24,12 +24,12 @@ class AdminBenefitGrantLifecycleController(private val service: BenefitGrantLife
     @PostMapping("/renew")
     @PreAuthorize("hasAuthority('applications:management:benefits:manage')")
     @Operation(summary = "Renovar o reactivar un beneficio otorgado", description =
-        "Exige solicitud APPROVED y otorgamiento ACTIVE o SUSPENDED, incluso vencido. Conserva inicio y datos copiados. " +
+        "Exige solicitud APPROVED y otorgamiento ACTIVE o SUSPENDED cuya fecha de fin aun no paso, inclusive hoy. Conserva inicio y datos copiados. " +
         "El nuevo fin debe superar el actual, incluir hoy en la zona configurada y estar dentro de la edicion ACTIVE. " +
         "Exige todos los requisitos vigentes cumplidos, documentos obligatorios VALID y ninguna aprobacion incompatible. " +
         "Registra motivo, responsable, instante UTC y copias de los requisitos. No requiere convocatoria abierta ni otro cupo.")
     @ApiResponse(responseCode = "200", description = "Otorgamiento renovado en ACTIVE; historial y auditoria confirmados.", useReturnTypeSchema = true)
-    @ApiResponse(responseCode = "409", description = "Solicitud no aprobada, estado definitivo, edicion no activa, requisitos o documentos incumplidos o incompatibilidad.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ApiResponse(responseCode = "409", description = "Solicitud no aprobada, otorgamiento vencido aunque aun no haya sido procesado, estado definitivo, edicion no activa, requisitos o documentos incumplidos o incompatibilidad.", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     fun renew(@PathVariable id: UUID, @PathVariable grantId: UUID, @RequestBody request: RenewBenefitGrantRequest): BenefitGrantResponse =
         service.renew(id, grantId, request)
 
@@ -58,7 +58,7 @@ class AdminBenefitGrantLifecycleController(private val service: BenefitGrantLife
     @PreAuthorize("hasAuthority('applications:management:view')")
     @Operation(summary = "Consultar historial completo de un otorgamiento", description =
         "Solo administracion. Orden ascendente por secuencia, incluyendo asignacion inicial, estados, vigencias, motivos, " +
-        "responsables, fechas UTC y copias de los requisitos reevaluados. No se expone a ciudadanos.")
+        "responsables, fechas UTC y copias de los requisitos reevaluados. Incluye EXPIRED automatico con responsable ID null y nombre Sistema. No se expone a ciudadanos.")
     @ApiResponse(responseCode = "200", description = "Historial inmutable del otorgamiento.", useReturnTypeSchema = true)
     fun history(@PathVariable id: UUID, @PathVariable grantId: UUID): List<BenefitGrantChangeResponse> = service.history(id, grantId)
 }

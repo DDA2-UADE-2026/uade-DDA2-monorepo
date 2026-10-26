@@ -517,18 +517,19 @@ Enum benefit_grant_status {
   ACTIVE
   SUSPENDED
   FINALIZED
+  EXPIRED
 }
 
 Table benefit_grant {
   id uuid [pk]
-  application_id uuid [not null, ref: > application.id, note: 'Titular derivado de la solicitud; CLOSED al finalizar su ultimo otorgamiento pendiente.']
+  application_id uuid [not null, ref: > application.id, note: 'Titular derivado de la solicitud; CLOSED al finalizar o vencer su ultimo otorgamiento pendiente.']
   program_benefit_id uuid [not null, ref: > program_benefit.id]
   benefit_type program_benefit_type [not null, note: 'Copia al otorgar; no sigue cambios del catalogo.']
   description varchar(500) [note: 'Copia al otorgar; no se copia al log general.']
   amount decimal(19,2) [note: 'Copia al otorgar; no se copia al log general.']
   start_date date [not null]
   end_date date [not null]
-  status benefit_grant_status [not null, note: 'ACTIVE inicial; SUSPENDED conserva reserva; FINALIZED definitivo. Sin vencimiento automatico.']
+  status benefit_grant_status [not null, note: 'ACTIVE inicial; SUSPENDED conserva reserva; FINALIZED y EXPIRED definitivos. Vencimiento automatico cuando end_date < hoy local.']
   assigned_by_user_id bigint [not null, ref: > users.id]
   assigned_at timestamptz [not null, note: 'Instante UTC de registro, precision microsegundos.']
 
@@ -537,14 +538,15 @@ Table benefit_grant {
     (application_id, assigned_at, id) [name: 'ix_benefit_grant_application_date']
     program_benefit_id [name: 'ix_benefit_grant_benefit']
     assigned_by_user_id [name: 'ix_benefit_grant_assigned_by']
+    (status, end_date, application_id) [name: 'ix_benefit_grant_expiration']
   }
   checks {
     `start_date <= end_date` [name: 'ck_benefit_grant_dates']
-    `status in ('ACTIVE', 'SUSPENDED', 'FINALIZED')` [name: 'ck_benefit_grant_status']
+    `status in ('ACTIVE', 'SUSPENDED', 'FINALIZED', 'EXPIRED')` [name: 'ck_benefit_grant_status']
     `amount is null or amount >= 0` [name: 'ck_benefit_grant_amount']
     `benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')` [name: 'ck_benefit_grant_type']
   }
-  Note: 'Asignar/renovar exige solicitud APPROVED y edicion ACTIVE. Renovar conserva inicio y datos copiados y extiende fin; suspender/finalizar conserva fechas. No ocupa otro cupo. Finalizar ultimo otorgamiento pendiente cierra solicitud y libera una reserva. Bloqueos solicitud, titular, edicion y otorgamiento; historial y auditoria en una transaccion.'
+  Note: 'Asignar/renovar exige solicitud APPROVED y edicion ACTIVE. Renovar conserva inicio y datos copiados y extiende fin; suspender/finalizar conserva fechas. No ocupa otro cupo. Finalizar o vencer ultimo otorgamiento ACTIVE/SUSPENDED cierra solicitud y libera una reserva. Renovar solo hasta el ultimo dia inclusivo. Bloqueos solicitud, titular, edicion y otorgamiento; historial y auditoria en una transaccion.'
 }
 
 Enum benefit_grant_change_action {
@@ -552,6 +554,7 @@ Enum benefit_grant_change_action {
   RENEWED
   SUSPENDED
   FINALIZED
+  EXPIRED
 }
 
 Table benefit_grant_change {
@@ -566,7 +569,7 @@ Table benefit_grant_change {
   start_date date [not null]
   end_date date [not null]
   reason varchar(1000) [note: 'Obligatorio recortado para cambios; null exclusivamente en ASSIGNED. Privado, excluido de logs.']
-  responsible_user_id bigint [not null, ref: > users.id]
+  responsible_user_id bigint [ref: > users.id, note: 'Null exclusivamente para EXPIRED; actor de sistema.']
   changed_at timestamptz [not null, note: 'UTC con precision de microsegundos; finalizacion efectiva inmediata.']
 
   indexes {
@@ -574,9 +577,10 @@ Table benefit_grant_change {
     responsible_user_id [name: 'ix_benefit_grant_change_responsible']
   }
   checks {
+    `(action = 'EXPIRED' and responsible_user_id is null) or (action <> 'EXPIRED' and responsible_user_id is not null)` [name: 'ck_benefit_grant_change_responsible']
     `start_date <= end_date` [name: 'ck_benefit_grant_change_dates']
     `(action = 'ASSIGNED' and reason is null) or (action <> 'ASSIGNED' and reason is not null and length(trim(reason)) > 0)` [name: 'ck_benefit_grant_change_reason']
-    `(action = 'ASSIGNED' and sequence_number = 1 and previous_status is null and status = 'ACTIVE' and previous_start_date is null and previous_end_date is null) or (sequence_number > 1 and previous_status is not null and previous_start_date is not null and previous_end_date is not null and start_date = previous_start_date and ((action = 'RENEWED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'ACTIVE' and end_date > previous_end_date) or (action = 'SUSPENDED' and previous_status = 'ACTIVE' and status = 'SUSPENDED' and end_date = previous_end_date) or (action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date)))` [name: 'ck_benefit_grant_change_transition']
+    `(action = 'ASSIGNED' and sequence_number = 1 and previous_status is null and status = 'ACTIVE' and previous_start_date is null and previous_end_date is null) or (sequence_number > 1 and previous_status is not null and previous_start_date is not null and previous_end_date is not null and start_date = previous_start_date and ((action = 'RENEWED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'ACTIVE' and end_date > previous_end_date) or (action = 'SUSPENDED' and previous_status = 'ACTIVE' and status = 'SUSPENDED' and end_date = previous_end_date) or (action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date) or (action = 'EXPIRED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'EXPIRED' and end_date = previous_end_date)))` [name: 'ck_benefit_grant_change_transition']
   }
   Note: 'Historial inmutable ordenado por secuencia. La migracion incorpora solamente la asignacion inicial conocida; no inventa motivos ni cambios previos.'
 }

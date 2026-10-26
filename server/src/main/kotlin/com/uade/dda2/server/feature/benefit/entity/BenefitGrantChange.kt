@@ -21,7 +21,10 @@ import java.util.UUID
         "(sequence_number > 1 and previous_status is not null and previous_start_date is not null and previous_end_date is not null and start_date = previous_start_date and (" +
         "(action = 'RENEWED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'ACTIVE' and end_date > previous_end_date) or " +
         "(action = 'SUSPENDED' and previous_status = 'ACTIVE' and status = 'SUSPENDED' and end_date = previous_end_date) or " +
-        "(action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date)))"),
+        "(action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date) or " +
+        "(action = 'EXPIRED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'EXPIRED' and end_date = previous_end_date)))"),
+    CheckConstraint(name = "ck_benefit_grant_change_responsible", constraint =
+        "(action = 'EXPIRED' and responsible_user_id is null) or (action <> 'EXPIRED' and responsible_user_id is not null)"),
     CheckConstraint(name = "ck_benefit_grant_change_dates", constraint = "start_date <= end_date"),
 ])
 class BenefitGrantChange(
@@ -48,9 +51,9 @@ class BenefitGrantChange(
     val endDate: LocalDate,
     @Column(length = 1000, updatable = false)
     val reason: String?,
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "responsible_user_id", nullable = false, updatable = false)
-    val responsible: User,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "responsible_user_id", updatable = false)
+    val responsible: User?,
     @Column(name = "changed_at", nullable = false, updatable = false)
     val changedAt: OffsetDateTime,
 ) {

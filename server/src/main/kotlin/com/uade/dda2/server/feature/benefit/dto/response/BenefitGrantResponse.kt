@@ -19,6 +19,7 @@ data class BenefitGrantResponse(
     val amount: BigDecimal?,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    @field:Schema(description = "Estado actual. EXPIRED y FINALIZED son definitivos; el vencimiento automatico se procesa despues del ultimo dia inclusivo.")
     val status: BenefitGrantStatus,
     val assignedByUserId: Long,
     val assignedByUserName: String,

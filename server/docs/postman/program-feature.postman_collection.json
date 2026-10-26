@@ -9215,6 +9215,38 @@
               "cookie": [],
               "_postman_previewlanguage": "json",
               "body": "{\n  \"message\": \"No se encontró la solicitud.\",\n  \"code\": \"APPLICATION_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-19T17:00:00Z\",\n  \"path\": \"/api/admin/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/benefit-grants\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "Otorgamiento vencido automaticamente",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/benefit-grants",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications",
+                    "{{applicationId}}",
+                    "benefit-grants"
+                  ]
+                },
+                "description": "applications:management:view. Devuelve estado y vigencia actuales, ordenados por assignedAt e id, o []. Para operar sobre un otorgamiento existente, copiar su id en benefitGrantId. Guarda su snapshot si el ID seleccionado está en la respuesta."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": \"3cb52e5b-d02b-4894-a91e-32f9a8213888\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"userId\": 12,\n    \"programBenefitId\": \"750e8400-e29b-41d4-a716-446655440002\",\n    \"benefitType\": \"FOOD_ASSISTANCE\",\n    \"description\": \"Asistencia alimentaria mensual.\",\n    \"amount\": 25000,\n    \"startDate\": \"2026-10-01\",\n    \"endDate\": \"2026-11-30\",\n    \"status\": \"EXPIRED\",\n    \"assignedByUserId\": 7,\n    \"assignedByUserName\": \"Administrativo Municipal\",\n    \"assignedAt\": \"2026-10-19T14:00:00.123456Z\"\n  }\n]"
             }
           ]
         }
@@ -9232,7 +9264,7 @@
           }
         ]
       },
-      "description": "Elegir benefitGrantId; consultar otorgamientos para cargar su snapshot actual. Ejemplo de recorrido: suspender, renovar/reactivar con fecha final mayor, finalizar y consultar historial. FINALIZED es definitivo. El permiso de escritura es applications:management:benefits:manage; historial usa applications:management:view. La última finalización cierra el caso y libera una reserva.",
+      "description": "Elegir benefitGrantId; consultar otorgamientos para cargar su snapshot actual. Ejemplo de recorrido: suspender, renovar/reactivar con fecha final mayor, finalizar y consultar historial. FINALIZED es definitivo. El permiso de escritura es applications:management:benefits:manage; historial usa applications:management:view. La última finalización cierra el caso y libera una reserva. El sistema vence ACTIVE/SUSPENDED con endDate < hoy a EXPIRED al iniciar y cada cinco minutos. EXPIRED es definitivo y puede cerrar el caso. Renovar solo hasta el ultimo dia inclusivo.",
       "item": [
         {
           "name": "Suspender beneficio activo",
@@ -9743,7 +9775,7 @@
                 "renew"
               ]
             },
-            "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+            "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
           },
           "response": [
             {
@@ -9780,7 +9812,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "OK",
               "code": 200,
@@ -9828,7 +9860,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Bad Request",
               "code": 400,
@@ -9876,7 +9908,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Conflict",
               "code": 409,
@@ -9924,7 +9956,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Conflict",
               "code": 409,
@@ -9972,7 +10004,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Conflict",
               "code": 409,
@@ -10020,7 +10052,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Conflict",
               "code": 409,
@@ -10068,7 +10100,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Unauthorized",
               "code": 401,
@@ -10116,7 +10148,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Forbidden",
               "code": 403,
@@ -10164,7 +10196,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Not Found",
               "code": 404,
@@ -10212,7 +10244,7 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Conflict",
               "code": 409,
@@ -10260,7 +10292,55 @@
                     "renew"
                   ]
                 },
-                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, incluso si su vigencia anterior venció. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"message\": \"El estado del otorgamiento no admite esta operación.\",\n  \"code\": \"BENEFIT_GRANT_INVALID_TRANSITION\",\n  \"status\": 409,\n  \"timestamp\": \"2026-10-19T17:00:00Z\",\n  \"path\": \"/api/admin/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/benefit-grants/3cb52e5b-d02b-4894-a91e-32f9a8213888/renew\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "409 - renovación después de endDate, aun sin barrido",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Se mantiene la necesidad del beneficio.\",\n  \"endDate\": \"{{benefitRenewalEndDate}}\",\n  \"requirementChecks\": {{benefitRenewalRequirementChecks}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/benefit-grants/{{benefitGrantId}}/renew",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications",
+                    "{{applicationId}}",
+                    "benefit-grants",
+                    "{{benefitGrantId}}",
+                    "renew"
+                  ]
+                },
+                "description": "applications:management:benefits:manage. ACTIVE o SUSPENDED → ACTIVE, solo hasta el último día de vigencia inclusive; después devuelve 409 aunque el barrido aún no haya procesado el vencimiento. Nueva fecha de fin estrictamente posterior a la anterior, >= hoy y dentro de la edición ACTIVE. Checklist vigente completo, todos cumplidos, documentos obligatorios VALID y sin incompatibilidades. No exige nueva evaluación ni cupo. Consultar requisitos de nuevo si cambió el catálogo y revisar manualmente sus resultados."
               },
               "status": "Conflict",
               "code": 409,
@@ -10785,6 +10865,11 @@
                   "        pm.expect(entry.applicationId).to.equal(pm.variables.get('applicationId'));",
                   "        pm.expect(entry.sequenceNumber).to.equal(index + 1);",
                   "        pm.expect(entry.requirementChecks).to.be.an('array');",
+                  "        if (entry.action === 'EXPIRED') {",
+                  "            pm.expect(entry.status).to.equal('EXPIRED');",
+                  "            pm.expect(entry.responsibleUserId).to.equal(null);",
+                  "            pm.expect(entry.responsibleUserName).to.equal('Sistema');",
+                  "        }",
                   "    });",
                   "    pm.expect(body[0].action).to.equal('ASSIGNED');",
                   "    pm.expect(body[0].reason).to.equal(null);",
@@ -10812,7 +10897,7 @@
                 "history"
               ]
             },
-            "description": "applications:management:view. ASSIGNED inicial con motivo nulo; luego SUSPENDED, RENEWED y FINALIZED según actuaciones reales. Conserva estados y fechas anteriores y resultantes, motivo, responsable, instante UTC y snapshots de requisitos de renovaciones. Secuencia ascendente por otorgamiento."
+            "description": "applications:management:view. ASSIGNED inicial con motivo nulo; luego SUSPENDED, RENEWED y FINALIZED según actuaciones reales. Conserva estados y fechas anteriores y resultantes, motivo, responsable, instante UTC y snapshots de requisitos de renovaciones. Secuencia ascendente por otorgamiento. Incluye EXPIRED automatico con motivo fijo, responsibleUserId null y responsibleUserName Sistema; changedAt es el instante real de procesamiento."
           },
           "response": [
             {
@@ -10950,6 +11035,40 @@
               "cookie": [],
               "_postman_previewlanguage": "json",
               "body": "{\n  \"message\": \"Otorgamiento inexistente o ajeno a la solicitud.\",\n  \"code\": \"BENEFIT_GRANT_NOT_FOUND\",\n  \"status\": 404,\n  \"timestamp\": \"2026-10-19T17:00:00Z\",\n  \"path\": \"/api/admin/applications/2aa19e54-6f3f-4eef-99b1-8e1af9d8db26/benefit-grants/3cb52e5b-d02b-4894-a91e-32f9a8213888/history\",\n  \"fields\": null\n}"
+            },
+            {
+              "name": "Asignación y vencimiento automatico de sistema",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/applications/{{applicationId}}/benefit-grants/{{benefitGrantId}}/history",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "applications",
+                    "{{applicationId}}",
+                    "benefit-grants",
+                    "{{benefitGrantId}}",
+                    "history"
+                  ]
+                },
+                "description": "applications:management:view. ASSIGNED inicial con motivo nulo; luego SUSPENDED, RENEWED y FINALIZED según actuaciones reales. Conserva estados y fechas anteriores y resultantes, motivo, responsable, instante UTC y snapshots de requisitos de renovaciones. Secuencia ascendente por otorgamiento."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "_postman_previewlanguage": "json",
+              "body": "[\n  {\n    \"id\": \"e32fe7c6-2f14-49e6-9784-416a600928de\",\n    \"grantId\": \"3cb52e5b-d02b-4894-a91e-32f9a8213888\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"sequenceNumber\": 1,\n    \"action\": \"ASSIGNED\",\n    \"previousStatus\": null,\n    \"status\": \"ACTIVE\",\n    \"previousStartDate\": null,\n    \"previousEndDate\": null,\n    \"startDate\": \"2026-10-01\",\n    \"endDate\": \"2026-11-30\",\n    \"reason\": null,\n    \"responsibleUserId\": 7,\n    \"responsibleUserName\": \"Administrativo Municipal\",\n    \"changedAt\": \"2026-10-19T14:00:00.123456Z\",\n    \"requirementChecks\": []\n  },\n  {\n    \"id\": \"7f3bfe42-9063-40d7-af54-1c47fc67a35b\",\n    \"grantId\": \"3cb52e5b-d02b-4894-a91e-32f9a8213888\",\n    \"applicationId\": \"2aa19e54-6f3f-4eef-99b1-8e1af9d8db26\",\n    \"sequenceNumber\": 2,\n    \"action\": \"EXPIRED\",\n    \"previousStatus\": \"ACTIVE\",\n    \"status\": \"EXPIRED\",\n    \"previousStartDate\": \"2026-10-01\",\n    \"previousEndDate\": \"2026-11-30\",\n    \"startDate\": \"2026-10-01\",\n    \"endDate\": \"2026-11-30\",\n    \"reason\": \"Vencimiento automático de vigencia.\",\n    \"responsibleUserId\": null,\n    \"responsibleUserName\": \"Sistema\",\n    \"changedAt\": \"2026-12-01T03:05:00.000Z\",\n    \"requirementChecks\": []\n  }\n]"
             }
           ]
         }

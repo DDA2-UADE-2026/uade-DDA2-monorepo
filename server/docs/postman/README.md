@@ -59,9 +59,11 @@ Ejecutar **Aprobar**, **Rechazar** o **Enviar a lista de espera** individualment
 4. Para operar sobre un otorgamiento anterior, copiar su ID a `benefitGrantId` y ejecutar **Consultar otorgamientos de la solicitud** para cargar el snapshot y fin actual.
 5. En **Ciclo de vida de beneficios otorgados**, se puede suspender un beneficio `ACTIVE`, renovar uno `ACTIVE`/`SUSPENDED` o finalizar uno `ACTIVE`/`SUSPENDED`. La carpeta permite recorrer suspensión → renovación/reactivación → finalización → historial.
 
-Para renovar, configurar `benefitRenewalEndDate` con una fecha estrictamente posterior al fin actual, igual o posterior a hoy y dentro de la edición. Revisar `benefitRenewalRequirementChecks`, los documentos y las incompatibilidades actuales. La renovación conserva inicio, identidad y datos copiados del catálogo. Un otorgamiento vencido todavía `ACTIVE` o `SUSPENDED` puede renovarse.
+Para renovar, configurar `benefitRenewalEndDate` con una fecha estrictamente posterior al fin actual, igual o posterior a hoy y dentro de la edición. Revisar `benefitRenewalRequirementChecks`, los documentos y las incompatibilidades actuales. La renovación conserva inicio, identidad y datos copiados del catálogo. Debe realizarse hasta el último día de vigencia inclusive; después devuelve `409` aunque el otorgamiento todavía figure `ACTIVE` o `SUSPENDED`.
 
 Suspender conserva la reserva. Finalizar es definitivo y conserva las fechas pactadas. Al finalizar el último otorgamiento `ACTIVE`/`SUSPENDED`, la solicitud pasa a `CLOSED` y libera una sola reserva. Consultar de nuevo el caso y sus otorgamientos permite ver el resultado; **Consultar historial del beneficio** muestra la asignación inicial y todos los cambios. Renovar y suspender no cambian el cupo.
+
+El [vencimiento automático](../functional/benefit-grant-expiration.md) pasa a `EXPIRED` los otorgamientos `ACTIVE`/`SUSPENDED` cuya `endDate` ya pasó. Se ejecuta al iniciar y cada cinco minutos; el último día sigue siendo válido. `EXPIRED` también es definitivo y puede cerrar la solicitud y liberar la reserva si era el último pendiente. El historial incluye autor `Sistema`, ID de responsable `null` y motivo automático. Los GET de otorgamientos e historial incluyen ejemplos de estas respuestas. Para comprobarlo en un entorno de prueba se puede otorgar con fin hoy y consultar después del cambio de día y del barrido; no hay endpoint para adelantarlo.
 
 ## Planes de intervención y seguimientos
 
