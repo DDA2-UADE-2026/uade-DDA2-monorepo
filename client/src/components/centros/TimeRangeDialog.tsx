@@ -53,7 +53,12 @@ export function TimeRangeDialog({ title, description, initial, allowMultipleDays
     defaultValues: { ...initial, days: [initial.dayOfWeek] },
     validators: { onChange: timeRangeSchema },
     onSubmit: ({ value }) => {
-      if (!pending) onSubmit(value)
+      if (pending) return
+      // Only one of the two day fields is on screen: keep the hidden one in sync so callers
+      // never read a stale default (creating used to fall back to MONDAY for a single day).
+      onSubmit(allowMultipleDays
+        ? { ...value, dayOfWeek: value.days[0] ?? value.dayOfWeek }
+        : { ...value, days: [value.dayOfWeek] })
     },
   })
 

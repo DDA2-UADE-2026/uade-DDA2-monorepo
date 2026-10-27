@@ -2,14 +2,54 @@ package com.uade.dda2.server.feature.appointment.repository
 
 import com.uade.dda2.server.feature.appointment.entity.Appointment
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
+import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.time.OffsetDateTime
 import java.util.UUID
 
 interface AppointmentRepository : JpaRepository<Appointment, UUID> {
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional", "professionalAssignment.centerService.center", "professionalAssignment.centerService.service"])
+    @Query("select a from Appointment a where a.id = :id")
+    fun findDetailById(@Param("id") id: UUID): Appointment?
+
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional", "professionalAssignment.centerService.center", "professionalAssignment.centerService.service"])
+    @Query(
+        """
+        select a from Appointment a
+        where a.professionalAssignment.centerService.center.id = :centerId
+          and a.startsAt < :rangeEnd and a.endsAt > :rangeStart
+        order by a.startsAt asc
+        """,
+    )
+    fun findByCenterIdInRange(
+        @Param("centerId") centerId: UUID,
+        @Param("rangeStart") rangeStart: OffsetDateTime,
+        @Param("rangeEnd") rangeEnd: OffsetDateTime,
+    ): List<Appointment>
+
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional", "professionalAssignment.centerService.center", "professionalAssignment.centerService.service"])
+    @Query(
+        """
+        select a from Appointment a
+        where a.professionalAssignment.professional.id = :professionalId
+          and a.startsAt < :rangeEnd and a.endsAt > :rangeStart
+        order by a.startsAt asc
+        """,
+    )
+    fun findByProfessionalIdInRange(
+        @Param("professionalId") professionalId: Long,
+        @Param("rangeStart") rangeStart: OffsetDateTime,
+        @Param("rangeEnd") rangeEnd: OffsetDateTime,
+    ): List<Appointment>
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select a from Appointment a where a.id = :id")
+    fun findByIdForUpdate(@Param("id") id: UUID): Appointment?
+
     @EntityGraph(
         attributePaths = [
             "citizen",
@@ -29,6 +69,16 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         ],
     )
     fun findByCitizenIdAndIdempotencyKey(citizenId: Long, idempotencyKey: String): Appointment?
+
+    @EntityGraph(
+        attributePaths = [
+            "citizen",
+            "professionalAssignment.professional",
+            "professionalAssignment.centerService.center",
+            "professionalAssignment.centerService.service",
+        ],
+    )
+    fun findAllByCitizenIdOrderByStartsAtDesc(citizenId: Long): List<Appointment>
 
     @Query(
         """
@@ -51,7 +101,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         select appointment from Appointment appointment
         join appointment.professionalAssignment assignment
         where assignment.professional.id = :professionalId
-          and appointment.status = :status
+           and (appointment.status = :confirmed
+                or (appointment.status = :cancelled and appointment.slotReleasedAt is null))
           and appointment.startsAt < :endsAt
           and appointment.endsAt > :startsAt
         """,
@@ -60,7 +111,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         @Param("professionalId") professionalId: Long,
         @Param("startsAt") startsAt: OffsetDateTime,
         @Param("endsAt") endsAt: OffsetDateTime,
-        @Param("status") status: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("confirmed") confirmed: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("cancelled") cancelled: AppointmentStatus = AppointmentStatus.CANCELLED,
     ): List<Appointment>
 
     @Query(
@@ -69,7 +121,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         join fetch appointment.professionalAssignment assignment
         join fetch assignment.professional professional
         where professional.id in :professionalIds
-          and appointment.status = :status
+           and (appointment.status = :confirmed
+                or (appointment.status = :cancelled and appointment.slotReleasedAt is null))
           and appointment.startsAt < :rangeEnd
           and appointment.endsAt > :rangeStart
         """,
@@ -78,7 +131,8 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         @Param("professionalIds") professionalIds: Collection<Long>,
         @Param("rangeStart") rangeStart: OffsetDateTime,
         @Param("rangeEnd") rangeEnd: OffsetDateTime,
-        @Param("status") status: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("confirmed") confirmed: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("cancelled") cancelled: AppointmentStatus = AppointmentStatus.CANCELLED,
     ): List<Appointment>
 
     @Query(
@@ -95,6 +149,30 @@ interface AppointmentRepository : JpaRepository<Appointment, UUID> {
         @Param("rangeStart") rangeStart: OffsetDateTime,
         @Param("rangeEnd") rangeEnd: OffsetDateTime,
         @Param("status") status: AppointmentStatus = AppointmentStatus.CONFIRMED,
+    ): List<Appointment>
+
+    @EntityGraph(attributePaths = ["citizen", "professionalAssignment.professional"])
+    @Query(
+        """
+        select distinct appointment from Appointment appointment
+        join appointment.professionalAssignment assignment
+        where appointment.startsAt < :rangeEnd
+          and appointment.endsAt > :rangeStart
+          and (
+              (appointment.citizen.id in :userIds and appointment.status = :confirmed)
+              or
+              (assignment.professional.id in :userIds and
+                  (appointment.status = :confirmed or
+                   (appointment.status = :cancelled and appointment.slotReleasedAt is null)))
+          )
+        """,
+    )
+    fun findBlockingByParticipantIdsInRange(
+        @Param("userIds") userIds: Collection<Long>,
+        @Param("rangeStart") rangeStart: OffsetDateTime,
+        @Param("rangeEnd") rangeEnd: OffsetDateTime,
+        @Param("confirmed") confirmed: AppointmentStatus = AppointmentStatus.CONFIRMED,
+        @Param("cancelled") cancelled: AppointmentStatus = AppointmentStatus.CANCELLED,
     ): List<Appointment>
 
     @Query(

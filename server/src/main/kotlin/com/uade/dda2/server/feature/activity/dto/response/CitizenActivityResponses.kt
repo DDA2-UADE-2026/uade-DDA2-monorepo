@@ -1,11 +1,13 @@
 package com.uade.dda2.server.feature.activity.dto.response
 
+import com.uade.dda2.server.feature.activity.entity.ActivityAttendanceStatus
+import com.uade.dda2.server.feature.activity.entity.ActivityStatus
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
-@Schema(description = "Actividad abierta disponible para la comunidad.")
+@Schema(description = "Actividad disponible para la comunidad o incluida en las inscripciones del ciudadano autenticado.")
 data class CitizenActivityResponse(
     val id: UUID,
     val name: String,
@@ -16,9 +18,18 @@ data class CitizenActivityResponse(
     val capacity: Int,
     val enrolledCount: Long,
     val availableCapacity: Long,
+    val status: ActivityStatus,
+    val myEnrollment: CitizenActivityEnrollmentResponse?,
 )
 
-@Schema(description = "Página de actividades abiertas disponibles para la comunidad.")
+@Schema(description = "Inscripción del ciudadano autenticado, sin datos de otros participantes.")
+data class CitizenActivityEnrollmentResponse(
+    val id: UUID,
+    val enrolledAt: OffsetDateTime,
+    val attendance: ActivityAttendanceStatus?,
+)
+
+@Schema(description = "Página de actividades abiertas o de inscripciones propias, incluidas las actividades cerradas.")
 data class CitizenActivityListResponse(
     val content: List<CitizenActivityResponse>,
     val page: Int,

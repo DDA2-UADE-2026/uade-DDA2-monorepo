@@ -54,7 +54,13 @@ springdoc:
     tags-sorter: alpha
     try-it-out-enabled: true
 app:
+  bootstrap:
+    admin:
+      enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
   security:
+    cookie:
+      secure: ${AUTH_COOKIE_SECURE:false}
+      same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
     jwt:
       issuer: ${JWT_ISSUER:example-issuer}
       secret: ${JWT_SECRET}
@@ -70,5 +76,10 @@ app:
     expiration:
       cron: "${ENROLLMENT_PERIOD_EXPIRATION_CRON:0 5 0 * * *}"
       zone-id: ${ENROLLMENT_PERIOD_TIME_ZONE:America/Argentina/Buenos_Aires}
+  benefit-grant:
+    expiration:
+      enabled: ${BENEFIT_GRANT_EXPIRATION_ENABLED:true}
+      cron: "${BENEFIT_GRANT_EXPIRATION_CRON:0 */5 * * * *}"
+      batch-size: ${BENEFIT_GRANT_EXPIRATION_BATCH_SIZE:100}
   appointment:
     zone-id: ${APPOINTMENT_TIME_ZONE:America/Argentina/Buenos_Aires}

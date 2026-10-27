@@ -16,14 +16,31 @@ Enum log_entity_type {
   users
   enrollment_period
   application
+  application_evaluation
+  intervention_plan
+  intervention_follow_up
+  application_resolution
+  benefit_grant
+  benefit_grant_change
+  application_visit
+  application_visit_reschedule_request
   application_document
+  activity
+  activity_enrollment
   municipal_center
   municipal_service
   center_service
-  center_opening_hour
   professional_assignment
+  center_opening_hour
   professional_availability
   appointment
+  program
+  program_edition
+  program_benefit
+  program_requirement
+  program_document_requirement
+  program_image
+  program_incompatibility
 }
 
 Enum day_of_week {
@@ -55,6 +72,38 @@ Enum application_document_status {
   OBSERVED
 }
 
+Enum vulnerability_level {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+Enum evaluation_priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+Enum application_visit_type {
+  VISIT
+  INTERVIEW
+}
+
+Enum application_visit_status {
+  SCHEDULED
+  CANCELLED
+  REALIZED
+  NOT_REALIZED
+}
+
+Enum application_visit_reschedule_request_status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 Enum enrollment_period_status {
   SCHEDULED
   OPEN
@@ -75,6 +124,12 @@ Enum activity_attendance_status {
 
 Enum appointment_status {
   CONFIRMED
+  CANCELLED
+}
+
+Enum attention_result {
+  ATENDIDO
+  AUSENTE
 }
 
 Enum program_edition_status {
@@ -297,7 +352,8 @@ Table appointment {
   professional_assignment_id uuid [not null, ref: > professional_assignment.id]
   starts_at timestamptz [not null]
   ends_at timestamptz [not null]
-  status appointment_status [not null, note: 'Persistido como varchar(20). En HU-18 solo admite CONFIRMED.']
+  status appointment_status [not null, note: 'Persistido como varchar(20). CONFIRMED o CANCELLED.']
+  slot_released_at timestamptz [note: 'En un turno CANCELLED, NULL retiene el horario profesional; con fecha queda habilitado.']
   idempotency_key varchar(128) [not null]
   request_hash varchar(64) [not null]
   created_at timestamptz [not null]
@@ -305,7 +361,6 @@ Table appointment {
 
   indexes {
     (citizen_id, idempotency_key) [unique, name: 'uk_appointment_citizen_idempotency']
-    (professional_assignment_id, starts_at) [unique, name: 'uk_appointment_assignment_start']
     (citizen_id, starts_at, ends_at, status) [name: 'ix_appointment_citizen_time']
     (professional_assignment_id, starts_at, ends_at, status) [name: 'ix_appointment_assignment_time']
   }
@@ -314,7 +369,24 @@ Table appointment {
     `starts_at < ends_at` [name: 'ck_appointment_time_range']
   }
 
-  Note: 'Turno concreto confirmado. El intervalo es semiabierto [inicio, fin), inmutable y se persiste como instante absoluto.'
+  Note: 'Turno concreto. HU-19 permite reprogramar un CONFIRMED futuro y cancelar reteniendo el intervalo hasta liberación manual. Se conserva el identificador e idempotency_key originales.'
+}
+
+Table community_attention {
+  id uuid [pk]
+  appointment_id uuid [not null, unique, ref: > appointment.id, note: 'Una constancia vigente por turno.']
+  result attention_result [not null, note: 'Persistido como varchar(20); independiente del estado administrativo del turno.']
+  attended_on date [note: 'Obligatorio para ATENDIDO, nulo para AUSENTE.']
+  description varchar(500) [note: 'Descripción administrativa, no clínica; solo para ATENDIDO.']
+  version bigint [not null, note: 'Control de correcciones concurrentes.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  checks {
+    `(result = 'ATENDIDO' and attended_on is not null and description is not null) or (result = 'AUSENTE' and attended_on is null and description is null)` [name: 'ck_community_attention_result_data']
+  }
+
+  Note: 'HU-20: registro y correcciones del profesional del turno. El historial de auditoría solo registra metadatos, nunca las descripciones.'
 }
 
 Table activity {
@@ -441,6 +513,95 @@ Table program_benefit {
   amount decimal(19,2)
 }
 
+Enum benefit_grant_status {
+  ACTIVE
+  SUSPENDED
+  FINALIZED
+  EXPIRED
+}
+
+Table benefit_grant {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id, note: 'Titular derivado de la solicitud; CLOSED al finalizar o vencer su ultimo otorgamiento pendiente.']
+  program_benefit_id uuid [not null, ref: > program_benefit.id]
+  benefit_type program_benefit_type [not null, note: 'Copia al otorgar; no sigue cambios del catalogo.']
+  description varchar(500) [note: 'Copia al otorgar; no se copia al log general.']
+  amount decimal(19,2) [note: 'Copia al otorgar; no se copia al log general.']
+  start_date date [not null]
+  end_date date [not null]
+  status benefit_grant_status [not null, note: 'ACTIVE inicial; SUSPENDED conserva reserva; FINALIZED y EXPIRED definitivos. Vencimiento automatico cuando end_date < hoy local.']
+  assigned_by_user_id bigint [not null, ref: > users.id]
+  assigned_at timestamptz [not null, note: 'Instante UTC de registro, precision microsegundos.']
+
+  indexes {
+    (application_id, program_benefit_id) [unique, name: 'uk_benefit_grant_application_benefit']
+    (application_id, assigned_at, id) [name: 'ix_benefit_grant_application_date']
+    program_benefit_id [name: 'ix_benefit_grant_benefit']
+    assigned_by_user_id [name: 'ix_benefit_grant_assigned_by']
+    (status, end_date, application_id) [name: 'ix_benefit_grant_expiration']
+  }
+  checks {
+    `start_date <= end_date` [name: 'ck_benefit_grant_dates']
+    `status in ('ACTIVE', 'SUSPENDED', 'FINALIZED', 'EXPIRED')` [name: 'ck_benefit_grant_status']
+    `amount is null or amount >= 0` [name: 'ck_benefit_grant_amount']
+    `benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')` [name: 'ck_benefit_grant_type']
+  }
+  Note: 'Asignar/renovar exige solicitud APPROVED y edicion ACTIVE. Renovar conserva inicio y datos copiados y extiende fin; suspender/finalizar conserva fechas. No ocupa otro cupo. Finalizar o vencer ultimo otorgamiento ACTIVE/SUSPENDED cierra solicitud y libera una reserva. Renovar solo hasta el ultimo dia inclusivo. Bloqueos solicitud, titular, edicion y otorgamiento; historial y auditoria en una transaccion.'
+}
+
+Enum benefit_grant_change_action {
+  ASSIGNED
+  RENEWED
+  SUSPENDED
+  FINALIZED
+  EXPIRED
+}
+
+Table benefit_grant_change {
+  id uuid [pk]
+  grant_id uuid [not null, ref: > benefit_grant.id]
+  sequence_number integer [not null]
+  action benefit_grant_change_action [not null]
+  previous_status benefit_grant_status
+  status benefit_grant_status [not null]
+  previous_start_date date
+  previous_end_date date
+  start_date date [not null]
+  end_date date [not null]
+  reason varchar(1000) [note: 'Obligatorio recortado para cambios; null exclusivamente en ASSIGNED. Privado, excluido de logs.']
+  responsible_user_id bigint [ref: > users.id, note: 'Null exclusivamente para EXPIRED; actor de sistema.']
+  changed_at timestamptz [not null, note: 'UTC con precision de microsegundos; finalizacion efectiva inmediata.']
+
+  indexes {
+    (grant_id, sequence_number) [unique, name: 'uk_benefit_grant_change_sequence']
+    responsible_user_id [name: 'ix_benefit_grant_change_responsible']
+  }
+  checks {
+    `(action = 'EXPIRED' and responsible_user_id is null) or (action <> 'EXPIRED' and responsible_user_id is not null)` [name: 'ck_benefit_grant_change_responsible']
+    `start_date <= end_date` [name: 'ck_benefit_grant_change_dates']
+    `(action = 'ASSIGNED' and reason is null) or (action <> 'ASSIGNED' and reason is not null and length(trim(reason)) > 0)` [name: 'ck_benefit_grant_change_reason']
+    `(action = 'ASSIGNED' and sequence_number = 1 and previous_status is null and status = 'ACTIVE' and previous_start_date is null and previous_end_date is null) or (sequence_number > 1 and previous_status is not null and previous_start_date is not null and previous_end_date is not null and start_date = previous_start_date and ((action = 'RENEWED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'ACTIVE' and end_date > previous_end_date) or (action = 'SUSPENDED' and previous_status = 'ACTIVE' and status = 'SUSPENDED' and end_date = previous_end_date) or (action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date) or (action = 'EXPIRED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'EXPIRED' and end_date = previous_end_date)))` [name: 'ck_benefit_grant_change_transition']
+  }
+  Note: 'Historial inmutable ordenado por secuencia. La migracion incorpora solamente la asignacion inicial conocida; no inventa motivos ni cambios previos.'
+}
+
+Table benefit_grant_change_requirement {
+  id uuid [pk]
+  change_id uuid [not null, ref: > benefit_grant_change.id]
+  requirement_id uuid [not null, note: 'Identificador historico sin FK al catalogo editable.']
+  type program_requirement_type [not null]
+  requirement_value varchar(255) [not null]
+  description varchar(500)
+  fulfilled boolean [not null]
+  indexes {
+    (change_id, requirement_id) [unique, name: 'uk_benefit_grant_change_requirement']
+  }
+  checks {
+    `type in ('MIN_AGE', 'MAX_INCOME', 'RESIDENCY_YEARS', 'HAS_CHILDREN')` [name: 'ck_benefit_grant_change_requirement_type']
+  }
+  Note: 'Copia inmutable del requisito vigente y resultado verificado al renovar. Renovacion exige todos cumplidos y documentos obligatorios VALID.'
+}
+
 Table program_requirement {
   id uuid [pk]
   program_edition_id uuid [not null, ref: > program_edition.id]
@@ -483,12 +644,14 @@ Table application {
   registered_by_user_id bigint [not null, ref: > users.id, note: 'Registrado por: actor obtenido del JWT, inmutable. Coincide con user_id en solicitudes propias; en asistidas es el administrativo. No es el trabajador asignado.']
   program_edition_id uuid [not null, ref: > program_edition.id, note: 'Derivada de enrollment_period.program_edition_id; inmutable.']
   enrollment_period_id uuid [not null, ref: > enrollment_period.id]
-  status application_status [not null, note: 'varchar(30). Las altas finalizan en SUBMITTED. Las transiciones pertenecen a futuras historias.']
+  status application_status [not null, note: 'Persistido como varchar(30). Las altas finalizan en SUBMITTED; la evaluacion la lleva a IN_EVALUATION y la primera actuacion programada a IN_VISIT. Al cancelar o finalizar la ultima actuacion SCHEDULED vuelve a IN_EVALUATION. La resolucion la lleva de IN_EVALUATION a APPROVED, REJECTED o WAITLISTED, y de WAITLISTED a APPROVED o REJECTED.']
   origin_ticket_id varchar(255)
   resolution_reason varchar(1000)
+  resolved_by_user_id bigint [ref: > users.id, note: 'Responsable de la ultima resolucion, obtenido del JWT; no reemplaza al trabajador asignado.']
   assigned_worker_user_id bigint [ref: > users.id]
   submitted_at timestamp [note: 'Asignado por servidor al presentar. Horario de ENROLLMENT_PERIOD_TIME_ZONE, Argentina por defecto.']
-  resolved_at timestamp
+  resolved_at timestamp [note: 'Ultima resolucion: APPROVED, REJECTED o WAITLISTED. Una solicitud en espera puede resolverse de nuevo.']
+  resolved_by_user_id bigint [ref: > users.id, note: 'Trabajador asignado que registro la ultima resolucion.']
   created_at timestamp [not null]
   updated_at timestamp [not null]
   idempotency_key varchar(128) [note: 'Opcional, ASCII visible sin espacios. Comparación exacta, por usuario; persiste durante la vida de la solicitud. No representa una sesión.']
@@ -503,6 +666,7 @@ Table application {
     program_edition_id [name: 'ix_application_edition']
     assigned_worker_user_id [name: 'ix_application_worker']
     registered_by_user_id [name: 'ix_application_registered_by']
+    resolved_by_user_id [name: 'ix_application_resolved_by']
   }
 
   checks {
@@ -510,6 +674,253 @@ Table application {
   }
 
   Note: 'Presentación y auditoría en la misma transacción. El actor debe estar activo y autorizado por su rol activo. La presentación asistida permite elegir otro titular existente sin restricción de jurisdicción. Se exige período OPEN vigente y edición ACTIVE. No exige cupo ni aumenta current_enrollment. Una nueva convocatoria de la misma edición solo admite anteriores REJECTED/CLOSED; ambos flujos se serializan por titular para evitar carreras y comparten idempotencia por titular. Las consultas siempre filtran por el titular autenticado. No se elimina en cascada al eliminar personas, ediciones o convocatorias.'
+}
+
+Enum application_resolution_decision {
+  APPROVED
+  REJECTED
+  WAITLISTED
+}
+
+Table application_resolution {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id]
+  previous_status application_status [not null]
+  decision application_resolution_decision [not null]
+  reason varchar(1000) [not null, note: 'Motivo privado, recortado, no copiado a logs.']
+  resolved_by_user_id bigint [not null, ref: > users.id]
+  resolved_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+
+  indexes {
+    (application_id, previous_status) [unique, name: 'uk_application_resolution_stage']
+    (application_id, resolved_at) [name: 'ix_application_resolution_application']
+    resolved_by_user_id [name: 'ix_application_resolution_responsible']
+  }
+  checks {
+    `(previous_status = 'IN_EVALUATION' and decision in ('APPROVED', 'REJECTED', 'WAITLISTED')) or (previous_status = 'WAITLISTED' and decision in ('APPROVED', 'REJECTED'))` [name: 'ck_application_resolution_transition']
+    `length(trim(reason)) > 0` [name: 'ck_application_resolution_reason']
+  }
+  Note: 'Historial inmutable. Exige evaluacion y ninguna actuacion SCHEDULED. Aprobar ocupa cupo; espera solo con cupo agotado. Ambas requieren elegibilidad y documentos obligatorios VALID. Rechazar admite incumplimientos.'
+}
+
+Table application_resolution_requirement {
+  id uuid [pk]
+  resolution_id uuid [not null, ref: > application_resolution.id]
+  requirement_id uuid [not null, note: 'Identificador historico sin FK al catalogo editable.']
+  type program_requirement_type [not null]
+  requirement_value varchar(255) [not null]
+  description varchar(500)
+  fulfilled boolean [not null]
+
+  indexes {
+    (resolution_id, requirement_id) [unique, name: 'uk_application_resolution_requirement']
+  }
+  checks {
+    `type in ('MIN_AGE', 'MAX_INCOME', 'RESIDENCY_YEARS', 'HAS_CHILDREN')` [name: 'ck_application_resolution_requirement_type']
+  }
+  Note: 'Copia inmutable del requisito y resultado verificado por el responsable al resolver.'
+}
+
+Enum intervention_action_status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+Table intervention_plan {
+  id uuid [pk]
+  application_id uuid [not null, ref: - application.id, note: 'Caso unico; ciudadano derivado de application.user_id.']
+  responsible_user_id bigint [not null, ref: > users.id]
+  created_at timestamptz [not null, note: 'UTC con precision de microsegundos.']
+  indexes {
+    application_id [unique, name: 'uk_intervention_plan_application']
+    responsible_user_id [name: 'ix_intervention_plan_responsible']
+  }
+  Note: 'Plan unico de caso evaluado, incluso REJECTED/CLOSED. Responsable y estructura inicial inmutables; solo el trabajador asignado y responsable registra seguimientos.'
+}
+
+Table intervention_objective {
+  id uuid [pk]
+  plan_id uuid [not null, ref: > intervention_plan.id]
+  position integer [not null]
+  description varchar(1000) [not null]
+  indexes {
+    (plan_id, position) [unique, name: 'uk_intervention_objective_position']
+  }
+  checks {
+    `position >= 0` [name: 'ck_intervention_objective_position']
+    `length(trim(description)) > 0` [name: 'ck_intervention_objective_description']
+  }
+  Note: 'Objetivo inmutable. Orden recibido desde cero; cada objetivo requiere acciones en la capa de negocio.'
+}
+
+Table intervention_action {
+  id uuid [pk]
+  objective_id uuid [not null, ref: > intervention_objective.id]
+  position integer [not null]
+  description varchar(1000) [not null]
+  start_date date [not null]
+  due_date date [not null]
+  status intervention_action_status [not null]
+  indexes {
+    (objective_id, position) [unique, name: 'uk_intervention_action_position']
+  }
+  checks {
+    `position >= 0` [name: 'ck_intervention_action_position']
+    `length(trim(description)) > 0` [name: 'ck_intervention_action_description']
+    `start_date <= due_date` [name: 'ck_intervention_action_dates']
+    `status in ('PENDING', 'IN_PROGRESS', 'COMPLETED')` [name: 'ck_intervention_action_status']
+  }
+  Note: 'Inicio PENDING. Solo cambia status al registrar seguimientos. Responsable derivado del plan; estructura y fechas fijas, sin reserva de agenda ni dependencia de edicion.'
+}
+
+Table intervention_follow_up {
+  id uuid [pk]
+  action_id uuid [not null, ref: > intervention_action.id]
+  sequence_number integer [not null]
+  previous_status intervention_action_status [not null]
+  status intervention_action_status [not null]
+  occurred_on date [not null, note: 'Desde inicio hasta hoy en zona configurada, sin retroceder respecto al seguimiento previo.']
+  notes varchar(2000) [not null, note: 'Texto privado excluido de logs generales.']
+  result varchar(2000) [note: 'Obligatorio para COMPLETED; privado y excluido de logs.']
+  author_user_id bigint [not null, ref: > users.id]
+  recorded_at timestamptz [not null, note: 'Registro UTC, independiente de la fecha real historica.']
+  indexes {
+    (action_id, sequence_number) [unique, name: 'uk_intervention_follow_up_sequence']
+    author_user_id [name: 'ix_intervention_follow_up_author']
+  }
+  checks {
+    `sequence_number > 0` [name: 'ck_intervention_follow_up_sequence']
+    `length(trim(notes)) > 0` [name: 'ck_intervention_follow_up_notes']
+    `(result is null or length(trim(result)) > 0) and (status <> 'COMPLETED' or result is not null)` [name: 'ck_intervention_follow_up_result']
+    `previous_status in ('PENDING', 'IN_PROGRESS') and status in ('IN_PROGRESS', 'COMPLETED')` [name: 'ck_intervention_follow_up_transition']
+  }
+  Note: 'Historial inmutable. Secuencia serializada por solicitud, plan y accion. COMPLETED definitivo; vencimiento previsto no bloquea seguimiento. No altera estados ni cupos del caso.'
+}
+
+Table application_evaluation {
+  id uuid [pk]
+  application_id uuid [not null, unique, ref: - application.id, note: 'Relacion 1:1; una unica evaluacion vigente por solicitud.']
+  vulnerability vulnerability_level [not null, note: 'Persistido como varchar(20).']
+  priority evaluation_priority [not null, note: 'Persistido como varchar(20).']
+  recommendation varchar(1000) [not null, note: 'Texto profesional sensible; no se copia al log de auditoria.']
+  professional_user_id bigint [not null, ref: > users.id, note: 'Actor autenticado que registro la evaluacion.']
+  evaluated_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+
+  indexes {
+    professional_user_id [name: 'ix_application_evaluation_professional']
+    evaluated_at [name: 'ix_application_evaluation_evaluated_at']
+  }
+
+  checks {
+    `vulnerability in ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')` [name: 'ck_application_evaluation_vulnerability']
+    `priority in ('LOW', 'MEDIUM', 'HIGH', 'URGENT')` [name: 'ck_application_evaluation_priority']
+  }
+
+  Note: 'El alta bloquea la solicitud, impide duplicados, asigna al profesional autenticado y cambia la solicitud a IN_EVALUATION. La administracion permite listado filtrado y detalle, pero no correcciones ni reevaluaciones.'
+}
+
+Table application_visit {
+  id uuid [pk]
+  application_id uuid [not null, ref: > application.id]
+  type application_visit_type [not null, note: 'VISIT o INTERVIEW; persistido como varchar(20).']
+  starts_at timestamptz [not null, note: 'Instante normalizado a UTC al persistir.']
+  ends_at timestamptz [not null, note: 'Calculado por el servidor a partir de startsAt y durationMinutes.']
+  location varchar(300) [not null, note: 'Dato operativo potencialmente sensible; no se copia al log de auditoria.']
+  responsible_user_id bigint [not null, ref: > users.id, note: 'Trabajador ya asignado a la solicitud y actor autenticado del alta.']
+  status application_visit_status [not null, note: 'SCHEDULED ocupa la agenda; CANCELLED, REALIZED y NOT_REALIZED son finales y la liberan.']
+  scheduled_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+  last_rescheduled_at timestamptz [note: 'Ultima reprogramacion en UTC; null si nunca se modifico el horario o lugar.']
+  cancellation_reason varchar(1000) [note: 'Obligatorio y recortado al cancelar. No se copia al log de auditoria.']
+  cancelled_at timestamptz [note: 'Instante UTC de cancelacion.']
+  cancelled_by_user_id bigint [ref: > users.id, note: 'Actor que cancelo la actuacion.']
+  result_observations varchar(2000) [note: 'Texto profesional opcional y sensible; solo se expone en detalle autorizado.']
+  result_conclusions varchar(2000) [note: 'Texto profesional opcional y sensible; solo se expone en detalle autorizado.']
+  result_recorded_at timestamptz [note: 'Instante UTC asignado por el servidor al registrar el resultado.']
+  result_recorded_by_user_id bigint [ref: > users.id, note: 'Responsable autenticado que registro el resultado.']
+
+  indexes {
+    application_id [name: 'ix_application_visit_application']
+    (application_id, status) [name: 'ix_application_visit_application_status']
+    (responsible_user_id, starts_at, ends_at, status) [name: 'ix_application_visit_responsible_time']
+    result_recorded_by_user_id [name: 'ix_application_visit_result_recorded_by']
+    starts_at [name: 'ix_application_visit_starts_at']
+  }
+
+  checks {
+    `type in ('VISIT', 'INTERVIEW')` [name: 'ck_application_visit_type']
+    `status in ('SCHEDULED', 'CANCELLED', 'REALIZED', 'NOT_REALIZED')` [name: 'ck_application_visit_status']
+    `starts_at < ends_at` [name: 'ck_application_visit_time_range']
+    `last_rescheduled_at is null or (last_rescheduled_at >= scheduled_at and last_rescheduled_at < starts_at)` [name: 'ck_application_visit_reschedule_data']
+    `(status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and cancelled_by_user_id is not null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_recorded_at is not null and result_recorded_by_user_id = responsible_user_id and result_recorded_at >= ends_at and (result_observations is null or length(trim(result_observations)) between 1 and 2000) and (result_conclusions is null or length(trim(result_conclusions)) between 1 and 2000))` [name: 'ck_application_visit_lifecycle_data']
+  }
+
+  Note: 'Admite varias actuaciones por solicitud evaluada. Las futuras SCHEDULED pueden reprogramarse o cancelarse; una solicitud ciudadana PENDING bloquea esos cambios directos y el resultado hasta su revision. Una finalizada puede cerrarse una sola vez como REALIZED o NOT_REALIZED. El titular consulta solo actuaciones de sus solicitudes mediante applications:own:visits:view.'
+}
+
+Table application_visit_reschedule_request {
+  id uuid [pk]
+  visit_id uuid [not null, ref: > application_visit.id]
+  requested_by_user_id bigint [not null, ref: > users.id, note: 'Ciudadano autenticado titular de la solicitud.']
+  reason varchar(1000) [not null, note: 'Texto ciudadano sensible; se expone solo en detalles autorizados y no se copia a auditoria.']
+  status application_visit_reschedule_request_status [not null]
+  requested_at timestamptz [not null, note: 'Instante UTC asignado por el servidor.']
+  original_starts_at timestamptz [not null]
+  original_ends_at timestamptz [not null]
+  original_location varchar(300) [not null, note: 'Snapshot sensible del lugar al solicitar.']
+  reviewed_by_user_id bigint [ref: > users.id, note: 'Responsable autenticado que tomo la decision.']
+  reviewed_at timestamptz
+  review_comment varchar(1000) [note: 'Opcional al aprobar y obligatorio al rechazar; no se copia a auditoria.']
+  approved_starts_at timestamptz
+  approved_ends_at timestamptz
+  approved_location varchar(300) [note: 'Snapshot sensible del lugar aplicado al aprobar.']
+
+  indexes {
+    (visit_id, requested_at) [name: 'ix_visit_reschedule_request_visit_time']
+    (status, requested_at) [name: 'ix_visit_reschedule_request_status_time']
+    requested_by_user_id [name: 'ix_visit_reschedule_request_requested_by']
+    reviewed_by_user_id [name: 'ix_visit_reschedule_request_reviewed_by']
+  }
+
+  checks {
+    `status in ('PENDING', 'APPROVED', 'REJECTED')` [name: 'ck_visit_reschedule_request_status']
+    `length(trim(reason)) between 1 and 1000` [name: 'ck_visit_reschedule_request_reason']
+    `original_starts_at < original_ends_at and length(trim(original_location)) between 1 and 300` [name: 'ck_visit_reschedule_request_original_schedule']
+    `(status = 'PENDING' and reviewed_by_user_id is null and reviewed_at is null and review_comment is null and approved_starts_at is null and approved_ends_at is null and approved_location is null) or (status = 'APPROVED' and reviewed_by_user_id is not null and reviewed_at is not null and reviewed_at >= requested_at and approved_starts_at is not null and approved_ends_at is not null and approved_starts_at < approved_ends_at and approved_location is not null and length(trim(approved_location)) between 1 and 300 and (review_comment is null or length(trim(review_comment)) between 1 and 1000)) or (status = 'REJECTED' and reviewed_by_user_id is not null and reviewed_at is not null and reviewed_at >= requested_at and review_comment is not null and length(trim(review_comment)) between 1 and 1000 and approved_starts_at is null and approved_ends_at is null and approved_location is null)` [name: 'ck_visit_reschedule_request_lifecycle']
+  }
+
+  Note: 'Historial inmutable de solicitudes ciudadanas. PostgreSQL agrega un indice unico parcial uk_visit_reschedule_request_pending sobre visit_id WHERE status = PENDING para admitir una sola pendiente por actuacion.'
+}
+
+Table intervention_follow_up_publication {
+  id uuid [pk]
+  follow_up_id uuid [not null, ref: > intervention_follow_up.id]
+  summary varchar(2000) [not null, note: 'Resumen expresamente redactado para el ciudadano; nunca copia automatica de notes/result.']
+  visible boolean [not null, note: 'False conserva la version profesional y la excluye de la consulta y totales ciudadanos.']
+  published_at timestamptz [not null, note: 'UTC con microsegundos; ultima publicacion o correccion.']
+  updated_at timestamptz [not null, note: 'UTC con microsegundos; ultima gestion, incluido retiro.']
+  updated_by_user_id bigint [not null, ref: > users.id]
+  indexes {
+    follow_up_id [unique, name: 'uk_intervention_publication_follow_up']
+    updated_by_user_id [name: 'ix_intervention_publication_updated_by']
+  }
+  checks {
+    `length(trim(summary)) > 0` [name: 'ck_intervention_publication_summary']
+    `published_at <= updated_at` [name: 'ck_intervention_publication_dates']
+  }
+  Note: 'Version publica actual opcional por seguimiento. El original permanece inmutable. Sin publicaciones automaticas de datos anteriores ni historial publico de versiones. FK y guard protegen al responsable de ultima gestion.'
+}
+
+TableGroup social_case_management {
+  application
+  application_evaluation
+  intervention_plan
+  intervention_objective
+  intervention_action
+  intervention_follow_up
+  intervention_follow_up_publication
+  application_visit
+  application_visit_reschedule_request
 }
 
 Table document {

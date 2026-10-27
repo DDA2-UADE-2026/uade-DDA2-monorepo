@@ -284,7 +284,7 @@ Reemplazar conserva el vínculo, borra el archivo anterior y reinicia la revisi�
 
 El archivo queda atribuido al **administrativo que lo sube**, no al titular, del mismo modo que `registeredByUserId` distingue a quien registró una solicitud asistida de quien es su titular. La constancia de auditoría registra al administrativo como autor de la carga.
 
-Los endpoints administrativos operan con un `applicationId` conocido. Actualmente no existe una bandeja administrativa general para descubrir o listar todas las solicitudes; la presentación asistida devuelve el identificador de la solicitud que crea.
+Los documentos administrativos operan con un `applicationId` conocido. La bandeja administrativa de solicitudes permite descubrirlo con `GET /api/admin/applications`; la bandeja de evaluaciones permite además consultar evaluaciones por solicitud, titular, profesional, programa, categorías y fecha.
 
 ## 7. Permisos por rol activo
 
@@ -292,10 +292,20 @@ Los endpoints administrativos operan con un `applicationId` conocido. Actualment
 | --- | --- |
 | Presentar una solicitud propia | `applications:own:create` |
 | Consultar solicitudes propias | `applications:own:view` |
+| Consultar visitas o entrevistas de solicitudes propias | `applications:own:visits:view` |
+| Solicitar la reprogramación de una visita propia | `applications:own:visits:reschedule-requests:create` |
 | Listar y descargar documentos propios | `applications:own:documents:view` |
 | Cargar, reemplazar y eliminar documentos propios | `applications:own:documents:manage` |
 | Registrar una solicitud asistida | `applications:management:create` |
 | Consultar solicitudes de cualquier titular | `applications:management:view` |
+| Registrar una evaluación social | `applications:evaluations:create` |
+| Listar y consultar evaluaciones sociales | `applications:evaluations:view` |
+| Programar una visita o entrevista social | `applications:visits:create` |
+| Reprogramar o cancelar una visita o entrevista | `applications:visits:manage` |
+| Registrar el resultado de una visita o entrevista finalizada | `applications:visits:results:create` |
+| Listar y consultar visitas o entrevistas | `applications:visits:view` |
+| Consultar la bandeja de solicitudes de reprogramación | `applications:visits:reschedule-requests:view` |
+| Aprobar o rechazar una solicitud de reprogramación | `applications:visits:reschedule-requests:review` |
 | Listar y descargar documentos para revisión | `applications:management:documents:view` |
 | Revisar documentos | `applications:management:documents:review` |
 | Cargar o reemplazar documentos en nombre del titular | `applications:management:documents:manage` |
@@ -317,8 +327,17 @@ Los permisos corresponden al rol activo del JWT. Una persona que tenga roles ciu
 8. Ana reemplaza `dni.pdf`. La entrega vuelve a `PENDING` y se limpia la observación anterior.
 9. El administrativo revisa el nuevo archivo y lo marca `VALID`.
 10. La solicitud ya no tiene documentos obligatorios pendientes.
+11. Un profesional autorizado registra vulnerabilidad, prioridad y recomendación. La solicitud queda asignada y pasa a `IN_EVALUATION`.
+12. El personal con permiso de consulta encuentra la evaluación en la bandeja filtrada y abre su detalle completo.
+13. El trabajador asignado programa una visita o entrevista futura. La primera cambia la solicitud a `IN_VISIT`.
+14. Ana consulta la actuación y solicita reprogramarla indicando por qué no puede asistir. La visita conserva su horario y la petición queda `PENDING`.
+15. Mientras la petición está pendiente nadie puede reprogramar, cancelar ni finalizar directamente la actuación.
+16. El responsable revisa la bandeja: puede aprobar y elegir un horario, duración y lugar sin conflictos, o rechazar con comentario. Ana consulta el resultado en su historial.
+17. Sin una petición pendiente, el trabajador también puede reprogramar directamente o cancelar con motivo. Una cancelación libera la agenda.
+18. Cuando alcanza su horario de fin, el responsable registra si fue realizada o no realizada, con observaciones y conclusiones opcionales.
+19. El personal autorizado consulta la agenda de actuaciones y la bandeja de reprogramaciones, aplica filtros y abre sus detalles.
 
-Durante todo el recorrido, el estado general de la solicitud continúa en `SUBMITTED`, porque esta entrega no implementa las transiciones de evaluación o resolución.
+Durante la carga y revisión documental el estado general continúa en `SUBMITTED`. El alta de la evaluación lo cambia a `IN_EVALUATION` y la primera actuación a `IN_VISIT`. Cancelar o finalizar la última actuación pendiente devuelve el caso a `IN_EVALUATION`. El personal con permiso de resolución puede aprobar, rechazar o dejar en espera; desde espera puede aprobar o rechazar manualmente. Cada decisión conserva su historial. Las reglas y contratos están en [Resolución de solicitudes](application-resolution.md). No se permiten correcciones ni reevaluaciones.
 
 ## Límites actuales
 
@@ -328,3 +347,5 @@ Durante todo el recorrido, el estado general de la solicitud continúa en `SUBMI
 - No se implementaron imágenes públicas de programas en este flujo.
 - No se modifican automáticamente los estados generales de la solicitud según sus documentos.
 - No se implementó todavía el mapeo de estados internos a estados públicos simplificados.
+- Las visitas y entrevistas no pueden reactivarse, cambiar de tipo o responsable ni corregir un resultado, y no tienen notificaciones automáticas.
+- Las solicitudes de reprogramación no pueden retirarse, expirar automáticamente, corregirse ni reabrirse; el ciudadano tampoco propone horarios.

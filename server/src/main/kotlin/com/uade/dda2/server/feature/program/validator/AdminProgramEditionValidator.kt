@@ -12,6 +12,7 @@ import com.uade.dda2.server.feature.program.repository.ProgramBenefitRepository
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRequirementRepository
 import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.util.UUID
@@ -23,6 +24,7 @@ class AdminProgramEditionValidator(
     private val programRequirementRepository: ProgramRequirementRepository,
     private val programDocumentRequirementRepository: ProgramDocumentRequirementRepository,
     private val enrollmentPeriodRepository: EnrollmentPeriodRepository,
+    private val benefitGrantRepository: BenefitGrantRepository,
 ) {
 
     fun validateCreate(
@@ -76,6 +78,9 @@ class AdminProgramEditionValidator(
             maxCapacity = request.maxCapacity,
             currentEnrollment = edition.currentEnrollment,
         )
+        if (benefitGrantRepository.existsOutsideEditionDateRange(editionId, request.startDate, request.endDate)) {
+            throw ProgramEditionErrors.dateRangeExcludesBenefitGrants()
+        }
     }
 
     fun validateStatusTransition(

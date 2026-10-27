@@ -1,6 +1,144 @@
 # Solicitudes de beneficios
 
-El backend implementa presentación propia y asistida, listado y detalle propios, listado y detalle administrativos, catálogo documental por edición y documentos protegidos de solicitudes, mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan imágenes públicas de programas, evaluación general, visitas, transiciones del estado de la solicitud, asignaciones ni integración con Ciudadanos.
+## Consulta ciudadana y publicación de seguimientos de intervención
+
+Las tres rutas `GET /api/intervention-plans`, `GET /api/intervention-plans/{planId}` y `GET /api/intervention-plans/{planId}/actions/{actionId}/follow-ups` usan controlador, servicio read-only, proyecciones, DTO y mapeadores ciudadanos separados en `feature.intervention`. El titular procede exclusivamente de la autenticación. Las consultas filtran por `application.user.id` en SQL e incluyen planes existentes, casos asistidos, rechazados y cerrados, sin exigir edición activa. Los identificadores ajenos se tratan como inexistentes.
+
+La página de cabeceras ordena `createdAt DESC, id DESC`, con conteo explícito y sin joins de colecciones. Otra consulta agrupada obtiene los conteos de estados de todas las acciones de los planes de esa página. El detalle carga la estructura mediante una proyección plana ordenada por posiciones de objetivo y acción, que el mapeador agrupa conservando el orden. El estado calculado es PENDING si todas las acciones están pendientes, COMPLETED si todas terminaron e IN_PROGRESS para cualquier mezcla restante. No se persiste un estado de plan.
+
+La consulta paginada de seguimientos proyecta solo las seis columnas públicas: identificador del seguimiento, acción, fecha real, estado, resumen publicado y fecha de publicación. Tanto datos como conteo filtran `visible=true`, plan, acción y titular. El orden usa la secuencia original, sin seleccionarla. No se cargan entidades profesionales, responsables, notas ni resultados para construir respuestas ciudadanas. Una página fuera de rango conserva los totales; el mensaje informativo solo aparece cuando el total es cero. Las consultas no generan escrituras, vencimientos ni auditoría.
+
+`InterventionFollowUpPublication` guarda una versión opcional única por seguimiento, con resumen, visibilidad, última publicación, última gestión y su responsable. Las FK impiden eliminar el registro profesional y el usuario referenciados; el guard de baja de usuarios incluye esta referencia. El historial profesional carga las publicaciones y sus gestores por lote y agrega `citizenPublication`, nullable en OpenAPI 3.1 mediante una unión explícita con null. Las publicaciones retiradas conservan resumen y metadata únicamente en ese contrato profesional.
+
+`PUT` y `DELETE` de `/api/applications/{id}/intervention-plan/actions/{actionId}/follow-ups/{followUpId}/citizen-publication` pasan por un servicio transaccional. Bloquea solicitud → plan → acción → seguimiento → publicación, sin fetch joins que adelanten bloqueos. La solicitud serializa incluso la primera publicación, cuando todavía no existe fila para bloquear. Tras adquirir los bloqueos se releen usuario, rol activo, permiso y responsabilidad. Solo el trabajador actualmente asignado y responsable puede actuar, incluso con acción completada o caso rechazado/cerrado. Los POST originales no publican ni aceptan campos nuevos.
+
+PUT recorta y valida `summary` (1–2000), rechaza campos extra y devuelve 201 solo al crear la fila, 200 al corregir/republicar. Si el mismo resumen ya está visible, no cambia nada. DELETE conserva el resumen y oculta la fila; devuelve 204 también si ya estaba retirada o nunca existió sobre un seguimiento válido. Publicar o corregir actualiza `publishedAt` y `updatedAt`; retirar conserva `publishedAt`. Los instantes usan Clock UTC truncado a microsegundos. Solo se actualiza `Application.updatedAt` usando la zona configurada; se conservan seguimiento, acción, resolución, estado del caso, beneficios y cupos.
+
+Publicación, fecha de solicitud y log se confirman juntos; un error de auditoría revierte todo. Los logs `UPDATE/intervention_follow_up` registran operación PUBLISHED/CORRECTED/WITHDRAWN, identificadores, actor, visibilidad y fechas. No incluyen resumen, notas ni resultado. Las repeticiones sin cambios no registran otra actuación.
+
+Los permisos `applications:own:interventions:view` (ADMIN y CIUDADANO) y `applications:interventions:follow-ups:publish` (ADMIN) se incorporan al bootstrap y datos iniciales y son configurables. Se validan en JWT y base de datos, junto con usuario activo y pertenencia al rol activo. Renovar los JWT anteriores mediante login o selección de rol. Aplicar [2026-10-26-citizen-intervention-plans.sql](../database/migrations/2026-10-26-citizen-intervention-plans.sql) después de la migración de planes y antes del despliegue. Es idempotente y crea publicaciones vacías, sin habilitar seguimientos anteriores. [Contrato funcional](../functional/citizen-intervention-plans.md).
+
+Pruebas: cálculo unitario de progreso, validación de resumen, flujo HTTP H2 y PostgreSQL, aislamiento de titulares, campos públicos exactos, mensajes/paginación/orden, N+1, permisos JWT/base, idempotencia, publicación/corrección/retiro/republicación, rollback y concurrencia con otras publicaciones y nuevos seguimientos. La migración se ejecuta varias veces sobre datos previos en un esquema PostgreSQL aislado y verifica unicidad, fechas y protección por FK. `testInterventionPlansPostgres` utiliza exclusivamente `127.0.0.1:55439/intervention_plan_test` con create-drop, sin tomar `DB_URL`.
+
+Verificación del 26 de octubre de 2026: regresión completa de 533 casos, con 528 aprobados y cinco migraciones exclusivas de PostgreSQL omitidas en H2. Los 51 casos de intervención pasan en PostgreSQL 16.4 sin omisiones. `bootJar` y `generateOpenApiDocs` finalizan correctamente. Se verifican las 150 peticiones y 163 scripts de Postman; los 25 ejemplos de las nuevas rutas coinciden con OpenAPI y ejecutan 31 comprobaciones de contrato, privacidad y paginación. Se conservan las peticiones anteriores y se amplían los ejemplos profesionales con `citizenPublication`. El servidor PostgreSQL desechable se detiene y sus archivos temporales se eliminan al terminar.
+
+## Consulta ciudadana de beneficios propios
+
+`GET /api/benefit-grants?page=0&size=20` usa un controlador y servicio de lectura propios dentro de `feature.benefit`, `CitizenBenefitGrantResponse` y su mapeador. La autorización reutiliza la validación de usuario activo, pertenencia al rol activo y permiso en JWT y base de datos. `applications:own:benefits:view` se incorpora al bootstrap, datos iniciales y migración para `ADMIN` y `CIUDADANO`; otros roles pueden configurarlo. Los tokens anteriores deben renovarse para incluirlo.
+
+El repositorio filtra por `application.user.id` del principal y pagina en base de datos, ordenando `assignedAt DESC, id DESC`. El entity graph carga únicamente el contexto de solicitud, edición y programa, con asociaciones to-one para conservar la paginación y evitar N+1. El mapeador toma tipo, descripción y monto de la copia del otorgamiento; no carga catálogo, responsables ni historial. Incluye todos los estados, solicitudes cerradas y ediciones inactivas. No filtra por registrante ni acepta seleccionar otro titular.
+
+El DTO publica exclusivamente identificadores de otorgamiento/catálogo/solicitud/programa/edición, número de solicitud, nombres de programa/edición, tipo, descripción, monto, estado y fechas. Descripción, monto y mensaje tienen nulabilidad explícita en OpenAPI 3.1. La respuesta usa `content`, `page`, `size`, `totalElements`, `totalPages` y `message`: mensaje informativo solo cuando el total es cero, y null cuando hay otorgamientos, aunque la página esté fuera de rango. La paginación inválida devuelve 400; autenticación inválida o usuario inactivo, 401; autorización ausente, 403. Una consulta vacía devuelve 200.
+
+El servicio es de solo lectura: no cambia estados ni fechas, no dispara vencimientos ni auditoría y no toca cupos. Las renovaciones y demás actuaciones se reflejan en la siguiente lectura de los valores confirmados. Las consultas de solicitudes y los endpoints administrativos mantienen sus contratos; no se publican motivos, actores ni datos profesionales. No hay detalle individual ni filtros nuevos.
+
+Aplicar [2026-10-26-citizen-benefit-grants.sql](../database/migrations/2026-10-26-citizen-benefit-grants.sql) antes del despliegue. Es idempotente, conserva permisos y relaciones existentes y no altera otorgamientos. No requiere nuevas tablas ni cambios estructurales en DBML. Contrato funcional: [Beneficios propios](../functional/citizen-benefit-grants.md).
+
+Pruebas: `CitizenBenefitGrantServiceTest`, `BenefitGrantFlowTest`, el bootstrap y generación de OpenAPI. Cubren aislamiento entre titulares y solicitudes asistidas, estados y vigencias actualizados, copias inmutables y nulos, ausencia total frente a página fuera de rango, parámetros inválidos, permisos vigentes, ausencia de efectos de escritura y consultas constantes al agregar elementos de distintos programas. La migración repetida e aislamiento se verifican también con `testBenefitGrantsPostgres`, usando exclusivamente PostgreSQL desechable.
+
+Verificación del 26 de octubre de 2026: suite completa de 507 casos, 502 aprobados y cinco migraciones exclusivas de PostgreSQL omitidas en H2. Los 114 casos de flujo de beneficios pasan en PostgreSQL 16.4 sin omisiones. `bootJar` y `generateOpenApiDocs` finalizan correctamente; el contrato ciudadano publica ejemplos con resultados, importes nulos y ausencia de beneficios. Postman conserva sus peticiones anteriores y agrega tres GET propios, con siete ejemplos y comprobaciones de privacidad, mensaje y paginación; se validan las 145 rutas contra OpenAPI. PostgreSQL desechable queda detenido y sus archivos temporales se eliminan al terminar.
+
+## Vencimiento automático de otorgamientos
+
+`BenefitGrantExpirationScheduler` inicia un barrido en `ApplicationReadyEvent` y con cron configurable, cada cinco minutos por defecto. Puede deshabilitarse con `BENEFIT_GRANT_EXPIRATION_ENABLED=false`; el perfil `docs` lo deshabilita también al arrancar. Usa la zona existente del módulo y un `Clock` inyectable, compartido con altas y actuaciones manuales de beneficios. `BENEFIT_GRANT_EXPIRATION_BATCH_SIZE` limita las solicitudes por lote (100 por defecto).
+
+La consulta de descubrimiento proyecta solo IDs de solicitudes, sin bloqueos, y pagina por cursor UUID ascendente, sin offsets que salten candidatos al desaparecer filas ya procesadas. El coordinador no abre una transacción global. Cada llamada a `BenefitGrantExpirationService.expireApplication` abre una transacción, bloquea solicitud, titular, edición y otorgamientos en orden estable por UUID, sin fetch joins que adelanten bloqueos, y vuelve a calcular fecha y elegibilidad bajo bloqueo. Procesa `ACTIVE/SUSPENDED` con `endDate < hoy`, independientemente del estado de la edición.
+
+Cada transición conserva los datos pactados y agrega `EXPIRED` con motivo fijo, autor de sistema e instante UTC real con microsegundos. En el historial, `responsible_user_id` admite null exclusivamente en `EXPIRED`; la respuesta devuelve ID null y nombre `Sistema`. Las FK y el guard de usuarios siguen protegiendo actores humanos. El historial y los logs no crean usuarios ficticios; los logs generales conservan identificadores, transición y fecha sin copiar motivo, descripción ni monto.
+
+`BenefitGrantClosureService` comparte la regla de cierre con la finalización manual: cuenta solo `ACTIVE/SUSPENDED`, cierra la solicitud cuando no queda ninguno y descuenta una reserva si el contador es positivo. Estado, historial, solicitud, cupo y auditoría se confirman juntos; ante fallo se revierte todo el caso. El coordinador registra ID/tipo de fallo, continúa con otros casos y reintenta en el próximo barrido. La guardia local evita solapamientos dentro de la instancia; los bloqueos y la revalidación garantizan idempotencia entre instancias.
+
+`EXPIRED` es terminal. La renovación tardía devuelve `409` incluso si el barrido todavía no cambió el estado: se valida la fecha anterior antes de aceptar una extensión. Los GET administrativos mantienen rutas y permisos; se amplían enums y se documenta la nulabilidad del responsable automático. El listado propio muestra el estado confirmado sin exponer al actor ni el motivo; las consultas existentes de solicitudes conservan su estructura. Una asignación concurrente que obtiene primero el bloqueo mantiene la solicitud aprobada y su reserva si crea otro beneficio; si el barrido cierra primero, el alta devuelve conflicto.
+
+Aplicar [2026-10-26-benefit-grant-expiration.sql](../database/migrations/2026-10-26-benefit-grant-expiration.sql) después de las migraciones de beneficios y antes del despliegue. Sustituye restricciones de estado, acción y transición, incluidas las generadas por Hibernate, permite autor de sistema con CHECK, conserva las FK y agrega índice de búsqueda. Es repetible y no fabrica eventos: los datos anteriores vencidos se procesan al arrancar con su instante real. Detalle operativo en [Vencimiento automático](../functional/benefit-grant-expiration.md).
+
+Pruebas de beneficios: límites de fecha y zona, recuperación de atrasados, cursor y continuidad ante fallos, auditoría de sistema, rollback de cierre/historial/cupo, estados definitivos, concurrencia con otros procesadores y actuaciones manuales, nuevas asignaciones y aprobaciones. `testBenefitGrantsPostgres` usa exclusivamente la base desechable documentada abajo e incluye la migración repetida sobre un esquema privado y restricciones antiguas de Hibernate.
+
+Verificación del 26 de octubre de 2026: regresión completa de 488 casos, 484 aprobados y cuatro migraciones exclusivas de PostgreSQL omitidas en H2. Los 99 casos de flujo de beneficios pasan en PostgreSQL 16.4 sin omisiones. Se verifican además el evento de arranque y la deshabilitación del scheduler; `bootJar` y `generateOpenApiDocs` finalizan correctamente, incluyendo enums y nulabilidad explícita del responsable de sistema en OpenAPI 3.1. La colección conserva sus 142 peticiones y sus scripts y ejemplos son válidos contra los contratos generados. El PostgreSQL desechable se detiene y sus archivos temporales se eliminan al terminar.
+
+## Planes de intervención y seguimientos
+
+`feature.intervention` separa controladores, servicio transaccional, validador, repositorios y mapeadores. `InterventionPlan` tiene vínculo único e inmutable con `Application`; el ciudadano se deriva de `application.user`. Objetivos y acciones conservan posiciones, textos y fechas iniciales. Solo `InterventionAction.status` cambia; `InterventionFollowUp` es inmutable y tiene secuencia única por acción.
+
+Las escrituras usan `POST /api/applications/{id}/intervention-plan` y `POST .../actions/{actionId}/follow-ups`; devuelven `201`. Las lecturas usan las mismas rutas con prefijo `/api/admin` y devuelven `200`. Los permisos son `applications:interventions:create`, `applications:interventions:follow-ups:create` y `applications:interventions:view`, inicialmente para ADMIN. El validador comprueba usuario activo y permiso del JWT y del rol activo actual. Crear/registrar exige coincidencia con trabajador asignado y responsable guardado; leer no exige coincidencia.
+
+La creación requiere evaluación y admite `IN_EVALUATION/IN_VISIT/WAITLISTED/APPROVED/REJECTED/CLOSED`. Los DTO rechazan campos adicionales también en objetivos y acciones. Descripciones: 1–1000 caracteres recortados; notas y resultado: 1–2000. El resultado es obligatorio para completar. Las fechas previstas son independientes de programas y beneficios. Los seguimientos admiten fechas reales desde el inicio hasta hoy en la zona configurada, sin retroceder respecto al registro previo, incluso antes del alta del plan o después de su fin previsto.
+
+El servicio bloquea solicitud, plan y acción, en ese orden, según corresponda. Las consultas de bloqueo no hacen fetch joins; la pertenencia de acción se valida mediante subconsulta EXISTS para no bloquear otras tablas en la consulta externa. La autorización en base se carga después de esperar los bloqueos. Bajo bloqueo se releen estado y último seguimiento, se calcula la secuencia y se valida cronología. Un cierre de solicitud por beneficios comparte el primer bloqueo y no impide continuar el seguimiento.
+
+Los registros UTC tienen precisión de microsegundos. `Application.updatedAt` usa la zona configurada. Plan/objetivos/acciones o seguimiento/estado, fecha de solicitud y auditoría se confirman juntos. Los logs `intervention_plan` e `intervention_follow_up` excluyen textos profesionales. Las FK y el guard de baja de usuarios protegen responsables/autores. La API no tiene edición, eliminación ni reasignación de la estructura. La consulta ciudadana usa las rutas y DTO propios descritos arriba.
+
+Antes del despliegue ejecutar [2026-10-19-intervention-plans.sql](../database/migrations/2026-10-19-intervention-plans.sql) sobre el esquema existente. Crea tablas, unicidades, índices, CHECK y permisos de forma idempotente, sin fabricar planes ni seguimientos. Modelo completo en DBML y [contrato funcional](../functional/intervention-plans.md).
+
+Pruebas: `InterventionValidatorTest` y `InterventionPlanFlowTest`. La tarea `testInterventionPlansPostgres` usa exclusivamente PostgreSQL desechable `127.0.0.1:55439/intervention_plan_test`, usuario `application_test`, contraseña de `APPLICATION_TEST_POSTGRES_PASSWORD`, con `create-drop`; nunca usa `DB_URL`. Incluye migración repetida en esquema privado, rollback y concurrencia de alta, avances, finalización y cierre por beneficios.
+
+Verificación del 19 de octubre de 2026: suite completa de 466 casos, con 462 aprobados y cuatro migraciones exclusivas de PostgreSQL omitidas en H2. Los 27 casos de flujo de intervención pasan en PostgreSQL 16.4, sin omisiones. `bootJar` y `generateOpenApiDocs` finalizan correctamente; las rutas y esquemas de entrada publicados incluyen los campos obligatorios, estados permitidos, seguridad y errores documentados. El servidor desechable queda detenido y sus archivos temporales se eliminan.
+
+```powershell
+.\gradlew.bat test bootJar generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat testInterventionPlansPostgres --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+```
+
+## Ciclo de vida de otorgamientos
+
+Las rutas `POST /api/admin/applications/{id}/benefit-grants/{grantId}/renew|suspend|finalize` exigen `applications:management:benefits:manage` y devuelven `200` con `BenefitGrantResponse`. `GET .../{grantId}/history` exige `applications:management:view`. Los DTO rechazan campos extra y el servidor determina actor e instante UTC. Se valida permiso en JWT y rol activo vigente, además del usuario activo.
+
+`BenefitGrantLifecycleService` separa coordinación transaccional de validación y mapeo. Admite renovar `ACTIVE/SUSPENDED -> ACTIVE`, suspender `ACTIVE -> SUSPENDED` y finalizar `ACTIVE/SUSPENDED -> FINALIZED`. Exige solicitud aprobada. Renovar conserva inicio y copia del catálogo, extiende el fin e incluye hoy en la zona configurada, dentro de edición activa. Relee checklist actual, exige todos los resultados positivos y documentos obligatorios `VALID` y revalida aprobaciones incompatibles con fechas de edición superpuestas inclusivas. Suspender/finalizar admite edición inactiva o vencida.
+
+El orden explícito de bloqueo es solicitud, titular, edición y otorgamiento, sin fetch joins en las consultas de bloqueo de solicitud/otorgamiento. Asignación y finalización comparten el bloqueo de solicitud; catálogo, requisitos y fechas comparten el de edición. La secuencia del historial se calcula bajo esos bloqueos. La finalización hace flush antes de contar los otorgamientos no finalizados; el último cierra `Application` en `CLOSED` y decrementa una sola reserva, con protección contra contador no positivo. Conserva resolución y trabajador. No se reabre la solicitud.
+
+`benefit_grant_change` y `benefit_grant_change_requirement` son entidades inmutables. La unicidad `(grant_id, sequence_number)` ordena las actuaciones; los CHECK protegen transición, motivo y vigencia. El catálogo de requisitos no tiene FK desde sus copias históricas. Se protege la baja de actores históricos mediante validación y FK. Los cambios, controles, estado, fechas, eventual cierre/cupo y logs participan en una transacción. El log `benefit_grant_change` excluye motivo, descripción y monto; el cierre de solicitud tiene además log `application`.
+
+Antes del despliegue ejecutar [2026-10-19-benefit-grant-lifecycle.sql](../database/migrations/2026-10-19-benefit-grant-lifecycle.sql), **después** de la migración de otorgamientos. Es idempotente y sustituye restricciones CHECK sobre estado, incluida la generada por Hibernate; `ddl-auto=update` no reemplaza esta migración. Registra solo la asignación inicial conocida de los otorgamientos existentes, sin cambios ficticios, sin ajustar cupos ni solicitudes. Agrega el permiso inicial de ADMIN. Las asignaciones nuevas registran su evento inicial en la misma transacción.
+
+Pruebas: `BenefitGrantLifecycleValidatorTest` y `BenefitGrantFlowTest` cubren transiciones, requisitos/documentos, vigencia, privacidad, seguridad, snapshots, cierre/cupos, rollback de auditoría y concurrencia. La tarea existente `testBenefitGrantsPostgres` ejecuta también estas pruebas y las migraciones sobre esquemas privados en PostgreSQL desechable. Contrato funcional: [Ciclo de vida de beneficios](../functional/benefit-grant-lifecycle.md).
+
+Verificación del ciclo de vida (19 de octubre de 2026): suite completa de 434 casos, con 431 aprobados y tres migraciones exclusivas de PostgreSQL omitidas en H2; los 81 casos de flujo de otorgamientos y mantenimiento pasan en PostgreSQL 16.4, sin omisiones. `bootJar` y `generateOpenApiDocs` finalizan correctamente. El proceso de pruebas limita a ocho los contextos de Spring retenidos y utiliza hasta 1 GiB de heap para evitar agotar memoria en la regresión completa.
+
+## Otorgamientos individuales
+
+`POST /api/admin/applications/{id}/benefit-grants` exige `applications:management:benefits:assign`; `GET` sobre la misma ruta exige `applications:management:view`. Se comprueban usuario activo, rol activo y permiso tanto en JWT como en base de datos. El alta acepta exclusivamente `programBenefitId`, `startDate` y `endDate` y devuelve `201` con `BenefitGrantResponse`; la consulta devuelve una lista ordenada por `assignedAt`/`id`, o `[]`.
+
+`BenefitGrantService` exige solicitud `APPROVED`, edición `ACTIVE`, beneficio de esa edición, vigencia inclusiva dentro de las fechas de edición que contenga el día actual en la zona configurada y ausencia de aprobaciones incompatibles del titular con fechas de edición superpuestas. Reutiliza la regla de incompatibilidad de resolución; no reevalúa checklist ni documentos. La solicitud conserva estado y resolución y solo cambia `updatedAt`; el cupo no cambia.
+
+`benefit_grant` referencia solicitud, beneficio y administrativo y copia tipo, descripción e importe al momento de otorgar. La unicidad `(application_id, program_benefit_id)` impide repetir un beneficio. La fecha de registro es UTC, con precisión de microsegundos; las vigencias son `date`. El estado inicial es `ACTIVE`; posteriormente el proceso de vencimiento puede llevarlo a `EXPIRED`.
+
+La transacción bloquea solicitud, titular y edición, en ese orden. El CRUD de beneficios comparte el bloqueo de edición. Se bloquean bajas de beneficios otorgados y responsables referenciados; cambiar el catálogo no modifica copias existentes. La edición tampoco puede acortarse dejando otorgamientos fuera de rango. Otorgamiento, `updatedAt` y log `benefit_grant` se confirman juntos; el log no copia descripción ni importe.
+
+Antes del despliegue ejecutar `database/migrations/2026-10-19-benefit-grants.sql` desde `/docs`, después del esquema existente. Es idempotente, incorpora el permiso inicial de `ADMIN` y no genera otorgamientos ni modifica cupos anteriores. Contrato y reglas funcionales: [Otorgamiento individual](../functional/benefit-grants.md).
+
+`BenefitGrantValidatorTest` y `BenefitGrantFlowTest` cubren reglas, seguridad, copia de datos, protección de referencias, fechas de edición, rollback y concurrencia. La tarea `testBenefitGrantsPostgres` repite el flujo en **PostgreSQL desechable** `127.0.0.1:55439/benefit_grant_test`, usuario `application_test`, contraseña de `APPLICATION_TEST_POSTGRES_PASSWORD`; usa `create-drop` y nunca `DB_URL`.
+
+Verificación del 19 de octubre de 2026: 386 casos en la suite completa, con 384 aprobados y dos pruebas de migración específicas de PostgreSQL omitidas en H2. Los 38 casos de flujo de otorgamiento pasan en PostgreSQL 16.4, incluida la creación desde cero de la tabla por migración en un esquema aislado, su ejecución repetida y la unicidad. `bootJar` y `generateOpenApiDocs` finalizan correctamente; el servidor desechable queda detenido.
+
+```powershell
+.\gradlew.bat test bootJar generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat testBenefitGrantsPostgres --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+```
+
+## Resoluciones administrativas
+
+`POST /api/admin/applications/{id}/resolutions` exige `applications:management:resolve` y devuelve `201`.
+`GET` sobre la misma ruta exige `applications:management:view` y devuelve el historial cronológico, o `[]` si no existe. Ambas operaciones verifican usuario activo y permiso en JWT y rol activo vigente en base de datos.
+
+La capa de negocio exige evaluación y ausencia de actuaciones `SCHEDULED`, valida la transición (`IN_EVALUATION` a aprobado/rechazado/espera; `WAITLISTED` a aprobado/rechazado), motivo de 1–1000 caracteres tras recortar y un booleano por cada requisito vigente. Las decisiones de aprobación y espera requieren todos los controles cumplidos, documentos obligatorios `VALID`, edición `ACTIVE` no vencida e inexistencia de aprobaciones incompatibles del titular con vigencias superpuestas inclusive. Espera exige cupo agotado; aprobación exige disponibilidad y aumenta `currentEnrollment` una vez. Rechazo no aplica estas condiciones adicionales. No se exige convocatoria abierta.
+
+`ApplicationResolutionService` bloquea solicitud, titular y edición en ese orden. Las consultas de bloqueo de `ApplicationRepository` no hacen fetch join de edición para no adquirir su bloqueo antes del titular. Las modificaciones de requisitos de negocio comparten el bloqueo de edición. La aprobación se serializa por titular para evitar aprobaciones incompatibles y por edición para proteger el último cupo. Estado, fechas, último responsable, contador, historial y auditoría se confirman en una transacción.
+
+`application_resolution` conserva estado anterior, decisión, motivo, responsable y fecha UTC; la unicidad `(application_id, previous_status)` impide resolver dos veces una etapa. `application_resolution_requirement` conserva el identificador histórico y una copia de tipo/valor/descripción/resultado, sin FK al catálogo editable. Las entidades históricas son inmutables y no tienen operaciones de corrección o borrado. `application.resolved_by_user_id` identifica al último responsable, sin reemplazar al trabajador asignado. El detalle ciudadano no agrega campos de resolución. La auditoría `application_resolution` guarda identificadores, transición y resultados, pero excluye el motivo.
+
+Antes del despliegue ejecutar `docs/database/migrations/2026-10-18-application-resolutions.sql`; puede repetirse y no inventa resoluciones ni ajusta cupos anteriores. `init.sql` incorpora el permiso inicial para `ADMIN`. La documentación funcional completa está en [Resolución de solicitudes](../functional/application-resolution.md).
+
+Pruebas: `ApplicationResolutionFlowTest` ejecuta seguridad, reglas, historial, privacidad, rollback y concurrencia en H2; la tarea `testApplicationResolutionsPostgres` repite la suite en la base **desechable** `127.0.0.1:55439/application_resolution_test`, usuario `application_test` y contraseña `APPLICATION_TEST_POSTGRES_PASSWORD`. Usa `create-drop` y nunca `DB_URL`.
+
+Verificación del 18 de octubre de 2026: la suite completa ejecuta 344 casos, con 343 aprobados y uno reservado para PostgreSQL omitido en H2. Los 48 casos de flujo de resolución pasan en PostgreSQL 16.4, incluida la ejecución repetida de la migración. `bootJar` y `generateOpenApiDocs` finalizan correctamente. El servidor desechable se detiene al terminar.
+
+```powershell
+.\gradlew.bat test generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+.\gradlew.bat testApplicationResolutionsPostgres --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
+```
+
+El backend implementa presentación propia y asistida, consultas, documentos protegidos, evaluación social, gestión de visitas o entrevistas, consulta ciudadana y solicitudes ciudadanas de reprogramación mediante JWT con rol activo. La solicitud pertenece a `users.id`: se obtiene del token en la presentación propia y de un `userId` existente en la asistida. `registeredByUserId` identifica por separado a quien la registró y siempre se obtiene del token. No depende de una identidad externa ni de `citizen_snapshot`. No se implementan decisiones sobre la solicitud social, correcciones o reevaluaciones ni integración con Ciudadanos.
 
 ## Contrato HTTP
 
@@ -10,8 +148,19 @@ El backend implementa presentación propia y asistida, listado y detalle propios
 | `POST /api/admin/applications` | `applications:management:create` | Presentación asistida para otro usuario existente; `201` nueva, `200` reintento |
 | `GET /api/applications?page=0&size=20` | `applications:own:view` | Página de solicitudes propias, por número descendente |
 | `GET /api/applications/{id}` | `applications:own:view` | Detalle propio; una solicitud ajena devuelve `404`, igual que una inexistente |
+| `GET /api/applications/{applicationId}/visits?page=0&size=20` | `applications:own:visits:view` | Página de actuaciones de una solicitud propia, por inicio descendente |
+| `GET /api/applications/{applicationId}/visits/{visitId}` | `applications:own:visits:view` | Detalle ciudadano con motivo de cancelación cuando corresponde |
 | `GET /api/admin/applications?page=0&size=20` | `applications:management:view` | Página de solicitudes de todos los titulares, por número descendente |
 | `GET /api/admin/applications/{id}` | `applications:management:view` | Detalle administrativo con la entidad completa |
+| `POST /api/applications/{applicationId}/evaluation` | `applications:evaluations:create` | Registra la evaluación, asigna al actor y cambia la solicitud a `IN_EVALUATION`; `201 Created` |
+| `GET /api/admin/application-evaluations` | `applications:evaluations:view` | Página filtrada de evaluaciones, sin la recomendación sensible |
+| `GET /api/admin/application-evaluations/{evaluationId}` | `applications:evaluations:view` | Detalle completo de la evaluación y sus relaciones |
+| `POST /api/applications/{applicationId}/visits` | `applications:visits:create` | Programa una visita o entrevista; `201 Created` y transición a `IN_VISIT` en la primera |
+| `PUT /api/applications/{applicationId}/visits/{visitId}/schedule` | `applications:visits:manage` | Reprograma horario, duración y lugar de una actuación futura |
+| `PATCH /api/applications/{applicationId}/visits/{visitId}/cancel` | `applications:visits:manage` | Cancela con motivo, libera la agenda y puede volver la solicitud a `IN_EVALUATION` |
+| `POST /api/applications/{applicationId}/visits/{visitId}/result` | `applications:visits:results:create` | Registra una vez el resultado final y puede volver la solicitud a `IN_EVALUATION`; `201 Created` |
+| `GET /api/admin/application-visits` | `applications:visits:view` | Página filtrada de actuaciones ordenada por inicio ascendente |
+| `GET /api/admin/application-visits/{visitId}` | `applications:visits:view` | Detalle completo de la actuación y su contexto |
 | `GET /api/applications/{applicationId}/documents` | `applications:own:documents:view` | Metadatos de entregas propias, sin bytes |
 | `PUT /api/applications/{applicationId}/documents/{requirementId}` | `applications:own:documents:manage` | Primera carga `201` o reemplazo `200`, mediante `multipart/form-data` |
 | `DELETE /api/applications/{applicationId}/documents/{applicationDocumentId}` | `applications:own:documents:manage` | Elimina la entrega y su archivo, `204` |
@@ -21,7 +170,7 @@ El backend implementa presentación propia y asistida, listado y detalle propios
 | `PATCH /api/admin/applications/{applicationId}/documents/{applicationDocumentId}/review` | `applications:management:documents:review` | Revisa una entrega `PENDING` como `VALID` u `OBSERVED` |
 | CRUD `/api/admin/program-editions/{editionId}/document-requirements` | `programs:management:view\|create\|edit` | Administra el catálogo mientras la edición no tenga solicitudes |
 
-Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El actor autenticado debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. Como en el resto del modelo JWT, un cambio de permisos no revoca automáticamente tokens anteriores; se renuevan iniciando sesión o cambiando de rol.
+Todos requieren `Authorization: Bearer <accessToken>`. Los JWT de selección de rol no sirven. El actor autenticado debe existir, estar activo y conservar el rol activo asignado. Los permisos se evalúan sobre el JWT, sin mezclar los de otros roles. El alta, gestión y consulta de evaluaciones y actuaciones comprueban además que su permiso siga asignado al rol en la base, por lo que una revocación se aplica aunque el JWT anterior todavía lo declare.
 
 La consulta propia no recibe un identificador de usuario: siempre filtra por el solicitante autenticado. La consulta administrativa no filtra por titular ni por el administrativo que registró la solicitud. En ambas, `page` empieza en cero y `size` admite valores entre 1 y 100.
 
@@ -43,6 +192,65 @@ El POST asistido acepta únicamente `userId` y `enrollmentPeriodId`:
 ```
 
 Se comprueba la existencia del titular en `users`, sin filtros de jurisdicción, roles, credenciales o vinculación externa. No se necesita el JWT del titular. La autorización para esta operación corresponde al administrativo. Enviar `registeredByUserId`, `registeredBy`, `registradoPor`, `citizenId` o cualquier otro campo adicional devuelve `400`. Para presentar para sí mismo, el actor debe utilizar el POST propio con su permiso correspondiente; la ruta asistida lo rechaza con `403`.
+
+El POST de evaluación acepta únicamente:
+
+```json
+{
+  "vulnerability": "HIGH",
+  "priority": "URGENT",
+  "recommendation": "Se recomienda intervención prioritaria."
+}
+```
+
+`vulnerability` admite `LOW`, `MEDIUM`, `HIGH` o `CRITICAL`; `priority` admite `LOW`, `MEDIUM`, `HIGH` o `URGENT`. La recomendación se recorta y debe tener de 1 a 1000 caracteres. Profesional, fecha, solicitud y estado se derivan del contexto y cualquier campo adicional devuelve `400 APPLICATION_EVALUATION_INVALID_DATA`.
+
+La respuesta `201` incluye `id`, `applicationId`, las tres decisiones, `professionalId`, `professionalName` y `evaluatedAt` UTC.
+
+El listado administrativo admite `page`, `size`, `applicationId`, `applicationNumber`, `applicantUserId`, `professionalId`, `programId`, `programEditionId`, `vulnerability`, `priority`, `evaluatedFrom` y `evaluatedTo`. El rango es inclusivo, utiliza ISO-8601 con offset y exige que el inicio no sea posterior al fin. El orden es `evaluatedAt` descendente, con `id` descendente como desempate. Cada elemento contiene contexto de solicitud, titular, programa, edición y profesional, pero omite `recommendation`.
+
+El detalle por `evaluationId` devuelve también la recomendación, correos del titular y profesional, convocatoria y todos los identificadores relacionados. No existe un endpoint de edición o eliminación: la evaluación continúa siendo inmutable.
+
+El POST de visita acepta exclusivamente:
+
+```json
+{
+  "type": "VISIT",
+  "startsAt": "2026-10-20T10:00:00-03:00",
+  "durationMinutes": 60,
+  "location": "Domicilio declarado por el ciudadano"
+}
+```
+
+`type` admite `VISIT` o `INTERVIEW`; `startsAt` debe ser futuro, `durationMinutes` un entero positivo y `location` un texto recortado de 1 a 300 caracteres. El servidor normaliza el instante, calcula `endsAt`, asigna responsable y `scheduledAt`, fija `SCHEDULED` y devuelve también el estado de la solicitud. Cualquier campo administrado o desconocido devuelve `400 APPLICATION_VISIT_INVALID_DATA`.
+
+La reprogramación acepta exclusivamente `startsAt`, `durationMinutes` y `location`, con las mismas reglas temporales y de longitud del alta. Conserva identificador, tipo, solicitud, responsable y `scheduledAt`; actualiza `lastRescheduledAt` en UTC y rechaza un cuerpo que no cambie ningún valor. La cancelación acepta exclusivamente `reason`, obligatorio y recortado de 1 a 1000 caracteres. Persiste `CANCELLED`, `cancelledAt` y `cancelledBy`, y libera el intervalo inmediatamente.
+
+El resultado acepta exclusivamente:
+
+```json
+{
+  "status": "REALIZED",
+  "observations": "La familia recibió al profesional.",
+  "conclusions": "Se requiere continuar con la evaluación."
+}
+```
+
+`status` es obligatorio y admite `REALIZED` o `NOT_REALIZED`. `observations` y `conclusions` son opcionales; si se envían, se recortan y deben tener entre 1 y 2000 caracteres. El servidor asigna `resultRecordedAt` en UTC y `resultRecordedBy` al actor. Solo el responsable todavía asignado puede finalizar una actuación `SCHEDULED` cuyo `endsAt` ya se alcanzó y cuya solicitud permanece en `IN_VISIT`. El resultado es inmutable: un segundo intento se rechaza.
+
+El listado de actuaciones admite `page`, `size`, `applicationId`, `applicationNumber`, `applicantUserId`, `responsibleId`, `programId`, `programEditionId`, `type`, `status`, `windowStart` y `windowEnd`. Sin `status` incluye `SCHEDULED`, `CANCELLED`, `REALIZED` y `NOT_REALIZED`. La ventana es semiabierta y selecciona intervalos superpuestos (`startsAt < windowEnd` y `endsAt > windowStart`). Se ordena por `startsAt` e `id` ascendentes. El listado expone actor y fecha de cancelación o resultado, pero omite motivo, observaciones y conclusiones; el detalle incorpora los textos completos.
+
+La consulta ciudadana restringe siempre por `application.id` y `application.user.id`, tomado del JWT. El listado incluye los cuatro estados y se ordena por `startsAt` e `id` descendentes. Sus DTO solo contienen identificadores de actuación y solicitud, número de solicitud, modalidad, horario vigente, duración, lugar, estado, indicador y fecha de última reprogramación y fecha de cancelación. El detalle agrega únicamente `cancellationReason`; nunca expone observaciones, conclusiones ni actores internos. La paginación admite `page >= 0` y `size` entre 1 y 100.
+
+`ApplicationVisitRescheduleRequest` conserva el historial separado de peticiones ciudadanas. El alta `POST /api/applications/{applicationId}/visits/{visitId}/reschedule-requests` acepta exclusivamente `reason`, recortado de 1 a 1000 caracteres, y snapshot del horario/lugar actual asignado por el servidor. Exige propiedad, solicitud `IN_VISIT`, actuación `SCHEDULED` futura y ausencia de otra `PENDING`; no modifica la visita. Una unicidad parcial PostgreSQL sobre `visit_id WHERE status = 'PENDING'` respalda la regla.
+
+Los endpoints ciudadanos de historial usan `applications:own:visits:view`, ordenan por `requestedAt` e `id` descendentes y restringen simultáneamente por solicitud, visita y titular. El listado omite motivo/comentario y el detalle los incluye sin identidades internas. Las respuestas de visita agregan `latestRescheduleRequest` con id, estado y fechas solamente.
+
+La bandeja `/api/admin/application-visit-reschedule-requests` exige `applications:visits:reschedule-requests:view`, ordena por antigüedad y filtra por estado, solicitud, número, visita, ciudadano, responsable, programa, edición y ventana semiabierta de solicitud. El listado no expone motivo, comentario ni lugares; el detalle sí los muestra al rol autorizado.
+
+La revisión exige `applications:visits:reschedule-requests:review` y coincidencia entre actor, responsable y trabajador asignado. `APPROVED` requiere horario completo, cambio real y agenda libre para responsable y titular; actualiza la visita, `lastRescheduledAt` y `Application.updatedAt`. `REJECTED` prohíbe horario y requiere comentario. Un conflicto o aprobación tardía revierte todo y conserva `PENDING`; cuando el horario original comenzó solo se admite rechazo. Mientras haya una pendiente, reprogramar, cancelar o registrar resultado directamente devuelve `APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING`.
+
+El alta exige evaluación previa, estado `IN_EVALUATION` o `IN_VISIT`, trabajador asignado y coincidencia entre ese trabajador y el actor. La agenda común combina actuaciones donde una persona participa como responsable o titular, turnos `CONFIRMED` del ciudadano y turnos `CONFIRMED` o `CANCELLED` con intervalo retenido del profesional. Los intervalos son semiabiertos: terminar exactamente cuando comienza el siguiente no es conflicto. La misma ocupación se aplica a alta, reprogramación, oferta de horarios y resúmenes administrativos de turnos.
 
 Respuesta de presentación propia:
 
@@ -80,7 +288,7 @@ El listado utiliza `content`, `page`, `size`, `totalElements` y `totalPages`. El
 
 La respuesta asistida tiene el mismo cuerpo, con `userId` del titular y `registeredByUserId` del administrativo que registró originalmente la solicitud. Devuelve `Idempotency-Replayed` y no informa `Location`. Registrar para otra persona no concede acceso a su detalle propio: la consulta administrativa depende de su propio permiso. El titular sí recibe la solicitud asistida en su listado y detalle propios.
 
-El campo `status` todavía devuelve el estado interno: la correspondencia completa con los estados públicos simplificados está pendiente de definición, en particular para los cierres sin resultado explícito. No se modifican los estados almacenados ni sus reglas.
+El campo `status` devuelve el estado interno. La presentación crea `SUBMITTED`; registrar una evaluación lo cambia a `IN_EVALUATION`. La correspondencia completa con otros estados públicos simplificados sigue pendiente de definición.
 
 ## Consulta administrativa de solicitudes
 
@@ -88,7 +296,7 @@ El campo `status` todavía devuelve el estado interno: la correspondencia comple
 
 `GET /api/admin/applications/{id}` devuelve la entidad completa. Además de los campos del detalle propio incorpora `userName`, `userEmail`, `registeredByUserName`, `originTicketId`, `resolutionReason`, `assignedWorkerUserId`, `assignedWorkerName`, `resolvedAt`, `idempotencyKey` y `requestHash`. La clave y el hash se exponen únicamente en esta vista administrativa, nunca en el detalle propio. Una solicitud inexistente devuelve `404 APPLICATION_NOT_FOUND`; no existe un filtro de titular que convierta una solicitud ajena en inexistente, porque la vista es global por definición.
 
-Ninguna de las dos rutas devuelve archivos ni metadatos de entregas. Los documentos conservan sus rutas y sus permisos administrativos separados. Ambas son de solo lectura: no cambian estado, no asignan trabajadores y no registran auditoría.
+Ninguna de las dos rutas devuelve archivos, metadatos de entregas ni la evaluación. Los documentos y la evaluación conservan rutas y permisos separados. Ambas consultas son de solo lectura: no cambian estado, no asignan trabajadores y no registran auditoría.
 
 ## Catálogo y entregas documentales
 
@@ -123,10 +331,10 @@ Cada mutación bloquea la fila de la solicitud. Documento, vínculo, `updatedAt`
 - La edición se deriva de la convocatoria y debe estar `ACTIVE`.
 - Se admite una sola solicitud por usuario y convocatoria, en cualquier estado, incluso `REJECTED` o `CLOSED`.
 - En otra convocatoria de la misma edición, todas las solicitudes anteriores deben estar `REJECTED` o `CLOSED`. `DRAFT`, `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION`, `IN_EVALUATION`, `IN_VISIT`, `APPROVED` y `WAITLISTED` bloquean una nueva.
-- Las solicitudes de otras ediciones no bloquean por esta regla. La evaluación de incompatibilidades y asignaciones pertenece a historias futuras.
+- Las solicitudes de otras ediciones no bloquean por esta regla. La evaluación de incompatibilidades pertenece a historias futuras.
 - El cupo agotado no impide presentar ni se incrementa `currentEnrollment`.
 - Se guarda `SUBMITTED` con las fechas asignadas por el servidor. El horario utiliza `ENROLLMENT_PERIOD_TIME_ZONE` (por defecto `America/Argentina/Buenos_Aires`), compartido con la configuración del cierre automático de convocatorias.
-- `originTicketId`, resolución y trabajador asignado quedan nulos. Las relaciones con personas utilizan siempre `User`.
+- `originTicketId`, resolución y trabajador asignado quedan nulos al presentar. El alta de la evaluación completa el trabajador. Las relaciones con personas utilizan siempre `User`.
 - `registeredBy` es obligatorio e inmutable: en la presentación propia coincide con el titular; en la asistida referencia al administrativo autenticado. No reemplaza a `assignedWorker`.
 - Ambas presentaciones comparten las reglas anteriores, sin cambiar duplicados, cupo ni incompatibilidades. Los documentos se gestionan después sobre la solicitud ya creada.
 
@@ -152,6 +360,10 @@ Cada presentación bloquea la fila del solicitante hasta que termina la transacc
 
 Presentación y log `CREATE` de tipo `application` se confirman en una única transacción. Si falla la auditoría o la persistencia, no se devuelve confirmación y se revierte la solicitud. El actor del log es quien registra; el snapshot incluye `userId` y `registeredByUserId` por separado. Las claves y hashes no se incluyen en el log.
 
+El alta de evaluación bloquea la solicitud. Solo admite `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION` o `IN_EVALUATION`, exige que no haya una evaluación previa y no reemplaza un trabajador diferente. Evaluación, asignación, cambio de estado y log `application_evaluation` se confirman juntos. La auditoría guarda categorías, profesional, fecha y transición, pero nunca la recomendación.
+
+El alta y la gestión de una actuación bloquean primero la solicitud, luego responsable y titular en orden por identificador y, para modificar, la propia actuación. Las peticiones agregan al final el bloqueo de su propia fila. Se compara el estado observado antes del bloqueo para rechazar actualizaciones concurrentes obsoletas. Dentro de la transacción se revalidan autorización, etapa, asignación y agenda. La reprogramación excluye la actuación actual del cálculo de ocupación; una cancelada o finalizada deja de ocupar agenda. Actuación, petición, `Application.updatedAt` y logs se confirman juntos. `application_visit_reschedule_request` audita `CREATE`/`UPDATE` y una aprobación también audita la visita vinculada; nunca copia motivo, comentario ni lugares.
+
 ## Numeración y esquema
 
 `id` sigue siendo UUID. `applicationNumber` se genera con la secuencia `application_number_seq`, global, desde 1, con incremento 1 y sin reinicio anual. Hibernate registra y crea esta secuencia con el esquema; no hay una migración ni un script automático de inserción de datos. Tampoco se calcula `MAX + 1`.
@@ -160,13 +372,13 @@ La secuencia garantiza unicidad y crecimiento de los valores asignados. Los núm
 
 Al recrear la base de pruebas, iniciar el backend con la configuración habitual de generación del esquema y luego ejecutar manualmente `docs/database/init.sql`. No es necesario crear la secuencia a mano. El esquema documentado está en `docs/database/api-entities.dbml`.
 
-Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a un solicitante, registrante, trabajador, cargador o revisor vinculado; las FK protegen también las referencias a ediciones, convocatorias, requisitos y archivos. Las tablas nuevas se crean con Hibernate al recrear el esquema; no se agrega una migración ni se completa información histórica automáticamente.
+Las relaciones no borran solicitudes en cascada. El ABM de usuarios rechaza eliminar a cualquier persona referenciada, incluidos solicitante y revisor de una petición de reprogramación; las FK lo respaldan. Para una PostgreSQL existente se aplican las migraciones de evaluación y visitas en orden y, después de `2026-10-17-citizen-application-visits.sql`, `2026-10-17-application-visit-reschedule-requests.sql`, que crea la tabla, checks, FK, índices, unicidad parcial y permisos.
 
 ## Permisos y pruebas manuales
 
-El init incluye `CIUDADANO` con `applications:own:create`, `applications:own:view`, `applications:own:documents:view` y `applications:own:documents:manage`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción anterior de superusuario técnico con todos los permisos.
+El init incluye `CIUDADANO` con sus permisos propios anteriores y `applications:own:visits:reschedule-requests:create`. Los roles administrativos normales no reciben estos permisos automáticamente. `ADMIN` conserva la excepción de superusuario técnico con todos los permisos.
 
-El init incorpora `applications:management:create`, `applications:management:view`, `applications:management:documents:view` y `applications:management:documents:review` y los incluye en `ADMIN`. No los concede a `CIUDADANO` ni crea nuevos roles: se deben asignar explícitamente a los roles administrativos que correspondan mediante la gestión existente. Después de cambiar permisos, renovar el JWT para que los contenga.
+El init incorpora además `applications:visits:reschedule-requests:view` y `applications:visits:reschedule-requests:review` para `ADMIN`. Ningún endpoint exige un nombre literal de rol: todos revalidan el permiso del JWT contra el rol activo persistido.
 
 Las cuentas de ejemplo `admin` y `viewer` también reciben `CIUDADANO` al ejecutar el init. En una base nueva, ambas deben seleccionar rol después del login. La gestión de roles del ABM conserva la asignación explícita existente; no se cambió para agregar roles automáticamente.
 
@@ -176,6 +388,10 @@ La carpeta **Solicitudes asistidas** usa `assistedAccessToken` con permiso admin
 
 Las carpetas **Requisitos documentales**, **Documentos de solicitudes propias** y **Revisión documental administrativa** cubren el nuevo contrato. Configurar `documentRequirementId`, `applicationId`, `applicationDocumentId` y `applicationDocumentFile`; cambiar el rol activo antes de alternar entre operaciones ciudadanas y administrativas.
 
+La carpeta **Evaluaciones sociales** usa `evaluationAccessToken` con los permisos de alta y consulta, y `applicationId` de una solicitud evaluable. La respuesta conserva `applicationEvaluationId`; luego permite listar con filtros, abrir el detalle completo y comprobar que un segundo alta devuelve conflicto.
+
+La carpeta **Visitas y entrevistas sociales** conserva el flujo anterior y agrega crear petición, historial/detalle propio, bandeja/detalle administrativo, aprobación, rechazo, duplicado, conflicto de agenda, visita vencida y acceso ajeno. Usa `applicationVisitRescheduleRequestId`, `applicationVisitRequestedStartsAt` y los tokens ciudadano/trabajador con los permisos nuevos.
+
 CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los orígenes ya configurados. No se modificó el frontend.
 
 ## Errores funcionales
@@ -184,10 +400,35 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 | --- | --- | --- |
 | 400 | `INVALID_REQUEST_BODY` | JSON inválido, UUID inválido, campo obligatorio ausente o campo extra |
 | 400 | `APPLICATION_INVALID_IDEMPOTENCY_KEY` | Formato de clave inválido |
+| 400 | `APPLICATION_EVALUATION_INVALID_DATA` | Categoría, recomendación o cuerpo de evaluación inválido |
+| 400 | `APPLICATION_EVALUATION_INVALID_FILTER` | Rango de fechas de consulta invertido |
+| 400 | `APPLICATION_VISIT_INVALID_DATA` | Tipo, fecha, duración, lugar, motivo, cuerpo o reprogramación sin cambios inválidos |
+| 400 | `APPLICATION_VISIT_RESULT_INVALID_DATA` | Estado final, observaciones, conclusiones o cuerpo de resultado inválido |
+| 400 | `APPLICATION_VISIT_INVALID_FILTER` | Paginación o ventana temporal de consulta inválida |
+| 400 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA` | Motivo, decisión, horario, comentario o cuerpo inválido |
+| 400 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_FILTER` | Filtros o ventana de solicitud inválidos |
 | 401 | `AUTH_UNAUTHENTICATED` / `AUTH_INVALID_TOKEN` | Falta de autenticación, token inválido o usuario inexistente/inactivo |
 | 403 | `AUTH_FORBIDDEN` | Rol activo sin permiso o ya no asignado |
 | 403 | `APPLICATION_ASSISTED_SELF_NOT_ALLOWED` | Se intentó usar la asistencia para uno mismo, en lugar de la presentación propia |
 | 404 | `APPLICATION_NOT_FOUND` | Solicitud inexistente o ajena |
+| 404 | `APPLICATION_EVALUATION_NOT_FOUND` | Evaluación inexistente |
+| 404 | `APPLICATION_VISIT_NOT_FOUND` | Visita o entrevista inexistente |
+| 404 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_FOUND` | Petición inexistente, ajena o combinada con otra actuación |
+| 409 | `APPLICATION_EVALUATION_ALREADY_EXISTS` | La solicitud ya tiene una evaluación |
+| 409 | `APPLICATION_EVALUATION_STATUS_NOT_ALLOWED` | El estado de la solicitud no admite evaluación |
+| 409 | `APPLICATION_EVALUATION_ASSIGNED_TO_ANOTHER_WORKER` | La solicitud está asignada a otro trabajador |
+| 409 | `APPLICATION_VISIT_EVALUATION_REQUIRED` | La solicitud no tiene evaluación social |
+| 409 | `APPLICATION_VISIT_STATUS_NOT_ALLOWED` | La solicitud no está en evaluación o visita |
+| 409 | `APPLICATION_VISIT_ASSIGNED_TO_ANOTHER_WORKER` | El actor no es el trabajador asignado |
+| 409 | `APPLICATION_VISIT_NOT_MODIFIABLE` | La actuación está cancelada, comenzó o la solicitud ya no está en visita |
+| 409 | `APPLICATION_VISIT_RESULT_NOT_REGISTRABLE` | La actuación no está programada, todavía no terminó, ya tiene resultado o la solicitud no está en visita |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_ALLOWED` | La actuación propia no está programada, futura y en visita |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_ALREADY_PENDING` | Ya existe una petición pendiente para la actuación |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_REVIEWABLE` | La petición ya fue decidida o no admite aprobación |
+| 409 | `APPLICATION_VISIT_RESCHEDULE_REQUEST_PENDING` | Una pendiente bloquea cambios directos sobre la actuación |
+| 409 | `APPLICATION_VISIT_CONCURRENT_MODIFICATION` | Otra operación modificó la actuación o su solicitud |
+| 409 | `APPLICATION_VISIT_RESPONSIBLE_CONFLICT` | La agenda del responsable se superpone |
+| 409 | `APPLICATION_VISIT_APPLICANT_CONFLICT` | La agenda del titular se superpone |
 | 404 | `APPLICATION_USER_NOT_FOUND` | El titular indicado en la presentación asistida no existe |
 | 404 | `APPLICATION_ENROLLMENT_PERIOD_NOT_FOUND` | Convocatoria inexistente |
 | 409 | `APPLICATION_ENROLLMENT_PERIOD_NOT_OPEN` | Convocatoria no abierta |
@@ -208,15 +449,16 @@ CORS admite `Idempotency-Key` y expone `Location` e `Idempotency-Replayed` a los
 
 ## Verificación automatizada
 
-`ApplicationFlowTest` utiliza HTTP con JWT reales y persistencia real en una base aislada. Cubre permisos y propiedad, validación de fechas/estados, cupo, paginación, campos internos rechazados, unicidad, reintentos concurrentes, convocatorias concurrentes, números globales concurrentes, restricciones de base y rollback de auditoría. `ApplicationDocumentFlowTest` cubre catálogo, pendientes, propiedad, permisos, formatos, firmas, límite, reemplazo, eliminación, descarga inline, revisión, estados finales, concurrencia, auditoría, rollback y ausencia de archivos huérfanos.
+`ApplicationVisitFlowTest` cubre además alta e historial de peticiones, exposición diferenciada, aprobación/rechazo, solicitudes sucesivas, bloqueos, agenda, seguridad, concurrencia, rollback y exclusión de motivo, comentario y lugares en auditoría.
 
-Verificación del 5 de septiembre de 2026: 104 pruebas exitosas en H2, incluidas 13 del flujo documental; OpenAPI generado; 77 peticiones de Postman contrastadas con sus rutas, métodos, scripts y ejemplos; y DBML compilado para PostgreSQL. No se ejecutó SQL sobre la base de la aplicación. La equivalencia de estados públicos sigue pendiente de definición y no forma parte de esta entrega.
+Verificación del 17 de octubre de 2026: `compileKotlin`, `compileTestKotlin`, `bootJar`, `generateOpenApiDocs` y la suite completa de 268 pruebas finalizan correctamente. La colección Postman contiene 124 requests, incluidos los flujos de solicitudes de reprogramación, y se valida como JSON. En esta ruta que contiene `año`, las tareas de prueba requieren fijar la codificación del worker como muestra el comando siguiente; sin esa opción el worker puede fallar antes de cargar las clases.
 
 ```powershell
+.\gradlew.bat compileKotlin compileTestKotlin bootJar
 .\gradlew.bat test generateOpenApiDocs --offline '-Dorg.gradle.jvmargs=-Dfile.encoding=windows-1252'
 ```
 
-El parámetro de codificación permite ejecutar el worker de Java 17 en la ruta local que contiene `año`. No cambia la codificación de la API. El perfil de pruebas no usa las credenciales ni la base de la aplicación.
+El perfil de pruebas no usa las credenciales ni la base de la aplicación.
 
 Para repetir la misma suite en PostgreSQL, la tarea `testApplicationsPostgres` usa exclusivamente `127.0.0.1:55439/application_test`, con usuario `application_test` y contraseña de `APPLICATION_TEST_POSTGRES_PASSWORD`. Debe ser una base desechable: la tarea crea y elimina su esquema. Nunca apunta a `DB_URL`.
 

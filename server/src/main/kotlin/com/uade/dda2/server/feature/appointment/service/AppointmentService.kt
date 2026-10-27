@@ -42,6 +42,7 @@ class AppointmentService(
     private val currentUser: CurrentUserService,
     private val validator: AppointmentValidator,
     private val slots: AppointmentSlotService,
+    private val agenda: AgendaAvailabilityService,
     private val properties: AppointmentProperties,
     private val logs: LogService,
     private val json: JsonMapper,
@@ -84,10 +85,10 @@ class AppointmentService(
                 it.endsAt.toInstant() == endsAt.toInstant()
         }
         if (!matchesCurrentGrid) throw AppointmentErrors.slotUnavailable()
-        if (appointments.findOverlapsByCitizenId(principal.id, startsAt, endsAt).isNotEmpty()) {
+        if (agenda.hasConflict(principal.id, startsAt, endsAt)) {
             throw AppointmentErrors.citizenOverlap()
         }
-        if (appointments.findOverlapsByProfessionalId(lockData.professionalId, startsAt, endsAt).isNotEmpty()) {
+        if (agenda.hasConflict(lockData.professionalId, startsAt, endsAt)) {
             throw AppointmentErrors.slotUnavailable()
         }
 
@@ -117,6 +118,13 @@ class AppointmentService(
         val appointment = appointments.findByIdAndCitizenId(id, requireNotNull(citizen.id))
             ?: throw AppointmentErrors.resourceNotFound()
         return appointment.toResponse(properties.zone())
+    }
+
+    @Transactional(readOnly = true)
+    fun list(): List<AppointmentResponse> {
+        val citizen = authorizedCitizen("appointments:own:view")
+        return appointments.findAllByCitizenIdOrderByStartsAtDesc(requireNotNull(citizen.id))
+            .map { it.toResponse(properties.zone()) }
     }
 
     private fun authorizedCitizen(permission: String): User {

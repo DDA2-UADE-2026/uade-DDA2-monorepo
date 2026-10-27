@@ -11,6 +11,15 @@ import com.uade.dda2.server.feature.auth.repository.RoleRepository
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationResolutionRepository
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantChangeRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionPlanRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionFollowUpRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionPublicationRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationVisitRescheduleRequestRepository
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityRepository
 import com.uade.dda2.server.feature.activity.repository.ActivityEnrollmentRepository
@@ -45,6 +54,15 @@ class UserManagementService(
     private val activityEnrollmentRepository: ActivityEnrollmentRepository,
     private val applicationRepository: ApplicationRepository,
     private val applicationDocumentRepository: ApplicationDocumentRepository,
+    private val applicationEvaluationRepository: ApplicationEvaluationRepository,
+    private val applicationResolutionRepository: ApplicationResolutionRepository,
+    private val benefitGrantRepository: BenefitGrantRepository,
+    private val benefitGrantChangeRepository: BenefitGrantChangeRepository,
+    private val interventionPlanRepository: InterventionPlanRepository,
+    private val interventionFollowUpRepository: InterventionFollowUpRepository,
+    private val interventionPublicationRepository: InterventionPublicationRepository,
+    private val applicationVisitRepository: ApplicationVisitRepository,
+    private val applicationVisitRescheduleRequestRepository: ApplicationVisitRescheduleRequestRepository,
     private val documentRepository: DocumentRepository,
     private val professionalAssignmentRepository: ProfessionalAssignmentRepository,
     private val appointmentRepository: AppointmentRepository,
@@ -157,7 +175,18 @@ class UserManagementService(
 
         if (
             applicationRepository.existsByUserIdOrAssignedWorkerIdOrRegisteredById(id, id, id) ||
+            applicationRepository.existsByResolvedById(id) ||
             applicationDocumentRepository.existsByReviewedById(id) ||
+            applicationEvaluationRepository.existsByProfessionalId(id) ||
+            applicationResolutionRepository.existsByResolvedById(id) ||
+            benefitGrantRepository.existsByAssignedById(id) ||
+            benefitGrantChangeRepository.existsByResponsibleId(id) ||
+            interventionPlanRepository.existsByResponsibleId(id) ||
+            interventionFollowUpRepository.existsByAuthorId(id) ||
+            interventionPublicationRepository.existsByUpdatedById(id) ||
+            applicationVisitRepository.existsByResponsibleId(id) ||
+            applicationVisitRepository.existsByResultRecordedById(id) ||
+            applicationVisitRescheduleRequestRepository.existsByRequestedByIdOrReviewedById(id, id) ||
             documentRepository.existsByUploadedById(id)
         ) {
             throw ConflictException("USER_HAS_APPLICATION_REFERENCES", "No se puede eliminar un usuario vinculado a solicitudes o sus documentos.")
@@ -240,8 +269,9 @@ class UserManagementService(
             return emptySet()
         }
 
-        val roles = roleRepository.findByNameIn(names).associateBy { it.name.uppercase() }
-        val missing = names.filterNot(roles::containsKey)
+        val assignedNames = if ("ADMIN" in names) names + "CIUDADANO" else names
+        val roles = roleRepository.findByNameIn(assignedNames).associateBy { it.name.uppercase() }
+        val missing = assignedNames.filterNot(roles::containsKey)
         if (missing.isNotEmpty()) {
             throw BadRequestException(
                 code = "USER_UNKNOWN_ROLES",
@@ -249,7 +279,7 @@ class UserManagementService(
             )
         }
 
-        return names.mapNotNull(roles::get).toSet()
+        return assignedNames.mapNotNull(roles::get).toSet()
     }
 
     private fun normalizeUsername(username: String): String =

@@ -1,26 +1,23 @@
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, queryOptions } from '@tanstack/react-query'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { client } from '@/generated/client.gen'
 import {
   getAuthenticatedUser,
   getRoleHome,
   requireAuthenticatedUser,
+  requireRoleChoice,
 } from '@/lib/auth-route-guards'
 
 const meQueryFn = vi.fn()
+const pendingQueryFn = vi.fn()
+const privateOptions = queryOptions({ queryKey: ['private'], queryFn: async () => ({ data: true }) })
 
 vi.mock('@/generated/@tanstack/react-query.gen', () => ({
   meOptions: () => ({
     queryKey: ['me'],
     queryFn: meQueryFn,
   }),
-}))
-
-vi.mock('@/generated/client.gen', () => ({
-  client: {
-    setConfig: vi.fn(),
-  },
+  sessionRoleSelectionOptions: () => ({ queryKey: ['pending-role'], queryFn: pendingQueryFn }),
 }))
 
 describe('auth route guards', () => {
@@ -28,7 +25,7 @@ describe('auth route guards', () => {
     localStorage.clear()
     sessionStorage.clear()
     meQueryFn.mockReset()
-    vi.mocked(client.setConfig).mockReset()
+    pendingQueryFn.mockReset()
   })
 
   it('resuelve el inicio según el rol activo', () => {
@@ -37,12 +34,13 @@ describe('auth route guards', () => {
     expect(getRoleHome(' admin ')).toBe('/gestion')
   })
 
-  it('devuelve null si no hay token guardado', async () => {
+  it('consulta el servidor incluso sin token en localStorage y acepta 401 como sesión ausente', async () => {
     const queryClient = new QueryClient()
+    meQueryFn.mockRejectedValue({ status: 401 })
 
     await expect(getAuthenticatedUser(queryClient)).resolves.toBeNull()
 
-    expect(meQueryFn).not.toHaveBeenCalled()
+    expect(meQueryFn).toHaveBeenCalledOnce()
   })
 
   it('devuelve el usuario autenticado cuando /auth/me responde una sesión válida', async () => {
@@ -53,7 +51,6 @@ describe('auth route guards', () => {
       roles: ['OPERADOR'],
     }
 
-    localStorage.setItem('auth-token', 'jwt-operativo')
     meQueryFn.mockResolvedValue({ user })
 
     await expect(requireAuthenticatedUser(queryClient)).resolves.toEqual({ user })
@@ -63,11 +60,29 @@ describe('auth route guards', () => {
     const queryClient = new QueryClient()
 
     localStorage.setItem('auth-token', 'jwt-vencido')
-    meQueryFn.mockRejectedValue(new Error('Unauthorized'))
+    meQueryFn.mockRejectedValue({ status: 401 })
 
     await expect(getAuthenticatedUser(queryClient)).resolves.toBeNull()
 
     expect(localStorage.getItem('auth-token')).toBeNull()
-    expect(client.setConfig).toHaveBeenCalledWith({ headers: { Authorization: null } })
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0)
+  })
+
+  it('no convierte una falla de red en un cierre de sesión', async () => {
+    const queryClient = new QueryClient()
+    queryClient.setQueryData(privateOptions.queryKey, { data: true })
+    const error = new TypeError('Failed to fetch')
+    meQueryFn.mockRejectedValue(error)
+    await expect(getAuthenticatedUser(queryClient)).rejects.toBe(error)
+    expect(queryClient.getQueryData(privateOptions.queryKey)).toEqual({ data: true })
+  })
+
+  it('recupera la selección pendiente desde la cookie después de recargar', async () => {
+    const queryClient = new QueryClient()
+    const user = { username: 'test', roles: ['CIUDADANO', 'AUDITOR'] }
+    meQueryFn.mockRejectedValue({ status: 401 })
+    pendingQueryFn.mockResolvedValue({ requiresRoleSelection: true, user })
+    await expect(requireRoleChoice(queryClient)).resolves.toEqual({ mode: 'select', pending: { user } })
+    expect(sessionStorage.getItem('role-selection')).toBeNull()
   })
 })

@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.program.service
 
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
+import com.uade.dda2.server.feature.benefit.repository.BenefitGrantRepository
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
@@ -28,6 +29,7 @@ import java.util.UUID
 class AdminProgramBenefitService(
     private val programEditionRepository: ProgramEditionRepository,
     private val programBenefitRepository: ProgramBenefitRepository,
+    private val benefitGrantRepository: BenefitGrantRepository,
     private val adminProgramBenefitValidator: AdminProgramBenefitValidator,
     private val adminProgramEditionValidator: AdminProgramEditionValidator,
     private val currentUserService: CurrentUserService,
@@ -61,7 +63,7 @@ class AdminProgramBenefitService(
         editionId: UUID,
         request: CreateProgramBenefitRequest,
     ): ProgramBenefitResponse {
-        val edition = findEdition(editionId)
+        val edition = findEditionForUpdate(editionId)
 
         adminProgramEditionValidator.validateCanModify(edition)
         adminProgramBenefitValidator.validateCreate(request)
@@ -88,6 +90,7 @@ class AdminProgramBenefitService(
         benefitId: UUID,
         request: UpdateProgramBenefitRequest,
     ): ProgramBenefitResponse {
+        findEditionForUpdate(editionId)
         val benefit = findBenefit(
             editionId = editionId,
             benefitId = benefitId,
@@ -117,6 +120,7 @@ class AdminProgramBenefitService(
         editionId: UUID,
         benefitId: UUID,
     ) {
+        findEditionForUpdate(editionId)
         val benefit = findBenefit(
             editionId = editionId,
             benefitId = benefitId,
@@ -124,6 +128,7 @@ class AdminProgramBenefitService(
 
         adminProgramEditionValidator.validateCanModify(benefit.programEdition)
 
+        if (benefitGrantRepository.existsByProgramBenefitId(benefitId)) throw ProgramBenefitErrors.hasGrants()
         val oldValues = json(benefit.toAuditSnapshot())
         programBenefitRepository.delete(benefit)
 
@@ -156,6 +161,9 @@ class AdminProgramBenefitService(
                 id = benefitId,
                 programEditionId = editionId,
             )
+
+    private fun findEditionForUpdate(id: UUID): ProgramEdition =
+        programEditionRepository.findByIdForUpdate(id) ?: throw ProgramEditionErrors.notFound(id)
 
     private fun json(value: Any): String =
         requireNotNull(jsonMapper.writeValueAsString(value))

@@ -1,9 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/_app/gestion/casos/$solicitudId/")({
-  component: RouteComponent,
+  beforeLoad: ({ params }) => { throw redirect({ to: "/gestion/casos/$solicitudId/evaluacion", params }) },
 })
-
-function RouteComponent() {
-  return <div>Hello "/_app/gestion/casos/$solicitudId/"!</div>
-}

@@ -11,6 +11,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 app:
+  benefit-grant:
+    expiration:
+      enabled: false
+  bootstrap:
+    admin:
+      # Documentation generation does not create a database schema or seed users.
+      enabled: false
   security:
     jwt:
       # Only for the isolated documentation/test profile, never for a deployment.

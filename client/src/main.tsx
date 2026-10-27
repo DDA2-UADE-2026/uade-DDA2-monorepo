@@ -7,9 +7,14 @@ import { es } from 'zod/locales'
 import { ThemeProvider } from '@/providers/theme-provider'
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { registerAuthInterceptor } from '@/lib/auth-interceptor'
+import { registerCookieAuthTransport } from '@/lib/cookie-auth-transport'
+import { clearLegacyAuthStorage } from '@/lib/auth-session'
+import { client } from '@/generated/client.gen'
 import { queryClient, router } from './router'
 import './index.css'
 
+clearLegacyAuthStorage()
+registerCookieAuthTransport(client)
 registerAuthInterceptor()
 
 z.config({

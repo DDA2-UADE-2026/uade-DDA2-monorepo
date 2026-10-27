@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.appointment
 
 import com.uade.dda2.server.feature.appointment.dto.response.AppointmentResponse
 import com.uade.dda2.server.feature.appointment.entity.Appointment
+import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
 import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.auth.entity.Permission
 import com.uade.dda2.server.feature.auth.entity.Role
@@ -33,6 +34,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -88,7 +91,11 @@ class AppointmentFlowTest {
         val token: String,
         val wrongRoleToken: String,
         val secondCitizenToken: String,
+        val adminToken: String,
+        val firstProfessionalToken: String,
+        val secondProfessionalToken: String,
         val serviceId: UUID,
+        val centerId: UUID,
         val centerServiceId: UUID,
         val firstAssignmentId: UUID,
         val secondAssignmentId: UUID,
@@ -202,6 +209,33 @@ class AppointmentFlowTest {
     }
 
     @Test
+    fun `lista turnos propios con su estado sin exponer turnos ajenos`() {
+        val first = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val second = response(create(fixture.firstAssignmentId, 10, 11, UUID.randomUUID().toString()))
+        expect(adminPatch(first.id, "cancel"), 200)
+
+        val listed = authorizedGet("/api/citizen/appointments")
+        expect(listed, 200)
+        val entries = json.readTree(listed.response.contentAsString)
+        assertEquals(listOf(second.id.toString(), first.id.toString()), entries.toList().map { it.get("id").asText() })
+        assertEquals("CONFIRMED", entries[0].get("status").asText())
+        assertEquals("CANCELLED", entries[1].get("status").asText())
+
+        val foreign = mvc.perform(
+            get("/api/citizen/appointments")
+                .header("Authorization", "Bearer ${fixture.secondCitizenToken}"),
+        ).andReturn()
+        expect(foreign, 200)
+        assertEquals(0, json.readTree(foreign.response.contentAsString).size())
+
+        val forbidden = mvc.perform(
+            get("/api/citizen/appointments")
+                .header("Authorization", "Bearer ${fixture.wrongRoleToken}"),
+        ).andReturn()
+        expect(forbidden, 403)
+    }
+
+    @Test
     fun `serializa reservas concurrentes por profesional y ciudadano`() {
         val sameProfessional = concurrently(
             {
@@ -280,14 +314,380 @@ class AppointmentFlowTest {
         expect(replay, 200)
         assertEquals(storedId, response(replay).id)
         assertEquals("true", replay.response.getHeader("Idempotency-Replayed"))
+        expect(adminPatch(storedId, "cancel"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+        expect(reschedule(storedId, fixture.secondAssignmentId, 10, 11), 409, "APPOINTMENT_NOT_MANAGEABLE")
     }
+
+    @Test
+    fun `un turno cancelado retiene el horario profesional hasta su liberacion sin bloquear al ciudadano`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        tx {
+            val appointment = appointments.findById(created.id).orElseThrow()
+            appointment.status = AppointmentStatus.CANCELLED
+            appointments.saveAndFlush(appointment)
+        }
+
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        assertFalse(json.readTree(slots(fixture.secondCitizenToken).response.contentAsString).any {
+            it.get("professionalAssignmentId").asText() == fixture.firstAssignmentId.toString() &&
+                it.get("startsAt").asText().contains("T09:00")
+        })
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken),
+            409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        expect(create(fixture.secondAssignmentId, 9, 10, UUID.randomUUID().toString()), 201)
+
+        tx {
+            val appointment = appointments.findById(created.id).orElseThrow()
+            appointment.slotReleasedAt = OffsetDateTime.now(ZoneOffset.UTC)
+            appointments.saveAndFlush(appointment)
+        }
+        assertTrue(json.readTree(slots(fixture.secondCitizenToken).response.contentAsString).any {
+            it.get("professionalAssignmentId").asText() == fixture.firstAssignmentId.toString() &&
+                it.get("startsAt").asText().contains("T09:00")
+        })
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+    }
+
+    @Test
+    fun `administrativo cancela y habilita manualmente el horario mientras ciudadano consulta su estado`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(adminGet(created.id), 200)
+        val listed = json.readTree(adminList().response.contentAsString)
+        assertTrue(listed.any { it.get("appointment").get("id").asText() == created.id.toString() })
+        assertEquals(false, json.readTree(adminGet(created.id).response.contentAsString).get("slotRetained").asBoolean())
+        expect(mvc.perform(get("/api/admin/appointments/${created.id}")
+            .header("Authorization", "Bearer ${fixture.token}")).andReturn(), 403)
+        expect(adminPatch(created.id, "cancel", fixture.token), 403)
+        expect(adminPatch(created.id, "release-slot"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+
+        val cancelled = adminPatch(created.id, "cancel")
+        expect(cancelled, 200)
+        assertEquals("CANCELLED", adminResponse(cancelled).status.name)
+        assertTrue(json.readTree(cancelled.response.contentAsString).get("slotRetained").asBoolean())
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        expect(adminPatch(created.id, "cancel"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken),
+            409, "APPOINTMENT_SLOT_UNAVAILABLE")
+
+        val released = adminPatch(created.id, "release-slot")
+        expect(released, 200)
+        assertFalse(json.readTree(released.response.contentAsString).get("slotRetained").asBoolean())
+        expect(adminPatch(created.id, "release-slot"), 409, "APPOINTMENT_SLOT_ALREADY_RELEASED")
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        assertEquals(2, jdbc.queryForObject(
+            "select count(*) from logs where entity_type = 'appointment' and entity_id = ? and action = 'update'",
+            Long::class.java, created.id.toString(),
+        ))
+    }
+
+    @Test
+    fun `reprograma en el mismo centro hacia otro profesional sin cambiar titular ni identificador`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val options = json.readTree(adminSlots(created.id).response.contentAsString)
+        assertTrue(options.any { it.get("professionalAssignmentId").asText() == fixture.secondAssignmentId.toString() &&
+            it.get("startsAt").asText().contains("T10:00") })
+        assertFalse(options.any { it.get("professionalAssignmentId").asText() == fixture.firstAssignmentId.toString() &&
+            it.get("startsAt").asText().contains("T09:00") })
+
+        val result = reschedule(created.id, fixture.secondAssignmentId, 10, 11)
+        expect(result, 200)
+        val updated = adminResponse(result)
+        assertEquals(created.id, updated.id)
+        assertEquals(created.serviceId, updated.serviceId)
+        assertEquals(created.centerId, updated.centerId)
+        assertEquals("CONFIRMED", updated.status.name)
+        assertEquals("Profesional Dos", updated.professionalName)
+        assertEquals(at(10).toInstant(), updated.startsAt.toInstant())
+        assertEquals(updated, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+        assertEquals(200, adminGet(created.id).response.status)
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+        assertEquals(1, jdbc.queryForObject(
+            "select count(*) from logs where entity_type = 'appointment' and entity_id = ? and action = 'update'",
+            Long::class.java, created.id.toString(),
+        ))
+    }
+
+    @Test
+    fun `reprogramacion rechaza horario ocupado y conserva los datos originales`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(create(fixture.secondAssignmentId, 10, 11, UUID.randomUUID().toString(), fixture.secondCitizenToken), 201)
+        expect(reschedule(created.id, fixture.secondAssignmentId, 10, 11), 409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+        expect(reschedule(created.id, fixture.firstAssignmentId, 9, 10), 400, "APPOINTMENT_INVALID_REQUEST")
+        assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+    }
+
+    @Test
+    fun `no cambia centro ni servicio y rechaza superposicion del ciudadano`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(create(fixture.secondAssignmentId, 10, 11, UUID.randomUUID().toString()), 201)
+        expect(reschedule(created.id, fixture.firstAssignmentId, 10, 11), 409, "APPOINTMENT_CITIZEN_OVERLAP")
+
+        val anotherCenterAssignment = tx {
+            val service = services.findById(fixture.serviceId).orElseThrow()
+            val center = centers.saveAndFlush(MunicipalCenter(name = "Otro centro ${UUID.randomUUID()}", address = "Calle 2"))
+            val centerService = centerServices.saveAndFlush(CenterService(center = center, service = service))
+            assignments.saveAndFlush(ProfessionalAssignment(
+                professional = assignments.findById(fixture.firstAssignmentId).orElseThrow().professional,
+                centerService = centerService,
+            )).id!!
+        }
+        expect(reschedule(created.id, anotherCenterAssignment, 11, 12), 409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        assertEquals(created, response(authorizedGet("/api/citizen/appointments/${created.id}")))
+    }
+
+    @Test
+    fun `resume el mes con confirmados libres y retenidos y filtra por servicio`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val summary = json.readTree(monthlySummary(fixture.date.year, fixture.date.monthValue).response.contentAsString)
+        assertEquals(fixture.date.lengthOfMonth(), summary.size())
+        val day = summary.single { it.get("date").asText() == fixture.date.toString() }
+        assertEquals(1, day.get("confirmed").asInt())
+        assertEquals(5, day.get("free").asInt())
+        assertEquals(0, day.get("retained").asInt())
+        assertTrue(day.get("hasAgenda").asBoolean())
+
+        expect(adminPatch(created.id, "cancel"), 200)
+        val afterCancel = json.readTree(monthlySummary(fixture.date.year, fixture.date.monthValue).response.contentAsString)
+            .single { it.get("date").asText() == fixture.date.toString() }
+        assertEquals(0, afterCancel.get("confirmed").asInt())
+        assertEquals(5, afterCancel.get("free").asInt())
+        assertEquals(1, afterCancel.get("retained").asInt())
+
+        val filtered = json.readTree(
+            monthlySummary(fixture.date.year, fixture.date.monthValue, serviceId = fixture.serviceId).response.contentAsString,
+        ).single { it.get("date").asText() == fixture.date.toString() }
+        assertEquals(afterCancel, filtered)
+
+        expect(monthlySummary(fixture.date.year, fixture.date.monthValue, serviceId = UUID.randomUUID()), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(monthlySummary(fixture.date.year, fixture.date.monthValue, token = fixture.token), 403)
+        expect(monthlySummary(1999, 1), 400, "VALIDATION_ERROR")
+    }
+
+    @Test
+    fun `dias pasados informan cero libres pero conservan el historial`() {
+        val pastDate = LocalDate.now(zone).minusDays(1)
+        val startsAt = pastDate.atTime(9, 0).atZone(zone).toOffsetDateTime()
+            .toInstant().truncatedTo(ChronoUnit.MICROS).atOffset(ZoneOffset.UTC)
+        val endsAt = startsAt.plusHours(1)
+        tx {
+            val assignment = assignments.findById(fixture.firstAssignmentId).orElseThrow()
+            val citizen = users.findById(fixture.citizenId).orElseThrow()
+            appointments.saveAndFlush(
+                Appointment(
+                    citizen = citizen,
+                    professionalAssignment = assignment,
+                    startsAt = startsAt,
+                    endsAt = endsAt,
+                    idempotencyKey = UUID.randomUUID().toString(),
+                    requestHash = requestHash(fixture.firstAssignmentId, startsAt, endsAt),
+                ),
+            )
+        }
+
+        val day = json.readTree(monthlySummary(pastDate.year, pastDate.monthValue).response.contentAsString)
+            .single { it.get("date").asText() == pastDate.toString() }
+        assertEquals(1, day.get("confirmed").asInt())
+        assertEquals(0, day.get("free").asInt())
+        assertEquals(0, day.get("retained").asInt())
+
+        val availability = dayAvailability(pastDate)
+        expect(availability, 200)
+        assertEquals(0, json.readTree(availability.response.contentAsString).size())
+    }
+
+    @Test
+    fun `la disponibilidad diaria lista horarios libres con servicio y profesional`() {
+        val availability = dayAvailability(fixture.date)
+        expect(availability, 200)
+        val slots = json.readTree(availability.response.contentAsString)
+        assertEquals(6, slots.size())
+        assertTrue(slots.all {
+            it.get("serviceId").asText() == fixture.serviceId.toString() &&
+                it.get("centerServiceId").asText() == fixture.centerServiceId.toString() &&
+                it.get("professionalName").asText().isNotEmpty()
+        })
+
+        expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()), 201)
+        assertEquals(5, json.readTree(dayAvailability(fixture.date).response.contentAsString).size())
+        expect(dayAvailability(fixture.date, serviceId = UUID.randomUUID()), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(dayAvailability(fixture.date, token = fixture.token), 403)
+    }
+
+    @Test
+    fun `dos cancelaciones simultaneas no modifican el turno dos veces`() {
+        val created = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        val results = concurrently(
+            { adminPatch(created.id, "cancel") },
+            { adminPatch(created.id, "cancel") },
+        )
+        assertEquals(listOf(200, 409), results.map { it.response.status }.sorted())
+        assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
+        assertEquals(1, jdbc.queryForObject(
+            "select count(*) from logs where entity_type = 'appointment' and entity_id = ? and action = 'update'",
+            Long::class.java, created.id.toString(),
+        ))
+    }
+
+    @Test
+    fun `registra atencion y corrige a ausencia sin exponer descripcion al ciudadano ni al log`() {
+        val id = pastAppointment()
+        val date = LocalDate.now(zone).minusDays(1)
+        val path = "/api/professional/appointments/$id/attention"
+        val invalid = professionalWrite(path, """{"result":"ATENDIDO","attendedOn":"$date","description":"   "}""")
+        expect(invalid, 400, "ATTENTION_INVALID_DATA")
+
+        val description = "Orientacion comunitaria prestada"
+        val created = professionalWrite(path, """{"result":"ATENDIDO","attendedOn":"$date","description":"  $description  "}""")
+        expect(created, 201)
+        val first = json.readTree(created.response.contentAsString)
+        assertEquals("ATENDIDO", first.get("result").asText())
+        assertEquals(description, first.get("description").asText())
+        val version = first.get("version").asLong()
+        expect(professionalWrite(path, """{"result":"AUSENTE"}"""), 409, "ATTENTION_ALREADY_REGISTERED")
+
+        val own = professionalGet("/api/professional/appointments/$id")
+        expect(own, 200)
+        assertEquals("ATENDIDO", json.readTree(own.response.contentAsString).get("attention").get("result").asText())
+        val listed = professionalGet("/api/professional/appointments?date=$date")
+        expect(listed, 200)
+        assertTrue(json.readTree(listed.response.contentAsString).any { it.get("appointment").get("id").asText() == id.toString() })
+        val admin = adminGet(id)
+        expect(admin, 200)
+        assertEquals(description, json.readTree(admin.response.contentAsString).get("attention").get("description").asText())
+        val citizen = authorizedGet("/api/citizen/appointments/$id")
+        expect(citizen, 200)
+        assertFalse(citizen.response.contentAsString.contains(description))
+        assertFalse(citizen.response.contentAsString.contains("attention"))
+
+        val corrected = professionalWrite(path, """{"version":$version,"result":"AUSENTE"}""", correction = true)
+        expect(corrected, 200)
+        val current = json.readTree(corrected.response.contentAsString)
+        assertEquals("AUSENTE", current.get("result").asText())
+        assertTrue(current.get("description").isNull)
+        assertTrue(current.get("attendedOn").isNull)
+        assertEquals("CONFIRMED", response(authorizedGet("/api/citizen/appointments/$id")).status.name)
+        assertEquals(0, jdbc.queryForObject(
+            "select count(*) from community_attention where appointment_id = ? and description is not null",
+            Long::class.java, id,
+        ))
+        assertEquals(0, jdbc.queryForObject(
+            "select count(*) from logs where entity_id = ? and (old_values like ? or new_values like ?)",
+            Long::class.java, id.toString(), "%$description%", "%$description%",
+        ))
+        expect(professionalWrite(path, """{"version":$version,"result":"AUSENTE"}""", correction = true), 409, "ATTENTION_CHANGED")
+        expect(professionalWrite(path, """{"version":${current.get("version").asLong()},"result":"ATENDIDO","attendedOn":"$date","description":"Servicio nuevo"}""", correction = true), 200)
+    }
+
+    @Test
+    fun `ausencia no acepta datos y profesional ajeno no puede consultar ni registrar`() {
+        val id = pastAppointment()
+        val path = "/api/professional/appointments/$id/attention"
+        expect(professionalWrite(path, """{"result":"AUSENTE","description":"algo"}"""), 400, "ATTENTION_INVALID_DATA")
+        expect(professionalWrite(path, """{"result":"ATENDIDO","attendedOn":"${LocalDate.now(zone).plusDays(1)}","description":"Servicio"}"""), 400, "ATTENTION_INVALID_DATA")
+        expect(professionalGet("/api/professional/appointments/$id", fixture.secondProfessionalToken), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(professionalWrite(path, """{"result":"AUSENTE"}""", fixture.secondProfessionalToken), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(professionalWrite(path, """{"result":"AUSENTE"}""", fixture.adminToken), 403)
+        expect(professionalWrite(path, """{"result":"AUSENTE"}""", fixture.token), 403)
+        expect(professionalWrite(path, """{"result":"AUSENTE"}"""), 201)
+        assertEquals(1, jdbc.queryForObject("select count(*) from community_attention where appointment_id = ?", Long::class.java, id))
+    }
+
+    @Test
+    fun `permisos profesionales permiten consultar y registrar desde otro rol activo`() {
+        val token = tx {
+            val professional = assignments.findById(fixture.firstAssignmentId).orElseThrow().professional
+            val role = role("OPERADOR_TURNOS_TEST", mutableSetOf(
+                permission("appointments:professional:view"),
+                permission("appointments:professional:manage"),
+            ))
+            professional.roles.add(role)
+            users.saveAndFlush(professional)
+            jwt.createToken(professional, role)
+        }
+        val id = pastAppointment()
+        expect(professionalGet("/api/professional/appointments?date=${LocalDate.now(zone).minusDays(1)}", token), 200)
+        expect(professionalGet("/api/professional/appointments/$id", token), 200)
+        expect(professionalWrite("/api/professional/appointments/$id/attention", """{"result":"AUSENTE"}""", token), 201)
+    }
+
+    @Test
+    fun `no registra turnos futuros o cancelados y respeta el profesional reprogramado`() {
+        val future = response(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString()))
+        expect(professionalWrite("/api/professional/appointments/${future.id}/attention", """{"result":"AUSENTE"}"""), 409, "ATTENTION_NOT_REGISTRABLE")
+        expect(adminPatch(future.id, "cancel"), 200)
+        expect(professionalWrite("/api/professional/appointments/${future.id}/attention", """{"result":"AUSENTE"}"""), 409, "ATTENTION_NOT_REGISTRABLE")
+
+        val another = response(create(fixture.firstAssignmentId, 10, 11, UUID.randomUUID().toString()))
+        expect(reschedule(another.id, fixture.secondAssignmentId, 11, 12), 200)
+        expect(professionalGet("/api/professional/appointments/${another.id}"), 404, "APPOINTMENT_RESOURCE_NOT_FOUND")
+        expect(professionalGet("/api/professional/appointments/${another.id}", fixture.secondProfessionalToken), 200)
+    }
+
+    @Test
+    fun `dos registros simultaneos dejan una sola constancia vigente`() {
+        val id = pastAppointment()
+        val path = "/api/professional/appointments/$id/attention"
+        val results = concurrently(
+            { professionalWrite(path, """{"result":"AUSENTE"}""") },
+            { professionalWrite(path, """{"result":"AUSENTE"}""") },
+        )
+        assertEquals(listOf(201, 409), results.map { it.response.status }.sorted())
+        assertEquals(1, jdbc.queryForObject("select count(*) from community_attention where appointment_id = ?", Long::class.java, id))
+    }
+
+    private fun pastAppointment(): UUID = tx {
+        val date = LocalDate.now(zone).minusDays(1)
+        val start = date.atTime(9, 0).atZone(zone).toOffsetDateTime()
+        requireNotNull(appointments.saveAndFlush(Appointment(
+            citizen = users.findById(fixture.citizenId).orElseThrow(),
+            professionalAssignment = assignments.findById(fixture.firstAssignmentId).orElseThrow(),
+            startsAt = start,
+            endsAt = start.plusHours(1),
+            idempotencyKey = UUID.randomUUID().toString(),
+            requestHash = "past-${UUID.randomUUID()}".take(64),
+        )).id)
+    }
+
+    @Test
+    fun `professional lists own appointments over a date range`() {
+        val id = pastAppointment()
+        val date = LocalDate.now(zone).minusDays(1)
+        fun listsId(path: String): Boolean {
+            val result = professionalGet(path)
+            expect(result, 200)
+            return json.readTree(result.response.contentAsString).any { it.path("appointment").path("id").asText() == id.toString() }
+        }
+
+        assertTrue(listsId("/api/professional/appointments?date=${date.minusDays(3)}&to=${date.plusDays(3)}"))
+        assertFalse(listsId("/api/professional/appointments?date=${date.plusDays(1)}&to=${date.plusDays(7)}"))
+        expect(professionalGet("/api/professional/appointments?date=$date&to=${date.minusDays(1)}"), 400, "APPOINTMENT_INVALID_REQUEST")
+        expect(professionalGet("/api/professional/appointments?date=$date&to=${date.plusDays(42)}"), 400, "APPOINTMENT_INVALID_REQUEST")
+    }
+
+    private fun professionalGet(path: String, token: String = fixture.firstProfessionalToken): MvcResult = mvc.perform(
+        get(path).header("Authorization", "Bearer $token"),
+    ).andReturn()
+
+    private fun professionalWrite(path: String, body: String, token: String = fixture.firstProfessionalToken, correction: Boolean = false): MvcResult =
+        mvc.perform(
+            (if (correction) put(path) else post(path))
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body),
+        ).andReturn()
 
     private fun createFixture(): Fixture = tx {
         val view = permission("appointments:own:view")
         val create = permission("appointments:own:create")
         val citizenRole = role("CIUDADANO", mutableSetOf(view, create))
         val viewerRole = role("VIEWER_APPOINTMENTS", mutableSetOf(view, create))
-        val professionalRole = role("PROFESIONAL_CENTRO")
+        val professionalRole = role("PROFESIONAL_CENTRO", mutableSetOf(
+            permission("appointments:professional:view"), permission("appointments:professional:manage"),
+        ))
+        val adminRole = role("ADMIN", mutableSetOf(permission("appointments:management:view"), permission("appointments:management:manage")))
+        val admin = users.saveAndFlush(User(name = "Admin Turnos", email = "admin-${UUID.randomUUID()}@example.com", roles = mutableSetOf(adminRole)))
         val citizen = users.saveAndFlush(
             User(
                 name = "Ciudadano Uno",
@@ -352,7 +752,11 @@ class AppointmentFlowTest {
             token = jwt.createToken(citizen, citizenRole),
             wrongRoleToken = jwt.createToken(citizen, viewerRole),
             secondCitizenToken = jwt.createToken(secondCitizen, citizenRole),
+            adminToken = jwt.createToken(admin, adminRole),
+            firstProfessionalToken = jwt.createToken(firstProfessional, professionalRole),
+            secondProfessionalToken = jwt.createToken(secondProfessional, professionalRole),
             serviceId = requireNotNull(service.id),
+            centerId = requireNotNull(center.id),
             centerServiceId = requireNotNull(centerService.id),
             firstAssignmentId = requireNotNull(firstAssignment.id),
             secondAssignmentId = requireNotNull(secondAssignment.id),
@@ -374,6 +778,62 @@ class AppointmentFlowTest {
 
     private fun authorizedGet(path: String): MvcResult = mvc.perform(
         get(path).header("Authorization", "Bearer ${fixture.token}"),
+    ).andReturn()
+
+    private fun adminGet(id: UUID): MvcResult = mvc.perform(
+        get("/api/admin/appointments/$id").header("Authorization", "Bearer ${fixture.adminToken}"),
+    ).andReturn()
+
+    private fun adminList(): MvcResult = mvc.perform(
+        get("/api/admin/appointments")
+            .header("Authorization", "Bearer ${fixture.adminToken}")
+            .queryParam("centerId", fixture.centerId.toString())
+            .queryParam("date", fixture.date.toString()),
+    ).andReturn()
+
+    private fun monthlySummary(
+        year: Int,
+        month: Int,
+        serviceId: UUID? = null,
+        token: String = fixture.adminToken,
+    ): MvcResult {
+        var request = get("/api/admin/appointments/monthly-summary")
+            .header("Authorization", "Bearer $token")
+            .queryParam("centerId", fixture.centerId.toString())
+            .queryParam("year", year.toString())
+            .queryParam("month", month.toString())
+        if (serviceId != null) request = request.queryParam("serviceId", serviceId.toString())
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun dayAvailability(
+        date: LocalDate,
+        serviceId: UUID? = null,
+        token: String = fixture.adminToken,
+    ): MvcResult {
+        var request = get("/api/admin/appointments/day-availability")
+            .header("Authorization", "Bearer $token")
+            .queryParam("centerId", fixture.centerId.toString())
+            .queryParam("date", date.toString())
+        if (serviceId != null) request = request.queryParam("serviceId", serviceId.toString())
+        return mvc.perform(request).andReturn()
+    }
+
+    private fun adminPatch(id: UUID, action: String, token: String = fixture.adminToken): MvcResult = mvc.perform(
+        patch("/api/admin/appointments/$id/$action").header("Authorization", "Bearer $token"),
+    ).andReturn()
+
+    private fun adminSlots(id: UUID): MvcResult = mvc.perform(
+        get("/api/admin/appointments/$id/slots")
+            .header("Authorization", "Bearer ${fixture.adminToken}")
+            .queryParam("date", fixture.date.toString()),
+    ).andReturn()
+
+    private fun reschedule(id: UUID, assignmentId: UUID, startHour: Int, endHour: Int): MvcResult = mvc.perform(
+        put("/api/admin/appointments/$id/schedule")
+            .header("Authorization", "Bearer ${fixture.adminToken}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"professionalAssignmentId":"$assignmentId","startsAt":"${at(startHour)}","endsAt":"${at(endHour)}"}"""),
     ).andReturn()
 
     private fun slots(token: String): MvcResult = mvc.perform(
@@ -403,6 +863,9 @@ class AppointmentFlowTest {
 
     private fun response(result: MvcResult): AppointmentResponse =
         json.readValue(result.response.contentAsString, AppointmentResponse::class.java)
+
+    private fun adminResponse(result: MvcResult): AppointmentResponse =
+        json.readValue(json.readTree(result.response.contentAsString).get("appointment").toString(), AppointmentResponse::class.java)
 
     private fun expect(result: MvcResult, status: Int, code: String? = null) {
         assertEquals(status, result.response.status, result.response.contentAsString)

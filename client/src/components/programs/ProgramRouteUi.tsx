@@ -56,6 +56,29 @@ export function FormField({
 
 export const statusLabels = { DRAFT: "Borrador", ACTIVE: "Activa", SUSPENDED: "Suspendida", CLOSED: "Cerrada" } as const
 export const requirementLabels = { MIN_AGE: "Edad mínima", MAX_INCOME: "Ingreso máximo", RESIDENCY_YEARS: "Años de residencia", HAS_CHILDREN: "Tiene hijos" } as const
+export type RequirementType = keyof typeof requirementLabels
+
+const incomeFormatter = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 2 })
+
+/** Valor de un requisito para mostrar: el backend lo guarda como texto ("18", "150000.5", "true"). */
+export function formatRequirementValue(type: RequirementType | undefined, value: string | null | undefined): string {
+  const raw = value?.trim() ?? ""
+  if (!raw || !type) return raw
+  if (type === "HAS_CHILDREN") return raw.toLowerCase() === "true" ? "Sí" : raw.toLowerCase() === "false" ? "No" : raw
+  const number = Number(raw)
+  if (!Number.isFinite(number)) return raw
+  if (type === "MAX_INCOME") return incomeFormatter.format(number)
+  return `${number} ${number === 1 ? "año" : "años"}`
+}
+
+/** Mismas reglas que AdminProgramRequirementValidator en el backend. */
+export function requirementValueError(type: RequirementType, value: string): string | undefined {
+  const raw = value.trim()
+  if (type === "HAS_CHILDREN") return raw === "true" || raw === "false" ? undefined : "Indicá si se requiere tener hijos."
+  if (!raw) return type === "MAX_INCOME" ? "Ingresá el ingreso máximo." : "Ingresá la cantidad de años."
+  if (type === "MAX_INCOME") return /^\d+(\.\d{1,2})?$/.test(raw) ? undefined : "Ingresá un monto válido, con hasta dos decimales."
+  return /^\d{1,9}$/.test(raw) ? undefined : "Ingresá un número entero de años, sin decimales."
+}
 export const benefitLabels = { TAX_EXEMPTION: "Exención impositiva", HOUSING_SUBSIDY: "Subsidio habitacional", FOOD_ASSISTANCE: "Asistencia alimentaria", UTILITY_SUBSIDY: "Subsidio de servicios" } as const
 
 export function parseLocalDate(value: string) {

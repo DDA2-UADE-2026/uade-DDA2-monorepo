@@ -9,7 +9,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, Link, redirect } from "@tanstack/react-router"
 import type { ReactNode } from "react"
 import { useState } from "react"
 
@@ -37,17 +37,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { get1Options } from "@/generated/@tanstack/react-query.gen"
+import { UserInline } from "@/components/UserChip"
 
 export const Route = createFileRoute("/_app/gestion/actividades/$actividadId/")({
-  beforeLoad: ({ context }) => {
-    if (context.user.activeRole?.toUpperCase() !== "ADMIN") {
-      throw redirect({ to: "/403", replace: true })
+  beforeLoad: ({ context, params }) => {
+    if (!context.user.permissions?.includes("activities:management:view")) {
+      if (context.user.permissions?.includes("activities:attendance:view")) {
+        throw redirect({ to: "/gestion/actividades/$actividadId/asistencia", params, search: { page: 1 }, replace: true })
+      }
     }
   },
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext()
   const { actividadId } = Route.useParams()
   const [editing, setEditing] = useState(false)
   const [statusChange, setStatusChange] = useState<ActivityStatusAction | null>(null)
@@ -67,19 +71,20 @@ function RouteComponent() {
         {activity && (
           <OutletNavRightButton>
             <ActivityStatusBadge status={activity.status} />
-            {canEditActivity(activity.status) && (
+            {user.permissions?.includes("activities:attendance:view") && activity.status !== "DRAFT" && <Button size="sm" variant="outline" render={<Link to="/gestion/actividades/$actividadId/asistencia" params={{ actividadId }} search={{ page: 1 }} />}>Ver asistencia</Button>}
+            {user.permissions?.includes("activities:management:edit") && canEditActivity(activity.status) && (
               <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
                 <IconPencil />
                 Editar
               </Button>
             )}
-            {canPublishActivity(activity.status) && (
+            {user.permissions?.includes("activities:management:change-status") && canPublishActivity(activity.status) && (
               <Button size="sm" onClick={() => setStatusChange("publish")}>
                 <IconSpeakerphone />
                 Publicar
               </Button>
             )}
-            {canCloseActivity(activity.status) && (
+            {user.permissions?.includes("activities:management:change-status") && canCloseActivity(activity.status) && (
               <Button size="sm" variant="outline" onClick={() => setStatusChange("close")}>
                 <IconLock />
                 Cerrar
@@ -150,7 +155,7 @@ function RouteComponent() {
                     <DetailItem
                       icon={<IconUser />}
                       label="Creada por"
-                      value={activity.createdBy?.name || "—"}
+                      value={<UserInline user={{ id: activity.createdBy?.id, name: activity.createdBy?.name }} className="mt-0.5" />}
                     />
                     <DetailItem
                       icon={<IconCalendarEvent />}
@@ -194,7 +199,7 @@ function statusHint(status?: ActivityStatus) {
   return "Actividad comunitaria."
 }
 
-function DetailItem({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+function DetailItem({ icon, label, value }: { icon: ReactNode; label: string; value: ReactNode }) {
   return (
     <div className="flex min-w-0 items-start gap-2 rounded-lg bg-muted/60 p-3">
       <span className="mt-0.5 shrink-0 text-primary [&_svg]:size-4">{icon}</span>

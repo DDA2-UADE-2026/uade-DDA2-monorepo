@@ -1,7 +1,10 @@
 package com.uade.dda2.server.feature.application.service
 
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
+import com.uade.dda2.server.feature.application.dto.request.AssignApplicationWorkerRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationRequest
+import com.uade.dda2.server.feature.application.dto.request.ResolveApplicationRequest
+import com.uade.dda2.server.feature.application.entity.ApplicationResolutionDecision
 import com.uade.dda2.server.feature.application.dto.request.CreateAssistedApplicationRequest
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationListResponse
 import com.uade.dda2.server.feature.application.dto.response.AdminApplicationResponse
@@ -9,6 +12,9 @@ import com.uade.dda2.server.feature.application.dto.response.ApplicationListResp
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResponse
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
+import com.uade.dda2.server.feature.application.entity.ApplicationVisitStatus
+import com.uade.dda2.server.feature.application.repository.ApplicationEvaluationRepository
+import com.uade.dda2.server.feature.application.repository.ApplicationVisitRepository
 import com.uade.dda2.server.feature.program.mapper.toAvailableDocumentRequirementResponse
 import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
 import com.uade.dda2.server.feature.application.error.ApplicationErrors
@@ -39,9 +45,18 @@ import java.util.UUID
 
 data class ApplicationSubmission(val application: ApplicationResponse, val replayed: Boolean)
 
+const val APPLICATION_ASSIGN_PERMISSION = "applications:management:assign"
+const val APPLICATION_RESOLUTION_CREATE_PERMISSION = "applications:resolutions:create"
+
+// Solicitudes todavía en trabajo social: antes de la resolución final y fuera de borrador.
+// La lista de espera se incluye porque el asignado todavía tiene que aprobarla o rechazarla.
+private val ASSIGNABLE_STATUSES = ApplicationStatus.EVALUATION_ALLOWED + ApplicationStatus.IN_VISIT + ApplicationStatus.WAITLISTED
+
 @Service
 class ApplicationService(
     private val applications: ApplicationRepository,
+    private val evaluations: ApplicationEvaluationRepository,
+    private val visits: ApplicationVisitRepository,
     private val users: UserRepository,
     private val periods: EnrollmentPeriodRepository,
     private val editions: ProgramEditionRepository,
@@ -134,10 +149,12 @@ class ApplicationService(
         }
 
     @Transactional(readOnly = true)
-    fun listAdmin(page: Int, size: Int): AdminApplicationListResponse {
+    fun listAdmin(page: Int, size: Int, programId: UUID? = null): AdminApplicationListResponse {
         authorized("applications:management:view")
-        // Same ordering as the own listing; the page covers every titular, without filters.
-        val results = applications.findAll(PageRequest.of(page, size, Sort.by("applicationNumber").descending()))
+        // Same ordering as the own listing; the page covers every titular, optionally narrowed to one program.
+        val pageable = PageRequest.of(page, size, Sort.by("applicationNumber").descending())
+        val results = if (programId == null) applications.findAll(pageable)
+        else applications.findAllByProgramEditionProgramId(programId, pageable)
         return AdminApplicationListResponse(results.content.map { it.toAdminListItemResponse() },
             results.number, results.size, results.totalElements, results.totalPages)
     }
@@ -146,12 +163,131 @@ class ApplicationService(
     fun getAdmin(id: UUID): AdminApplicationResponse {
         authorized("applications:management:view")
         val application = applications.findDetailById(id) ?: throw ApplicationErrors.notFound()
-        return application.toAdminResponse(
-            pendingDocuments.calculate(application),
-            documentRequirements.findAllByProgramEditionIdOrderByNameAsc(requireNotNull(application.programEdition.id))
-                .map { it.toAvailableDocumentRequirementResponse() },
-        )
+        return detail(application)
     }
+
+    @Transactional
+    fun assignWorker(id: UUID, request: AssignApplicationWorkerRequest): AdminApplicationResponse {
+        val actor = authorized(APPLICATION_ASSIGN_PERMISSION)
+        val userId = request.userId ?: throw ApplicationErrors.invalidAssignment("El usuario a asignar es obligatorio.")
+        val application = applications.findByIdForUpdate(id) ?: throw ApplicationErrors.notFound()
+        if (application.status !in ASSIGNABLE_STATUSES) throw ApplicationErrors.assignmentStatusNotAllowed()
+        val assignee = users.findByIdWithRoles(userId)?.takeIf { it.active } ?: throw ApplicationErrors.assigneeNotFound()
+        if (assignee.id == application.user.id) throw ApplicationErrors.assigneeIsApplicant()
+        val required = buildList {
+            add(APPLICATION_VISIT_CREATE_PERMISSION)
+            if (!evaluations.existsByApplicationId(id)) add(APPLICATION_EVALUATION_CREATE_PERMISSION)
+        }
+        // Basta con que alguno de sus roles tenga los permisos: el rol activo se elige al iniciar sesión.
+        if (assignee.roles.none { role -> required.all { permission -> role.permissions.any { it.name == permission } } }) {
+            throw ApplicationErrors.assigneeNotEligible()
+        }
+        val previousWorkerId = application.assignedWorker?.id
+        if (previousWorkerId == assignee.id) return detail(application)
+        // El responsable de cada visita es el trabajador asignado: reasignar con visitas programadas las dejaría huérfanas.
+        if (visits.existsByApplicationIdAndStatus(id, ApplicationVisitStatus.SCHEDULED)) {
+            throw ApplicationErrors.assignmentWithScheduledVisits()
+        }
+
+        application.assignedWorker = assignee
+        application.updatedAt = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
+        applications.saveAndFlush(application)
+        logs.record(
+            user = actor,
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.APPLICATION,
+            entityId = id.toString(),
+            oldValues = json.writeValueAsString(mapOf("assignedWorkerUserId" to previousWorkerId)),
+            newValues = json.writeValueAsString(mapOf("operation" to "ASSIGN_WORKER", "assignedWorkerUserId" to assignee.id)),
+        )
+        return detail(application)
+    }
+
+    @Transactional
+    fun unassignWorker(id: UUID): AdminApplicationResponse {
+        val actor = authorized(APPLICATION_ASSIGN_PERMISSION)
+        val application = applications.findByIdForUpdate(id) ?: throw ApplicationErrors.notFound()
+        if (application.status !in ASSIGNABLE_STATUSES) throw ApplicationErrors.assignmentStatusNotAllowed()
+        val previousWorkerId = application.assignedWorker?.id ?: return detail(application)
+        // Sin asignado, quien registra la evaluación queda asignado; una vez evaluada, las visitas necesitan uno.
+        if (evaluations.existsByApplicationId(id)) throw ApplicationErrors.unassignmentAfterEvaluation()
+
+        application.assignedWorker = null
+        application.updatedAt = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
+        applications.saveAndFlush(application)
+        logs.record(
+            user = actor,
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.APPLICATION,
+            entityId = id.toString(),
+            oldValues = json.writeValueAsString(mapOf("assignedWorkerUserId" to previousWorkerId)),
+            newValues = json.writeValueAsString(mapOf("operation" to "UNASSIGN_WORKER", "assignedWorkerUserId" to null)),
+        )
+        return detail(application)
+    }
+
+    @Transactional
+    fun resolve(id: UUID, request: ResolveApplicationRequest): AdminApplicationResponse {
+        val actor = authorized(APPLICATION_RESOLUTION_CREATE_PERMISSION)
+        val decision = request.decision ?: throw ApplicationErrors.invalidResolution("La decisión es obligatoria.")
+        val reason = request.reason?.trim()?.takeIf { it.isNotEmpty() }
+        if (reason != null && reason.length > 1000) {
+            throw ApplicationErrors.invalidResolution("El motivo no puede superar 1000 caracteres.")
+        }
+        if (reason == null && decision != ApplicationResolutionDecision.APPROVED) {
+            throw ApplicationErrors.invalidResolution("El motivo es obligatorio para rechazar o dejar en lista de espera.")
+        }
+
+        // Se bloquea primero la edición: serializa las aprobaciones que compiten por el mismo cupo.
+        val editionId = applications.findById(id).map { it.programEdition.id }.orElse(null) ?: throw ApplicationErrors.notFound()
+        val edition = requireNotNull(editions.findByIdForUpdate(requireNotNull(editionId)))
+        val application = applications.findByIdForUpdate(id) ?: throw ApplicationErrors.notFound()
+        val allowed = when (application.status) {
+            ApplicationStatus.IN_EVALUATION -> true
+            // Desde la lista de espera solo queda decidir: no se vuelve a poner en espera.
+            ApplicationStatus.WAITLISTED -> decision != ApplicationResolutionDecision.WAITLISTED
+            else -> false
+        }
+        if (!allowed) throw ApplicationErrors.resolutionStatusNotAllowed()
+        if (application.user.id == actor.id) throw ApplicationErrors.resolutionOwnApplication()
+        if (application.assignedWorker?.id != actor.id) throw ApplicationErrors.resolutionAssignedToAnotherWorker()
+        if (!evaluations.existsByApplicationId(id)) throw ApplicationErrors.resolutionRequiresEvaluation()
+        if (visits.existsByApplicationIdAndStatus(id, ApplicationVisitStatus.SCHEDULED)) {
+            throw ApplicationErrors.resolutionWithScheduledVisits()
+        }
+        if (decision == ApplicationResolutionDecision.APPROVED) {
+            if (pendingDocuments.calculate(application).isNotEmpty()) throw ApplicationErrors.resolutionWithPendingDocuments()
+            if (applications.countByProgramEditionIdAndStatus(editionId, ApplicationStatus.APPROVED) >= edition.maxCapacity) {
+                throw ApplicationErrors.editionCapacityReached()
+            }
+        }
+
+        val previousStatus = application.status
+        val now = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
+        application.status = decision.applicationStatus()
+        application.resolutionReason = reason
+        application.resolvedAt = now
+        application.resolvedBy = actor
+        application.updatedAt = now
+        applications.saveAndFlush(application)
+        logs.record(
+            user = actor,
+            action = LogAction.UPDATE,
+            entityType = LogEntityType.APPLICATION,
+            entityId = id.toString(),
+            oldValues = json.writeValueAsString(mapOf("status" to previousStatus.name)),
+            newValues = json.writeValueAsString(
+                mapOf("operation" to "RESOLVE", "status" to decision.applicationStatus().name, "reasonRecorded" to (reason != null)),
+            ),
+        )
+        return detail(application)
+    }
+
+    private fun detail(application: Application): AdminApplicationResponse = application.toAdminResponse(
+        pendingDocuments.calculate(application),
+        documentRequirements.findAllByProgramEditionIdOrderByNameAsc(requireNotNull(application.programEdition.id))
+            .map { it.toAvailableDocumentRequirementResponse() },
+    )
 
     private fun response(application: Application): ApplicationResponse = application.toResponse(
         pendingDocuments.calculate(application),

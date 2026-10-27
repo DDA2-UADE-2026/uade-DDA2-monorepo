@@ -25,13 +25,20 @@ export function ActivityEnrollDialog({ activity, onOpenChange, onEnrolled }: {
   const queryClient = useQueryClient()
   const enroll = useMutation({
     ...enrollMutation(),
-    onSuccess: () => {
+    onSuccess: async () => {
       // El cupo disponible cambia para todos, así que se refresca el listado.
-      queryClient.invalidateQueries({ queryKey: list8QueryKey() })
-      if (activity.id) queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: activity.id } }) })
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: list8QueryKey() }),
+        ...(activity.id ? [queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: activity.id } }) })] : []),
+      ])
       toast.success("Te inscribiste en la actividad")
       if (activity.id) onEnrolled?.(activity.id)
       onOpenChange(false)
+    },
+    onError: () => {
+      // Recupera cupos y la inscripción propia si hubo un conflicto o se perdió la respuesta.
+      void queryClient.invalidateQueries({ queryKey: list8QueryKey() })
+      if (activity.id) void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: activity.id } }) })
     },
   })
 

@@ -31,6 +31,7 @@ fun Appointment.toAuditSnapshot(): Map<String, Any?> =
         "startsAt" to startsAt.toString(),
         "endsAt" to endsAt.toString(),
         "status" to status.name,
+        "slotReleasedAt" to slotReleasedAt?.toString(),
         "createdAt" to createdAt.toString(),
         "updatedAt" to updatedAt.toString(),
     )

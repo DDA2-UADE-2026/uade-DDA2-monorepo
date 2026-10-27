@@ -2,6 +2,9 @@ package com.uade.dda2.server.feature.activity
 
 import com.uade.dda2.server.feature.activity.dto.response.ActivityEnrollmentResponse
 import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityListResponse
+import com.uade.dda2.server.feature.activity.dto.response.CitizenActivityResponse
+import com.uade.dda2.server.feature.activity.dto.response.ActivityResponse
+import com.uade.dda2.server.feature.activity.entity.ActivityAttendanceStatus
 import com.uade.dda2.server.feature.activity.entity.Activity
 import com.uade.dda2.server.feature.activity.entity.ActivityStatus
 import com.uade.dda2.server.feature.activity.repository.ActivityEnrollmentRepository
@@ -19,18 +22,25 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDate
 import java.util.UUID
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.assertNull
 
 @SpringBootTest(
     properties = [
@@ -139,6 +149,92 @@ class ActivityEnrollmentFlowTest {
         expect(enroll(activityId, token = null), 401, "AUTH_UNAUTHENTICATED")
         expect(enroll(activityId, unauthorizedToken), 403, "AUTH_FORBIDDEN")
         expect(performGet("/api/activities", unauthorizedToken), 403, "AUTH_FORBIDDEN")
+    }
+
+    @Test
+    fun `recupera la inscripcion propia y no revela la de otro ciudadano`() {
+        val id = saveActivity(ActivityStatus.OPEN)
+        val enrollment = json.readValue(enroll(id).response.contentAsString, ActivityEnrollmentResponse::class.java)
+        val own = json.readValue(performGet("/api/activities/$id").response.contentAsString, CitizenActivityResponse::class.java)
+        assertEquals(enrollment.id, own.myEnrollment?.id)
+        val other = json.readValue(performGet("/api/activities/$id", secondCitizenToken).response.contentAsString, CitizenActivityResponse::class.java)
+        assertNull(other.myEnrollment)
+        val ownList = json.readValue(performGet("/api/activities?enrolledOnly=true").response.contentAsString, CitizenActivityListResponse::class.java)
+        assertEquals(listOf(id), ownList.content.map { it.id })
+        assertEquals(enrollment.id, ownList.content.single().myEnrollment?.id)
+        val otherList = json.readValue(performGet("/api/activities?enrolledOnly=true", secondCitizenToken).response.contentAsString, CitizenActivityListResponse::class.java)
+        assertEquals(0, otherList.totalElements)
+    }
+
+    @Test
+    fun `conserva el historial cerrado solo para su titular y pagina sus inscripciones`() {
+        val first = saveActivity(ActivityStatus.OPEN)
+        val second = saveActivity(ActivityStatus.OPEN)
+        expect(enroll(first), 201)
+        expect(enroll(second), 201)
+        tx { activities.findById(first).orElseThrow().also { it.status = ActivityStatus.CLOSED } }
+        val detail = performGet("/api/activities/$first")
+        expect(detail, 200)
+        assertEquals(ActivityStatus.CLOSED, json.readValue(detail.response.contentAsString, CitizenActivityResponse::class.java).status)
+        expect(performGet("/api/activities/$first", secondCitizenToken), 404, "ACTIVITY_NOT_AVAILABLE")
+        val page0 = json.readValue(performGet("/api/activities?enrolledOnly=true&page=0&size=1").response.contentAsString, CitizenActivityListResponse::class.java)
+        val page1 = json.readValue(performGet("/api/activities?enrolledOnly=true&page=1&size=1").response.contentAsString, CitizenActivityListResponse::class.java)
+        assertEquals(2, page0.totalElements)
+        assertEquals(setOf(first, second), (page0.content + page1.content).map { it.id }.toSet())
+        expect(performGet("/api/activities?enrolledOnly=true&page=-1"), 400)
+        expect(performGet("/api/activities?enrolledOnly=true", unauthorizedToken), 403)
+        expect(mvc.perform(get("/api/activities?enrolledOnly=true")).andReturn(), 401)
+    }
+
+    @Test
+    fun `recorre alta edicion publicacion inscripcion asistencia correccion y cierre`() {
+        val adminToken = tx {
+            val names = listOf("activities:management:create", "activities:management:edit", "activities:management:change-status", "activities:attendance:view", "activities:attendance:manage")
+            val granted = names.map { name -> permissions.findByNameIn(listOf(name)).firstOrNull() ?: permissions.save(Permission(name = name)) }.toMutableSet()
+            val role = roles.save(Role(name = "GESTOR-${UUID.randomUUID()}", permissions = granted))
+            jwt.createToken(users.saveAndFlush(user("Gestor del recorrido", role)), role)
+        }
+        val body = """{"name":"Taller recorrido","description":"Encuentro comunitario","location":"Centro Norte","startDate":"2026-10-20","endDate":"2026-10-20","capacity":2}"""
+        val created = mvc.perform(post("/api/admin/activities").header("Authorization", "Bearer $adminToken").contentType(MediaType.APPLICATION_JSON).content(body)).andReturn()
+        expect(created, 201)
+        val activity = json.readValue(created.response.contentAsString, ActivityResponse::class.java)
+        assertEquals(ActivityStatus.DRAFT, activity.status)
+        val edited = mvc.perform(put("/api/admin/activities/${activity.id}").header("Authorization", "Bearer $adminToken").contentType(MediaType.APPLICATION_JSON).content(body.replace("Centro Norte", "Centro Sur"))).andReturn()
+        expect(edited, 200)
+        assertEquals("Centro Sur", json.readValue(edited.response.contentAsString, ActivityResponse::class.java).location)
+        expect(mvc.perform(patch("/api/admin/activities/${activity.id}/publish").header("Authorization", "Bearer $adminToken")).andReturn(), 200)
+        val enrolled = enroll(activity.id)
+        expect(enrolled, 201)
+        val enrollment = json.readValue(enrolled.response.contentAsString, ActivityEnrollmentResponse::class.java)
+        expect(performGet("/api/professional/activities/${activity.id}/enrollments", adminToken), 200)
+        for (attendance in listOf("PRESENT", "ABSENT")) {
+            expect(mvc.perform(patch("/api/professional/activities/${activity.id}/enrollments/${enrollment.id}/attendance")
+                .header("Authorization", "Bearer $adminToken").contentType(MediaType.APPLICATION_JSON)
+                .content("""{"attendance":"$attendance"}""")).andReturn(), 200)
+        }
+        expect(mvc.perform(patch("/api/admin/activities/${activity.id}/close").header("Authorization", "Bearer $adminToken")).andReturn(), 200)
+        val detail = json.readValue(performGet("/api/activities/${activity.id}").response.contentAsString, CitizenActivityResponse::class.java)
+        assertEquals(ActivityStatus.CLOSED, detail.status)
+        assertEquals(ActivityAttendanceStatus.ABSENT, detail.myEnrollment?.attendance)
+        expect(enroll(activity.id, secondCitizenToken), 409, "ACTIVITY_NOT_OPEN")
+        val history = json.readValue(performGet("/api/activities?enrolledOnly=true").response.contentAsString, CitizenActivityListResponse::class.java)
+        assertEquals(activity.id, history.content.single().id)
+        assertEquals(ActivityAttendanceStatus.ABSENT, history.content.single().myEnrollment?.attendance)
+    }
+
+    @Test
+    fun `dos inscripciones concurrentes no superan el ultimo cupo`() {
+        val activityId = saveActivity(ActivityStatus.OPEN, capacity = 1)
+        val start = CountDownLatch(1)
+        val attempts = listOf(citizenToken, secondCitizenToken).map { token ->
+            CompletableFuture.supplyAsync {
+                check(start.await(10, TimeUnit.SECONDS))
+                enroll(activityId, token).response.status
+            }
+        }
+        start.countDown()
+        assertEquals(listOf(201, 409), attempts.map { it.get(30, TimeUnit.SECONDS) }.sorted())
+        assertEquals(1, enrollments.countByActivityId(activityId))
     }
 
     private fun saveActivity(status: ActivityStatus, capacity: Int = 10): UUID = tx {

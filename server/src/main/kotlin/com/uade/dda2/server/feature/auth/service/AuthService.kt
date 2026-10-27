@@ -8,6 +8,7 @@ import com.uade.dda2.server.feature.auth.dto.request.SelectRoleRequest
 import com.uade.dda2.server.feature.auth.dto.request.SwitchRoleRequest
 import com.uade.dda2.server.feature.auth.dto.response.LoginResponse
 import com.uade.dda2.server.feature.auth.dto.response.MeResponse
+import com.uade.dda2.server.feature.auth.dto.response.UserResponse
 import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.feature.auth.mapper.AuthMapper
@@ -55,15 +56,26 @@ class AuthService(
 
     @Transactional(readOnly = true)
     fun selectRole(request: SelectRoleRequest): LoginResponse {
+        val user = selectionUser(request.selectionToken)
+        return activeRoleResponse(user, assignedRole(user, request.role))
+    }
+
+    @Transactional(readOnly = true)
+    fun pendingRoleSelection(token: String): UserResponse {
+        val user = selectionUser(token)
+        ensureHasRoles(user)
+        return authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList())
+    }
+
+    private fun selectionUser(token: String): User {
         val userId = try {
-            jwtService.parseRoleSelectionToken(request.selectionToken)
+            jwtService.parseRoleSelectionToken(token)
         } catch (exception: JwtException) {
             throw invalidSelectionToken()
         } catch (exception: IllegalArgumentException) {
             throw invalidSelectionToken()
         }
-        val user = activeUser(userId)
-        return activeRoleResponse(user, assignedRole(user, request.role))
+        return activeUser(userId)
     }
 
     @Transactional(readOnly = true)

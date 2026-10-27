@@ -11,14 +11,15 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import jakarta.persistence.LockModeType
 import java.util.UUID
+import java.time.LocalDate
 
 interface ApplicationRepository : JpaRepository<Application, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select a from Application a join fetch a.programEdition where a.id = :id and a.user.id = :userId")
+    @Query("select a from Application a where a.id = :id and a.user.id = :userId")
     fun findByIdAndUserIdForUpdate(@Param("id") id: UUID, @Param("userId") userId: Long): Application?
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select a from Application a join fetch a.programEdition where a.id = :id")
+    @Query("select a from Application a where a.id = :id")
     fun findByIdForUpdate(@Param("id") id: UUID): Application?
 
     @EntityGraph(attributePaths = ["programEdition.program"])
@@ -31,7 +32,25 @@ interface ApplicationRepository : JpaRepository<Application, UUID> {
     override fun findAll(pageable: Pageable): Page<Application>
 
     @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "programEdition.program"])
+    fun findAllByProgramEditionProgramId(programId: UUID, pageable: Pageable): Page<Application>
+
+    fun countByProgramEditionIdAndStatus(programEditionId: UUID, status: ApplicationStatus): Long
+    fun existsByResolvedById(userId: Long): Boolean
+
+    @EntityGraph(attributePaths = ["user", "registeredBy", "assignedWorker", "resolvedBy", "programEdition.program"])
     fun findDetailById(id: UUID): Application?
+
+    @Query("""
+        select case when count(a) > 0 then true else false end from Application a
+        where a.user.id = :userId and a.id <> :applicationId and a.status = :status
+          and a.programEdition.program.id in :programIds
+          and a.programEdition.startDate <= :endDate and a.programEdition.endDate >= :startDate
+    """)
+    fun existsOverlappingApproval(
+        @Param("userId") userId: Long, @Param("applicationId") applicationId: UUID,
+        @Param("programIds") programIds: Collection<UUID>, @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate, @Param("status") status: ApplicationStatus = ApplicationStatus.APPROVED,
+    ): Boolean
 
     fun findByUserIdAndIdempotencyKey(userId: Long, idempotencyKey: String): Application?
     fun existsByUserIdAndEnrollmentPeriodId(userId: Long, enrollmentPeriodId: UUID): Boolean

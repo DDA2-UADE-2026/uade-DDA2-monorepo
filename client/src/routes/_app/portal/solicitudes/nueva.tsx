@@ -6,7 +6,7 @@ import { z } from "zod"
 
 import { ApplicationError, ApplicationHeading, ApplicationLoading, ApplicationPage } from "@/components/applications/ApplicationUi"
 import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
-import { requirementLabels } from "@/components/programs/ProgramRouteUi"
+import { formatRequirementValue, requirementLabels } from "@/components/programs/ProgramRouteUi"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -99,7 +99,7 @@ export function ApplicationConfirmation({ program, edition, period, userId }: {
           <h2 className="mb-3 font-medium">Requisitos de la edición</h2>
           {edition.requirements?.length ? <ItemGroup>{edition.requirements.map((requirement) => <Item key={requirement.id} variant="muted">
             <ItemMedia variant="icon"><IconChecklist /></ItemMedia>
-            <ItemContent><ItemTitle>{requirement.type ? requirementLabels[requirement.type] : "Requisito"}{requirement.value ? `: ${requirement.value}` : ""}</ItemTitle>{requirement.description && <ItemDescription className="line-clamp-none">{requirement.description}</ItemDescription>}</ItemContent>
+            <ItemContent><ItemTitle>{requirement.type ? requirementLabels[requirement.type] : "Requisito"}{requirement.value ? `: ${formatRequirementValue(requirement.type, requirement.value)}` : ""}</ItemTitle>{requirement.description && <ItemDescription className="line-clamp-none">{requirement.description}</ItemDescription>}</ItemContent>
           </Item>)}</ItemGroup> : <p className="text-sm text-muted-foreground">No hay condiciones adicionales informadas.</p>}
         </div>
         <div>

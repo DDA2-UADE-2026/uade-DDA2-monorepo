@@ -48,7 +48,7 @@ export function ApplicationDocuments({ application }: { application: Application
   return <section id="documentacion" aria-labelledby="application-documents-title" className="scroll-mt-6 space-y-4">
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div><h2 id="application-documents-title" className="font-heading text-xl font-medium">Documentación</h2><p className="mt-1 text-sm text-muted-foreground">Consultá tus entregas y completá los documentos solicitados.</p></div>
-      <Button size="sm" variant="outline" disabled={documents.isFetching} onClick={() => { documents.refetch(); queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }) }}><IconRefresh className={documents.isFetching ? "animate-spin" : undefined} />Actualizar documentos</Button>
+      <Button size="sm" variant="outline" disabled={documents.isFetching} onClick={() => { documents.refetch(); queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }) }}><IconRefresh className={documents.isFetching ? "animate-spin" : undefined} /><span className="sr-only sm:not-sr-only">Refrescar documentos</span></Button>
     </div>
     {disabled && <Alert><IconFileCheck /><AlertTitle>Documentación disponible para consulta</AlertTitle><AlertDescription>El estado de esta solicitud ya no permite cargar, reemplazar ni eliminar documentos.</AlertDescription></Alert>}
     {documents.isPending ? <Skeleton className="h-40 w-full" /> : documents.isError ? <ApplicationError error={documents.error} title="No pudimos cargar la documentación" retry={() => documents.refetch()} /> : requirements.length === 0 ? (

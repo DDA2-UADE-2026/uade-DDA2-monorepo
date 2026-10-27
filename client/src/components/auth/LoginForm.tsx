@@ -26,7 +26,6 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { getRoleHome } from "@/lib/auth-route-guards"
-import { getPendingRoleSelection } from "@/lib/role-selection"
 
 function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -46,12 +45,12 @@ function LoginForm() {
         { body: value },
         {
           onSuccess: (data) => {
-            if (data.token && data.user?.activeRole) {
+            if (data.user?.activeRole) {
               navigate({ to: getRoleHome(data.user.activeRole), replace: true })
               return
             }
 
-            if (getPendingRoleSelection()) {
+            if (data.requiresRoleSelection) {
               navigate({ to: "/seleccionar-rol", replace: true })
             }
           },

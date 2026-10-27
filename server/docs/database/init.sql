@@ -21,6 +21,7 @@ VALUES ('permissions:view'),
        ('users:edit'),
        ('users:delete'),
        ('logs:view'),
+       ('indicators:view'),
        ('activities:management:view'),
        ('activities:management:create'),
        ('activities:management:edit'),
@@ -38,12 +39,35 @@ VALUES ('permissions:view'),
        ('enrollment-periods:management:change-status'),
        ('applications:own:create'),
        ('applications:own:view'),
+       ('applications:own:benefits:view'),
+       ('applications:own:interventions:view'),
        ('applications:own:documents:view'),
        ('applications:own:documents:manage'),
+       ('applications:own:visits:view'),
+       ('applications:own:visits:reschedule-requests:create'),
        ('appointments:own:view'),
        ('appointments:own:create'),
+       ('appointments:management:view'),
+       ('appointments:management:manage'),
+       ('appointments:professional:view'),
+       ('appointments:professional:manage'),
        ('applications:management:create'),
        ('applications:management:view'),
+       ('applications:management:resolve'),
+       ('applications:management:benefits:assign'),
+       ('applications:management:benefits:manage'),
+       ('applications:evaluations:create'),
+       ('applications:interventions:create'),
+       ('applications:interventions:follow-ups:create'),
+       ('applications:interventions:follow-ups:publish'),
+       ('applications:interventions:view'),
+       ('applications:evaluations:view'),
+       ('applications:visits:create'),
+       ('applications:visits:view'),
+       ('applications:visits:manage'),
+       ('applications:visits:results:create'),
+       ('applications:visits:reschedule-requests:view'),
+       ('applications:visits:reschedule-requests:review'),
        ('applications:management:documents:view'),
        ('applications:management:documents:review'),
        ('applications:management:documents:manage'),
@@ -83,22 +107,27 @@ JOIN permissions p ON p.name IN (
     'activities:own:enroll',
     'applications:own:create',
     'applications:own:view',
+    'applications:own:benefits:view',
+    'applications:own:interventions:view',
     'applications:own:documents:view',
     'applications:own:documents:manage',
+    'applications:own:visits:view',
+    'applications:own:visits:reschedule-requests:create',
     'appointments:own:view',
     'appointments:own:create'
 )
 WHERE r.name = 'CIUDADANO'
 ON CONFLICT DO NOTHING;
 
--- El profesional accede a todas las actividades publicadas o cerradas.
--- La asignación a centros o actividades queda fuera del alcance actual.
+-- El profesional puede gestionar asistencia de actividades y sus turnos asignados.
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
 JOIN permissions p ON p.name IN (
     'activities:attendance:view',
-    'activities:attendance:manage'
+    'activities:attendance:manage',
+    'appointments:professional:view',
+    'appointments:professional:manage'
 )
 WHERE r.name = 'PROFESIONAL_CENTRO'
 ON CONFLICT DO NOTHING;

@@ -5,7 +5,6 @@ import com.uade.dda2.server.feature.appointment.dto.response.AppointmentCenterRe
 import com.uade.dda2.server.feature.appointment.dto.response.AppointmentServiceResponse
 import com.uade.dda2.server.feature.appointment.dto.response.AvailableAppointmentSlotResponse
 import com.uade.dda2.server.feature.appointment.error.AppointmentErrors
-import com.uade.dda2.server.feature.appointment.repository.AppointmentRepository
 import com.uade.dda2.server.feature.appointment.validator.AppointmentValidator
 import com.uade.dda2.server.feature.auth.entity.User
 import com.uade.dda2.server.feature.auth.repository.UserRepository
@@ -24,7 +23,7 @@ class AppointmentSlotService(
     private val services: MunicipalServiceRepository,
     private val centerServices: CenterServiceRepository,
     private val availabilities: ProfessionalAvailabilityRepository,
-    private val appointments: AppointmentRepository,
+    private val agenda: AgendaAvailabilityService,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
     private val validator: AppointmentValidator,
@@ -73,6 +72,7 @@ class AppointmentSlotService(
         citizenId: Long,
         now: OffsetDateTime,
         includeOccupancy: Boolean = true,
+        excludeAppointmentId: UUID? = null,
     ): List<AvailableAppointmentSlotResponse> {
         validator.validateDate(date, now, properties.zone())
         val centerService = centerServices.findById(centerServiceId).orElseThrow(AppointmentErrors::resourceNotFound)
@@ -87,13 +87,13 @@ class AppointmentSlotService(
         val dayStart = date.atStartOfDay(properties.zone()).toOffsetDateTime()
         val dayEnd = date.plusDays(1).atStartOfDay(properties.zone()).toOffsetDateTime()
         val professionalIds = effectiveAvailabilities.map { requireNotNull(it.assignment.professional.id) }.distinct()
-        val professionalAppointments = if (includeOccupancy) {
-            appointments.findByProfessionalIdsInRange(professionalIds, dayStart, dayEnd)
-        } else {
-            emptyList()
-        }
-        val citizenAppointments = if (includeOccupancy) {
-            appointments.findByCitizenIdInRange(citizenId, dayStart, dayEnd)
+        val busyIntervals = if (includeOccupancy) {
+            agenda.busyIntervals(
+                userIds = professionalIds + citizenId,
+                rangeStart = dayStart,
+                rangeEnd = dayEnd,
+                excludeAppointmentId = excludeAppointmentId,
+            )
         } else {
             emptyList()
         }
@@ -101,10 +101,12 @@ class AppointmentSlotService(
             date = date,
             durationMinutes = centerService.service.durationMinutes,
             availabilities = effectiveAvailabilities,
-            professionalAppointments = professionalAppointments,
-            citizenAppointments = citizenAppointments,
+            professionalAppointments = emptyList(),
+            citizenAppointments = emptyList(),
             zone = properties.zone(),
             now = now,
+            additionalBusyIntervals = busyIntervals,
+            citizenId = citizenId,
         )
     }
 

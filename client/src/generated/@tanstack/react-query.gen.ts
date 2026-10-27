@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assignProfessional, assignServiceToCenter, close, close1, closeEnrollmentPeriod, content, content1, create, create1, create2, create3, create4, create5, create6, create7, create8, createCenterOpeningHour, createCenterOpeningHoursBatch, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createProfessionalAvailabilitiesBatch, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, get3, get4, getAvailableProgram, getEnrollmentPeriod, getMunicipalCenter, getMunicipalService, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, list7, list8, listActivities, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, put, put1, reopenEnrollmentPeriod, review, selectRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, update, update1, update2, update3, update4, update5, update6, update7, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage } from '../sdk.gen';
-import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchError, CreateCenterOpeningHoursBatchResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchError, CreateProfessionalAvailabilitiesBatchResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PublishData, PublishError, PublishResponse, Put1Data, Put1Error, Put1Response, PutData, PutError, PutResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
+import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assignApplicationWorker, assignProfessional, assignServiceToCenter, cancelAdminAppointment, cancelApplicationVisit, close, close1, closeEnrollmentPeriod, content, content1, correctCommunityAttention, create, create1, create2, create3, create4, create5, create6, create7, create8, createApplicationEvaluation, createApplicationVisit, createCenterOpeningHour, createCenterOpeningHoursBatch, createCitizenAppointment, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createOwnApplicationVisitRescheduleRequest, createProfessionalAvailabilitiesBatch, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, get, get1, get2, get3, get4, getAdminAppointment, getApplicationEvaluation, getApplicationVisit, getApplicationVisitRescheduleRequest, getAvailableProgram, getCitizenAppointment, getEnrollmentPeriod, getIndicators, getMunicipalCenter, getMunicipalService, getOwnApplicationVisit, getOwnApplicationVisitRescheduleRequest, getProfessionalActivity, getProfessionalAppointment, getPublicImage, health, info, links, list, list1, list2, list3, list4, list5, list6, list7, list8, listActivities, listAdminAppointmentDayAvailability, listAdminAppointmentMonthlySummary, listAdminAppointments, listAdminAppointmentSlots, listAllOwnVisits, listApplicationEvaluations, listApplicationVisitRescheduleRequests, listApplicationVisits, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listCitizenAppointmentCenters, listCitizenAppointments, listCitizenAppointmentServices, listCitizenAppointmentSlots, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listOwnApplicationVisitRescheduleRequests, listOwnApplicationVisits, listProfessionalAppointments, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, put, put1, recordApplicationVisitResult, registerCommunityAttention, releaseAdminAppointmentSlot, reopenEnrollmentPeriod, rescheduleAdminAppointment, rescheduleApplicationVisit, resolveApplication, review, reviewApplicationVisitRescheduleRequest, selectRole, sessionCsrf, sessionLogin, sessionLogout, sessionRoleSelection, sessionSelectRole, sessionSwitchRole, submit, submit1, suspend, suspendEnrollmentPeriod, switchRole, unassignApplicationWorker, update, update1, update2, update3, update4, update5, update6, update7, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage } from '../sdk.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignApplicationWorkerData, AssignApplicationWorkerError, AssignApplicationWorkerResponse, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, CancelAdminAppointmentData, CancelAdminAppointmentError, CancelAdminAppointmentResponse, CancelApplicationVisitData, CancelApplicationVisitError, CancelApplicationVisitResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, CorrectCommunityAttentionData, CorrectCommunityAttentionError, CorrectCommunityAttentionResponse, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, CreateApplicationEvaluationData, CreateApplicationEvaluationError, CreateApplicationEvaluationResponse, CreateApplicationVisitData, CreateApplicationVisitError, CreateApplicationVisitResponse, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchError, CreateCenterOpeningHoursBatchResponse, CreateCitizenAppointmentData, CreateCitizenAppointmentError, CreateCitizenAppointmentResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateOwnApplicationVisitRescheduleRequestData, CreateOwnApplicationVisitRescheduleRequestError, CreateOwnApplicationVisitRescheduleRequestResponse, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchError, CreateProfessionalAvailabilitiesBatchResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, GetAdminAppointmentData, GetAdminAppointmentError, GetAdminAppointmentResponse, GetApplicationEvaluationData, GetApplicationEvaluationError, GetApplicationEvaluationResponse, GetApplicationVisitData, GetApplicationVisitError, GetApplicationVisitRescheduleRequestData, GetApplicationVisitRescheduleRequestError, GetApplicationVisitRescheduleRequestResponse, GetApplicationVisitResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetCitizenAppointmentData, GetCitizenAppointmentError, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetIndicatorsData, GetIndicatorsError, GetIndicatorsResponse, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetOwnApplicationVisitData, GetOwnApplicationVisitError, GetOwnApplicationVisitRescheduleRequestData, GetOwnApplicationVisitRescheduleRequestError, GetOwnApplicationVisitRescheduleRequestResponse, GetOwnApplicationVisitResponse, GetProfessionalActivityData, GetProfessionalActivityError, GetProfessionalActivityResponse, GetProfessionalAppointmentData, GetProfessionalAppointmentError, GetProfessionalAppointmentResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityError, ListAdminAppointmentDayAvailabilityResponse, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryError, ListAdminAppointmentMonthlySummaryResponse, ListAdminAppointmentsData, ListAdminAppointmentsError, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsError, ListAdminAppointmentSlotsResponse, ListAdminAppointmentsResponse, ListAllOwnVisitsData, ListAllOwnVisitsError, ListAllOwnVisitsResponse, ListApplicationEvaluationsData, ListApplicationEvaluationsError, ListApplicationEvaluationsResponse, ListApplicationVisitRescheduleRequestsData, ListApplicationVisitRescheduleRequestsError, ListApplicationVisitRescheduleRequestsResponse, ListApplicationVisitsData, ListApplicationVisitsError, ListApplicationVisitsResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersError, ListCitizenAppointmentCentersResponse, ListCitizenAppointmentsData, ListCitizenAppointmentsError, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesError, ListCitizenAppointmentServicesResponse, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsError, ListCitizenAppointmentSlotsResponse, ListCitizenAppointmentsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListOwnApplicationVisitRescheduleRequestsData, ListOwnApplicationVisitRescheduleRequestsError, ListOwnApplicationVisitRescheduleRequestsResponse, ListOwnApplicationVisitsData, ListOwnApplicationVisitsError, ListOwnApplicationVisitsResponse, ListProfessionalAppointmentsData, ListProfessionalAppointmentsError, ListProfessionalAppointmentsResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, PublishData, PublishError, PublishResponse, Put1Data, Put1Error, Put1Response, PutData, PutError, PutResponse, RecordApplicationVisitResultData, RecordApplicationVisitResultError, RecordApplicationVisitResultResponse, RegisterCommunityAttentionData, RegisterCommunityAttentionError, RegisterCommunityAttentionResponse, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotError, ReleaseAdminAppointmentSlotResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, RescheduleAdminAppointmentData, RescheduleAdminAppointmentError, RescheduleAdminAppointmentResponse, RescheduleApplicationVisitData, RescheduleApplicationVisitError, RescheduleApplicationVisitResponse, ResolveApplicationData, ResolveApplicationError, ResolveApplicationResponse, ReviewApplicationVisitRescheduleRequestData, ReviewApplicationVisitRescheduleRequestError, ReviewApplicationVisitRescheduleRequestResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, SessionCsrfData, SessionCsrfError, SessionCsrfResponse2, SessionLoginData, SessionLoginError, SessionLoginResponse, SessionLogoutData, SessionLogoutError, SessionLogoutResponse, SessionRoleSelectionData, SessionRoleSelectionError, SessionRoleSelectionResponse, SessionSelectRoleData, SessionSelectRoleError, SessionSelectRoleResponse, SessionSwitchRoleData, SessionSwitchRoleError, SessionSwitchRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, UnassignApplicationWorkerData, UnassignApplicationWorkerError, UnassignApplicationWorkerResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -145,6 +145,59 @@ export const update1Mutation = (options?: Partial<Options<Update1Data>>): UseMut
     const mutationOptions: UseMutationOptions<Update1Response, Update1Error, Options<Update1Data>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await update1({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Registrar atendido o ausente
+ */
+export const registerCommunityAttentionMutation = (options?: Partial<Options<RegisterCommunityAttentionData>>): UseMutationOptions<RegisterCommunityAttentionResponse, RegisterCommunityAttentionError, Options<RegisterCommunityAttentionData>> => {
+    const mutationOptions: UseMutationOptions<RegisterCommunityAttentionResponse, RegisterCommunityAttentionError, Options<RegisterCommunityAttentionData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await registerCommunityAttention({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Corregir la constancia con su version vigente
+ */
+export const correctCommunityAttentionMutation = (options?: Partial<Options<CorrectCommunityAttentionData>>): UseMutationOptions<CorrectCommunityAttentionResponse, CorrectCommunityAttentionError, Options<CorrectCommunityAttentionData>> => {
+    const mutationOptions: UseMutationOptions<CorrectCommunityAttentionResponse, CorrectCommunityAttentionError, Options<CorrectCommunityAttentionData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await correctCommunityAttention({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Reprogramar una visita o entrevista social
+ *
+ * Requiere applications:visits:manage en el rol activo. Solo el responsable que continua asignado a la solicitud puede cambiar el horario, la duracion y el lugar de una actuacion futura SCHEDULED.
+ */
+export const rescheduleApplicationVisitMutation = (options?: Partial<Options<RescheduleApplicationVisitData>>): UseMutationOptions<RescheduleApplicationVisitResponse, RescheduleApplicationVisitError, Options<RescheduleApplicationVisitData>> => {
+    const mutationOptions: UseMutationOptions<RescheduleApplicationVisitResponse, RescheduleApplicationVisitError, Options<RescheduleApplicationVisitData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await rescheduleApplicationVisit({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -657,6 +710,61 @@ export const updateCenterOpeningHourMutation = (options?: Partial<Options<Update
 };
 
 /**
+ * Reprogramar un turno pendiente
+ */
+export const rescheduleAdminAppointmentMutation = (options?: Partial<Options<RescheduleAdminAppointmentData>>): UseMutationOptions<RescheduleAdminAppointmentResponse, RescheduleAdminAppointmentError, Options<RescheduleAdminAppointmentData>> => {
+    const mutationOptions: UseMutationOptions<RescheduleAdminAppointmentResponse, RescheduleAdminAppointmentError, Options<RescheduleAdminAppointmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await rescheduleAdminAppointment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Volver a la asignación automática
+ *
+ * Requiere applications:management:assign en el rol activo. Quita el trabajador asignado para que quien registre la evaluación quede asignado, como en una solicitud nueva. Solo admite solicitudes todavía sin evaluar, en validación o evaluación. Si no había asignado, no cambia nada.
+ */
+export const unassignApplicationWorkerMutation = (options?: Partial<Options<UnassignApplicationWorkerData>>): UseMutationOptions<UnassignApplicationWorkerResponse, UnassignApplicationWorkerError, Options<UnassignApplicationWorkerData>> => {
+    const mutationOptions: UseMutationOptions<UnassignApplicationWorkerResponse, UnassignApplicationWorkerError, Options<UnassignApplicationWorkerData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await unassignApplicationWorker({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Asignar o reasignar el trabajador de una solicitud
+ *
+ * Requiere applications:management:assign en el rol activo. El asignado evalúa la solicitud y es responsable de sus visitas. No puede ser el titular de la solicitud. Debe estar activo y tener un rol con applications:visits:create, y también applications:evaluations:create si la solicitud todavía no fue evaluada. Solo admite solicitudes en validación, evaluación o visita, y rechaza la reasignación mientras haya visitas o entrevistas programadas. Asignar al mismo trabajador no cambia nada.
+ */
+export const assignApplicationWorkerMutation = (options?: Partial<Options<AssignApplicationWorkerData>>): UseMutationOptions<AssignApplicationWorkerResponse, AssignApplicationWorkerError, Options<AssignApplicationWorkerData>> => {
+    const mutationOptions: UseMutationOptions<AssignApplicationWorkerResponse, AssignApplicationWorkerError, Options<AssignApplicationWorkerData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assignApplicationWorker({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Cargar o reemplazar un documento en nombre del titular
  *
  * Entrega asistida para completar un trámite iniciado en la ventanilla. Admite PDF, JPEG o PNG de hasta 10 MB. Reemplazar conserva la entrega y reinicia su revisión a PENDING. El archivo queda atribuido al administrativo que lo sube.
@@ -810,6 +918,76 @@ export const switchRoleMutation = (options?: Partial<Options<SwitchRoleData>>): 
 };
 
 /**
+ * Cambiar el rol activo de la sesión
+ */
+export const sessionSwitchRoleMutation = (options?: Partial<Options<SessionSwitchRoleData>>): UseMutationOptions<SessionSwitchRoleResponse, SessionSwitchRoleError, Options<SessionSwitchRoleData>> => {
+    const mutationOptions: UseMutationOptions<SessionSwitchRoleResponse, SessionSwitchRoleError, Options<SessionSwitchRoleData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await sessionSwitchRole({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Seleccionar el rol de la sesión
+ */
+export const sessionSelectRoleMutation = (options?: Partial<Options<SessionSelectRoleData>>): UseMutationOptions<SessionSelectRoleResponse, SessionSelectRoleError, Options<SessionSelectRoleData>> => {
+    const mutationOptions: UseMutationOptions<SessionSelectRoleResponse, SessionSelectRoleError, Options<SessionSelectRoleData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await sessionSelectRole({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cerrar sesión del navegador
+ *
+ * Borra las cookies de acceso, selección y CSRF incluso si el JWT venció. No revoca tokens Bearer emitidos anteriormente.
+ */
+export const sessionLogoutMutation = (options?: Partial<Options<SessionLogoutData>>): UseMutationOptions<SessionLogoutResponse, SessionLogoutError, Options<SessionLogoutData>> => {
+    const mutationOptions: UseMutationOptions<SessionLogoutResponse, SessionLogoutError, Options<SessionLogoutData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await sessionLogout({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Iniciar sesión con cookie
+ */
+export const sessionLoginMutation = (options?: Partial<Options<SessionLoginData>>): UseMutationOptions<SessionLoginResponse, SessionLoginError, Options<SessionLoginData>> => {
+    const mutationOptions: UseMutationOptions<SessionLoginResponse, SessionLoginError, Options<SessionLoginData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await sessionLogin({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Seleccionar rol después del login
  *
  * Valida el JWT temporal del body y la asignación actual del rol. Emite un JWT operativo con solo los permisos de ese rol. No enviar bearer.
@@ -837,6 +1015,41 @@ export const loginMutation = (options?: Partial<Options<LoginData>>): UseMutatio
     const mutationOptions: UseMutationOptions<LoginResponse2, LoginError, Options<LoginData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await login({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listCitizenAppointmentsQueryKey = (options?: Options<ListCitizenAppointmentsData>) => createQueryKey('listCitizenAppointments', options);
+
+/**
+ * Listar turnos propios con su estado
+ */
+export const listCitizenAppointmentsOptions = (options?: Options<ListCitizenAppointmentsData>) => queryOptions<ListCitizenAppointmentsResponse, ListCitizenAppointmentsError, ListCitizenAppointmentsResponse, ReturnType<typeof listCitizenAppointmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCitizenAppointments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCitizenAppointmentsQueryKey(options)
+});
+
+/**
+ * Solicitar y confirmar un turno propio
+ */
+export const createCitizenAppointmentMutation = (options?: Partial<Options<CreateCitizenAppointmentData>>): UseMutationOptions<CreateCitizenAppointmentResponse, CreateCitizenAppointmentError, Options<CreateCitizenAppointmentData>> => {
+    const mutationOptions: UseMutationOptions<CreateCitizenAppointmentResponse, CreateCitizenAppointmentError, Options<CreateCitizenAppointmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createCitizenAppointment({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -937,6 +1150,186 @@ export const submitMutation = (options?: Partial<Options<SubmitData>>): UseMutat
     const mutationOptions: UseMutationOptions<SubmitResponse, SubmitError, Options<SubmitData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await submit({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listOwnApplicationVisitsQueryKey = (options: Options<ListOwnApplicationVisitsData>) => createQueryKey('listOwnApplicationVisits', options);
+
+/**
+ * Listar visitas y entrevistas de una solicitud propia
+ *
+ * Requiere applications:own:visits:view en el rol activo. La identidad se obtiene del JWT; una solicitud ajena se responde como inexistente. Incluye todos los estados y ordena por inicio descendente.
+ */
+export const listOwnApplicationVisitsOptions = (options: Options<ListOwnApplicationVisitsData>) => queryOptions<ListOwnApplicationVisitsResponse, ListOwnApplicationVisitsError, ListOwnApplicationVisitsResponse, ReturnType<typeof listOwnApplicationVisitsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listOwnApplicationVisits({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listOwnApplicationVisitsQueryKey(options)
+});
+
+export const listOwnApplicationVisitsInfiniteQueryKey = (options: Options<ListOwnApplicationVisitsData>): QueryKey<Options<ListOwnApplicationVisitsData>> => createQueryKey('listOwnApplicationVisits', options, true);
+
+/**
+ * Listar visitas y entrevistas de una solicitud propia
+ *
+ * Requiere applications:own:visits:view en el rol activo. La identidad se obtiene del JWT; una solicitud ajena se responde como inexistente. Incluye todos los estados y ordena por inicio descendente.
+ */
+export const listOwnApplicationVisitsInfiniteOptions = (options: Options<ListOwnApplicationVisitsData>) => {
+    const opts = infiniteQueryOptions<ListOwnApplicationVisitsResponse, ListOwnApplicationVisitsError, InfiniteData<ListOwnApplicationVisitsResponse>, QueryKey<Options<ListOwnApplicationVisitsData>>, number | Pick<QueryKey<Options<ListOwnApplicationVisitsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListOwnApplicationVisitsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listOwnApplicationVisits({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listOwnApplicationVisitsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Programar una visita o entrevista social
+ *
+ * Requiere applications:visits:create en el rol activo. La solicitud debe tener una evaluacion y estar asignada al usuario autenticado. El servidor calcula el fin y registra la actuacion como SCHEDULED.
+ */
+export const createApplicationVisitMutation = (options?: Partial<Options<CreateApplicationVisitData>>): UseMutationOptions<CreateApplicationVisitResponse, CreateApplicationVisitError, Options<CreateApplicationVisitData>> => {
+    const mutationOptions: UseMutationOptions<CreateApplicationVisitResponse, CreateApplicationVisitError, Options<CreateApplicationVisitData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createApplicationVisit({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Registrar el resultado de una visita o entrevista social
+ *
+ * Requiere applications:visits:results:create en el rol activo. Solo el responsable que continua asignado puede finalizar una actuacion SCHEDULED una vez alcanzado su horario de fin.
+ */
+export const recordApplicationVisitResultMutation = (options?: Partial<Options<RecordApplicationVisitResultData>>): UseMutationOptions<RecordApplicationVisitResultResponse, RecordApplicationVisitResultError, Options<RecordApplicationVisitResultData>> => {
+    const mutationOptions: UseMutationOptions<RecordApplicationVisitResultResponse, RecordApplicationVisitResultError, Options<RecordApplicationVisitResultData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await recordApplicationVisitResult({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listOwnApplicationVisitRescheduleRequestsQueryKey = (options: Options<ListOwnApplicationVisitRescheduleRequestsData>) => createQueryKey('listOwnApplicationVisitRescheduleRequests', options);
+
+/**
+ * Consultar el historial propio de solicitudes de reprogramacion
+ *
+ * Ordena por fecha e identificador descendentes y omite motivo y comentario.
+ */
+export const listOwnApplicationVisitRescheduleRequestsOptions = (options: Options<ListOwnApplicationVisitRescheduleRequestsData>) => queryOptions<ListOwnApplicationVisitRescheduleRequestsResponse, ListOwnApplicationVisitRescheduleRequestsError, ListOwnApplicationVisitRescheduleRequestsResponse, ReturnType<typeof listOwnApplicationVisitRescheduleRequestsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listOwnApplicationVisitRescheduleRequests({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listOwnApplicationVisitRescheduleRequestsQueryKey(options)
+});
+
+export const listOwnApplicationVisitRescheduleRequestsInfiniteQueryKey = (options: Options<ListOwnApplicationVisitRescheduleRequestsData>): QueryKey<Options<ListOwnApplicationVisitRescheduleRequestsData>> => createQueryKey('listOwnApplicationVisitRescheduleRequests', options, true);
+
+/**
+ * Consultar el historial propio de solicitudes de reprogramacion
+ *
+ * Ordena por fecha e identificador descendentes y omite motivo y comentario.
+ */
+export const listOwnApplicationVisitRescheduleRequestsInfiniteOptions = (options: Options<ListOwnApplicationVisitRescheduleRequestsData>) => {
+    const opts = infiniteQueryOptions<ListOwnApplicationVisitRescheduleRequestsResponse, ListOwnApplicationVisitRescheduleRequestsError, InfiniteData<ListOwnApplicationVisitRescheduleRequestsResponse>, QueryKey<Options<ListOwnApplicationVisitRescheduleRequestsData>>, number | Pick<QueryKey<Options<ListOwnApplicationVisitRescheduleRequestsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListOwnApplicationVisitRescheduleRequestsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listOwnApplicationVisitRescheduleRequests({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listOwnApplicationVisitRescheduleRequestsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+/**
+ * Solicitar la reprogramacion de una visita propia
+ *
+ * La identidad se obtiene del JWT. La visita debe estar programada y ser futura. La solicitud queda PENDING y no modifica su horario ni lugar.
+ */
+export const createOwnApplicationVisitRescheduleRequestMutation = (options?: Partial<Options<CreateOwnApplicationVisitRescheduleRequestData>>): UseMutationOptions<CreateOwnApplicationVisitRescheduleRequestResponse, CreateOwnApplicationVisitRescheduleRequestError, Options<CreateOwnApplicationVisitRescheduleRequestData>> => {
+    const mutationOptions: UseMutationOptions<CreateOwnApplicationVisitRescheduleRequestResponse, CreateOwnApplicationVisitRescheduleRequestError, Options<CreateOwnApplicationVisitRescheduleRequestData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createOwnApplicationVisitRescheduleRequest({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Registrar la evaluacion social de una solicitud
+ *
+ * Requiere applications:evaluations:create en el rol activo. Registra una unica evaluacion, asigna la solicitud al usuario autenticado y cambia su estado a IN_EVALUATION.
+ */
+export const createApplicationEvaluationMutation = (options?: Partial<Options<CreateApplicationEvaluationData>>): UseMutationOptions<CreateApplicationEvaluationResponse, CreateApplicationEvaluationError, Options<CreateApplicationEvaluationData>> => {
+    const mutationOptions: UseMutationOptions<CreateApplicationEvaluationResponse, CreateApplicationEvaluationError, Options<CreateApplicationEvaluationData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await createApplicationEvaluation({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1696,7 +2089,7 @@ export const list4QueryKey = (options?: Options<List4Data>) => createQueryKey('l
 /**
  * Listar solicitudes de cualquier titular
  *
- * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
+ * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. programId opcional restringe la página a las solicitudes de las ediciones de ese programa. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
  */
 export const list4Options = (options?: Options<List4Data>) => queryOptions<List4Response, List4Error, List4Response, ReturnType<typeof list4QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -1716,7 +2109,7 @@ export const list4InfiniteQueryKey = (options?: Options<List4Data>): QueryKey<Op
 /**
  * Listar solicitudes de cualquier titular
  *
- * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
+ * Requiere applications:management:view en el rol activo. Devuelve una página con las solicitudes de todos los titulares, ordenadas por número descendente, sin filtrar por el administrativo que las registró. programId opcional restringe la página a las solicitudes de las ediciones de ese programa. Cada elemento identifica al titular con su nombre y correo de users; el detalle completo está en GET /api/admin/applications/{id}.
  */
 export const list4InfiniteOptions = (options?: Options<List4Data>) => {
     const opts = infiniteQueryOptions<List4Response, List4Error, InfiniteData<List4Response>, QueryKey<Options<List4Data>>, number | Pick<QueryKey<Options<List4Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
@@ -1752,6 +2145,25 @@ export const submit1Mutation = (options?: Partial<Options<Submit1Data>>): UseMut
     const mutationOptions: UseMutationOptions<Submit1Response, Submit1Error, Options<Submit1Data>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await submit1({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Resolver una solicitud
+ *
+ * Requiere applications:resolutions:create en el rol activo y ser el trabajador asignado; nadie resuelve su propia solicitud. Admite solicitudes en evaluación (APPROVED, REJECTED o WAITLISTED) o en lista de espera (APPROVED o REJECTED). Exige una evaluación registrada y ninguna visita programada. Aprobar exige además la documentación obligatoria completa y cupo disponible en la edición (maxCapacity aprobadas). El motivo es visible para el titular y obligatorio para rechazar o dejar en espera. Rechazar libera al titular para presentarse en otra convocatoria.
+ */
+export const resolveApplicationMutation = (options?: Partial<Options<ResolveApplicationData>>): UseMutationOptions<ResolveApplicationResponse, ResolveApplicationError, Options<ResolveApplicationData>> => {
+    const mutationOptions: UseMutationOptions<ResolveApplicationResponse, ResolveApplicationError, Options<ResolveApplicationData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await resolveApplication({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -1859,6 +2271,44 @@ export const updateAttendanceMutation = (options?: Partial<Options<UpdateAttenda
     const mutationOptions: UseMutationOptions<UpdateAttendanceResponse, UpdateAttendanceError, Options<UpdateAttendanceData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateAttendance({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Aprobar o rechazar una solicitud de reprogramacion
+ *
+ * Solo puede decidir el responsable que continua asignado. Aprobar exige un horario completo sin conflictos; rechazar exige comentario. Una decision exitosa es definitiva.
+ */
+export const reviewApplicationVisitRescheduleRequestMutation = (options?: Partial<Options<ReviewApplicationVisitRescheduleRequestData>>): UseMutationOptions<ReviewApplicationVisitRescheduleRequestResponse, ReviewApplicationVisitRescheduleRequestError, Options<ReviewApplicationVisitRescheduleRequestData>> => {
+    const mutationOptions: UseMutationOptions<ReviewApplicationVisitRescheduleRequestResponse, ReviewApplicationVisitRescheduleRequestError, Options<ReviewApplicationVisitRescheduleRequestData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await reviewApplicationVisitRescheduleRequest({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cancelar una visita o entrevista social
+ *
+ * Requiere applications:visits:manage en el rol activo. La cancelacion exige un motivo, libera la agenda y puede devolver la solicitud a IN_EVALUATION.
+ */
+export const cancelApplicationVisitMutation = (options?: Partial<Options<CancelApplicationVisitData>>): UseMutationOptions<CancelApplicationVisitResponse, CancelApplicationVisitError, Options<CancelApplicationVisitData>> => {
+    const mutationOptions: UseMutationOptions<CancelApplicationVisitResponse, CancelApplicationVisitError, Options<CancelApplicationVisitData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await cancelApplicationVisit({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -2131,6 +2581,40 @@ export const activateCenterOpeningHourMutation = (options?: Partial<Options<Acti
 };
 
 /**
+ * Habilitar el horario de un turno cancelado
+ */
+export const releaseAdminAppointmentSlotMutation = (options?: Partial<Options<ReleaseAdminAppointmentSlotData>>): UseMutationOptions<ReleaseAdminAppointmentSlotResponse, ReleaseAdminAppointmentSlotError, Options<ReleaseAdminAppointmentSlotData>> => {
+    const mutationOptions: UseMutationOptions<ReleaseAdminAppointmentSlotResponse, ReleaseAdminAppointmentSlotError, Options<ReleaseAdminAppointmentSlotData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await releaseAdminAppointmentSlot({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Cancelar un turno pendiente y retener su horario
+ */
+export const cancelAdminAppointmentMutation = (options?: Partial<Options<CancelAdminAppointmentData>>): UseMutationOptions<CancelAdminAppointmentResponse, CancelAdminAppointmentError, Options<CancelAdminAppointmentData>> => {
+    const mutationOptions: UseMutationOptions<CancelAdminAppointmentResponse, CancelAdminAppointmentError, Options<CancelAdminAppointmentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await cancelAdminAppointment({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Revisar un documento pendiente
  *
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
@@ -2267,6 +2751,46 @@ export const listLogsByEntityOptions = (options: Options<ListLogsByEntityData>) 
     queryKey: listLogsByEntityQueryKey(options)
 });
 
+export const sessionRoleSelectionQueryKey = (options?: Options<SessionRoleSelectionData>) => createQueryKey('sessionRoleSelection', options);
+
+/**
+ * Recuperar selección de rol pendiente
+ *
+ * Permite recargar la pantalla sin almacenar tokens en JavaScript. Responde 401 si no hay una selección vigente.
+ */
+export const sessionRoleSelectionOptions = (options?: Options<SessionRoleSelectionData>) => queryOptions<SessionRoleSelectionResponse, SessionRoleSelectionError, SessionRoleSelectionResponse, ReturnType<typeof sessionRoleSelectionQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await sessionRoleSelection({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: sessionRoleSelectionQueryKey(options)
+});
+
+export const sessionCsrfQueryKey = (options?: Options<SessionCsrfData>) => createQueryKey('sessionCsrf', options);
+
+/**
+ * Obtener token CSRF
+ *
+ * Consultar antes de operaciones de escritura. Enviar el token en X-XSRF-TOKEN y las cookies con credentials: include.
+ */
+export const sessionCsrfOptions = (options?: Options<SessionCsrfData>) => queryOptions<SessionCsrfResponse2, SessionCsrfError, SessionCsrfResponse2, ReturnType<typeof sessionCsrfQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await sessionCsrf({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: sessionCsrfQueryKey(options)
+});
+
 export const meQueryKey = (options?: Options<MeData>) => createQueryKey('me', options);
 
 /**
@@ -2359,6 +2883,44 @@ export const getAvailableProgramOptions = (options: Options<GetAvailableProgramD
     queryKey: getAvailableProgramQueryKey(options)
 });
 
+export const listProfessionalAppointmentsQueryKey = (options: Options<ListProfessionalAppointmentsData>) => createQueryKey('listProfessionalAppointments', options);
+
+/**
+ * Listar turnos asignados para una fecha o un rango
+ *
+ * Sin to devuelve los turnos de date. Con to devuelve los turnos desde date hasta to inclusive, ordenados por inicio; el rango admite hasta 42 dias para cubrir una grilla mensual completa.
+ */
+export const listProfessionalAppointmentsOptions = (options: Options<ListProfessionalAppointmentsData>) => queryOptions<ListProfessionalAppointmentsResponse, ListProfessionalAppointmentsError, ListProfessionalAppointmentsResponse, ReturnType<typeof listProfessionalAppointmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listProfessionalAppointments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProfessionalAppointmentsQueryKey(options)
+});
+
+export const getProfessionalAppointmentQueryKey = (options: Options<GetProfessionalAppointmentData>) => createQueryKey('getProfessionalAppointment', options);
+
+/**
+ * Consultar un turno asignado y su constancia
+ */
+export const getProfessionalAppointmentOptions = (options: Options<GetProfessionalAppointmentData>) => queryOptions<GetProfessionalAppointmentResponse, GetProfessionalAppointmentError, GetProfessionalAppointmentResponse, ReturnType<typeof getProfessionalAppointmentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getProfessionalAppointment({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProfessionalAppointmentQueryKey(options)
+});
+
 export const listActivitiesQueryKey = (options?: Options<ListActivitiesData>) => createQueryKey('listActivities', options);
 
 /**
@@ -2406,6 +2968,24 @@ export const listActivitiesInfiniteOptions = (options?: Options<ListActivitiesDa
     });
     return opts as Omit<typeof opts, 'initialData'>;
 };
+
+export const getProfessionalActivityQueryKey = (options: Options<GetProfessionalActivityData>) => createQueryKey('getProfessionalActivity', options);
+
+/**
+ * Consultar una actividad para registrar asistencia
+ */
+export const getProfessionalActivityOptions = (options: Options<GetProfessionalActivityData>) => queryOptions<GetProfessionalActivityResponse, GetProfessionalActivityError, GetProfessionalActivityResponse, ReturnType<typeof getProfessionalActivityQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getProfessionalActivity({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProfessionalActivityQueryKey(options)
+});
 
 export const listEnrollmentsQueryKey = (options: Options<ListEnrollmentsData>) => createQueryKey('listEnrollments', options);
 
@@ -2475,6 +3055,78 @@ export const getPublicImageOptions = (options: Options<GetPublicImageData>) => q
     queryKey: getPublicImageQueryKey(options)
 });
 
+export const getCitizenAppointmentQueryKey = (options: Options<GetCitizenAppointmentData>) => createQueryKey('getCitizenAppointment', options);
+
+/**
+ * Consultar el estado de un turno propio
+ */
+export const getCitizenAppointmentOptions = (options: Options<GetCitizenAppointmentData>) => queryOptions<unknown, GetCitizenAppointmentError, unknown, ReturnType<typeof getCitizenAppointmentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getCitizenAppointment({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getCitizenAppointmentQueryKey(options)
+});
+
+export const listCitizenAppointmentSlotsQueryKey = (options: Options<ListCitizenAppointmentSlotsData>) => createQueryKey('listCitizenAppointmentSlots', options);
+
+/**
+ * Listar horarios disponibles para una fecha
+ */
+export const listCitizenAppointmentSlotsOptions = (options: Options<ListCitizenAppointmentSlotsData>) => queryOptions<ListCitizenAppointmentSlotsResponse, ListCitizenAppointmentSlotsError, ListCitizenAppointmentSlotsResponse, ReturnType<typeof listCitizenAppointmentSlotsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCitizenAppointmentSlots({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCitizenAppointmentSlotsQueryKey(options)
+});
+
+export const listCitizenAppointmentServicesQueryKey = (options?: Options<ListCitizenAppointmentServicesData>) => createQueryKey('listCitizenAppointmentServices', options);
+
+/**
+ * Listar servicios disponibles para turnos
+ */
+export const listCitizenAppointmentServicesOptions = (options?: Options<ListCitizenAppointmentServicesData>) => queryOptions<ListCitizenAppointmentServicesResponse, ListCitizenAppointmentServicesError, ListCitizenAppointmentServicesResponse, ReturnType<typeof listCitizenAppointmentServicesQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCitizenAppointmentServices({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCitizenAppointmentServicesQueryKey(options)
+});
+
+export const listCitizenAppointmentCentersQueryKey = (options: Options<ListCitizenAppointmentCentersData>) => createQueryKey('listCitizenAppointmentCenters', options);
+
+/**
+ * Listar centros disponibles para un servicio
+ */
+export const listCitizenAppointmentCentersOptions = (options: Options<ListCitizenAppointmentCentersData>) => queryOptions<ListCitizenAppointmentCentersResponse, ListCitizenAppointmentCentersError, ListCitizenAppointmentCentersResponse, ReturnType<typeof listCitizenAppointmentCentersQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listCitizenAppointmentCenters({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listCitizenAppointmentCentersQueryKey(options)
+});
+
 export const get2QueryKey = (options: Options<Get2Data>) => createQueryKey('get2', options);
 
 /**
@@ -2493,6 +3145,46 @@ export const get2Options = (options: Options<Get2Data>) => queryOptions<Get2Resp
         return data;
     },
     queryKey: get2QueryKey(options)
+});
+
+export const getOwnApplicationVisitQueryKey = (options: Options<GetOwnApplicationVisitData>) => createQueryKey('getOwnApplicationVisit', options);
+
+/**
+ * Consultar una visita o entrevista de una solicitud propia
+ *
+ * Requiere applications:own:visits:view en el rol activo. Devuelve el horario vigente y, si fue cancelada, el motivo. Nunca expone observaciones ni conclusiones sociales.
+ */
+export const getOwnApplicationVisitOptions = (options: Options<GetOwnApplicationVisitData>) => queryOptions<GetOwnApplicationVisitResponse, GetOwnApplicationVisitError, GetOwnApplicationVisitResponse, ReturnType<typeof getOwnApplicationVisitQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getOwnApplicationVisit({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getOwnApplicationVisitQueryKey(options)
+});
+
+export const getOwnApplicationVisitRescheduleRequestQueryKey = (options: Options<GetOwnApplicationVisitRescheduleRequestData>) => createQueryKey('getOwnApplicationVisitRescheduleRequest', options);
+
+/**
+ * Consultar una solicitud propia de reprogramacion
+ *
+ * Incluye motivo y comentario de revision, sin identidades internas de trabajadores.
+ */
+export const getOwnApplicationVisitRescheduleRequestOptions = (options: Options<GetOwnApplicationVisitRescheduleRequestData>) => queryOptions<GetOwnApplicationVisitRescheduleRequestResponse, GetOwnApplicationVisitRescheduleRequestError, GetOwnApplicationVisitRescheduleRequestResponse, ReturnType<typeof getOwnApplicationVisitRescheduleRequestQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getOwnApplicationVisitRescheduleRequest({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getOwnApplicationVisitRescheduleRequestQueryKey(options)
 });
 
 export const list6QueryKey = (options: Options<List6Data>) => createQueryKey('list6', options);
@@ -2532,6 +3224,58 @@ export const contentOptions = (options: Options<ContentData>) => queryOptions<Co
     },
     queryKey: contentQueryKey(options)
 });
+
+export const listAllOwnVisitsQueryKey = (options?: Options<ListAllOwnVisitsData>) => createQueryKey('listAllOwnVisits', options);
+
+/**
+ * Listar visitas y entrevistas de todas las solicitudes propias
+ *
+ * Requiere applications:own:visits:view en el rol activo. La identidad se obtiene del JWT. Con upcoming=true devuelve solo actuaciones programadas que aun no terminaron, ordenadas por inicio ascendente; si no, todas ordenadas por inicio descendente.
+ */
+export const listAllOwnVisitsOptions = (options?: Options<ListAllOwnVisitsData>) => queryOptions<ListAllOwnVisitsResponse, ListAllOwnVisitsError, ListAllOwnVisitsResponse, ReturnType<typeof listAllOwnVisitsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAllOwnVisits({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAllOwnVisitsQueryKey(options)
+});
+
+export const listAllOwnVisitsInfiniteQueryKey = (options?: Options<ListAllOwnVisitsData>): QueryKey<Options<ListAllOwnVisitsData>> => createQueryKey('listAllOwnVisits', options, true);
+
+/**
+ * Listar visitas y entrevistas de todas las solicitudes propias
+ *
+ * Requiere applications:own:visits:view en el rol activo. La identidad se obtiene del JWT. Con upcoming=true devuelve solo actuaciones programadas que aun no terminaron, ordenadas por inicio ascendente; si no, todas ordenadas por inicio descendente.
+ */
+export const listAllOwnVisitsInfiniteOptions = (options?: Options<ListAllOwnVisitsData>) => {
+    const opts = infiniteQueryOptions<ListAllOwnVisitsResponse, ListAllOwnVisitsError, InfiniteData<ListAllOwnVisitsResponse>, QueryKey<Options<ListAllOwnVisitsData>>, number | Pick<QueryKey<Options<ListAllOwnVisitsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListAllOwnVisitsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listAllOwnVisits({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listAllOwnVisitsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const findAll5QueryKey = (options: Options<FindAll5Data>) => createQueryKey('findAll5', options);
 
@@ -2593,6 +3337,116 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
     queryKey: listProgramEditionOptionsQueryKey(options)
 });
 
+export const getIndicatorsQueryKey = (options?: Options<GetIndicatorsData>) => createQueryKey('getIndicators', options);
+
+/**
+ * Consultar el tablero de indicadores
+ *
+ * Requiere indicators:view en el rol activo. Devuelve todos los indicadores agregados en el servidor. El período (from/to, ambos inclusive, en la zona horaria municipal) aplica a presentaciones, resoluciones, evaluaciones, visitas, documentos, turnos y actividades; cupos, carga de trabajo y casos pendientes reflejan el estado actual. programId restringe lo relativo a solicitudes; turnos y actividades no dependen del programa. Sin fechas, toma los últimos 90 días. El período admite hasta 1100 días.
+ */
+export const getIndicatorsOptions = (options?: Options<GetIndicatorsData>) => queryOptions<GetIndicatorsResponse, GetIndicatorsError, GetIndicatorsResponse, ReturnType<typeof getIndicatorsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getIndicators({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getIndicatorsQueryKey(options)
+});
+
+export const listAdminAppointmentsQueryKey = (options: Options<ListAdminAppointmentsData>) => createQueryKey('listAdminAppointments', options);
+
+/**
+ * Buscar turnos por centro y fecha
+ */
+export const listAdminAppointmentsOptions = (options: Options<ListAdminAppointmentsData>) => queryOptions<ListAdminAppointmentsResponse, ListAdminAppointmentsError, ListAdminAppointmentsResponse, ReturnType<typeof listAdminAppointmentsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAdminAppointments({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAdminAppointmentsQueryKey(options)
+});
+
+export const getAdminAppointmentQueryKey = (options: Options<GetAdminAppointmentData>) => createQueryKey('getAdminAppointment', options);
+
+/**
+ * Consultar un turno para su gestión
+ */
+export const getAdminAppointmentOptions = (options: Options<GetAdminAppointmentData>) => queryOptions<GetAdminAppointmentResponse, GetAdminAppointmentError, GetAdminAppointmentResponse, ReturnType<typeof getAdminAppointmentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getAdminAppointment({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getAdminAppointmentQueryKey(options)
+});
+
+export const listAdminAppointmentSlotsQueryKey = (options: Options<ListAdminAppointmentSlotsData>) => createQueryKey('listAdminAppointmentSlots', options);
+
+/**
+ * Consultar horarios para reprogramar un turno
+ */
+export const listAdminAppointmentSlotsOptions = (options: Options<ListAdminAppointmentSlotsData>) => queryOptions<ListAdminAppointmentSlotsResponse, ListAdminAppointmentSlotsError, ListAdminAppointmentSlotsResponse, ReturnType<typeof listAdminAppointmentSlotsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAdminAppointmentSlots({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAdminAppointmentSlotsQueryKey(options)
+});
+
+export const listAdminAppointmentMonthlySummaryQueryKey = (options: Options<ListAdminAppointmentMonthlySummaryData>) => createQueryKey('listAdminAppointmentMonthlySummary', options);
+
+/**
+ * Resumir ocupación diaria de un centro en un mes
+ */
+export const listAdminAppointmentMonthlySummaryOptions = (options: Options<ListAdminAppointmentMonthlySummaryData>) => queryOptions<ListAdminAppointmentMonthlySummaryResponse, ListAdminAppointmentMonthlySummaryError, ListAdminAppointmentMonthlySummaryResponse, ReturnType<typeof listAdminAppointmentMonthlySummaryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAdminAppointmentMonthlySummary({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAdminAppointmentMonthlySummaryQueryKey(options)
+});
+
+export const listAdminAppointmentDayAvailabilityQueryKey = (options: Options<ListAdminAppointmentDayAvailabilityData>) => createQueryKey('listAdminAppointmentDayAvailability', options);
+
+/**
+ * Listar horarios libres de un centro en una fecha
+ */
+export const listAdminAppointmentDayAvailabilityOptions = (options: Options<ListAdminAppointmentDayAvailabilityData>) => queryOptions<ListAdminAppointmentDayAvailabilityResponse, ListAdminAppointmentDayAvailabilityError, ListAdminAppointmentDayAvailabilityResponse, ReturnType<typeof listAdminAppointmentDayAvailabilityQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listAdminAppointmentDayAvailability({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listAdminAppointmentDayAvailabilityQueryKey(options)
+});
+
 export const get3QueryKey = (options: Options<Get3Data>) => createQueryKey('get3', options);
 
 /**
@@ -2651,10 +3505,226 @@ export const content1Options = (options: Options<Content1Data>) => queryOptions<
     queryKey: content1QueryKey(options)
 });
 
+export const listApplicationVisitsQueryKey = (options?: Options<ListApplicationVisitsData>) => createQueryKey('listApplicationVisits', options);
+
+/**
+ * Listar visitas y entrevistas sociales
+ *
+ * Requiere applications:visits:view en el rol activo. Los filtros son opcionales; la ventana temporal usa intervalos semiabiertos y devuelve actuaciones que se superponen con ella. El resultado se ordena por startsAt ascendente.
+ */
+export const listApplicationVisitsOptions = (options?: Options<ListApplicationVisitsData>) => queryOptions<ListApplicationVisitsResponse, ListApplicationVisitsError, ListApplicationVisitsResponse, ReturnType<typeof listApplicationVisitsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listApplicationVisits({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listApplicationVisitsQueryKey(options)
+});
+
+export const listApplicationVisitsInfiniteQueryKey = (options?: Options<ListApplicationVisitsData>): QueryKey<Options<ListApplicationVisitsData>> => createQueryKey('listApplicationVisits', options, true);
+
+/**
+ * Listar visitas y entrevistas sociales
+ *
+ * Requiere applications:visits:view en el rol activo. Los filtros son opcionales; la ventana temporal usa intervalos semiabiertos y devuelve actuaciones que se superponen con ella. El resultado se ordena por startsAt ascendente.
+ */
+export const listApplicationVisitsInfiniteOptions = (options?: Options<ListApplicationVisitsData>) => {
+    const opts = infiniteQueryOptions<ListApplicationVisitsResponse, ListApplicationVisitsError, InfiniteData<ListApplicationVisitsResponse>, QueryKey<Options<ListApplicationVisitsData>>, number | Pick<QueryKey<Options<ListApplicationVisitsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListApplicationVisitsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listApplicationVisits({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listApplicationVisitsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const getApplicationVisitQueryKey = (options: Options<GetApplicationVisitData>) => createQueryKey('getApplicationVisit', options);
+
+/**
+ * Consultar una visita o entrevista social
+ *
+ * Requiere applications:visits:view en el rol activo y devuelve la actuacion, su resultado cuando existe y el contexto completo de la solicitud.
+ */
+export const getApplicationVisitOptions = (options: Options<GetApplicationVisitData>) => queryOptions<GetApplicationVisitResponse, GetApplicationVisitError, GetApplicationVisitResponse, ReturnType<typeof getApplicationVisitQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApplicationVisit({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApplicationVisitQueryKey(options)
+});
+
+export const listApplicationVisitRescheduleRequestsQueryKey = (options?: Options<ListApplicationVisitRescheduleRequestsData>) => createQueryKey('listApplicationVisitRescheduleRequests', options);
+
+/**
+ * Listar solicitudes de reprogramacion
+ *
+ * Aplica filtros opcionales y ordena por antiguedad ascendente. El listado no expone motivo, comentario ni lugares.
+ */
+export const listApplicationVisitRescheduleRequestsOptions = (options?: Options<ListApplicationVisitRescheduleRequestsData>) => queryOptions<ListApplicationVisitRescheduleRequestsResponse, ListApplicationVisitRescheduleRequestsError, ListApplicationVisitRescheduleRequestsResponse, ReturnType<typeof listApplicationVisitRescheduleRequestsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listApplicationVisitRescheduleRequests({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listApplicationVisitRescheduleRequestsQueryKey(options)
+});
+
+export const listApplicationVisitRescheduleRequestsInfiniteQueryKey = (options?: Options<ListApplicationVisitRescheduleRequestsData>): QueryKey<Options<ListApplicationVisitRescheduleRequestsData>> => createQueryKey('listApplicationVisitRescheduleRequests', options, true);
+
+/**
+ * Listar solicitudes de reprogramacion
+ *
+ * Aplica filtros opcionales y ordena por antiguedad ascendente. El listado no expone motivo, comentario ni lugares.
+ */
+export const listApplicationVisitRescheduleRequestsInfiniteOptions = (options?: Options<ListApplicationVisitRescheduleRequestsData>) => {
+    const opts = infiniteQueryOptions<ListApplicationVisitRescheduleRequestsResponse, ListApplicationVisitRescheduleRequestsError, InfiniteData<ListApplicationVisitRescheduleRequestsResponse>, QueryKey<Options<ListApplicationVisitRescheduleRequestsData>>, number | Pick<QueryKey<Options<ListApplicationVisitRescheduleRequestsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListApplicationVisitRescheduleRequestsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listApplicationVisitRescheduleRequests({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listApplicationVisitRescheduleRequestsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const getApplicationVisitRescheduleRequestQueryKey = (options: Options<GetApplicationVisitRescheduleRequestData>) => createQueryKey('getApplicationVisitRescheduleRequest', options);
+
+/**
+ * Consultar una solicitud de reprogramacion
+ *
+ * Devuelve el motivo, comentario y contexto completo solo a usuarios autorizados.
+ */
+export const getApplicationVisitRescheduleRequestOptions = (options: Options<GetApplicationVisitRescheduleRequestData>) => queryOptions<GetApplicationVisitRescheduleRequestResponse, GetApplicationVisitRescheduleRequestError, GetApplicationVisitRescheduleRequestResponse, ReturnType<typeof getApplicationVisitRescheduleRequestQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApplicationVisitRescheduleRequest({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApplicationVisitRescheduleRequestQueryKey(options)
+});
+
+export const listApplicationEvaluationsQueryKey = (options?: Options<ListApplicationEvaluationsData>) => createQueryKey('listApplicationEvaluations', options);
+
+/**
+ * Listar evaluaciones sociales
+ *
+ * Requiere applications:evaluations:view en el rol activo y vuelve a validar el permiso almacenado. Todos los filtros son opcionales, el rango de fecha es inclusivo y el resultado se ordena por evaluatedAt descendente. El listado omite la recomendacion sensible; se obtiene mediante el detalle.
+ */
+export const listApplicationEvaluationsOptions = (options?: Options<ListApplicationEvaluationsData>) => queryOptions<ListApplicationEvaluationsResponse, ListApplicationEvaluationsError, ListApplicationEvaluationsResponse, ReturnType<typeof listApplicationEvaluationsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await listApplicationEvaluations({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listApplicationEvaluationsQueryKey(options)
+});
+
+export const listApplicationEvaluationsInfiniteQueryKey = (options?: Options<ListApplicationEvaluationsData>): QueryKey<Options<ListApplicationEvaluationsData>> => createQueryKey('listApplicationEvaluations', options, true);
+
+/**
+ * Listar evaluaciones sociales
+ *
+ * Requiere applications:evaluations:view en el rol activo y vuelve a validar el permiso almacenado. Todos los filtros son opcionales, el rango de fecha es inclusivo y el resultado se ordena por evaluatedAt descendente. El listado omite la recomendacion sensible; se obtiene mediante el detalle.
+ */
+export const listApplicationEvaluationsInfiniteOptions = (options?: Options<ListApplicationEvaluationsData>) => {
+    const opts = infiniteQueryOptions<ListApplicationEvaluationsResponse, ListApplicationEvaluationsError, InfiniteData<ListApplicationEvaluationsResponse>, QueryKey<Options<ListApplicationEvaluationsData>>, number | Pick<QueryKey<Options<ListApplicationEvaluationsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ListApplicationEvaluationsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await listApplicationEvaluations({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: listApplicationEvaluationsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const getApplicationEvaluationQueryKey = (options: Options<GetApplicationEvaluationData>) => createQueryKey('getApplicationEvaluation', options);
+
+/**
+ * Consultar una evaluacion social
+ *
+ * Requiere applications:evaluations:view en el rol activo. Devuelve la evaluacion completa, incluida la recomendacion, el titular, el programa, la edicion y el profesional responsable.
+ */
+export const getApplicationEvaluationOptions = (options: Options<GetApplicationEvaluationData>) => queryOptions<GetApplicationEvaluationResponse, GetApplicationEvaluationError, GetApplicationEvaluationResponse, ReturnType<typeof getApplicationEvaluationQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getApplicationEvaluation({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getApplicationEvaluationQueryKey(options)
+});
+
 export const list8QueryKey = (options?: Options<List8Data>) => createQueryKey('list8', options);
 
 /**
- * Listar actividades abiertas
+ * Listar actividades abiertas o inscripciones propias
  */
 export const list8Options = (options?: Options<List8Data>) => queryOptions<List8Response, List8Error, List8Response, ReturnType<typeof list8QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -2672,7 +3742,7 @@ export const list8Options = (options?: Options<List8Data>) => queryOptions<List8
 export const list8InfiniteQueryKey = (options?: Options<List8Data>): QueryKey<Options<List8Data>> => createQueryKey('list8', options, true);
 
 /**
- * Listar actividades abiertas
+ * Listar actividades abiertas o inscripciones propias
  */
 export const list8InfiniteOptions = (options?: Options<List8Data>) => {
     const opts = infiniteQueryOptions<List8Response, List8Error, InfiniteData<List8Response>, QueryKey<Options<List8Data>>, number | Pick<QueryKey<Options<List8Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
@@ -2702,7 +3772,7 @@ export const list8InfiniteOptions = (options?: Options<List8Data>) => {
 export const get4QueryKey = (options: Options<Get4Data>) => createQueryKey('get4', options);
 
 /**
- * Consultar una actividad abierta
+ * Consultar una actividad abierta o una actividad cerrada con inscripción propia
  */
 export const get4Options = (options: Options<Get4Data>) => queryOptions<Get4Response, Get4Error, Get4Response, ReturnType<typeof get4QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {

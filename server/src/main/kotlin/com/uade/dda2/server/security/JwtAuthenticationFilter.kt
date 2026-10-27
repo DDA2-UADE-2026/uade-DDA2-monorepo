@@ -16,13 +16,24 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtAuthenticationFilter(
     private val jwtService: JwtService,
     private val securityErrorResponseWriter: SecurityErrorResponseWriter,
+    private val cookies: AuthCookies,
 ) : OncePerRequestFilter() {
+    // These routes must work when a previous access cookie is expired or malformed.
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.requestURI.removePrefix(request.contextPath) in setOf(
+        "/auth/session/csrf", "/auth/session/login", "/auth/session/select-role",
+        "/auth/session/role-selection", "/auth/session/logout",
+    )
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val token = bearerToken(request)
+        val token = if (request.hasBearerAuthorization()) {
+            request.getHeader("Authorization").substringAfter(' ', "").trim()
+        } else {
+            cookies.read(request, ACCESS_COOKIE)
+        }
         if (token == null) {
             filterChain.doFilter(request, response)
             return
@@ -63,11 +74,4 @@ class JwtAuthenticationFilter(
         filterChain.doFilter(request, response)
     }
 
-    private fun bearerToken(request: HttpServletRequest): String? {
-        val authorization = request.getHeader("Authorization") ?: return null
-        if (!authorization.startsWith("Bearer ", ignoreCase = true)) {
-            return null
-        }
-        return authorization.substring(7).trim().takeIf(String::isNotBlank)
-    }
 }

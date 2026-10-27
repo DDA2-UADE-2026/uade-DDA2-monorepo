@@ -41,8 +41,11 @@ fun Application.toAdminResponse(
     programEditionId = requireNotNull(programEdition.id), programEditionName = programEdition.name,
     enrollmentPeriodId = requireNotNull(enrollmentPeriod.id), status = status,
     originTicketId = originTicketId, resolutionReason = resolutionReason,
+    resolvedByUserId = resolvedBy?.id, resolvedByUserName = resolvedBy?.name,
     assignedWorkerUserId = assignedWorker?.id, assignedWorkerName = assignedWorker?.name,
-    submittedAt = submittedAt, resolvedAt = resolvedAt, createdAt = createdAt, updatedAt = updatedAt,
+    submittedAt = submittedAt, resolvedAt = resolvedAt,
+    resolvedByName = resolvedBy?.name,
+    createdAt = createdAt, updatedAt = updatedAt,
     idempotencyKey = idempotencyKey, requestHash = requestHash,
     pendingDocuments = pendingDocuments, documentRequirements = documentRequirements,
 )

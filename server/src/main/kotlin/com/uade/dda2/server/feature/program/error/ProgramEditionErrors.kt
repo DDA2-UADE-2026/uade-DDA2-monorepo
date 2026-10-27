@@ -7,6 +7,8 @@ import com.uade.dda2.server.error.NotFoundException
 import java.util.UUID
 
 object ProgramEditionErrors {
+    fun dateRangeExcludesBenefitGrants(): ConflictException = ConflictException(
+        "PROGRAM_EDITION_DATE_RANGE_EXCLUDES_BENEFIT_GRANTS", "Las nuevas fechas dejan otorgamientos existentes fuera de la edicion.")
 
     fun notFound(id: UUID): NotFoundException =
         NotFoundException(

@@ -1,7 +1,9 @@
 import { IconCalendarEvent, IconMapPin, IconUsers } from "@tabler/icons-react"
 import type { ReactNode } from "react"
+import { Link } from "@tanstack/react-router"
 
-import { availableSeats, formatActivityDateRange, seatsLabel } from "@/components/activities/activity-ui"
+import { ActivityStatusBadge, availableSeats, formatActivityDateRange, seatsLabel } from "@/components/activities/activity-ui"
+import { AttendanceBadge } from "@/components/activities/AttendanceBadge"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -18,7 +20,7 @@ export function ActivityCard({ activity, action, className }: {
   return (
     <Card className={cn("h-full", className)}>
       <CardHeader>
-        <CardTitle className="text-lg">{activity.name || "Actividad sin nombre"}</CardTitle>
+        <CardTitle className="text-lg"><Link to="/portal/actividades/$actividadId" params={{ actividadId: activity.id ?? "" }} className="hover:underline">{activity.name || "Actividad sin nombre"}</Link></CardTitle>
         <CardDescription className="line-clamp-2">
           {activity.description || "La descripción de esta actividad se informará próximamente."}
         </CardDescription>
@@ -33,10 +35,14 @@ export function ActivityCard({ activity, action, className }: {
           <IconCalendarEvent className="mt-0.5 size-4 shrink-0 text-primary" />
           <span className="min-w-0">{formatActivityDateRange(activity.startDate, activity.endDate)}</span>
         </p>
-        <Badge variant={seats === 0 ? "secondary" : "outline"}>
+        <div className="flex flex-wrap gap-2">
+        <ActivityStatusBadge status={activity.status} />
+        {activity.status === "OPEN" && <Badge variant={seats === 0 ? "secondary" : "outline"}>
           <IconUsers />
           {seatsLabel(activity)}
-        </Badge>
+        </Badge>}
+        {activity.myEnrollment && <><Badge variant="secondary">Inscripción confirmada</Badge><AttendanceBadge attendance={activity.myEnrollment.attendance} /></>}
+        </div>
       </CardContent>
 
       {action && <CardFooter className="mt-auto">{action}</CardFooter>}

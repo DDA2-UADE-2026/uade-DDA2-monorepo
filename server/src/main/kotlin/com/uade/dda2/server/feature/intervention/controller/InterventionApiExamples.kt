@@ -1,0 +1,7 @@
+package com.uade.dda2.server.feature.intervention.controller
+
+internal const val OWN_PLANS_EXAMPLE = """{"content":[{"id":"f448cd2c-341a-46dc-9c42-a106ae864002","applicationId":"2aa19e54-6f3f-4eef-99b1-8e1af9d8db01","applicationNumber":1024,"programId":"1c541b74-0620-4184-8578-717b27a34001","programName":"Acompañamiento social","programEditionId":"6115ab02-cac9-484e-a7c8-e0b4773ba001","programEditionName":"2026","createdAt":"2026-10-26T15:00:00Z","status":"IN_PROGRESS"}],"page":0,"size":20,"totalElements":1,"totalPages":1,"message":null}"""
+internal const val NO_OWN_PLANS_EXAMPLE = """{"content":[],"page":0,"size":20,"totalElements":0,"totalPages":0,"message":"No tenés planes de intervención registrados."}"""
+internal const val PUBLIC_FOLLOW_UPS_EXAMPLE = """{"content":[{"id":"a2eb7672-00c3-4a96-9261-54da200bc002","actionId":"56258771-f974-4515-b060-7750cb262001","occurredOn":"2026-10-26","status":"IN_PROGRESS","summary":"Se acordó continuar el acompañamiento.","publishedAt":"2026-10-26T16:00:00Z"}],"page":0,"size":20,"totalElements":1,"totalPages":1,"message":null}"""
+internal const val NO_PUBLIC_FOLLOW_UPS_EXAMPLE = """{"content":[],"page":0,"size":20,"totalElements":0,"totalPages":0,"message":"No hay seguimientos habilitados para tu visualización."}"""
+internal const val PUBLICATION_EXAMPLE = """{"id":"104b77bc-e07b-47e1-a20d-69aa53c70001","summary":"Se acordó continuar el acompañamiento.","visible":true,"publishedAt":"2026-10-26T16:00:00Z","updatedAt":"2026-10-26T16:00:00Z","updatedByUserId":12,"updatedByUserName":"Trabajador social"}"""

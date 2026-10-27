@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.HandlerMethodValidationException
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 @RestControllerAdvice
@@ -61,6 +62,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(
         HandlerMethodValidationException::class,
         ConstraintViolationException::class,
+        MethodArgumentTypeMismatchException::class,
     )
     fun handleMethodValidation(
         request: HttpServletRequest,
@@ -69,8 +71,20 @@ class GlobalExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "La validación falló.",
-                    code = "VALIDATION_ERROR",
+                    message = when {
+                        request.requestURI == "/api/admin/application-visits" -> "Los filtros de visitas o entrevistas son inválidos."
+                        request.requestURI == "/api/admin/application-visit-reschedule-requests" ->
+                            "Los filtros de solicitudes de reprogramacion son invalidos."
+                        request.requestURI == "/api/admin/application-evaluations" -> "Los filtros de evaluaciones son inválidos."
+                        else -> "La validación falló."
+                    },
+                    code = when {
+                        request.requestURI == "/api/admin/application-visits" -> "APPLICATION_VISIT_INVALID_FILTER"
+                        request.requestURI == "/api/admin/application-visit-reschedule-requests" ->
+                            "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_FILTER"
+                        request.requestURI == "/api/admin/application-evaluations" -> "APPLICATION_EVALUATION_INVALID_FILTER"
+                        else -> "VALIDATION_ERROR"
+                    },
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
                 ),
@@ -86,12 +100,50 @@ class GlobalExceptionHandler {
             .firstOrNull()
             ?.let { return handleApiException(it, request) }
         val appointmentRequest = request.requestURI == "/api/citizen/appointments"
+        val evaluationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/evaluation"))
+        val resolutionRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/resolutions"))
+        val interventionRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/intervention-plan"))
+        val interventionFollowUpRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/intervention-plan/actions/[^/]+/follow-ups"))
+        val interventionPublicationRequest = request.requestURI.matches(Regex("/api/applications/[^/]+/intervention-plan/actions/[^/]+/follow-ups/[^/]+/citizen-publication"))
+        val benefitGrantRequest = request.requestURI.matches(Regex("/api/admin/applications/[^/]+/benefit-grants(?:/.*)?"))
+        val visitResultRequest = request.requestURI.matches(
+            Regex("/api/applications/[^/]+/visits/[^/]+/result"),
+        )
+        val visitRescheduleRequest = request.requestURI.matches(
+            Regex("/api/applications/[^/]+/visits/[^/]+/reschedule-requests(?:/[^/]+/review)?"),
+        )
+        val visitRequest = request.requestURI.matches(
+            Regex("/api/applications/[^/]+/visits(?:/[^/]+/(?:schedule|cancel|result))?"),
+        )
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(
                 ErrorResponse(
-                    message = "El cuerpo de la solicitud es inválido.",
-                    code = if (appointmentRequest) "APPOINTMENT_INVALID_REQUEST" else "INVALID_REQUEST_BODY",
+                    message = when {
+                        evaluationRequest -> "Los datos de la evaluacion son invalidos."
+                        resolutionRequest -> "Los datos de la resolucion son invalidos."
+                        interventionRequest -> "Los datos del plan de intervencion son invalidos."
+                        interventionFollowUpRequest -> "Los datos del seguimiento son invalidos."
+                        interventionPublicationRequest -> "Los datos de la publicacion son invalidos."
+                        benefitGrantRequest -> "Los datos del otorgamiento son invalidos."
+                        visitResultRequest -> "Los datos del resultado de la visita o entrevista son invalidos."
+                        visitRescheduleRequest -> "Los datos de la solicitud de reprogramacion son invalidos."
+                        visitRequest -> "Los datos de la visita o entrevista son invalidos."
+                        else -> "El cuerpo de la solicitud es inválido."
+                    },
+                    code = when {
+                        appointmentRequest -> "APPOINTMENT_INVALID_REQUEST"
+                        evaluationRequest -> "APPLICATION_EVALUATION_INVALID_DATA"
+                        resolutionRequest -> "APPLICATION_RESOLUTION_INVALID_DATA"
+                        interventionRequest -> "INTERVENTION_PLAN_INVALID_DATA"
+                        interventionFollowUpRequest -> "INTERVENTION_FOLLOW_UP_INVALID_DATA"
+                        interventionPublicationRequest -> "INTERVENTION_PUBLICATION_INVALID_DATA"
+                        benefitGrantRequest -> "BENEFIT_GRANT_INVALID_DATA"
+                        visitResultRequest -> "APPLICATION_VISIT_RESULT_INVALID_DATA"
+                        visitRescheduleRequest -> "APPLICATION_VISIT_RESCHEDULE_REQUEST_INVALID_DATA"
+                        visitRequest -> "APPLICATION_VISIT_INVALID_DATA"
+                        else -> "INVALID_REQUEST_BODY"
+                    },
                     status = HttpStatus.BAD_REQUEST.value(),
                     path = request.requestURI,
                 ),

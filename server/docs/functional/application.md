@@ -10,7 +10,7 @@ La solicitud pertenece a la persona solicitante, aunque un administrativo la reg
 
 **Presentar no equivale a recibir el beneficio.** La solicitud tampoco representa una incorporación efectiva ni una reserva de cupo.
 
-Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios y gestionar los documentos protegidos que pide la edición. El personal autorizado puede consultar y revisar esas entregas, y también cargarlas en nombre del titular para completar un trámite iniciado en la ventanilla. La evaluación general, la decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
+Actualmente se puede presentar una solicitud propia, registrar una solicitud asistida, consultar el listado y detalle propios, gestionar los documentos protegidos que pide la edición y consultar las visitas o entrevistas asociadas. El personal autorizado puede consultar y revisar entregas, cargarlas en nombre del titular, registrar una evaluación social, programar, reprogramar, cancelar o finalizar actuaciones, y administrar sus respectivas bandejas y detalles. La decisión municipal y la incorporación al programa todavía no se gestionan desde esta funcionalidad.
 
 ## Quién puede presentar y consultar
 
@@ -184,17 +184,67 @@ Este listado no muestra solicitudes de otras personas. No es una bandeja municip
 
 El personal municipal con autorización específica de consulta administrativa accede a un listado aparte, que incluye las solicitudes de todas las personas, sin importar quién las registró. Se ordena igual que el listado ciudadano, por número descendente, y se recorre por páginas. Cada solicitud se identifica con el nombre y el correo de su titular.
 
-Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo de una resolución o el trabajador asignado. Muchos de esos campos permanecen vacíos mientras no existan las etapas de evaluación y asignación.
+Al elegir una, se consulta su información completa, incluidos datos internos que el listado ciudadano no muestra, como el trámite de origen, el motivo y responsable de una resolución o el trabajador asignado. El registro de la evaluación completa al trabajador; motivo, responsable y fecha de resolución se completan al resolver. El trámite de origen puede permanecer vacío.
 
-Esta consulta es solo de lectura: no cambia estados, no asigna responsables y no devuelve archivos. Ver o descargar documentos sigue siendo un flujo aparte, con su propia autorización. Registrar una solicitud asistida tampoco alcanza para consultarlas: son autorizaciones distintas.
+Esta consulta es solo de lectura: no cambia estados, no asigna responsables y no devuelve archivos. Ver o descargar documentos y registrar una evaluación siguen siendo flujos aparte, cada uno con su propia autorización. Registrar una solicitud asistida tampoco alcanza para consultarlas: son autorizaciones distintas.
+
+## Registrar y administrar evaluaciones sociales
+
+Un usuario activo cuyo rol activo tenga el permiso `applications:evaluations:create` puede registrar la evaluación de una solicitud. El permiso no está ligado a un nombre de rol: la cuenta `ADMIN` lo recibe en los datos iniciales y puede asignarse a otros roles desde la gestión existente.
+
+La operación recibe únicamente tres decisiones profesionales:
+
+- Vulnerabilidad: `LOW`, `MEDIUM`, `HIGH` o `CRITICAL`.
+- Prioridad: `LOW`, `MEDIUM`, `HIGH` o `URGENT`.
+- Recomendación: texto obligatorio de 1 a 1000 caracteres.
+
+El profesional y la fecha no se eligen en el cuerpo. El sistema toma al usuario autenticado, asigna un instante UTC, lo establece como trabajador de la solicitud y cambia el estado general a **En evaluación** (`IN_EVALUATION`). Se admite el alta desde `SUBMITTED`, `IN_VALIDATION`, `PENDING_DOCUMENTATION` o `IN_EVALUATION`.
+
+Cada solicitud admite una sola evaluación. Un nuevo intento se rechaza y no reemplaza la información existente. También se rechaza si la solicitud ya pertenece a otro trabajador o si está en borrador, visita o un estado de decisión/finalización. Esta historia no permite corregir, reevaluar, aprobar, rechazar ni enviar a lista de espera.
+
+Contrato de alta: `POST /api/applications/{applicationId}/evaluation`. La respuesta contiene la evaluación registrada.
+
+Un rol que tenga `applications:evaluations:view` puede recorrer la bandeja administrativa de evaluaciones, filtrarla y abrir un detalle completo. El listado permite ubicar evaluaciones por solicitud o número, titular, profesional, programa, edición, vulnerabilidad, prioridad y rango de fecha. Se ordena por la evaluación más reciente y se recorre por páginas.
+
+La bandeja no repite el texto de recomendación, porque puede contener información social sensible. Al abrir el detalle autorizado se muestran la recomendación, la solicitud, el titular, el programa, la edición y el profesional responsable. Consultar no cambia la evaluación ni el estado de la solicitud; las correcciones y reevaluaciones continúan fuera del alcance actual.
+
+## Programar y administrar visitas o entrevistas
+
+Una vez registrada la evaluación, el trabajador ya asignado puede programar varias actuaciones mediante `POST /api/applications/{applicationId}/visits` si su rol activo conserva `applications:visits:create`. Cada una se clasifica como visita (`VISIT`) o entrevista (`INTERVIEW`) y define inicio futuro, duración positiva en minutos y lugar de 1 a 300 caracteres. El sistema calcula el fin, toma al usuario autenticado como responsable, registra la fecha del servidor y la deja en `SCHEDULED`.
+
+Solo se admiten solicitudes en `IN_EVALUATION` o `IN_VISIT`, con evaluación previa y asignadas al mismo trabajador. La primera programación cambia `IN_EVALUATION` a `IN_VISIT`; las siguientes conservan ese estado. Dos intervalos consecutivos pueden tocarse en el límite, pero no superponerse.
+
+La agenda es compartida con los turnos municipales. Una actuación se rechaza si se superpone con otra visita o entrevista en la que el responsable o el titular participan, con un turno confirmado del titular, o con un turno confirmado o cancelado cuyo horario siga retenido para el profesional. En sentido inverso, las visitas también desaparecen de la oferta de horarios y bloquean el alta o reprogramación de turnos.
+
+El mismo trabajador puede usar `PUT /api/applications/{applicationId}/visits/{visitId}/schedule` para cambiar inicio, duración y lugar de una actuación futura `SCHEDULED`, conservando tipo, responsable y fecha original de programación. `PATCH /api/applications/{applicationId}/visits/{visitId}/cancel` exige un motivo, conserva la actuación como `CANCELLED` y libera de inmediato la agenda. Ambas operaciones requieren `applications:visits:manage`. Si se cancela la última actuación programada, la solicitud vuelve a `IN_EVALUATION`; si queda otra, permanece en `IN_VISIT`.
+
+Una vez alcanzado el fin previsto, el responsable puede registrar una sola vez el resultado mediante `POST /api/applications/{applicationId}/visits/{visitId}/result`, con `applications:visits:results:create`. El estado final es realizada (`REALIZED`) o no realizada (`NOT_REALIZED`). Observaciones y conclusiones son opcionales, se recortan y admiten hasta 2000 caracteres; el servidor guarda además la fecha UTC y el profesional autenticado. Una actuación finalizada deja de ocupar agenda y ya no puede reprogramarse, cancelarse ni volver a finalizarse. Si era la última pendiente, la solicitud vuelve a `IN_EVALUATION`; si queda otra `SCHEDULED`, continúa en `IN_VISIT`.
+
+La persona titular con `applications:own:visits:view` consulta todas las actuaciones de una solicitud propia mediante `GET /api/applications/{applicationId}/visits` y abre una mediante `GET /api/applications/{applicationId}/visits/{visitId}`. Se muestran el horario vigente, duración, lugar, modalidad y estado. Si hubo reprogramaciones se informa la fecha de la última; si fue cancelada, el listado informa cuándo y el detalle agrega el motivo. Una solicitud o actuación ajena se trata como inexistente.
+
+La vista ciudadana no revela observaciones, conclusiones, correos, identificadores profesionales ni quién registró la cancelación o el resultado. La consulta no modifica la solicitud, la actuación ni la auditoría.
+
+### Solicitar una reprogramación
+
+El titular puede pedir la reprogramación de una visita o entrevista propia futura y `SCHEDULED` mediante `POST /api/applications/{applicationId}/visits/{visitId}/reschedule-requests`, con `applications:own:visits:reschedule-requests:create`. Solo informa un motivo recortado de 1 a 1000 caracteres. La petición queda `PENDING`: el horario, lugar, estado y `lastRescheduledAt` de la actuación no cambian. Solo puede existir una pendiente por actuación.
+
+Con `applications:own:visits:view`, el ciudadano lista el historial en `GET .../reschedule-requests` y abre el detalle en `GET .../reschedule-requests/{requestId}`. El listado omite motivo y comentario; el detalle propio los muestra sin revelar identidades internas. Las respuestas de visita incluyen además el resumen sin textos de la petición más reciente.
+
+El trabajador con `applications:visits:reschedule-requests:view` dispone de la bandeja `GET /api/admin/application-visit-reschedule-requests`, con filtros por estado, solicitud, visita, ciudadano, responsable, programa, edición y ventana de solicitud. Su listado omite motivo, comentario y lugares; el detalle autorizado los incluye.
+
+Solo el responsable que continúa asignado puede revisar una pendiente mediante `PATCH .../reschedule-requests/{requestId}/review`, con `applications:visits:reschedule-requests:review`. Aprobar exige nuevo inicio futuro, duración positiva y lugar, aplica las mismas reglas de agenda y debe introducir un cambio real. Rechazar prohíbe esos datos y exige comentario. Un conflicto o una aprobación tardía conserva la petición `PENDING` y la visita intacta; si el horario original ya comenzó, solo puede rechazarse. Tras una decisión puede presentarse otra petición si la visita sigue programada y futura.
+
+Mientras exista una pendiente, la reprogramación directa, la cancelación y el registro de resultado responden conflicto. No hay retiro ciudadano, expiración automática, reapertura ni propuesta de horarios por parte del ciudadano.
+
+`GET /api/admin/application-visits` requiere `applications:visits:view` y permite filtrar por solicitud, número, titular, responsable, programa, edición, tipo, estado y ventana temporal superpuesta, con paginación de hasta 100 elementos. Sin filtro de estado incluye programadas, canceladas y finalizadas. El listado muestra quién y cuándo registró el resultado, pero no sus textos sensibles. El orden es por inicio ascendente e identificador. `GET /api/admin/application-visits/{visitId}` devuelve el contexto completo, incluido el lugar, el motivo de cancelación o las observaciones y conclusiones del resultado cuando corresponda. Todavía no hay reactivación, corrección del resultado, cambio de tipo o responsable ni notificación.
 
 ## Estados y transiciones
 
-### Qué transición existe hoy
+### Qué transiciones existen hoy
 
-El único cambio disponible sobre el estado general es **completar una nueva presentación y dejarla en Presentada**. No hay guardado previo en borrador, ni acciones para editar, cancelar, eliminar, evaluar o resolver una solicitud. La revisión de sus documentos utiliza estados propios y no mueve el estado general de la solicitud.
+Una nueva presentación queda en **Presentada**. El registro único de su evaluación social la lleva a **En evaluación** y asigna al profesional autenticado. La primera visita o entrevista programada la lleva a **En visita**; cancelar la última programada la devuelve a **En evaluación**. No hay guardado previo en borrador ni acciones para editar, cancelar, eliminar o resolver una solicitud. La revisión de sus documentos utiliza estados propios y no mueve el estado general.
 
-Mientras no se implementen las etapas posteriores, una solicitud presentada mediante este flujo permanece presentada. Por eso, hoy una solicitud existente normalmente impedirá que esa persona solicite otra convocatoria de la misma edición.
+Tanto una solicitud presentada como una que está en evaluación impiden que esa persona solicite otra convocatoria de la misma edición.
 
 ### Estados previstos para las etapas posteriores
 
@@ -206,14 +256,14 @@ Los nombres siguientes ya están contemplados, pero **no constituyen una secuenc
 | Presentada (SUBMITTED) | La presentación fue recibida. Es el estado que genera el flujo actual. |
 | En validación (IN_VALIDATION) | Etapa prevista de comprobaciones iniciales. |
 | Pendiente de documentación (PENDING_DOCUMENTATION) | Etapa prevista para información o documentación pendiente. |
-| En evaluación (IN_EVALUATION) | Etapa prevista para analizar la solicitud. |
-| En visita (IN_VISIT) | Etapa prevista para actuaciones de visita. |
-| Aprobada (APPROVED) | Estado previsto para una decisión favorable. Todavía no se implementó su relación operativa con la incorporación efectiva. |
-| Rechazada (REJECTED) | Estado previsto para una decisión desfavorable. Permite solicitar otra convocatoria, pero nunca repetir la misma. |
-| En lista de espera (WAITLISTED) | Estado previsto para solicitudes que siguen pendientes de una oportunidad de incorporación. Bloquea una nueva en la misma edición. |
+| En evaluación (IN_EVALUATION) | La solicitud tiene registrada su evaluación social o fue colocada en esta etapa antes del alta. |
+| En visita (IN_VISIT) | Tiene al menos una visita o entrevista social programada. |
+| Aprobada (APPROVED) | Resolución favorable registrada por administración; ocupa un cupo de la edición. Habilita el [otorgamiento individual de beneficios](benefit-grants.md), que no ocupa cupos adicionales. La entrega pertenece a otro flujo. |
+| Rechazada (REJECTED) | Resolución desfavorable con motivo y responsable. Permite solicitar otra convocatoria, pero nunca repetir la misma. |
+| En lista de espera (WAITLISTED) | Solicitud elegible que espera disponibilidad de cupo y admite aprobación o rechazo manual posterior. Bloquea una nueva en la misma edición. |
 | Cerrada (CLOSED) | Estado de finalización previsto. Permite solicitar otra convocatoria, sujeto a las demás reglas. |
 
-No se describen plazos de evaluación, motivos obligatorios de rechazo, criterios de prioridad, responsables ni pasos de reconsideración porque esas reglas aún no están definidas e implementadas en este flujo.
+Las decisiones exigen motivo y responsable y conservan un historial. Las condiciones completas están en [Resolución de solicitudes](application-resolution.md). No se implementan plazos de resolución, cálculo automático de prioridad ni reconsideración de decisiones finales.
 
 ## Cupo y decisión posterior
 
@@ -230,7 +280,7 @@ El sistema no coloca automáticamente en lista de espera ni rechaza una solicitu
 | Ana no tiene solicitudes de esa edición y elige una convocatoria abierta y vigente. | Puede presentar si su cuenta y rol están habilitados y la edición está activa. |
 | Ana ya se presentó y vuelve a intentarlo en la misma convocatoria. | Se recupera la solicitud si es un reintento reconocido; de lo contrario se rechaza la nueva presentación por duplicada. |
 | Ana tiene una solicitud rechazada y quiere repetir esa convocatoria. | No puede crear otra en la misma. |
-| Ana tiene una solicitud rechazada y se abre una nueva convocatoria de esa edición. | Puede solicitar, siempre que no exista otra solicitud de esa edición en un estado que bloquee. Este caso depende de la futura etapa de resolución. |
+| Ana tiene una solicitud rechazada y se abre una nueva convocatoria de esa edición. | Puede solicitar, siempre que no exista otra solicitud de esa edición en un estado que bloquee. |
 | Bruno tiene una solicitud presentada y se abre otra convocatoria de la misma edición. | No puede presentar otra mientras la anterior siga en ese estado. |
 | Carla tiene una solicitud en la edición 2026 y quiere solicitar la edición 2027. | La solicitud de 2026 no la bloquea por esta regla. Se verifican las condiciones de la nueva convocatoria. |
 | La convocatoria se suspendió después de que Diego consultó el programa, pero antes de presentar. | El nuevo intento se rechaza porque la recepción ya no está abierta. |
@@ -241,4 +291,8 @@ Cada presentación confirmada deja constancia del titular, de quién la registr�
 
 Las cargas, reemplazos, eliminaciones y revisiones documentales también dejan una constancia de auditoría con sus referencias, estado, nombre, tipo y tamaño. El contenido binario del archivo nunca se copia al registro de auditoría.
 
-Las pausas y cierres de recepción no borran esas solicitudes. Los cambios que afecten su evaluación o resultado deberán realizarse mediante los flujos posteriores que correspondan.
+Cada evaluación deja constancia de la solicitud, las categorías, el profesional, la fecha y la transición de estado. La recomendación se conserva en la evaluación, pero no se copia al log porque puede contener información social sensible.
+
+Cada visita o entrevista deja constancia de la solicitud, tipo, intervalo, responsable, estado, última reprogramación y transición de la solicitud. Cada petición de reprogramación registra solicitante, revisor, fechas, estado y snapshots de agenda. Motivo, comentario y lugares se conservan en la entidad, pero se excluyen de auditoría por ser sensibles.
+
+Las pausas y cierres de recepción no borran esas solicitudes. Los cambios posteriores que afecten la evaluación o el resultado deberán realizarse mediante los flujos que correspondan.

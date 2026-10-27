@@ -1,7 +1,9 @@
 package com.uade.dda2.server.feature.appointment.dto.response
 
 import com.uade.dda2.server.feature.appointment.entity.AppointmentStatus
+import com.uade.dda2.server.feature.appointment.entity.AttentionResult
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -32,7 +34,7 @@ data class AvailableAppointmentSlotResponse(
     val endsAt: OffsetDateTime,
 )
 
-@Schema(description = "Detalle de un turno propio confirmado.")
+@Schema(description = "Detalle vigente de un turno propio, confirmado o cancelado.")
 data class AppointmentResponse(
     val id: UUID,
     val status: AppointmentStatus,
@@ -46,4 +48,52 @@ data class AppointmentResponse(
     val startsAt: OffsetDateTime,
     val endsAt: OffsetDateTime,
     val createdAt: OffsetDateTime,
+)
+
+@Schema(description = "Detalle administrativo del turno y estado de retención de su horario.")
+data class AdminAppointmentResponse(
+    val appointment: AppointmentResponse,
+    val citizenId: Long,
+    val citizenName: String,
+    val slotRetained: Boolean,
+    val attention: CommunityAttentionResponse? = null,
+)
+
+@Schema(description = "Constancia de asistencia o atencion comunitaria; no incluye datos clinicos.")
+data class CommunityAttentionResponse(
+    val result: AttentionResult,
+    val attendedOn: LocalDate?,
+    val description: String?,
+    val version: Long,
+    val createdAt: OffsetDateTime,
+    val updatedAt: OffsetDateTime,
+)
+
+@Schema(description = "Turno asignado al profesional con resultado de atencion, cuando existe.")
+data class ProfessionalAppointmentResponse(
+    val appointment: AppointmentResponse,
+    val citizenId: Long,
+    val citizenName: String,
+    val attention: CommunityAttentionResponse?,
+)
+
+@Schema(description = "Ocupación de un centro en un día para el calendario administrativo.")
+data class AdminDaySummaryResponse(
+    val date: LocalDate,
+    val confirmed: Int,
+    val free: Int,
+    val retained: Int,
+    val hasAgenda: Boolean,
+)
+
+@Schema(description = "Horario libre de un centro en una fecha, con servicio y profesional.")
+data class AdminFreeSlotResponse(
+    val centerServiceId: UUID,
+    val serviceId: UUID,
+    val serviceName: String,
+    val professionalAssignmentId: UUID,
+    val professionalId: Long,
+    val professionalName: String,
+    val startsAt: OffsetDateTime,
+    val endsAt: OffsetDateTime,
 )

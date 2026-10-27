@@ -26,7 +26,7 @@ function RouteComponent() {
   const applications = useQuery({ ...listOptions({ query: { page: page - 1, size: PAGE_SIZE } }), placeholderData: keepPreviousData })
   return <ApplicationPage breadcrumbs={[{ label: "Mis solicitudes" }]}>
     <ApplicationHeading title="Mis solicitudes" description="Consultá tus presentaciones y completá la documentación de cada una." action={
-      <Button variant="outline" size="sm" disabled={applications.isFetching} onClick={() => applications.refetch()}><IconRefresh className={applications.isFetching ? "animate-spin" : undefined} />Actualizar</Button>
+      <Button variant="outline" size="sm" disabled={applications.isFetching} onClick={() => applications.refetch()}><IconRefresh className={applications.isFetching ? "animate-spin" : undefined} /><span className="sr-only sm:not-sr-only">Refrescar</span></Button>
     } />
     {applications.isPending ? <ApplicationLoading /> : applications.isError ? <ApplicationError error={applications.error} title="No pudimos cargar tus solicitudes" retry={() => applications.refetch()} /> : !applications.data?.content?.length ? (
       <Empty className="min-h-72 rounded-xl border">
