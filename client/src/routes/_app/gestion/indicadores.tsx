@@ -130,7 +130,7 @@ function RouteComponent() {
                     <ProgramDatePicker id="indicators-to" value={to} disabled={{ before: new Date(from + "T00:00") }} onChange={(value) => value && setSearch({ desde: from, hasta: value })} />
                   </div>
                 </div>
-                <div className="min-w-56 flex-1 space-y-1.5 sm:max-w-72">
+                <div className="flex min-w-56 flex-1 flex-col gap-1.5 sm:max-w-72">
                   <Label htmlFor="indicators-program">Programa</Label>
                   <Select items={programItems} value={search.programa ?? ALL_PROGRAMS} onValueChange={(value) => setSearch({ programa: !value || value === ALL_PROGRAMS ? undefined : value as string })}>
                     <SelectTrigger id="indicators-program" className="w-full"><SelectValue /></SelectTrigger>
