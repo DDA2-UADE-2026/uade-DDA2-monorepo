@@ -10,6 +10,7 @@ import { SeverityBadge } from "@/components/applications/SeverityBadge"
 import { showApiErrorToast } from "@/components/errors/showApiErrorToast"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
+import { formatRequirementValue, requirementLabels } from "@/components/programs/ProgramRouteUi"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,10 +24,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { UserChip } from "@/components/UserChip"
-import { get3Options, get3QueryKey, resolveApplicationMutation } from "@/generated/@tanstack/react-query.gen"
+import { create9Mutation, findAll2Options, get3Options, get3QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { AdminApplicationResponse } from "@/generated/types.gen"
 import { formatApplicationDateTime } from "@/lib/application-flow"
 import { invalidateSocialQueries, levelLabel, priorityLabel, socialQueries } from "@/lib/social-management"
@@ -84,7 +86,7 @@ function RouteComponent() {
       {app && <>
         <ApplicationProgramContext application={app} />
         {app.resolvedAt && <ResolutionResult application={app} />}
-        <ResolutionPanel application={app} permissions={permissions} currentUserId={user.id} />
+        <ResolutionPanel application={app} permissions={permissions} />
       </>}
     </div></div></SidebarShellContent>
   </SidebarShell>
@@ -103,7 +105,7 @@ function ResolutionResult({ application }: { application: AdminApplicationRespon
   </Card>
 }
 
-function ResolutionPanel({ application, permissions, currentUserId }: { application: AdminApplicationResponse; permissions: string[]; currentUserId?: number }) {
+function ResolutionPanel({ application, permissions }: { application: AdminApplicationResponse; permissions: string[] }) {
   const queryClient = useQueryClient()
   const id = application.id!
   const canViewEvaluations = permissions.includes("applications:evaluations:view")
@@ -112,18 +114,21 @@ function ResolutionPanel({ application, permissions, currentUserId }: { applicat
   const evaluationId = evaluations.data?.content[0]?.id
   const evaluation = useQuery({ ...socialQueries.evaluation(evaluationId ?? ""), enabled: !!evaluationId })
   const scheduledVisits = useQuery({ ...socialQueries.visits({ applicationId: id, status: "SCHEDULED", page: 0, size: 1 }), enabled: canViewVisits })
+  const editionId = application.programEditionId ?? ""
+  const requirements = useQuery({ ...findAll2Options({ path: { editionId } }), enabled: !!editionId && permissions.includes("applications:management:resolve") })
   const [decision, setDecision] = useState<Decision | null>(null)
   const [reason, setReason] = useState("")
+  const [checks, setChecks] = useState<Record<string, boolean>>({})
   const [confirming, setConfirming] = useState(false)
   const resolve = useMutation({
-    ...resolveApplicationMutation(),
+    ...create9Mutation(),
     onSuccess: async (data) => {
-      queryClient.setQueryData(get3QueryKey({ path: { id } }), data)
       setConfirming(false)
       setDecision(null)
       setReason("")
-      await queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations"))
-      toast.success(`Solicitud ${RESOLVED_LABELS[data.status as Decision] ?? "resuelta"}`)
+      setChecks({})
+      await Promise.all([queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id } }) }), queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations"))])
+      toast.success(`Solicitud ${RESOLVED_LABELS[data.decision as Decision] ?? "resuelta"}`)
     },
     onError: (error) => { setConfirming(false); showApiErrorToast(error) },
   })
@@ -139,18 +144,18 @@ function ResolutionPanel({ application, permissions, currentUserId }: { applicat
     </CardDescription></CardHeader></Card>
   }
 
-  const hasPermission = permissions.includes("applications:resolutions:create")
-  const isAssigned = application.assignedWorkerUserId != null && application.assignedWorkerUserId === currentUserId
-  const isOwn = application.userId === currentUserId
+  const hasPermission = permissions.includes("applications:management:resolve")
   const pendingDocuments = application.pendingDocuments?.length ?? 0
   const evaluated = canViewEvaluations ? (evaluations.isSuccess ? !!evaluationId : undefined) : undefined
   const visitsScheduled = canViewVisits ? (scheduledVisits.isSuccess ? scheduledVisits.data.totalElements > 0 : undefined) : undefined
   const options: Decision[] = waitlisted ? ["APPROVED", "REJECTED"] : ["APPROVED", "WAITLISTED", "REJECTED"]
-  const reasonRequired = decision !== null && decision !== "APPROVED"
-  const blocked = !hasPermission || !isAssigned || isOwn || evaluated === false || visitsScheduled === true
+  const items = requirements.data ?? []
+  const checksComplete = requirements.isSuccess && items.every((item) => item.id && Object.hasOwn(checks, item.id))
+  const checksFulfilled = items.every((item) => item.id && checks[item.id] === true)
+  const blocked = !hasPermission || evaluated === false || visitsScheduled === true
   const approveBlocked = pendingDocuments > 0
-  const canSubmit = !blocked && decision !== null && !(decision === "APPROVED" && approveBlocked)
-    && (!reasonRequired || reason.trim().length > 0) && reason.trim().length <= 1000 && !resolve.isPending
+  const canSubmit = !blocked && decision !== null && !(decision !== "REJECTED" && (approveBlocked || !checksFulfilled))
+    && checksComplete && reason.trim().length > 0 && reason.trim().length <= 1000 && !resolve.isPending
 
   return <>
     {evaluation.data && <Card size="sm">
@@ -166,11 +171,9 @@ function ResolutionPanel({ application, permissions, currentUserId }: { applicat
       <CardContent>
         <ul className="space-y-2 text-sm">
           <Check ok={hasPermission} label="Tu rol puede resolver solicitudes" />
-          <Check ok={isAssigned} label={isAssigned ? "Sos el trabajador asignado" : `Solo resuelve el trabajador asignado${application.assignedWorkerName ? ` (${application.assignedWorkerName})` : ""}`} />
-          {isOwn && <Check ok={false} label="No podés resolver una solicitud propia" />}
           {evaluated !== undefined && <Check ok={evaluated} label={evaluated ? "Evaluación social registrada" : "Falta registrar la evaluación social"} />}
           {visitsScheduled !== undefined && <Check ok={!visitsScheduled} label={visitsScheduled ? "Hay visitas programadas: cancelalas o registrá su resultado" : "Sin visitas programadas"} />}
-          <Check ok={pendingDocuments === 0} warning label={pendingDocuments === 0 ? "Documentación obligatoria completa" : `${pendingDocuments} documento${pendingDocuments === 1 ? "" : "s"} obligatorio${pendingDocuments === 1 ? "" : "s"} faltante${pendingDocuments === 1 ? "" : "s"} u observado${pendingDocuments === 1 ? "" : "s"}: no se puede aprobar`} />
+          <Check ok={pendingDocuments === 0} warning label={pendingDocuments === 0 ? "Documentación obligatoria completa" : `${pendingDocuments} documento${pendingDocuments === 1 ? "" : "s"} obligatorio${pendingDocuments === 1 ? "" : "s"} faltante${pendingDocuments === 1 ? "" : "s"} u observado${pendingDocuments === 1 ? "" : "s"}: no se puede aprobar ni dejar en espera`} />
         </ul>
       </CardContent>
     </Card>
@@ -191,14 +194,18 @@ function ResolutionPanel({ application, permissions, currentUserId }: { applicat
               value={decision ? [decision] : []}
               onValueChange={(value: string[]) => setDecision((value[0] as Decision | undefined) ?? null)}
             >
-              {options.map((option) => <ToggleGroupItem key={option} value={option} disabled={option === "APPROVED" && approveBlocked}>{DECISIONS[option].label}</ToggleGroupItem>)}
+              {options.map((option) => <ToggleGroupItem key={option} value={option} disabled={option !== "REJECTED" && approveBlocked}>{DECISIONS[option].label}</ToggleGroupItem>)}
             </ToggleGroup>
             {decision && <p className="text-xs text-muted-foreground">{DECISIONS[decision].description}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="resolution-reason">Motivo {reasonRequired ? "(obligatorio)" : "(opcional)"}</Label>
+            <Label htmlFor="resolution-reason">Motivo (obligatorio)</Label>
             <Textarea id="resolution-reason" maxLength={1000} rows={4} value={reason} disabled={blocked || resolve.isPending} onChange={(event) => setReason(event.target.value)} placeholder="Explicá la decisión con lenguaje claro: lo va a leer el titular." />
             <p className="text-right text-xs text-muted-foreground">{reason.length}/1000</p>
+          </div>
+          <div className="space-y-3"><p className="text-sm font-medium">Requisitos vigentes</p>
+            {!hasPermission ? <p className="text-sm text-muted-foreground">Tu rol no tiene permiso para resolver.</p> : !editionId ? <p className="text-sm text-destructive">La solicitud no tiene una edición identificada.</p> : requirements.isPending ? <p className="text-sm text-muted-foreground">Cargando requisitos…</p> : requirements.isError ? <div className="space-y-2"><p className="text-sm text-destructive">No se pudieron cargar los requisitos.</p><Button type="button" variant="outline" size="sm" onClick={() => requirements.refetch()}>Reintentar</Button></div> : !items.length ? <p className="text-sm text-muted-foreground">No hay requisitos configurados.</p> : items.map((item) => <div key={item.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border p-3"><div className="text-sm"><p className="font-medium">{item.type ? requirementLabels[item.type] : "Requisito"}: {formatRequirementValue(item.type, item.value)}</p>{item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}</div><Select value={item.id && Object.hasOwn(checks, item.id) ? (checks[item.id] ? "yes" : "no") : null} onValueChange={(value) => { if (item.id && value) setChecks((previous) => ({ ...previous, [item.id!]: value === "yes" })) }}><SelectTrigger className="w-40" aria-label={`Resultado: ${item.type ? requirementLabels[item.type] : "requisito"}`}><SelectValue placeholder="Seleccionar" /></SelectTrigger><SelectContent><SelectItem value="yes">Cumple</SelectItem><SelectItem value="no">No cumple</SelectItem></SelectContent></Select></div>)}
+            {checksComplete && !checksFulfilled && <p className="text-sm text-muted-foreground">Para aprobar o dejar en espera, todos los requisitos deben estar cumplidos. Podés rechazar la solicitud si no se cumplen.</p>}
           </div>
           <Button type="submit" disabled={!canSubmit}>{resolve.isPending ? "Guardando…" : "Registrar resolución"}</Button>
         </form>
@@ -217,7 +224,7 @@ function ResolutionPanel({ application, permissions, currentUserId }: { applicat
             type="button"
             variant={decision === "REJECTED" ? "destructive" : "default"}
             disabled={resolve.isPending}
-            onClick={() => { if (decision) resolve.mutate({ path: { id }, body: { decision, reason: reason.trim() || undefined } }) }}
+            onClick={() => { if (decision) resolve.mutate({ path: { id }, body: { decision, reason: reason.trim(), requirementChecks: items.map((item) => ({ requirementId: item.id!, fulfilled: checks[item.id!] })) } }) }}
           >
             {resolve.isPending ? "Guardando…" : decision ? DECISIONS[decision].label : "Confirmar"}
           </AlertDialogAction>

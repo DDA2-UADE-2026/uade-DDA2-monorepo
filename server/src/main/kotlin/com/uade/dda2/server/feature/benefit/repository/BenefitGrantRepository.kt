@@ -25,6 +25,9 @@ interface BenefitGrantRepository : JpaRepository<BenefitGrant, UUID> {
     // Fetch only the case/program context. Catalog values, actors and history are not needed by the citizen mapper.
     @EntityGraph(attributePaths = ["application.programEdition.program"])
     fun findAllByApplicationUserId(userId: Long, pageable: Pageable): Page<BenefitGrant>
+    @EntityGraph(attributePaths = ["application.user", "application.programEdition.program", "assignedBy"])
+    @Query("select g from BenefitGrant g where (:status is null or g.status = :status) and (:number is null or g.application.applicationNumber = :number)")
+    fun findAdminPage(@Param("status") status: BenefitGrantStatus?, @Param("number") number: Long?, pageable: Pageable): Page<BenefitGrant>
     fun existsByApplicationIdAndProgramBenefitId(applicationId: UUID, programBenefitId: UUID): Boolean
     fun existsByProgramBenefitId(programBenefitId: UUID): Boolean
     fun existsByAssignedById(userId: Long): Boolean

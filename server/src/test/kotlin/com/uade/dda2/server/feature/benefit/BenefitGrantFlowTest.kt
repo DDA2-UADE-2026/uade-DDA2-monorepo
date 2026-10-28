@@ -536,6 +536,29 @@ class BenefitGrantFlowTest {
         expect(result, 201)
         return response(result)
     }
+    @Test fun `bandeja administrativa filtra y protege otorgamientos`() {
+        val grant = assigned()
+        val number = tx { applications.findById(f.applicationId).orElseThrow().applicationNumber!! }
+        val unfiltered = mvc.perform(get("/api/admin/benefit-grants").header("Authorization", "Bearer ${f.token}")).andReturn()
+        expect(unfiltered, 200)
+        assertTrue(json.readTree(unfiltered.response.contentAsString).get("content").any { it.get("benefit").get("id").stringValue() == grant.id.toString() })
+        val result = mvc.perform(get("/api/admin/benefit-grants")
+            .param("applicationNumber", number.toString()).param("status", "ACTIVE").param("page", "0").param("size", "1")
+            .header("Authorization", "Bearer ${f.token}")).andReturn()
+        expect(result, 200)
+        val page = json.readTree(result.response.contentAsString)
+        assertEquals(1, page.get("totalElements").intValue())
+        assertEquals(grant.id.toString(), page.get("content").get(0).get("benefit").get("id").stringValue())
+        assertEquals(f.applicantId, page.get("content").get(0).get("userId").longValue())
+        val empty = mvc.perform(get("/api/admin/benefit-grants").param("applicationNumber", number.toString())
+            .param("status", "SUSPENDED").header("Authorization", "Bearer ${f.token}")).andReturn()
+        expect(empty, 200)
+        assertEquals(0, json.readTree(empty.response.contentAsString).get("totalElements").intValue())
+        val denied = mvc.perform(get("/api/admin/benefit-grants").header("Authorization", "Bearer ${f.citizenToken}")).andReturn()
+        expect(denied, 403)
+        expect(mvc.perform(get("/api/admin/program-editions/${f.editionId}/benefits").header("Authorization", "Bearer ${f.token}")).andReturn(), 200)
+        expect(mvc.perform(get("/api/admin/program-editions/${f.editionId}/requirements").header("Authorization", "Bearer ${f.token}")).andReturn(), 200)
+    }
     private fun change(grantId: UUID, action: String, content: String = """{"reason":" Motivo del cambio "}""",
         token: String? = f.token, applicationId: UUID = f.applicationId): MvcResult {
         val request = post("/api/admin/applications/$applicationId/benefit-grants/$grantId/$action")

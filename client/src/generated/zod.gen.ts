@@ -2277,6 +2277,20 @@ export const zIndicatorsResponse = z.object({
     activities: zActivityIndicators.optional()
 });
 
+export const zAdminBenefitGrantListItem = z.object({
+    benefit: zCitizenBenefitGrantResponse.optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    userName: z.string().optional()
+});
+
+export const zAdminBenefitGrantListResponse = z.object({
+    content: z.array(zAdminBenefitGrantListItem).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
 /**
  * Ocupación de un centro en un día para el calendario administrativo.
  */
@@ -4475,6 +4489,23 @@ export const zGetIndicatorsQuery = z.object({
  * Indicadores del período.
  */
 export const zGetIndicatorsResponse = zIndicatorsResponse;
+
+export const zListAdminBenefitGrantsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20),
+    status: z.enum([
+        'ACTIVE',
+        'SUSPENDED',
+        'FINALIZED',
+        'EXPIRED'
+    ]).optional(),
+    applicationNumber: z.coerce.bigint().gte(BigInt(1)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+/**
+ * OK
+ */
+export const zListAdminBenefitGrantsResponse = zAdminBenefitGrantListResponse;
 
 export const zListAdminAppointmentsQuery = z.object({
     centerId: z.uuid(),

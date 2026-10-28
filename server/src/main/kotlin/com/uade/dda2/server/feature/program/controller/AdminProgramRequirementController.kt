@@ -34,7 +34,7 @@ class AdminProgramRequirementController(
             request = request,
         )
 
-    @PreAuthorize("hasAuthority('programs:management:view')")
+    @PreAuthorize("hasAnyAuthority('programs:management:view', 'applications:management:benefits:manage', 'applications:management:resolve')")
     @GetMapping
     @Operation(summary = "Listar requisitos", description = "Devuelve todos los requisitos de la edición indicada.")
     fun findAll(

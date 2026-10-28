@@ -3018,6 +3018,20 @@ export type WorkerLoad = {
     scheduledVisits?: number;
 };
 
+export type AdminBenefitGrantListItem = {
+    benefit?: CitizenBenefitGrantResponse;
+    userId?: number;
+    userName?: string;
+};
+
+export type AdminBenefitGrantListResponse = {
+    content?: Array<AdminBenefitGrantListItem>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
 /**
  * Ocupación de un centro en un día para el calendario administrativo.
  */
@@ -11343,6 +11357,48 @@ export type GetIndicatorsResponses = {
 };
 
 export type GetIndicatorsResponse = GetIndicatorsResponses[keyof GetIndicatorsResponses];
+
+export type ListAdminBenefitGrantsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+        status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+        applicationNumber?: number;
+    };
+    url: '/api/admin/benefit-grants';
+};
+
+export type ListAdminBenefitGrantsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAdminBenefitGrantsError = ListAdminBenefitGrantsErrors[keyof ListAdminBenefitGrantsErrors];
+
+export type ListAdminBenefitGrantsResponses = {
+    /**
+     * OK
+     */
+    200: AdminBenefitGrantListResponse;
+};
+
+export type ListAdminBenefitGrantsResponse = ListAdminBenefitGrantsResponses[keyof ListAdminBenefitGrantsResponses];
 
 export type ListAdminAppointmentsData = {
     body?: never;

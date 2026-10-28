@@ -12,6 +12,7 @@ import { useState } from "react"
 
 import { AdminApplicationDocumentUploadDialog } from "@/components/applications/AdminApplicationDocumentUploadDialog"
 import { AdminDocumentsTable } from "@/components/applications/AdminApplicationDocuments"
+import { ApplicationBenefits } from "@/components/benefits/ApplicationBenefits"
 import {
   OutletNavRightButton,
   OutletNavSidebarTrigger,
@@ -53,6 +54,7 @@ export const Route = createFileRoute("/_app/gestion/solicitudes/$solicitudId")({
 
 function RouteComponent() {
   const { solicitudId } = Route.useParams()
+  const { user } = Route.useRouteContext()
   const query = useQuery(get3Options({ path: { id: solicitudId } }))
   const application = query.data
   const heading = application?.applicationNumber != null
@@ -216,6 +218,7 @@ function RouteComponent() {
                   <Button variant="outline" render={<Link to="/gestion/casos/$solicitudId/resolucion" params={{ solicitudId }} />}>Resolución</Button>
                 </div>
 
+                <ApplicationBenefits application={{ ...application, id: solicitudId }} canAssign={user.permissions?.includes("applications:management:benefits:assign") ?? false} />
                 <ApplicationDocumentsSection application={{ ...application, id: solicitudId }} />
               </>
             )}

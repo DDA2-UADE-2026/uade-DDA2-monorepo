@@ -1,4 +1,4 @@
-import { IconCheck, IconRefresh } from "@tabler/icons-react"
+import { IconRefresh } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { useState } from "react"
@@ -44,7 +44,7 @@ export function CitizenActivities({ page, view, onSearchChange, canEnroll }: {
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{activities.map((activity) => <ActivityCard key={activity.id} activity={activity} action={
           <div className="flex w-full flex-col gap-2">
             <Button className="w-full" variant="outline" render={<Link to="/portal/actividades/$actividadId" params={{ actividadId: activity.id ?? "" }} />}>Ver detalle</Button>
-            {activity.myEnrollment ? <Button disabled variant="outline"><IconCheck />Ya estás inscripto</Button> : canEnroll && activity.status === "OPEN" && <Button disabled={!activity.id || availableSeats(activity) === 0} onClick={() => setEnrolling(activity)}>{availableSeats(activity) === 0 ? "Sin cupo" : "Inscribirme"}</Button>}
+            {!activity.myEnrollment && canEnroll && activity.status === "OPEN" && <Button disabled={!activity.id || availableSeats(activity) === 0} onClick={() => setEnrolling(activity)}>{availableSeats(activity) === 0 ? "Sin cupo" : "Inscribirme"}</Button>}
           </div>
         } />)}</div>
       )}

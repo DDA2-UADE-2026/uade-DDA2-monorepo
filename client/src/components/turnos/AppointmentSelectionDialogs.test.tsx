@@ -48,7 +48,7 @@ it("permite seleccionar un centro de una página posterior", async () => {
   await user.click(within(row!).getByRole("button", { name: "Seleccionar" }))
 
   expect(requestedPages).toEqual([0, 1])
-  expect(onSelect).toHaveBeenCalledWith(centerId)
+  expect(onSelect).toHaveBeenCalledWith(centerId, expect.objectContaining({ id: centerId, name: "Centro 9" }))
 })
 
 it("pagina los servicios del centro y permite seleccionar el último", async () => {

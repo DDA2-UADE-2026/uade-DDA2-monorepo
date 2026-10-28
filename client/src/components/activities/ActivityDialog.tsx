@@ -1,10 +1,12 @@
-import { IconAlertTriangle, IconMapPin, IconUsers } from "@tabler/icons-react"
+import { IconAlertTriangle, IconBuilding, IconMapPin, IconUsers } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 import { z } from "zod"
 
 import { ProgramDatePicker } from "@/components/programs/ProgramDatePicker"
 import { parseLocalDate } from "@/components/programs/ProgramRouteUi"
+import { AppointmentCenterSelectionDialog } from "@/components/turnos/AppointmentSelectionDialogs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -118,6 +120,8 @@ function ActivityForm({ activity, onOpenChange, onSaved }: {
 }) {
   const queryClient = useQueryClient()
   const isEditing = activity !== null
+  const [centerPickerOpen, setCenterPickerOpen] = useState(false)
+  const [selectedCenterId, setSelectedCenterId] = useState("")
 
   const onSuccess = (saved: ActivityResponse) => {
     queryClient.invalidateQueries({ queryKey: list7QueryKey() })
@@ -243,12 +247,21 @@ function ActivityForm({ activity, onOpenChange, onSaved }: {
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
+                    onChange={(event) => { setSelectedCenterId(""); field.handleChange(event.target.value) }}
                     aria-invalid={invalid}
                     placeholder="Centro Municipal Norte"
                     maxLength={300}
                   />
                 </InputGroup>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={() => setCenterPickerOpen(true)}><IconBuilding />Seleccionar centro existente</Button>
+                  <span className="text-xs text-muted-foreground">También podés escribir un lugar externo.</span>
+                </div>
+                {centerPickerOpen && <AppointmentCenterSelectionDialog open onOpenChange={setCenterPickerOpen} selectedCenterId={selectedCenterId} description="Buscá un centro activo para usarlo como lugar de la actividad." onSelect={(id, center) => {
+                  const fullLocation = center.address ? `${center.name} · ${center.address}` : center.name ?? ""
+                  field.handleChange(fullLocation.length <= 300 ? fullLocation : center.name ?? "")
+                  setSelectedCenterId(id)
+                }} />}
                 {invalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             )
