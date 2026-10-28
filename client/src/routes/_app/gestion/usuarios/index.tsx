@@ -9,6 +9,7 @@ import {
   IconRefresh,
   IconUser,
   IconUserPlus,
+  IconUserCheck,
 } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -25,6 +26,7 @@ import {
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { DataPagination } from "@/components/DataPagination"
 import { UserAvatar } from "@/components/UserAvatar"
+import { ActivateUserDialog } from "@/components/users/ActivateUserDialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -93,11 +95,14 @@ export const Route = createFileRoute("/_app/gestion/usuarios/")({
 const PAGE_SIZE = 10
 
 function RouteComponent() {
+  const { user: currentUser } = Route.useRouteContext()
+  const canEditUsers = currentUser.permissions?.includes("users:edit") ?? false
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } =
     useQuery(findAllOptions())
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
   const [rolesUser, setRolesUser] = useState<UserManagementResponse | null>(null)
+  const [activationUser, setActivationUser] = useState<(UserManagementResponse & { id: number }) | null>(null)
 
   const totalItems = data?.length ?? 0
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -217,7 +222,8 @@ function RouteComponent() {
                           : "—"}
                       </TableCell>
                       <TableCell>
-                        {user.id && (
+                        {user.id != null && canEditUsers && <div className="flex items-center gap-1">
+                          {user.active === false && <Button type="button" size="sm" variant="outline" onClick={() => setActivationUser({ ...user, id: user.id! })}><IconUserCheck />Habilitar</Button>}
                           <Button
                             type="button"
                             size="icon-sm"
@@ -227,7 +233,7 @@ function RouteComponent() {
                           >
                             <IconPencil />
                           </Button>
-                        )}
+                        </div>}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -253,6 +259,7 @@ function RouteComponent() {
           }}
         />
       )}
+      {activationUser && <ActivateUserDialog user={activationUser} onClose={() => setActivationUser(null)} />}
     </SidebarShell>
   )
 }
