@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { IconClipboardHeart } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { toast } from "sonner"
@@ -29,6 +30,7 @@ function RouteComponent() {
   const { user } = Route.useRouteContext()
   const canView = user.permissions?.includes("applications:evaluations:view")
   const canCreate = user.permissions?.includes("applications:evaluations:create")
+  const canAccessInterventions = user.permissions?.some((permission) => permission.startsWith("applications:interventions:"))
   const application = useQuery(get3Options({ path: { id: solicitudId } }))
   const evaluations = useQuery({ ...socialQueries.evaluations({ applicationId: solicitudId, page: 0, size: 1 }), enabled: !!canView })
   const existingId = evaluations.data?.content[0]?.id
@@ -52,7 +54,7 @@ function RouteComponent() {
   return <SidebarShell>
     <OutletNavSticky><OutletNavSidebarTrigger withSeparator /><OutletNavBreadcrumbs items={[{ label: "Evaluaciones", to: "/gestion/casos" }, { label: "Solicitud" }]} /></OutletNavSticky>
     <SidebarShellContent><div className="min-h-0 flex-1 overflow-auto p-4 lg:p-6"><div className="mx-auto max-w-3xl space-y-5">
-      <header className="space-y-1"><h1 className="font-heading text-2xl font-medium">Evaluación social</h1><p className="text-sm text-muted-foreground">Solicitud N.º {application.data?.applicationNumber ?? solicitudId} · {application.data?.userName ?? ""}</p><div className="flex gap-2 pt-2"><Button variant="outline" size="sm" render={<Link to="/gestion/solicitudes/$solicitudId" params={{ solicitudId }} />}>Ver solicitud</Button><Button variant="outline" size="sm" render={<Link to="/gestion/casos/$solicitudId/visitas" params={{ solicitudId }} />}>Ver visitas</Button><Button variant="outline" size="sm" render={<Link to="/gestion/casos/$solicitudId/resolucion" params={{ solicitudId }} />}>Resolución</Button></div></header>
+      <header className="space-y-1"><h1 className="font-heading text-2xl font-medium">Evaluación social</h1><p className="text-sm text-muted-foreground">Solicitud N.º {application.data?.applicationNumber ?? solicitudId} · {application.data?.userName ?? ""}</p><div className="flex flex-wrap gap-2 pt-2"><Button variant="outline" size="sm" render={<Link to="/gestion/solicitudes/$solicitudId" params={{ solicitudId }} />}>Ver solicitud</Button><Button variant="outline" size="sm" render={<Link to="/gestion/casos/$solicitudId/visitas" params={{ solicitudId }} />}>Ver visitas</Button><Button variant="outline" size="sm" render={<Link to="/gestion/casos/$solicitudId/resolucion" params={{ solicitudId }} />}>Resolución</Button>{canAccessInterventions && (existingId || mutation.isSuccess) && <Button size="sm" render={<Link to="/gestion/intervenciones/$planId" params={{ planId: solicitudId }} />}><IconClipboardHeart />Gestionar intervención</Button>}</div></header>
       {application.isError && <p role="alert" className="text-destructive">No se pudo consultar la solicitud.</p>}
       {application.data && <ApplicationProgramContext application={application.data} />}
       {application.data && <AssignedWorkerCard application={application.data} permissions={user.permissions ?? []} evaluated={!!existingId || mutation.isSuccess} />}

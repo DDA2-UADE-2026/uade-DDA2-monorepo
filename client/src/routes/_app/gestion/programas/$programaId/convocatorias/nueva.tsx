@@ -4,7 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { ProgramDatePicker } from "@/components/programs/ProgramDatePicker"
 import { FormField, RoutePanel, inputClass, parseLocalDate } from "@/components/programs/ProgramRouteUi"
 import { Button } from "@/components/ui/button"
-import { create7Mutation, list3QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create8Mutation, list3QueryKey } from "@/generated/@tanstack/react-query.gen"
 import { zCreateProgramEditionRequest } from "@/generated/zod.gen"
 
 const createEditionSchema = zCreateProgramEditionRequest.required().extend({
@@ -21,7 +21,7 @@ function RouteComponent() {
   const { programaId } = Route.useParams()
   const navigate = useNavigate()
   const client = useQueryClient()
-  const create = useMutation({ ...create7Mutation(), onSuccess: (data) => { client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }); navigate({ to: "/gestion/programas/$programaId/convocatorias/$edicionId", params: { programaId, edicionId: data.id ?? "" } }) } })
+  const create = useMutation({ ...create8Mutation(), onSuccess: (data) => { client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }); navigate({ to: "/gestion/programas/$programaId/convocatorias/$edicionId", params: { programaId, edicionId: data.id ?? "" } }) } })
   const form = useForm({
     defaultValues: { name: "", startDate: "", endDate: "", maxCapacity: undefined as number | undefined },
     validators: { onChange: createEditionSchema },

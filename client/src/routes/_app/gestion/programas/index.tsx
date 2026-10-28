@@ -23,7 +23,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
-import { create2Mutation, list1Options, list1QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create3Mutation, list1Options, list1QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { CreateProgramRequest } from "@/generated/types.gen"
 import { zCreateProgramRequest } from "@/generated/zod.gen"
 import { programImageSource } from "@/lib/program-images"
@@ -154,7 +154,7 @@ function CreateProgramDialog({ onOpenChange }: { onOpenChange: (open: boolean) =
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const createProgram = useMutation({
-    ...create2Mutation(),
+    ...create3Mutation(),
     onSuccess: (program) => {
       queryClient.invalidateQueries({ queryKey: list1QueryKey() })
       onOpenChange(false)

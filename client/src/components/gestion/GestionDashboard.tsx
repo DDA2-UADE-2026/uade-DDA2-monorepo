@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { findAllOptions, list1Options, list4Options, list5Options, listMunicipalCentersOptions } from "@/generated/@tanstack/react-query.gen"
+import { findAllOptions, list1Options, list4Options, list7Options, listMunicipalCentersOptions } from "@/generated/@tanstack/react-query.gen"
 import { useMe } from "@/hooks/use-auth"
 import { applicationStatusLabels, formatApplicationDate, isApplicationResolved } from "@/lib/application-flow"
 import { programImageSource } from "@/lib/program-images"
@@ -105,7 +105,7 @@ export function GestionDashboard() {
   const users = useQuery({ ...findAllOptions(), ...queryDefaults, enabled: canViewUsers })
   const programs = useQuery({ ...list1Options(previewQuery), ...queryDefaults, enabled: canViewPrograms })
   const applications = useQuery({ ...list4Options(previewQuery), ...queryDefaults, enabled: canViewApplications })
-  const activities = useQuery({ ...list5Options(previewQuery), ...queryDefaults, enabled: canViewActivities })
+  const activities = useQuery({ ...list7Options(previewQuery), ...queryDefaults, enabled: canViewActivities })
   const centers = useQuery({ ...listMunicipalCentersOptions(previewQuery), ...queryDefaults, enabled: canViewCenters })
 
   const visibleQueries = [

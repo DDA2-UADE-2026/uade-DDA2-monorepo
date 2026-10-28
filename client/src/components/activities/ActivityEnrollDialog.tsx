@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { enrollMutation, get4QueryKey, list8QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { enrollMutation, get5QueryKey, list10QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { CitizenActivityResponse } from "@/generated/types.gen"
 
 export function ActivityEnrollDialog({ activity, onOpenChange, onEnrolled }: {
@@ -28,8 +28,8 @@ export function ActivityEnrollDialog({ activity, onOpenChange, onEnrolled }: {
     onSuccess: async () => {
       // El cupo disponible cambia para todos, así que se refresca el listado.
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: list8QueryKey() }),
-        ...(activity.id ? [queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: activity.id } }) })] : []),
+        queryClient.invalidateQueries({ queryKey: list10QueryKey() }),
+        ...(activity.id ? [queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: activity.id } }) })] : []),
       ])
       toast.success("Te inscribiste en la actividad")
       if (activity.id) onEnrolled?.(activity.id)
@@ -37,8 +37,8 @@ export function ActivityEnrollDialog({ activity, onOpenChange, onEnrolled }: {
     },
     onError: () => {
       // Recupera cupos y la inscripción propia si hubo un conflicto o se perdió la respuesta.
-      void queryClient.invalidateQueries({ queryKey: list8QueryKey() })
-      if (activity.id) void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: activity.id } }) })
+      void queryClient.invalidateQueries({ queryKey: list10QueryKey() })
+      if (activity.id) void queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: activity.id } }) })
     },
   })
 

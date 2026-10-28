@@ -33,7 +33,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
-import { get3Options, list7Options } from "@/generated/@tanstack/react-query.gen"
+import { get3Options, list9Options } from "@/generated/@tanstack/react-query.gen"
 import type {
   AdminApplicationResponse,
   ApplicationDocumentResponse,
@@ -228,7 +228,7 @@ function RouteComponent() {
 
 function ApplicationDocumentsSection({ application }: { application: AdminApplicationResponse & { id: string } }) {
   const applicationId = application.id
-  const documents = useQuery(list7Options({ path: { applicationId } }))
+  const documents = useQuery(list9Options({ path: { applicationId } }))
   const [uploadTarget, setUploadTarget] = useState<
     { requirement: AvailableProgramDocumentRequirementResponse & { id: string }; existing?: ApplicationDocumentResponse } | null
   >(null)

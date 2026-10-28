@@ -16,7 +16,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { list8Options } from "@/generated/@tanstack/react-query.gen"
+import { list10Options } from "@/generated/@tanstack/react-query.gen"
 import type { CitizenActivityResponse } from "@/generated/types.gen"
 import { cn } from "@/lib/utils"
 
@@ -32,7 +32,7 @@ export function CitizenActivitiesSection({ className }: { className?: string }) 
   // Solo refleja lo hecho en esta sesión; no sobrevive a un recargado.
   const [justEnrolled, setJustEnrolled] = useState<ReadonlySet<string>>(new Set())
 
-  const query = useQuery(list8Options({ query: { page: 0, size: PREVIEW_COUNT } }))
+  const query = useQuery(list10Options({ query: { page: 0, size: PREVIEW_COUNT } }))
   const activities = query.data?.content ?? []
 
   if (query.isError) return null

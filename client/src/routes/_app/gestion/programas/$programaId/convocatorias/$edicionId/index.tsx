@@ -19,7 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list3QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
+import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list3QueryKey, suspend1Mutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
 import { zUpdateProgramEditionRequest } from "@/generated/zod.gen"
 import { UserChip } from "@/components/UserChip"
 
@@ -42,7 +42,7 @@ function RouteComponent() {
   const refresh = () => { client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }) }
   const update = useMutation({ ...update3Mutation(), onSuccess: refresh, onError: showApiErrorToast })
   const activate = useMutation({ ...activateMutation(), onSuccess: refresh, onError: showApiErrorToast })
-  const suspend = useMutation({ ...suspendMutation(), onSuccess: refresh, onError: showApiErrorToast })
+  const suspend = useMutation({ ...suspend1Mutation(), onSuccess: refresh, onError: showApiErrorToast })
   const close = useMutation({ ...closeMutation(), onSuccess: () => { refresh(); setCloseDialogOpen(false) }, onError: (error) => { refresh(); showApiErrorToast(error) } })
   const remove = useMutation({ ...delete3Mutation(), onSuccess: () => { refresh(); navigate({ to: "/gestion/programas/$programaId/convocatorias", params: { programaId }, search: { page: 1 } }) }, onError: showApiErrorToast })
   const busy = update.isPending || activate.isPending || suspend.isPending || close.isPending || remove.isPending

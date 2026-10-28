@@ -21,10 +21,10 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Skeleton } from "@/components/ui/skeleton"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  create8Mutation,
+  create11Mutation,
   get1Options,
   get1QueryKey,
-  list5QueryKey,
+  list7QueryKey,
   update7Mutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ActivityResponse } from "@/generated/types.gen"
@@ -120,12 +120,12 @@ function ActivityForm({ activity, onOpenChange, onSaved }: {
   const isEditing = activity !== null
 
   const onSuccess = (saved: ActivityResponse) => {
-    queryClient.invalidateQueries({ queryKey: list5QueryKey() })
+    queryClient.invalidateQueries({ queryKey: list7QueryKey() })
     if (saved.id) queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
     onSaved?.(saved)
     onOpenChange(false)
   }
-  const create = useMutation({ ...create8Mutation(), onSuccess })
+  const create = useMutation({ ...create11Mutation(), onSuccess })
   const update = useMutation({ ...update7Mutation(), onSuccess })
   const isPending = create.isPending || update.isPending
   const mutationError = create.error ?? update.error

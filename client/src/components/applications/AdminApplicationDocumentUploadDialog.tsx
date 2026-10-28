@@ -28,7 +28,7 @@ import {
   content1QueryKey,
   get3QueryKey,
   list4QueryKey,
-  list7QueryKey,
+  list9QueryKey,
   put1Mutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse, AvailableProgramDocumentRequirementResponse } from "@/generated/types.gen"
@@ -58,7 +58,7 @@ export function AdminApplicationDocumentUploadDialog({ applicationId, requiremen
     retry: false,
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: list7QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list9QueryKey({ path: { applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: list4QueryKey() }),
         ...(existing?.id

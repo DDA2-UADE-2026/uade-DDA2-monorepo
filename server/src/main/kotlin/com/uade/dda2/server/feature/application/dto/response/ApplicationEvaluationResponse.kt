@@ -38,6 +38,12 @@ data class ApplicationEvaluationListItemResponse(
     val professionalId: Long,
     val professionalName: String,
     val evaluatedAt: OffsetDateTime,
+    @field:Schema(description = "Plan de intervencion registrado para la solicitud, si existe.")
+    val interventionPlanId: UUID?,
+    @field:Schema(description = "Cantidad total de acciones del plan de intervencion.", minimum = "0")
+    val interventionActionCount: Long,
+    @field:Schema(description = "Cantidad de acciones completadas del plan de intervencion.", minimum = "0")
+    val interventionCompletedActionCount: Long,
 )
 
 @Schema(description = "Pagina administrativa de evaluaciones sociales, ordenada por fecha descendente.")

@@ -23,6 +23,8 @@ import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.log.entity.LogAction
 import com.uade.dda2.server.feature.log.entity.LogEntityType
 import com.uade.dda2.server.feature.log.service.LogService
+import com.uade.dda2.server.feature.intervention.repository.InterventionActionRepository
+import com.uade.dda2.server.feature.intervention.repository.InterventionPlanRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.data.domain.PageRequest
@@ -54,6 +56,8 @@ data class ApplicationEvaluationFilters(
 class ApplicationEvaluationService(
     private val applications: ApplicationRepository,
     private val evaluations: ApplicationEvaluationRepository,
+    private val interventionPlans: InterventionPlanRepository,
+    private val interventionActions: InterventionActionRepository,
     private val users: UserRepository,
     private val currentUser: CurrentUserService,
     private val validator: ApplicationEvaluationValidator,
@@ -124,8 +128,23 @@ class ApplicationEvaluationService(
                 Sort.by("evaluatedAt").descending().and(Sort.by("id").descending()),
             ),
         )
+        val planRows = if (results.isEmpty) emptyList() else interventionPlans.findIdsByApplicationIds(
+            results.content.map { requireNotNull(it.application.id) },
+        )
+        val plansByApplication = planRows.associateBy { it.applicationId }
+        val actionCountsByPlan = if (planRows.isEmpty()) emptyMap() else interventionActions
+            .countStatesByPlanIds(planRows.map { it.planId })
+            .associateBy { it.planId }
         return ApplicationEvaluationListResponse(
-            content = results.content.map { it.toListItemResponse() },
+            content = results.content.map { evaluation ->
+                val plan = plansByApplication[evaluation.application.id]
+                val counts = plan?.let { actionCountsByPlan[it.planId] }
+                evaluation.toListItemResponse(
+                    interventionPlanId = plan?.planId,
+                    interventionActionCount = counts?.actionCount ?: 0,
+                    interventionCompletedActionCount = counts?.completedCount ?: 0,
+                )
+            },
             page = results.number,
             size = results.size,
             totalElements = results.totalElements,

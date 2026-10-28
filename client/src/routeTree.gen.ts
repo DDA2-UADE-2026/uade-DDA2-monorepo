@@ -64,6 +64,8 @@ import { Route as AppGestionVisitasVisitaIdRouteImport } from "./routes/_app/ges
 import { Route as AppPortalActividadesIndexRouteImport } from "./routes/_app/portal/actividades/index"
 import { Route as AppPortalActividadesActividadIdRouteImport } from "./routes/_app/portal/actividades/$actividadId"
 import { Route as AppPortalBeneficiosIndexRouteImport } from "./routes/_app/portal/beneficios/index"
+import { Route as AppPortalIntervencionesIndexRouteImport } from "./routes/_app/portal/intervenciones/index"
+import { Route as AppPortalIntervencionesPlanIdRouteImport } from "./routes/_app/portal/intervenciones/$planId"
 import { Route as AppPortalProgramasIndexRouteImport } from "./routes/_app/portal/programas/index"
 import { Route as AppPortalProgramasProgramaIdRouteImport } from "./routes/_app/portal/programas/$programaId"
 import { Route as AppPortalSolicitudesIndexRouteImport } from "./routes/_app/portal/solicitudes/index"
@@ -392,6 +394,18 @@ const AppPortalBeneficiosIndexRoute =
     path: "/beneficios/",
     getParentRoute: () => AppPortalRouteRoute,
   } as any)
+const AppPortalIntervencionesIndexRoute =
+  AppPortalIntervencionesIndexRouteImport.update({
+    id: "/intervenciones/",
+    path: "/intervenciones/",
+    getParentRoute: () => AppPortalRouteRoute,
+  } as any)
+const AppPortalIntervencionesPlanIdRoute =
+  AppPortalIntervencionesPlanIdRouteImport.update({
+    id: "/intervenciones/$planId",
+    path: "/intervenciones/$planId",
+    getParentRoute: () => AppPortalRouteRoute,
+  } as any)
 const AppPortalProgramasIndexRoute = AppPortalProgramasIndexRouteImport.update({
   id: "/programas/",
   path: "/programas/",
@@ -618,6 +632,7 @@ export interface FileRoutesByFullPath {
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/gestion/visitas/$visitaId": typeof AppGestionVisitasVisitaIdRoute
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
+  "/portal/intervenciones/$planId": typeof AppPortalIntervencionesPlanIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
@@ -636,6 +651,7 @@ export interface FileRoutesByFullPath {
   "/gestion/visitas/": typeof AppGestionVisitasIndexRoute
   "/portal/actividades/": typeof AppPortalActividadesIndexRoute
   "/portal/beneficios/": typeof AppPortalBeneficiosIndexRoute
+  "/portal/intervenciones/": typeof AppPortalIntervencionesIndexRoute
   "/portal/programas/": typeof AppPortalProgramasIndexRoute
   "/portal/solicitudes/": typeof AppPortalSolicitudesIndexRoute
   "/portal/turnos/": typeof AppPortalTurnosIndexRoute
@@ -696,6 +712,7 @@ export interface FileRoutesByTo {
   "/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/gestion/visitas/$visitaId": typeof AppGestionVisitasVisitaIdRoute
   "/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
+  "/portal/intervenciones/$planId": typeof AppPortalIntervencionesPlanIdRoute
   "/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
@@ -714,6 +731,7 @@ export interface FileRoutesByTo {
   "/gestion/visitas": typeof AppGestionVisitasIndexRoute
   "/portal/actividades": typeof AppPortalActividadesIndexRoute
   "/portal/beneficios": typeof AppPortalBeneficiosIndexRoute
+  "/portal/intervenciones": typeof AppPortalIntervencionesIndexRoute
   "/portal/programas": typeof AppPortalProgramasIndexRoute
   "/portal/solicitudes": typeof AppPortalSolicitudesIndexRoute
   "/portal/turnos": typeof AppPortalTurnosIndexRoute
@@ -783,6 +801,7 @@ export interface FileRoutesById {
   "/_app/gestion/turnos/nuevo": typeof AppGestionTurnosNuevoRoute
   "/_app/gestion/visitas/$visitaId": typeof AppGestionVisitasVisitaIdRoute
   "/_app/portal/actividades/$actividadId": typeof AppPortalActividadesActividadIdRoute
+  "/_app/portal/intervenciones/$planId": typeof AppPortalIntervencionesPlanIdRoute
   "/_app/portal/programas/$programaId": typeof AppPortalProgramasProgramaIdRoute
   "/_app/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/_app/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
@@ -801,6 +820,7 @@ export interface FileRoutesById {
   "/_app/gestion/visitas/": typeof AppGestionVisitasIndexRoute
   "/_app/portal/actividades/": typeof AppPortalActividadesIndexRoute
   "/_app/portal/beneficios/": typeof AppPortalBeneficiosIndexRoute
+  "/_app/portal/intervenciones/": typeof AppPortalIntervencionesIndexRoute
   "/_app/portal/programas/": typeof AppPortalProgramasIndexRoute
   "/_app/portal/solicitudes/": typeof AppPortalSolicitudesIndexRoute
   "/_app/portal/turnos/": typeof AppPortalTurnosIndexRoute
@@ -869,6 +889,7 @@ export interface FileRouteTypes {
     | "/gestion/turnos/nuevo"
     | "/gestion/visitas/$visitaId"
     | "/portal/actividades/$actividadId"
+    | "/portal/intervenciones/$planId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
     | "/portal/turnos/$turnoId"
@@ -887,6 +908,7 @@ export interface FileRouteTypes {
     | "/gestion/visitas/"
     | "/portal/actividades/"
     | "/portal/beneficios/"
+    | "/portal/intervenciones/"
     | "/portal/programas/"
     | "/portal/solicitudes/"
     | "/portal/turnos/"
@@ -947,6 +969,7 @@ export interface FileRouteTypes {
     | "/gestion/turnos/nuevo"
     | "/gestion/visitas/$visitaId"
     | "/portal/actividades/$actividadId"
+    | "/portal/intervenciones/$planId"
     | "/portal/programas/$programaId"
     | "/portal/solicitudes/nueva"
     | "/portal/turnos/$turnoId"
@@ -965,6 +988,7 @@ export interface FileRouteTypes {
     | "/gestion/visitas"
     | "/portal/actividades"
     | "/portal/beneficios"
+    | "/portal/intervenciones"
     | "/portal/programas"
     | "/portal/solicitudes"
     | "/portal/turnos"
@@ -1033,6 +1057,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/turnos/nuevo"
     | "/_app/gestion/visitas/$visitaId"
     | "/_app/portal/actividades/$actividadId"
+    | "/_app/portal/intervenciones/$planId"
     | "/_app/portal/programas/$programaId"
     | "/_app/portal/solicitudes/nueva"
     | "/_app/portal/turnos/$turnoId"
@@ -1051,6 +1076,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/visitas/"
     | "/_app/portal/actividades/"
     | "/_app/portal/beneficios/"
+    | "/_app/portal/intervenciones/"
     | "/_app/portal/programas/"
     | "/_app/portal/solicitudes/"
     | "/_app/portal/turnos/"
@@ -1475,6 +1501,20 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppPortalBeneficiosIndexRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
+    "/_app/portal/intervenciones/": {
+      id: "/_app/portal/intervenciones/"
+      path: "/intervenciones"
+      fullPath: "/portal/intervenciones/"
+      preLoaderRoute: typeof AppPortalIntervencionesIndexRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
+    "/_app/portal/intervenciones/$planId": {
+      id: "/_app/portal/intervenciones/$planId"
+      path: "/intervenciones/$planId"
+      fullPath: "/portal/intervenciones/$planId"
+      preLoaderRoute: typeof AppPortalIntervencionesPlanIdRouteImport
+      parentRoute: typeof AppPortalRouteRoute
+    }
     "/_app/portal/programas/": {
       id: "/_app/portal/programas/"
       path: "/programas"
@@ -1897,12 +1937,14 @@ interface AppPortalRouteRouteChildren {
   AppPortalVisitasRoute: typeof AppPortalVisitasRoute
   AppPortalIndexRoute: typeof AppPortalIndexRoute
   AppPortalActividadesActividadIdRoute: typeof AppPortalActividadesActividadIdRoute
+  AppPortalIntervencionesPlanIdRoute: typeof AppPortalIntervencionesPlanIdRoute
   AppPortalProgramasProgramaIdRoute: typeof AppPortalProgramasProgramaIdRoute
   AppPortalSolicitudesNuevaRoute: typeof AppPortalSolicitudesNuevaRoute
   AppPortalTurnosTurnoIdRoute: typeof AppPortalTurnosTurnoIdRoute
   AppPortalTurnosNuevoRoute: typeof AppPortalTurnosNuevoRoute
   AppPortalActividadesIndexRoute: typeof AppPortalActividadesIndexRoute
   AppPortalBeneficiosIndexRoute: typeof AppPortalBeneficiosIndexRoute
+  AppPortalIntervencionesIndexRoute: typeof AppPortalIntervencionesIndexRoute
   AppPortalProgramasIndexRoute: typeof AppPortalProgramasIndexRoute
   AppPortalSolicitudesIndexRoute: typeof AppPortalSolicitudesIndexRoute
   AppPortalTurnosIndexRoute: typeof AppPortalTurnosIndexRoute
@@ -1916,12 +1958,14 @@ const AppPortalRouteRouteChildren: AppPortalRouteRouteChildren = {
   AppPortalVisitasRoute: AppPortalVisitasRoute,
   AppPortalIndexRoute: AppPortalIndexRoute,
   AppPortalActividadesActividadIdRoute: AppPortalActividadesActividadIdRoute,
+  AppPortalIntervencionesPlanIdRoute: AppPortalIntervencionesPlanIdRoute,
   AppPortalProgramasProgramaIdRoute: AppPortalProgramasProgramaIdRoute,
   AppPortalSolicitudesNuevaRoute: AppPortalSolicitudesNuevaRoute,
   AppPortalTurnosTurnoIdRoute: AppPortalTurnosTurnoIdRoute,
   AppPortalTurnosNuevoRoute: AppPortalTurnosNuevoRoute,
   AppPortalActividadesIndexRoute: AppPortalActividadesIndexRoute,
   AppPortalBeneficiosIndexRoute: AppPortalBeneficiosIndexRoute,
+  AppPortalIntervencionesIndexRoute: AppPortalIntervencionesIndexRoute,
   AppPortalProgramasIndexRoute: AppPortalProgramasIndexRoute,
   AppPortalSolicitudesIndexRoute: AppPortalSolicitudesIndexRoute,
   AppPortalTurnosIndexRoute: AppPortalTurnosIndexRoute,

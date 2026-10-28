@@ -70,12 +70,23 @@ export const zCommunityAttentionResponse = z.object({
 });
 
 /**
- * Nuevo horario y lugar de una visita o entrevista social pendiente.
+ * Version publica redactada explicitamente; nunca copia notas ni resultado profesional.
  */
-export const zRescheduleApplicationVisitRequest = z.object({
-    startsAt: z.iso.datetime(),
-    durationMinutes: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
-    location: z.string().min(1).max(300)
+export const zPublishInterventionFollowUpRequest = z.object({
+    summary: z.string().min(1).max(2000)
+});
+
+/**
+ * Gestion profesional de la version publica actual, incluidas publicaciones retiradas.
+ */
+export const zInterventionPublicationResponse = z.object({
+    id: z.uuid().optional(),
+    summary: z.string().optional(),
+    visible: z.boolean().optional(),
+    publishedAt: z.iso.datetime().optional(),
+    updatedAt: z.iso.datetime().optional(),
+    updatedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    updatedByUserName: z.string().optional()
 });
 
 /**
@@ -96,6 +107,15 @@ export const zErrorResponse = z.object({
     timestamp: z.iso.datetime().optional(),
     path: z.string().optional(),
     fields: z.array(zFieldErrorResponse).optional()
+});
+
+/**
+ * Nuevo horario y lugar de una visita o entrevista social pendiente.
+ */
+export const zRescheduleApplicationVisitRequest = z.object({
+    startsAt: z.iso.datetime(),
+    durationMinutes: z.int().gte(1).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }),
+    location: z.string().min(1).max(300)
 });
 
 /**
@@ -595,11 +615,12 @@ export const zAdminApplicationResponse = z.object({
     ]).optional(),
     originTicketId: z.string().optional(),
     resolutionReason: z.string().optional(),
+    resolvedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resolvedByUserName: z.string().optional(),
     assignedWorkerUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
     assignedWorkerName: z.string().optional(),
     submittedAt: z.iso.datetime().optional(),
     resolvedAt: z.iso.datetime().optional(),
-    resolvedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
     resolvedByName: z.string().optional(),
     createdAt: z.iso.datetime().optional(),
     updatedAt: z.iso.datetime().optional(),
@@ -778,9 +799,98 @@ export const zApplicationResponse = z.object({
     programId: z.uuid().optional(),
     programName: z.string().optional(),
     programEditionName: z.string().optional(),
-    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional(),
-    resolvedAt: z.iso.datetime().optional(),
-    resolutionReason: z.string().optional()
+    documentRequirements: z.array(zAvailableProgramDocumentRequirementResponse).optional()
+});
+
+export const zInterventionActionRequest = z.object({
+    description: z.string().min(1).max(1000),
+    startDate: z.iso.date(),
+    dueDate: z.iso.date()
+});
+
+export const zInterventionObjectiveRequest = z.object({
+    description: z.string().min(1).max(1000),
+    actions: z.array(zInterventionActionRequest)
+});
+
+/**
+ * Estructura inicial inmutable. Ciudadano y responsable se obtienen del caso.
+ */
+export const zCreateInterventionPlanRequest = z.object({
+    objectives: z.array(zInterventionObjectiveRequest)
+});
+
+export const zInterventionActionResponse = z.object({
+    id: z.uuid().optional(),
+    description: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    dueDate: z.iso.date().optional(),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional(),
+    responsibleUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleUserName: z.string().optional()
+});
+
+export const zInterventionObjectiveResponse = z.object({
+    id: z.uuid().optional(),
+    description: z.string().optional(),
+    actions: z.array(zInterventionActionResponse).optional()
+});
+
+/**
+ * Plan profesional de un caso. Estructura inicial fija y estados actuales de sus acciones.
+ */
+export const zInterventionPlanResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    responsibleUserName: z.string().optional(),
+    createdAt: z.iso.datetime().optional(),
+    objectives: z.array(zInterventionObjectiveResponse).optional()
+});
+
+/**
+ * Seguimiento inmutable de una accion. Autor y registro UTC se obtienen del servidor.
+ */
+export const zCreateInterventionFollowUpRequest = z.object({
+    status: z.enum(['IN_PROGRESS', 'COMPLETED']),
+    occurredOn: z.iso.date(),
+    notes: z.string().min(1).max(2000),
+    result: z.string().min(1).max(2000).optional()
+});
+
+/**
+ * Seguimiento profesional inmutable; las notas y resultados originales no se exponen a ciudadanos ni a logs generales.
+ */
+export const zInterventionFollowUpResponse = z.object({
+    id: z.uuid().optional(),
+    planId: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    objectiveId: z.uuid().optional(),
+    actionId: z.uuid().optional(),
+    sequenceNumber: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    previousStatus: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional(),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional(),
+    occurredOn: z.iso.date().optional(),
+    notes: z.string().optional(),
+    result: z.string().nullish(),
+    authorUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    authorUserName: z.string().optional(),
+    recordedAt: z.iso.datetime().optional(),
+    citizenPublication: zInterventionPublicationResponse.nullish()
 });
 
 /**
@@ -1097,6 +1207,70 @@ export const zCreateAssistedApplicationRequest = z.object({
     enrollmentPeriodId: z.uuid()
 });
 
+export const zApplicationRequirementCheckRequest = z.object({
+    requirementId: z.uuid(),
+    fulfilled: z.boolean()
+});
+
+/**
+ * Resolucion administrativa. Responsable y fecha se obtienen del servidor.
+ */
+export const zCreateApplicationResolutionRequest = z.object({
+    decision: z.enum([
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED'
+    ]),
+    reason: z.string().min(1).max(1000),
+    requirementChecks: z.array(zApplicationRequirementCheckRequest)
+});
+
+/**
+ * Copia del requisito y resultado al momento de resolver; no sigue los cambios del catalogo.
+ */
+export const zApplicationResolutionRequirementResponse = z.object({
+    requirementId: z.uuid().optional(),
+    type: z.enum([
+        'MIN_AGE',
+        'MAX_INCOME',
+        'RESIDENCY_YEARS',
+        'HAS_CHILDREN'
+    ]).optional(),
+    value: z.string().optional(),
+    description: z.string().optional(),
+    fulfilled: z.boolean().optional()
+});
+
+/**
+ * Resolucion historica inmutable, visible solo para administracion.
+ */
+export const zApplicationResolutionResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    previousStatus: z.enum([
+        'DRAFT',
+        'SUBMITTED',
+        'IN_VALIDATION',
+        'PENDING_DOCUMENTATION',
+        'IN_EVALUATION',
+        'IN_VISIT',
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED',
+        'CLOSED'
+    ]).optional(),
+    decision: z.enum([
+        'APPROVED',
+        'REJECTED',
+        'WAITLISTED'
+    ]).optional(),
+    reason: z.string().optional(),
+    resolvedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    resolvedByUserName: z.string().optional(),
+    resolvedAt: z.iso.datetime().optional(),
+    requirementChecks: z.array(zApplicationResolutionRequirementResponse).optional()
+});
+
 /**
  * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
  */
@@ -1107,6 +1281,65 @@ export const zResolveApplicationRequest = z.object({
         'WAITLISTED'
     ]),
     reason: z.string().max(1000).optional()
+});
+
+/**
+ * Otorgamiento individual. Titular, estado, datos del beneficio, responsable y fecha los obtiene el servidor.
+ */
+export const zCreateBenefitGrantRequest = z.object({
+    programBenefitId: z.uuid(),
+    startDate: z.iso.date(),
+    endDate: z.iso.date()
+});
+
+/**
+ * Otorgamiento individual visible solo para administracion. Los datos copiados no siguen los cambios del catalogo.
+ */
+export const zBenefitGrantResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    userId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programBenefitId: z.uuid().optional(),
+    benefitType: z.enum([
+        'TAX_EXEMPTION',
+        'HOUSING_SUBSIDY',
+        'FOOD_ASSISTANCE',
+        'UTILITY_SUBSIDY'
+    ]).optional(),
+    description: z.string().optional(),
+    amount: z.number().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    status: z.enum([
+        'ACTIVE',
+        'SUSPENDED',
+        'FINALIZED',
+        'EXPIRED'
+    ]).optional(),
+    assignedByUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    assignedByUserName: z.string().optional(),
+    assignedAt: z.iso.datetime().optional()
+});
+
+/**
+ * Cambio de estado con motivo obligatorio. Responsable y fecha se obtienen del servidor.
+ */
+export const zChangeBenefitGrantStateRequest = z.object({
+    reason: z.string().min(1).max(1000)
+});
+
+export const zBenefitGrantRequirementCheckRequest = z.object({
+    requirementId: z.uuid(),
+    fulfilled: z.boolean()
+});
+
+/**
+ * Renovacion del mismo otorgamiento. Conserva inicio y datos copiados del beneficio.
+ */
+export const zRenewBenefitGrantRequest = z.object({
+    reason: z.string().min(1).max(1000),
+    endDate: z.iso.date(),
+    requirementChecks: z.array(zBenefitGrantRequirementCheckRequest)
 });
 
 /**
@@ -1260,6 +1493,11 @@ export const zLogResponse = z.object({
         'ENROLLMENT_PERIOD',
         'APPLICATION',
         'APPLICATION_EVALUATION',
+        'INTERVENTION_PLAN',
+        'INTERVENTION_FOLLOW_UP',
+        'APPLICATION_RESOLUTION',
+        'BENEFIT_GRANT',
+        'BENEFIT_GRANT_CHANGE',
         'APPLICATION_VISIT',
         'APPLICATION_VISIT_RESCHEDULE_REQUEST',
         'APPLICATION_DOCUMENT',
@@ -1457,6 +1695,97 @@ export const zProfessionalActivityEnrollmentListResponse = z.object({
 });
 
 /**
+ * Cabecera propia sin responsables. Estado calculado a partir de todas las acciones.
+ */
+export const zCitizenInterventionPlanSummaryResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    createdAt: z.iso.datetime().optional(),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional()
+});
+
+export const zCitizenInterventionPlanListResponse = z.object({
+    content: z.array(zCitizenInterventionPlanSummaryResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    message: z.string().nullish()
+});
+
+export const zCitizenInterventionActionResponse = z.object({
+    id: z.uuid().optional(),
+    description: z.string().optional(),
+    startDate: z.iso.date().optional(),
+    dueDate: z.iso.date().optional(),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional()
+});
+
+export const zCitizenInterventionObjectiveResponse = z.object({
+    id: z.uuid().optional(),
+    description: z.string().optional(),
+    actions: z.array(zCitizenInterventionActionResponse).optional()
+});
+
+/**
+ * Plan propio con estructura acordada y estado calculado; sin informacion profesional interna.
+ */
+export const zCitizenInterventionPlanResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    createdAt: z.iso.datetime().optional(),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional(),
+    objectives: z.array(zCitizenInterventionObjectiveResponse).optional()
+});
+
+/**
+ * Unicamente la version publica vigente del seguimiento. No incluye secuencia interna, notas, resultado profesional ni autores.
+ */
+export const zCitizenInterventionFollowUpResponse = z.object({
+    id: z.uuid().optional(),
+    actionId: z.uuid().optional(),
+    occurredOn: z.iso.date().optional(),
+    status: z.enum([
+        'PENDING',
+        'IN_PROGRESS',
+        'COMPLETED'
+    ]).optional(),
+    summary: z.string().optional(),
+    publishedAt: z.iso.datetime().optional()
+});
+
+export const zCitizenInterventionFollowUpListResponse = z.object({
+    content: z.array(zCitizenInterventionFollowUpResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    message: z.string().nullish()
+});
+
+/**
  * Horario actualmente otorgable al ciudadano autenticado.
  */
 export const zAvailableAppointmentSlotResponse = z.object({
@@ -1487,6 +1816,48 @@ export const zAppointmentCenterResponse = z.object({
     address: z.string().optional(),
     phone: z.string().optional(),
     email: z.string().optional()
+});
+
+/**
+ * Beneficio otorgado al titular autenticado. No incluye responsables, motivos ni historial administrativo.
+ */
+export const zCitizenBenefitGrantResponse = z.object({
+    id: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    applicationNumber: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    programBenefitId: z.uuid().optional(),
+    programId: z.uuid().optional(),
+    programName: z.string().optional(),
+    programEditionId: z.uuid().optional(),
+    programEditionName: z.string().optional(),
+    benefitType: z.enum([
+        'TAX_EXEMPTION',
+        'HOUSING_SUBSIDY',
+        'FOOD_ASSISTANCE',
+        'UTILITY_SUBSIDY'
+    ]).optional(),
+    description: z.string().nullish(),
+    amount: z.number().nullish(),
+    status: z.enum([
+        'ACTIVE',
+        'SUSPENDED',
+        'FINALIZED',
+        'EXPIRED'
+    ]).optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional()
+});
+
+/**
+ * Pagina de todos los beneficios del titular, de cualquier solicitud y estado, ordenados por otorgamiento e ID descendentes.
+ */
+export const zCitizenBenefitGrantListResponse = z.object({
+    content: z.array(zCitizenBenefitGrantResponse).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    totalElements: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    message: z.string().nullish()
 });
 
 export const zApplicationListResponse = z.object({
@@ -1976,6 +2347,57 @@ export const zAdminApplicationListResponse = z.object({
     totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
 });
 
+export const zBenefitGrantChangeRequirementResponse = z.object({
+    requirementId: z.uuid().optional(),
+    type: z.enum([
+        'MIN_AGE',
+        'MAX_INCOME',
+        'RESIDENCY_YEARS',
+        'HAS_CHILDREN'
+    ]).optional(),
+    value: z.string().optional(),
+    description: z.string().optional(),
+    fulfilled: z.boolean().optional()
+});
+
+/**
+ * Actuacion inmutable. ASSIGNED conserva los datos conocidos de la asignacion, sin motivo ni estado anterior.
+ */
+export const zBenefitGrantChangeResponse = z.object({
+    id: z.uuid().optional(),
+    grantId: z.uuid().optional(),
+    applicationId: z.uuid().optional(),
+    sequenceNumber: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    action: z.enum([
+        'ASSIGNED',
+        'RENEWED',
+        'SUSPENDED',
+        'FINALIZED',
+        'EXPIRED'
+    ]).optional(),
+    previousStatus: z.enum([
+        'ACTIVE',
+        'SUSPENDED',
+        'FINALIZED',
+        'EXPIRED'
+    ]).optional(),
+    status: z.enum([
+        'ACTIVE',
+        'SUSPENDED',
+        'FINALIZED',
+        'EXPIRED'
+    ]).optional(),
+    previousStartDate: z.iso.date().optional(),
+    previousEndDate: z.iso.date().optional(),
+    startDate: z.iso.date().optional(),
+    endDate: z.iso.date().optional(),
+    reason: z.string().optional(),
+    responsibleUserId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).nullish(),
+    responsibleUserName: z.string().optional(),
+    changedAt: z.iso.datetime().optional(),
+    requirementChecks: z.array(zBenefitGrantChangeRequirementResponse).optional()
+});
+
 /**
  * Actuacion incluida en la agenda administrativa de solicitudes.
  */
@@ -2177,7 +2599,10 @@ export const zApplicationEvaluationListItemResponse = z.object({
     ]).optional(),
     professionalId: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
     professionalName: z.string().optional(),
-    evaluatedAt: z.iso.datetime().optional()
+    evaluatedAt: z.iso.datetime().optional(),
+    interventionPlanId: z.uuid().optional(),
+    interventionActionCount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    interventionCompletedActionCount: z.coerce.bigint().gte(BigInt(0)).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
 });
 
 /**
@@ -2451,6 +2876,30 @@ export const zCorrectCommunityAttentionPath = z.object({
  */
 export const zCorrectCommunityAttentionResponse = zCommunityAttentionResponse;
 
+export const zWithdrawPath = z.object({
+    id: z.uuid(),
+    actionId: z.uuid(),
+    followUpId: z.uuid()
+});
+
+/**
+ * Retirada o ya no visible.
+ */
+export const zWithdrawResponse = z.void();
+
+export const zPublishBody = zPublishInterventionFollowUpRequest;
+
+export const zPublishPath = z.object({
+    id: z.uuid(),
+    actionId: z.uuid(),
+    followUpId: z.uuid()
+});
+
+/**
+ * Publicacion actualizada, rehabilitada o repetida sin cambios.
+ */
+export const zPublishResponse = zInterventionPublicationResponse;
+
 export const zRescheduleApplicationVisitBody = zRescheduleApplicationVisitRequest;
 
 export const zRescheduleApplicationVisitPath = z.object({
@@ -2590,7 +3039,7 @@ export const zUpdate3Path = z.object({
 });
 
 /**
- * OK
+ * Edicion actualizada.
  */
 export const zUpdate3Response = zProgramEditionResponse;
 
@@ -2664,7 +3113,7 @@ export const zDelete6Path = z.object({
 });
 
 /**
- * No Content
+ * Beneficio eliminado.
  */
 export const zDelete6Response = z.void();
 
@@ -2925,6 +3374,29 @@ export const zSubmitHeaders = z.object({
  */
 export const zSubmitResponse = zApplicationResponse;
 
+export const zCreate2Body = zCreateInterventionPlanRequest;
+
+export const zCreate2Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Plan, objetivos y acciones registrados y auditados.
+ */
+export const zCreate2Response = zInterventionPlanResponse;
+
+export const zFollowUpBody = zCreateInterventionFollowUpRequest;
+
+export const zFollowUpPath = z.object({
+    id: z.uuid(),
+    actionId: z.uuid()
+});
+
+/**
+ * Seguimiento inmutable registrado; estado de accion actualizado.
+ */
+export const zFollowUpResponse = zInterventionFollowUpResponse;
+
 export const zListOwnApplicationVisitsPath = z.object({
     applicationId: z.uuid()
 });
@@ -3010,12 +3482,12 @@ export const zList1Query = z.object({
  */
 export const zList1Response = zProgramListResponse;
 
-export const zCreate2Body = zCreateProgramRequest;
+export const zCreate3Body = zCreateProgramRequest;
 
 /**
  * Created
  */
-export const zCreate2Response = zProgramResponse;
+export const zCreate3Response = zProgramResponse;
 
 export const zDelete7Path = z.object({
     programId: z.uuid(),
@@ -3027,7 +3499,7 @@ export const zDelete7Path = z.object({
  */
 export const zDelete7Response = z.void();
 
-export const zCreate3Path = z.object({
+export const zCreate4Path = z.object({
     programId: z.uuid(),
     incompatibleProgramId: z.uuid()
 });
@@ -3035,7 +3507,7 @@ export const zCreate3Path = z.object({
 /**
  * Created
  */
-export const zCreate3Response = zProgramIncompatibilityResponse;
+export const zCreate4Response = zProgramIncompatibilityResponse;
 
 export const zListEnrollmentPeriodsPath = z.object({
     programId: z.uuid(),
@@ -3117,16 +3589,16 @@ export const zFindAll2Path = z.object({
  */
 export const zFindAll2Response = z.array(zProgramRequirementResponse);
 
-export const zCreate4Body = zCreateProgramRequirementRequest;
+export const zCreate5Body = zCreateProgramRequirementRequest;
 
-export const zCreate4Path = z.object({
+export const zCreate5Path = z.object({
     editionId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate4Response = zProgramRequirementResponse;
+export const zCreate5Response = zProgramRequirementResponse;
 
 export const zList2Path = z.object({
     editionId: z.uuid()
@@ -3137,16 +3609,16 @@ export const zList2Path = z.object({
  */
 export const zList2Response = z.array(zProgramDocumentRequirementResponse);
 
-export const zCreate5Body = zCreateProgramDocumentRequirementRequest;
+export const zCreate6Body = zCreateProgramDocumentRequirementRequest;
 
-export const zCreate5Path = z.object({
+export const zCreate6Path = z.object({
     editionId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate5Response = zProgramDocumentRequirementResponse;
+export const zCreate6Response = zProgramDocumentRequirementResponse;
 
 export const zFindAll3Path = z.object({
     editionId: z.uuid()
@@ -3157,16 +3629,16 @@ export const zFindAll3Path = z.object({
  */
 export const zFindAll3Response = z.array(zProgramBenefitResponse);
 
-export const zCreate6Body = zCreateProgramBenefitRequest;
+export const zCreate7Body = zCreateProgramBenefitRequest;
 
-export const zCreate6Path = z.object({
+export const zCreate7Path = z.object({
     editionId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate6Response = zProgramBenefitResponse;
+export const zCreate7Response = zProgramBenefitResponse;
 
 export const zList3Path = z.object({
     programId: z.uuid()
@@ -3182,16 +3654,16 @@ export const zList3Query = z.object({
  */
 export const zList3Response = zProgramEditionListResponse;
 
-export const zCreate7Body = zCreateProgramEditionRequest;
+export const zCreate8Body = zCreateProgramEditionRequest;
 
-export const zCreate7Path = z.object({
+export const zCreate8Path = z.object({
     programId: z.uuid()
 });
 
 /**
  * Created
  */
-export const zCreate7Response = zProgramEditionResponse;
+export const zCreate8Response = zProgramEditionResponse;
 
 export const zListProfessionalAvailabilityPath = z.object({
     assignmentId: z.uuid()
@@ -3355,6 +3827,26 @@ export const zSubmit1Headers = z.object({
  */
 export const zSubmit1Response = zApplicationResponse;
 
+export const zList5Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Historial cronologico.
+ */
+export const zList5Response = z.array(zApplicationResolutionResponse);
+
+export const zCreate9Body = zCreateApplicationResolutionRequest;
+
+export const zCreate9Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Resolucion registrada con responsable, fecha y controles historicos.
+ */
+export const zCreate9Response = zApplicationResolutionResponse;
+
 export const zResolveApplicationBody = zResolveApplicationRequest;
 
 export const zResolveApplicationPath = z.object({
@@ -3366,7 +3858,63 @@ export const zResolveApplicationPath = z.object({
  */
 export const zResolveApplicationResponse = zAdminApplicationResponse;
 
-export const zList5Query = z.object({
+export const zList6Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Otorgamientos de la solicitud.
+ */
+export const zList6Response = z.array(zBenefitGrantResponse);
+
+export const zCreate10Body = zCreateBenefitGrantRequest;
+
+export const zCreate10Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Otorgamiento registrado y auditado.
+ */
+export const zCreate10Response = zBenefitGrantResponse;
+
+export const zSuspendBody = zChangeBenefitGrantStateRequest;
+
+export const zSuspendPath = z.object({
+    id: z.uuid(),
+    grantId: z.uuid()
+});
+
+/**
+ * Otorgamiento SUSPENDED; historial y auditoria confirmados.
+ */
+export const zSuspendResponse = zBenefitGrantResponse;
+
+export const zRenewBody = zRenewBenefitGrantRequest;
+
+export const zRenewPath = z.object({
+    id: z.uuid(),
+    grantId: z.uuid()
+});
+
+/**
+ * Otorgamiento renovado en ACTIVE; historial y auditoria confirmados.
+ */
+export const zRenewResponse = zBenefitGrantResponse;
+
+export const zFinalizeBody = zChangeBenefitGrantStateRequest;
+
+export const zFinalizePath = z.object({
+    id: z.uuid(),
+    grantId: z.uuid()
+});
+
+/**
+ * Otorgamiento FINALIZED; eventual cierre y liberacion del cupo confirmados.
+ */
+export const zFinalizeResponse = zBenefitGrantResponse;
+
+export const zList7Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
     size: z.int().gte(1).lte(100).optional().default(20)
 });
@@ -3374,14 +3922,14 @@ export const zList5Query = z.object({
 /**
  * OK
  */
-export const zList5Response = zActivityListResponse;
+export const zList7Response = zActivityListResponse;
 
-export const zCreate8Body = zCreateActivityRequest;
+export const zCreate11Body = zCreateActivityRequest;
 
 /**
  * Created
  */
-export const zCreate8Response = zActivityResponse;
+export const zCreate11Response = zActivityResponse;
 
 export const zEnrollPath = z.object({
     id: z.uuid()
@@ -3429,14 +3977,14 @@ export const zCancelApplicationVisitPath = z.object({
  */
 export const zCancelApplicationVisitResponse = zApplicationVisitResponse;
 
-export const zSuspendPath = z.object({
+export const zSuspend1Path = z.object({
     id: z.uuid()
 });
 
 /**
  * OK
  */
-export const zSuspendResponse = zProgramEditionResponse;
+export const zSuspend1Response = zProgramEditionResponse;
 
 export const zClosePath = z.object({
     id: z.uuid()
@@ -3589,14 +4137,14 @@ export const zReviewPath = z.object({
     applicationDocumentId: z.uuid()
 });
 
-export const zPublishPath = z.object({
+export const zPublish1Path = z.object({
     id: z.uuid()
 });
 
 /**
  * OK
  */
-export const zPublishResponse = zActivityResponse;
+export const zPublish1Response = zActivityResponse;
 
 export const zClose1Path = z.object({
     id: z.uuid()
@@ -3634,6 +4182,11 @@ export const zListLogsByEntityPath = z.object({
         'ENROLLMENT_PERIOD',
         'APPLICATION',
         'APPLICATION_EVALUATION',
+        'INTERVENTION_PLAN',
+        'INTERVENTION_FOLLOW_UP',
+        'APPLICATION_RESOLUTION',
+        'BENEFIT_GRANT',
+        'BENEFIT_GRANT_CHANGE',
         'APPLICATION_VISIT',
         'APPLICATION_VISIT_RESCHEDULE_REQUEST',
         'APPLICATION_DOCUMENT',
@@ -3748,6 +4301,40 @@ export const zListEnrollmentsQuery = z.object({
  */
 export const zListEnrollmentsResponse = zProfessionalActivityEnrollmentListResponse;
 
+export const zListOwnInterventionPlansQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Pagina propia, con mensaje si no hay planes.
+ */
+export const zListOwnInterventionPlansResponse = zCitizenInterventionPlanListResponse;
+
+export const zGetOwnInterventionPlanPath = z.object({
+    planId: z.uuid()
+});
+
+/**
+ * Detalle del plan propio y estado calculado.
+ */
+export const zGetOwnInterventionPlanResponse = zCitizenInterventionPlanResponse;
+
+export const zListOwnPublishedInterventionFollowUpsPath = z.object({
+    planId: z.uuid(),
+    actionId: z.uuid()
+});
+
+export const zListOwnPublishedInterventionFollowUpsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Pagina de seguimientos publicos del titular.
+ */
+export const zListOwnPublishedInterventionFollowUpsResponse = zCitizenInterventionFollowUpListResponse;
+
 export const zGetPublicImagePath = z.object({
     imageId: z.uuid()
 });
@@ -3785,6 +4372,16 @@ export const zListCitizenAppointmentCentersPath = z.object({
  */
 export const zListCitizenAppointmentCentersResponse = z.array(zAppointmentCenterResponse);
 
+export const zListOwnBenefitGrantsQuery = z.object({
+    page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
+    size: z.int().gte(1).lte(100).optional().default(20)
+});
+
+/**
+ * Pagina de beneficios propios, tambien cuando esta vacia.
+ */
+export const zListOwnBenefitGrantsResponse = zCitizenBenefitGrantListResponse;
+
 export const zGet2Path = z.object({
     id: z.uuid()
 });
@@ -3815,14 +4412,14 @@ export const zGetOwnApplicationVisitRescheduleRequestPath = z.object({
  */
 export const zGetOwnApplicationVisitRescheduleRequestResponse = zCitizenApplicationVisitRescheduleRequestDetailResponse;
 
-export const zList6Path = z.object({
+export const zList8Path = z.object({
     applicationId: z.uuid()
 });
 
 /**
  * Documentos entregados en la solicitud propia.
  */
-export const zList6Response = z.array(zApplicationDocumentResponse);
+export const zList8Response = z.array(zApplicationDocumentResponse);
 
 export const zContentPath = z.object({
     applicationId: z.uuid(),
@@ -3943,14 +4540,43 @@ export const zGet3Path = z.object({
  */
 export const zGet3Response = zAdminApplicationResponse;
 
-export const zList7Path = z.object({
+export const zGet4Path = z.object({
+    id: z.uuid()
+});
+
+/**
+ * Plan con estructura inicial y estados actuales.
+ */
+export const zGet4Response = zInterventionPlanResponse;
+
+export const zHistoryPath = z.object({
+    id: z.uuid(),
+    actionId: z.uuid()
+});
+
+/**
+ * Historial completo de la accion.
+ */
+export const zHistoryResponse = z.array(zInterventionFollowUpResponse);
+
+export const zHistory1Path = z.object({
+    id: z.uuid(),
+    grantId: z.uuid()
+});
+
+/**
+ * Historial inmutable del otorgamiento.
+ */
+export const zHistory1Response = z.array(zBenefitGrantChangeResponse);
+
+export const zList9Path = z.object({
     applicationId: z.uuid()
 });
 
 /**
  * OK
  */
-export const zList7Response = z.array(zApplicationDocumentResponse);
+export const zList9Response = z.array(zApplicationDocumentResponse);
 
 export const zContent1Path = z.object({
     applicationId: z.uuid(),
@@ -4068,7 +4694,7 @@ export const zGetApplicationEvaluationPath = z.object({
  */
 export const zGetApplicationEvaluationResponse = zApplicationEvaluationDetailResponse;
 
-export const zList8Query = z.object({
+export const zList10Query = z.object({
     page: z.int().gte(0).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(0),
     size: z.int().gte(1).lte(100).optional().default(20),
     enrolledOnly: z.boolean().optional().default(false)
@@ -4077,16 +4703,16 @@ export const zList8Query = z.object({
 /**
  * OK
  */
-export const zList8Response = zCitizenActivityListResponse;
+export const zList10Response = zCitizenActivityListResponse;
 
-export const zGet4Path = z.object({
+export const zGet5Path = z.object({
     id: z.uuid()
 });
 
 /**
  * OK
  */
-export const zGet4Response = zCitizenActivityResponse;
+export const zGet5Response = zCitizenActivityResponse;
 
 /**
  * OK
