@@ -37,7 +37,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  create6Mutation,
+  create7Mutation,
   delete6Mutation,
   findAll3Options,
   findAll3QueryKey,
@@ -273,7 +273,7 @@ function BenefitDialog({
   })
 
   const create = useMutation({
-    ...create6Mutation(),
+    ...create7Mutation(),
     onSuccess: () => {
       refresh()
       onOpenChange(false)

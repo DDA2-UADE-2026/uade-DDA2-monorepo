@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { GestionDashboard } from "@/components/gestion/GestionDashboard"
-import { findAll, list1, list4, list5, listMunicipalCenters } from "@/generated/sdk.gen"
+import { findAll, list1, list4, list7, listMunicipalCenters } from "@/generated/sdk.gen"
 import type { UserResponse } from "@/generated/types.gen"
 import { useMe } from "@/hooks/use-auth"
 
@@ -12,7 +12,7 @@ vi.mock("@/hooks/use-auth", () => ({ useMe: vi.fn() }))
 vi.mock("@/components/UserAvatar", () => ({ UserAvatar: () => <span aria-hidden="true" /> }))
 vi.mock("@/generated/sdk.gen", async (importOriginal) => ({
   ...await importOriginal<typeof import("@/generated/sdk.gen")>(),
-  findAll: vi.fn(), list1: vi.fn(), list4: vi.fn(), list5: vi.fn(), listMunicipalCenters: vi.fn(),
+  findAll: vi.fn(), list1: vi.fn(), list4: vi.fn(), list7: vi.fn(), listMunicipalCenters: vi.fn(),
 }))
 vi.mock("@tanstack/react-router", async (importOriginal) => ({
   ...await importOriginal<typeof import("@tanstack/react-router")>(),
@@ -42,7 +42,7 @@ beforeEach(() => {
   ] })
   vi.mocked(list1).mockResolvedValue({ ...responseMeta, data: { content: [{ id: "programa-1", name: "Apoyo escolar", active: true }], totalElements: 42 } })
   vi.mocked(list4).mockResolvedValue({ ...responseMeta, data: { content: [{ id: "solicitud-1", applicationNumber: 121, userName: "Marta Gómez", programName: "Apoyo escolar", status: "SUBMITTED" }], totalElements: 121 } })
-  vi.mocked(list5).mockResolvedValue({ ...responseMeta, data: { content: [{ id: "actividad-1", name: "Taller de lectura", status: "OPEN", location: "Biblioteca", startDate: "2026-10-20" }], totalElements: 18 } })
+  vi.mocked(list7).mockResolvedValue({ ...responseMeta, data: { content: [{ id: "actividad-1", name: "Taller de lectura", status: "OPEN", location: "Biblioteca", startDate: "2026-10-20" }], totalElements: 18 } })
   vi.mocked(listMunicipalCenters).mockResolvedValue({ ...responseMeta, data: { content: [{ id: "centro-1", name: "Centro Norte", address: "Av. San Martín 120", active: true }], totalElements: 8 } })
 })
 
@@ -81,7 +81,7 @@ describe("resumen de gestión", () => {
     expect(screen.queryByText("Solicitud asistida")).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole("button", { name: "Refrescar resumen" }))
     await waitFor(() => expect(list1).toHaveBeenCalledTimes(2))
-    for (const request of [findAll, list4, list5, listMunicipalCenters]) expect(request).not.toHaveBeenCalled()
+    for (const request of [findAll, list4, list7, listMunicipalCenters]) expect(request).not.toHaveBeenCalled()
   })
 
   it("muestra un estado vacío sin inventar datos cuando las fuentes no tienen registros", async () => {

@@ -7,7 +7,7 @@ import { ApplicationError } from "@/components/applications/ApplicationUi"
 import { Attachment, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentMedia, AttachmentTitle, AttachmentTrigger } from "@/components/ui/attachment"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { contentQueryKey, get2QueryKey, list6QueryKey, listQueryKey, putMutation } from "@/generated/@tanstack/react-query.gen"
+import { contentQueryKey, get2QueryKey, list8QueryKey, listQueryKey, putMutation } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse, AvailableProgramDocumentRequirementResponse } from "@/generated/types.gen"
 import { DOCUMENT_ACCEPT, formatDocumentSize, validateApplicationFile } from "@/lib/application-flow"
 
@@ -30,7 +30,7 @@ export function ApplicationDocumentUploadDialog({ applicationId, requirement, ex
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: list6QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list8QueryKey({ path: { applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: listQueryKey() }),
         ...(existing?.id ? [queryClient.invalidateQueries({ queryKey: contentQueryKey({ path: { applicationId, applicationDocumentId: existing.id } }) })] : []),
       ])

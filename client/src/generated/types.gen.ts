@@ -137,21 +137,23 @@ export type CommunityAttentionResponse = {
 };
 
 /**
- * Nuevo horario y lugar de una visita o entrevista social pendiente.
+ * Version publica redactada explicitamente; nunca copia notas ni resultado profesional.
  */
-export type RescheduleApplicationVisitRequest = {
-    /**
-     * Nuevo inicio futuro en ISO-8601 con offset.
-     */
-    startsAt: string;
-    /**
-     * Nueva duracion positiva en minutos.
-     */
-    durationMinutes: number;
-    /**
-     * Nuevo lugar. Se recorta y no se copia al log de auditoria.
-     */
-    location: string;
+export type PublishInterventionFollowUpRequest = {
+    summary: string;
+};
+
+/**
+ * Gestion profesional de la version publica actual, incluidas publicaciones retiradas.
+ */
+export type InterventionPublicationResponse = {
+    id?: string;
+    summary?: string;
+    visible?: boolean;
+    publishedAt?: string;
+    updatedAt?: string;
+    updatedByUserId?: number;
+    updatedByUserName?: string;
 };
 
 /**
@@ -196,6 +198,24 @@ export type FieldErrorResponse = {
      * Motivo por el cual el valor fue rechazado.
      */
     message?: string;
+};
+
+/**
+ * Nuevo horario y lugar de una visita o entrevista social pendiente.
+ */
+export type RescheduleApplicationVisitRequest = {
+    /**
+     * Nuevo inicio futuro en ISO-8601 con offset.
+     */
+    startsAt: string;
+    /**
+     * Nueva duracion positiva en minutos.
+     */
+    durationMinutes: number;
+    /**
+     * Nuevo lugar. Se recorta y no se copia al log de auditoria.
+     */
+    location: string;
 };
 
 /**
@@ -819,20 +839,21 @@ export type AdminApplicationResponse = {
      */
     originTicketId?: string;
     /**
-     * Motivo de la resolución, visible también para el titular. Obligatorio al rechazar o dejar en lista de espera.
+     * Motivo de la ultima resolucion administrativa.
      */
     resolutionReason?: string;
     /**
-     * Trabajador asignado a la solicitud. Se fija al registrar la evaluación o con PUT /api/admin/applications/{id}/assigned-worker.
+     * Responsable de la ultima resolucion; nulo para solicitudes sin resolucion registrada.
+     */
+    resolvedByUserId?: number;
+    resolvedByUserName?: string;
+    /**
+     * Trabajador asignado al registrar la evaluacion profesional; independiente del responsable de resolucion.
      */
     assignedWorkerUserId?: number;
     assignedWorkerName?: string;
     submittedAt?: string;
     resolvedAt?: string;
-    /**
-     * Quien registró la última resolución.
-     */
-    resolvedByUserId?: number;
     resolvedByName?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -1115,14 +1136,115 @@ export type ApplicationResponse = {
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+};
+
+/**
+ * Estructura inicial inmutable. Ciudadano y responsable se obtienen del caso.
+ */
+export type CreateInterventionPlanRequest = {
     /**
-     * Momento de la resolución (aprobada, rechazada o en lista de espera).
+     * Al menos un objetivo, en el orden deseado.
      */
-    resolvedAt?: string;
+    objectives: Array<InterventionObjectiveRequest>;
+};
+
+export type InterventionActionRequest = {
+    description: string;
     /**
-     * Motivo de la resolución informado por el trabajador social.
+     * Inicio inclusivo. Admite fechas pasadas o futuras.
      */
-    resolutionReason?: string;
+    startDate: string;
+    /**
+     * Fin previsto inclusivo, no anterior al inicio; no impide seguimientos posteriores.
+     */
+    dueDate: string;
+};
+
+export type InterventionObjectiveRequest = {
+    description: string;
+    /**
+     * Al menos una accion, en el orden deseado.
+     */
+    actions: Array<InterventionActionRequest>;
+};
+
+export type InterventionActionResponse = {
+    id?: string;
+    description?: string;
+    startDate?: string;
+    dueDate?: string;
+    status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    responsibleUserId?: number;
+    responsibleUserName?: string;
+};
+
+export type InterventionObjectiveResponse = {
+    id?: string;
+    description?: string;
+    actions?: Array<InterventionActionResponse>;
+};
+
+/**
+ * Plan profesional de un caso. Estructura inicial fija y estados actuales de sus acciones.
+ */
+export type InterventionPlanResponse = {
+    id?: string;
+    applicationId?: string;
+    userId?: number;
+    responsibleUserId?: number;
+    responsibleUserName?: string;
+    /**
+     * Instante UTC de creacion, con precision de microsegundos.
+     */
+    createdAt?: string;
+    objectives?: Array<InterventionObjectiveResponse>;
+};
+
+/**
+ * Seguimiento inmutable de una accion. Autor y registro UTC se obtienen del servidor.
+ */
+export type CreateInterventionFollowUpRequest = {
+    status: 'IN_PROGRESS' | 'COMPLETED';
+    /**
+     * Fecha real desde el inicio de la accion hasta hoy, sin retroceder respecto al seguimiento anterior.
+     */
+    occurredOn: string;
+    notes: string;
+    /**
+     * Obligatorio para COMPLETED; opcional en avances.
+     */
+    result?: string;
+};
+
+/**
+ * Seguimiento profesional inmutable; las notas y resultados originales no se exponen a ciudadanos ni a logs generales.
+ */
+export type InterventionFollowUpResponse = {
+    id?: string;
+    planId?: string;
+    applicationId?: string;
+    userId?: number;
+    objectiveId?: string;
+    actionId?: string;
+    sequenceNumber?: number;
+    previousStatus?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    occurredOn?: string;
+    notes?: string;
+    /**
+     * Resultado profesional interno; puede ser null en avances.
+     */
+    result?: string | null;
+    authorUserId?: number;
+    authorUserName?: string;
+    /**
+     * Instante UTC de registro. Puede ser posterior a la fecha real de una carga historica.
+     */
+    recordedAt?: string;
+    /**
+     * Publicación actual para el ciudadano; null si nunca fue publicada. Incluye versiones retiradas solo para consulta profesional.
+     */
+    citizenPublication?: InterventionPublicationResponse | null;
 };
 
 /**
@@ -1478,6 +1600,55 @@ export type CreateAssistedApplicationRequest = {
     enrollmentPeriodId: string;
 };
 
+export type ApplicationRequirementCheckRequest = {
+    requirementId: string;
+    /**
+     * Resultado verificado por el responsable.
+     */
+    fulfilled: boolean;
+};
+
+/**
+ * Resolucion administrativa. Responsable y fecha se obtienen del servidor.
+ */
+export type CreateApplicationResolutionRequest = {
+    decision: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
+    reason: string;
+    /**
+     * Un resultado por cada requisito vigente. Lista vacia si no hay requisitos.
+     */
+    requirementChecks: Array<ApplicationRequirementCheckRequest>;
+};
+
+/**
+ * Copia del requisito y resultado al momento de resolver; no sigue los cambios del catalogo.
+ */
+export type ApplicationResolutionRequirementResponse = {
+    requirementId?: string;
+    type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
+    value?: string;
+    description?: string;
+    fulfilled?: boolean;
+};
+
+/**
+ * Resolucion historica inmutable, visible solo para administracion.
+ */
+export type ApplicationResolutionResponse = {
+    id?: string;
+    applicationId?: string;
+    previousStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    decision?: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
+    reason?: string;
+    resolvedByUserId?: number;
+    resolvedByUserName?: string;
+    /**
+     * Fecha de resolucion en UTC.
+     */
+    resolvedAt?: string;
+    requirementChecks?: Array<ApplicationResolutionRequirementResponse>;
+};
+
 /**
  * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
  */
@@ -1487,9 +1658,79 @@ export type ResolveApplicationRequest = {
      */
     decision: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
     /**
-     * Motivo visible para el titular, de 1 a 1000 caracteres. Obligatorio para REJECTED y WAITLISTED.
+     * Motivo administrativo, de 1 a 1000 caracteres. Obligatorio para REJECTED y WAITLISTED; no se expone en la consulta ciudadana.
      */
     reason?: string;
+};
+
+/**
+ * Otorgamiento individual. Titular, estado, datos del beneficio, responsable y fecha los obtiene el servidor.
+ */
+export type CreateBenefitGrantRequest = {
+    /**
+     * Beneficio del catalogo de la edicion de la solicitud.
+     */
+    programBenefitId: string;
+    /**
+     * Inicio inclusivo de vigencia, dentro de la edicion y no posterior a hoy.
+     */
+    startDate: string;
+    /**
+     * Fin inclusivo de vigencia, dentro de la edicion y no anterior a hoy.
+     */
+    endDate: string;
+};
+
+/**
+ * Otorgamiento individual visible solo para administracion. Los datos copiados no siguen los cambios del catalogo.
+ */
+export type BenefitGrantResponse = {
+    id?: string;
+    applicationId?: string;
+    userId?: number;
+    programBenefitId?: string;
+    benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
+    description?: string;
+    amount?: number;
+    startDate?: string;
+    endDate?: string;
+    /**
+     * Estado actual. EXPIRED y FINALIZED son definitivos; el vencimiento automatico se procesa despues del ultimo dia inclusivo.
+     */
+    status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    assignedByUserId?: number;
+    assignedByUserName?: string;
+    /**
+     * Instante UTC de registro, asignado por el servidor.
+     */
+    assignedAt?: string;
+};
+
+/**
+ * Cambio de estado con motivo obligatorio. Responsable y fecha se obtienen del servidor.
+ */
+export type ChangeBenefitGrantStateRequest = {
+    reason: string;
+};
+
+export type BenefitGrantRequirementCheckRequest = {
+    requirementId: string;
+    fulfilled: boolean;
+};
+
+/**
+ * Renovacion del mismo otorgamiento. Conserva inicio y datos copiados del beneficio.
+ */
+export type RenewBenefitGrantRequest = {
+    reason: string;
+    /**
+     * Fin inclusivo, posterior al actual, no anterior a hoy y dentro de la edicion.
+     */
+    endDate: string;
+    /**
+     * Un resultado por requisito vigente; lista vacia si no hay requisitos.
+     */
+    requirementChecks: Array<BenefitGrantRequirementCheckRequest>;
 };
 
 /**
@@ -1690,7 +1931,7 @@ export type LogResponse = {
     /**
      * Tipo de entidad afectada.
      */
-    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'INTERVENTION_PLAN' | 'INTERVENTION_FOLLOW_UP' | 'APPLICATION_RESOLUTION' | 'BENEFIT_GRANT' | 'BENEFIT_GRANT_CHANGE' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
     /**
      * Identificador de la entidad afectada.
      */
@@ -1990,6 +2231,87 @@ export type ProfessionalActivityEnrollmentListResponse = {
     totalPages?: number;
 };
 
+export type CitizenInterventionPlanListResponse = {
+    content?: Array<CitizenInterventionPlanSummaryResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+    /**
+     * Mensaje informativo solo cuando el total es cero.
+     */
+    message?: string | null;
+};
+
+/**
+ * Cabecera propia sin responsables. Estado calculado a partir de todas las acciones.
+ */
+export type CitizenInterventionPlanSummaryResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    createdAt?: string;
+    status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+};
+
+export type CitizenInterventionActionResponse = {
+    id?: string;
+    description?: string;
+    startDate?: string;
+    dueDate?: string;
+    status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+};
+
+export type CitizenInterventionObjectiveResponse = {
+    id?: string;
+    description?: string;
+    actions?: Array<CitizenInterventionActionResponse>;
+};
+
+/**
+ * Plan propio con estructura acordada y estado calculado; sin informacion profesional interna.
+ */
+export type CitizenInterventionPlanResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    createdAt?: string;
+    status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    objectives?: Array<CitizenInterventionObjectiveResponse>;
+};
+
+export type CitizenInterventionFollowUpListResponse = {
+    content?: Array<CitizenInterventionFollowUpResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+    /**
+     * Se cuentan solo publicaciones visibles; null si existen, incluso en paginas fuera de rango.
+     */
+    message?: string | null;
+};
+
+/**
+ * Unicamente la version publica vigente del seguimiento. No incluye secuencia interna, notas, resultado profesional ni autores.
+ */
+export type CitizenInterventionFollowUpResponse = {
+    id?: string;
+    actionId?: string;
+    occurredOn?: string;
+    status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    summary?: string;
+    publishedAt?: string;
+};
+
 /**
  * Horario actualmente otorgable al ciudadano autenticado.
  */
@@ -2021,6 +2343,56 @@ export type AppointmentCenterResponse = {
     address?: string;
     phone?: string;
     email?: string;
+};
+
+/**
+ * Pagina de todos los beneficios del titular, de cualquier solicitud y estado, ordenados por otorgamiento e ID descendentes.
+ */
+export type CitizenBenefitGrantListResponse = {
+    content?: Array<CitizenBenefitGrantResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+    /**
+     * Mensaje informativo cuando totalElements es cero; null en los demas casos, incluso paginas fuera de rango.
+     */
+    message?: string | null;
+};
+
+/**
+ * Beneficio otorgado al titular autenticado. No incluye responsables, motivos ni historial administrativo.
+ */
+export type CitizenBenefitGrantResponse = {
+    id?: string;
+    applicationId?: string;
+    applicationNumber?: number;
+    programBenefitId?: string;
+    programId?: string;
+    programName?: string;
+    programEditionId?: string;
+    programEditionName?: string;
+    benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
+    /**
+     * Descripcion copiada al otorgar, independiente de cambios del catalogo.
+     */
+    description?: string | null;
+    /**
+     * Monto copiado al otorgar; null cuando no corresponde importe.
+     */
+    amount?: number | null;
+    /**
+     * Estado persistido actual. FINALIZED y EXPIRED tambien permanecen visibles.
+     */
+    status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    /**
+     * Inicio inclusivo de vigencia.
+     */
+    startDate?: string;
+    /**
+     * Fin inclusivo vigente; refleja las renovaciones confirmadas.
+     */
+    endDate?: string;
 };
 
 export type ApplicationListResponse = {
@@ -2646,6 +3018,20 @@ export type WorkerLoad = {
     scheduledVisits?: number;
 };
 
+export type AdminBenefitGrantListItem = {
+    benefit?: CitizenBenefitGrantResponse;
+    userId?: number;
+    userName?: string;
+};
+
+export type AdminBenefitGrantListResponse = {
+    content?: Array<AdminBenefitGrantListItem>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
 /**
  * Ocupación de un centro en un día para el calendario administrativo.
  */
@@ -2700,7 +3086,7 @@ export type AdminApplicationListItemResponse = {
     enrollmentPeriodId?: string;
     status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     /**
-     * Trabajador asignado a la solicitud. Todavía no se asigna desde ninguna operación.
+     * Trabajador asignado al registrar la evaluacion profesional.
      */
     assignedWorkerUserId?: number;
     submittedAt?: string;
@@ -2730,6 +3116,45 @@ export type AdminApplicationListResponse = {
      * Cantidad total de páginas.
      */
     totalPages?: number;
+};
+
+export type BenefitGrantChangeRequirementResponse = {
+    requirementId?: string;
+    type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
+    value?: string;
+    description?: string;
+    fulfilled?: boolean;
+};
+
+/**
+ * Actuacion inmutable. ASSIGNED conserva los datos conocidos de la asignacion, sin motivo ni estado anterior.
+ */
+export type BenefitGrantChangeResponse = {
+    id?: string;
+    grantId?: string;
+    applicationId?: string;
+    sequenceNumber?: number;
+    action?: 'ASSIGNED' | 'RENEWED' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    previousStatus?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    previousStartDate?: string;
+    previousEndDate?: string;
+    startDate?: string;
+    endDate?: string;
+    reason?: string;
+    /**
+     * Responsable humano; null exclusivamente en vencimientos automaticos.
+     */
+    responsibleUserId?: number | null;
+    /**
+     * Nombre del responsable, o Sistema en vencimientos automaticos.
+     */
+    responsibleUserName?: string;
+    /**
+     * Instante UTC de la actuacion. La finalizacion tiene efecto inmediato.
+     */
+    changedAt?: string;
+    requirementChecks?: Array<BenefitGrantChangeRequirementResponse>;
 };
 
 /**
@@ -2892,6 +3317,18 @@ export type ApplicationEvaluationListItemResponse = {
     professionalId?: number;
     professionalName?: string;
     evaluatedAt?: string;
+    /**
+     * Plan de intervencion registrado para la solicitud, si existe.
+     */
+    interventionPlanId?: string;
+    /**
+     * Cantidad total de acciones del plan de intervencion.
+     */
+    interventionActionCount?: number;
+    /**
+     * Cantidad de acciones completadas del plan de intervencion.
+     */
+    interventionCompletedActionCount?: number;
 };
 
 /**
@@ -3505,6 +3942,108 @@ export type CorrectCommunityAttentionResponses = {
 };
 
 export type CorrectCommunityAttentionResponse = CorrectCommunityAttentionResponses[keyof CorrectCommunityAttentionResponses];
+
+export type WithdrawData = {
+    body?: never;
+    path: {
+        id: string;
+        actionId: string;
+        followUpId: string;
+    };
+    query?: never;
+    url: '/api/applications/{id}/intervention-plan/actions/{actionId}/follow-ups/{followUpId}/citizen-publication';
+};
+
+export type WithdrawErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type WithdrawError = WithdrawErrors[keyof WithdrawErrors];
+
+export type WithdrawResponses = {
+    /**
+     * Retirada o ya no visible.
+     */
+    204: void;
+};
+
+export type WithdrawResponse = WithdrawResponses[keyof WithdrawResponses];
+
+export type PublishData = {
+    body: PublishInterventionFollowUpRequest;
+    path: {
+        id: string;
+        actionId: string;
+        followUpId: string;
+    };
+    query?: never;
+    url: '/api/applications/{id}/intervention-plan/actions/{actionId}/follow-ups/{followUpId}/citizen-publication';
+};
+
+export type PublishErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type PublishError = PublishErrors[keyof PublishErrors];
+
+export type PublishResponses = {
+    /**
+     * Publicacion actualizada, rehabilitada o repetida sin cambios.
+     */
+    200: InterventionPublicationResponse;
+    /**
+     * Publicacion creada. Requiere applications:interventions:follow-ups:publish en JWT y rol activo.
+     */
+    201: InterventionPublicationResponse;
+};
+
+export type PublishResponse = PublishResponses[keyof PublishResponses];
 
 export type RescheduleApplicationVisitData = {
     body: RescheduleApplicationVisitRequest;
@@ -4171,7 +4710,7 @@ export type Update3Error = Update3Errors[keyof Update3Errors];
 
 export type Update3Responses = {
     /**
-     * OK
+     * Edicion actualizada.
      */
     200: ProgramEditionResponse;
 };
@@ -4523,7 +5062,7 @@ export type Delete6Error = Delete6Errors[keyof Delete6Errors];
 
 export type Delete6Responses = {
     /**
-     * No Content
+     * Beneficio eliminado.
      */
     204: void;
 };
@@ -5807,6 +6346,101 @@ export type SubmitResponses = {
 
 export type SubmitResponse = SubmitResponses[keyof SubmitResponses];
 
+export type Create2Data = {
+    body: CreateInterventionPlanRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/applications/{id}/intervention-plan';
+};
+
+export type Create2Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create2Error = Create2Errors[keyof Create2Errors];
+
+export type Create2Responses = {
+    /**
+     * Plan, objetivos y acciones registrados y auditados.
+     */
+    201: InterventionPlanResponse;
+};
+
+export type Create2Response = Create2Responses[keyof Create2Responses];
+
+export type FollowUpData = {
+    body: CreateInterventionFollowUpRequest;
+    path: {
+        id: string;
+        actionId: string;
+    };
+    query?: never;
+    url: '/api/applications/{id}/intervention-plan/actions/{actionId}/follow-ups';
+};
+
+export type FollowUpErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FollowUpError = FollowUpErrors[keyof FollowUpErrors];
+
+export type FollowUpResponses = {
+    /**
+     * Seguimiento inmutable registrado; estado de accion actualizado.
+     */
+    201: InterventionFollowUpResponse;
+};
+
+export type FollowUpResponse = FollowUpResponses[keyof FollowUpResponses];
+
 export type ListOwnApplicationVisitsData = {
     body?: never;
     path: {
@@ -6148,14 +6782,14 @@ export type List1Responses = {
 
 export type List1Response = List1Responses[keyof List1Responses];
 
-export type Create2Data = {
+export type Create3Data = {
     body: CreateProgramRequest;
     path?: never;
     query?: never;
     url: '/api/admin/programs';
 };
 
-export type Create2Errors = {
+export type Create3Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -6178,16 +6812,16 @@ export type Create2Errors = {
     500: ErrorResponse;
 };
 
-export type Create2Error = Create2Errors[keyof Create2Errors];
+export type Create3Error = Create3Errors[keyof Create3Errors];
 
-export type Create2Responses = {
+export type Create3Responses = {
     /**
      * Created
      */
     201: ProgramResponse;
 };
 
-export type Create2Response = Create2Responses[keyof Create2Responses];
+export type Create3Response = Create3Responses[keyof Create3Responses];
 
 export type Delete7Data = {
     body?: never;
@@ -6243,7 +6877,7 @@ export type Delete7Responses = {
 
 export type Delete7Response = Delete7Responses[keyof Delete7Responses];
 
-export type Create3Data = {
+export type Create4Data = {
     body?: never;
     path: {
         /**
@@ -6259,7 +6893,7 @@ export type Create3Data = {
     url: '/api/admin/programs/{programId}/incompatibilities/{incompatibleProgramId}';
 };
 
-export type Create3Errors = {
+export type Create4Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -6286,16 +6920,16 @@ export type Create3Errors = {
     500: ErrorResponse;
 };
 
-export type Create3Error = Create3Errors[keyof Create3Errors];
+export type Create4Error = Create4Errors[keyof Create4Errors];
 
-export type Create3Responses = {
+export type Create4Responses = {
     /**
      * Created
      */
     201: ProgramIncompatibilityResponse;
 };
 
-export type Create3Response = Create3Responses[keyof Create3Responses];
+export type Create4Response = Create4Responses[keyof Create4Responses];
 
 export type ListEnrollmentPeriodsData = {
     body?: never;
@@ -6688,7 +7322,7 @@ export type FindAll2Responses = {
 
 export type FindAll2Response = FindAll2Responses[keyof FindAll2Responses];
 
-export type Create4Data = {
+export type Create5Data = {
     body: CreateProgramRequirementRequest;
     path: {
         /**
@@ -6700,7 +7334,7 @@ export type Create4Data = {
     url: '/api/admin/program-editions/{editionId}/requirements';
 };
 
-export type Create4Errors = {
+export type Create5Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -6727,16 +7361,16 @@ export type Create4Errors = {
     500: ErrorResponse;
 };
 
-export type Create4Error = Create4Errors[keyof Create4Errors];
+export type Create5Error = Create5Errors[keyof Create5Errors];
 
-export type Create4Responses = {
+export type Create5Responses = {
     /**
      * Created
      */
     201: ProgramRequirementResponse;
 };
 
-export type Create4Response = Create4Responses[keyof Create4Responses];
+export type Create5Response = Create5Responses[keyof Create5Responses];
 
 export type List2Data = {
     body?: never;
@@ -6781,7 +7415,7 @@ export type List2Responses = {
 
 export type List2Response = List2Responses[keyof List2Responses];
 
-export type Create5Data = {
+export type Create6Data = {
     body: CreateProgramDocumentRequirementRequest;
     path: {
         editionId: string;
@@ -6790,7 +7424,7 @@ export type Create5Data = {
     url: '/api/admin/program-editions/{editionId}/document-requirements';
 };
 
-export type Create5Errors = {
+export type Create6Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -6817,16 +7451,16 @@ export type Create5Errors = {
     500: ErrorResponse;
 };
 
-export type Create5Error = Create5Errors[keyof Create5Errors];
+export type Create6Error = Create6Errors[keyof Create6Errors];
 
-export type Create5Responses = {
+export type Create6Responses = {
     /**
      * Created
      */
     201: ProgramDocumentRequirementResponse;
 };
 
-export type Create5Response = Create5Responses[keyof Create5Responses];
+export type Create6Response = Create6Responses[keyof Create6Responses];
 
 export type FindAll3Data = {
     body?: never;
@@ -6874,7 +7508,7 @@ export type FindAll3Responses = {
 
 export type FindAll3Response = FindAll3Responses[keyof FindAll3Responses];
 
-export type Create6Data = {
+export type Create7Data = {
     body: CreateProgramBenefitRequest;
     path: {
         /**
@@ -6886,7 +7520,7 @@ export type Create6Data = {
     url: '/api/admin/program-editions/{editionId}/benefits';
 };
 
-export type Create6Errors = {
+export type Create7Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -6913,16 +7547,16 @@ export type Create6Errors = {
     500: ErrorResponse;
 };
 
-export type Create6Error = Create6Errors[keyof Create6Errors];
+export type Create7Error = Create7Errors[keyof Create7Errors];
 
-export type Create6Responses = {
+export type Create7Responses = {
     /**
      * Created
      */
     201: ProgramBenefitResponse;
 };
 
-export type Create6Response = Create6Responses[keyof Create6Responses];
+export type Create7Response = Create7Responses[keyof Create7Responses];
 
 export type List3Data = {
     body?: never;
@@ -6979,7 +7613,7 @@ export type List3Responses = {
 
 export type List3Response = List3Responses[keyof List3Responses];
 
-export type Create7Data = {
+export type Create8Data = {
     body: CreateProgramEditionRequest;
     path: {
         /**
@@ -6991,7 +7625,7 @@ export type Create7Data = {
     url: '/api/admin/program-editions/program/{programId}';
 };
 
-export type Create7Errors = {
+export type Create8Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -7018,16 +7652,16 @@ export type Create7Errors = {
     500: ErrorResponse;
 };
 
-export type Create7Error = Create7Errors[keyof Create7Errors];
+export type Create8Error = Create8Errors[keyof Create8Errors];
 
-export type Create7Responses = {
+export type Create8Responses = {
     /**
      * Created
      */
     201: ProgramEditionResponse;
 };
 
-export type Create7Response = Create7Responses[keyof Create7Responses];
+export type Create8Response = Create8Responses[keyof Create8Responses];
 
 export type ListProfessionalAvailabilityData = {
     body?: never;
@@ -7754,6 +8388,96 @@ export type Submit1Responses = {
 
 export type Submit1Response = Submit1Responses[keyof Submit1Responses];
 
+export type List5Data = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/resolutions';
+};
+
+export type List5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List5Error = List5Errors[keyof List5Errors];
+
+export type List5Responses = {
+    /**
+     * Historial cronologico.
+     */
+    200: Array<ApplicationResolutionResponse>;
+};
+
+export type List5Response = List5Responses[keyof List5Responses];
+
+export type Create9Data = {
+    body: CreateApplicationResolutionRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/resolutions';
+};
+
+export type Create9Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create9Error = Create9Errors[keyof Create9Errors];
+
+export type Create9Responses = {
+    /**
+     * Resolucion registrada con responsable, fecha y controles historicos.
+     */
+    201: ApplicationResolutionResponse;
+};
+
+export type Create9Response = Create9Responses[keyof Create9Responses];
+
 export type ResolveApplicationData = {
     body: ResolveApplicationRequest;
     path: {
@@ -7801,7 +8525,241 @@ export type ResolveApplicationResponses = {
 
 export type ResolveApplicationResponse = ResolveApplicationResponses[keyof ResolveApplicationResponses];
 
-export type List5Data = {
+export type List6Data = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/benefit-grants';
+};
+
+export type List6Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List6Error = List6Errors[keyof List6Errors];
+
+export type List6Responses = {
+    /**
+     * Otorgamientos de la solicitud.
+     */
+    200: Array<BenefitGrantResponse>;
+};
+
+export type List6Response = List6Responses[keyof List6Responses];
+
+export type Create10Data = {
+    body: CreateBenefitGrantRequest;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/benefit-grants';
+};
+
+export type Create10Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Create10Error = Create10Errors[keyof Create10Errors];
+
+export type Create10Responses = {
+    /**
+     * Otorgamiento registrado y auditado.
+     */
+    201: BenefitGrantResponse;
+};
+
+export type Create10Response = Create10Responses[keyof Create10Responses];
+
+export type SuspendData = {
+    body: ChangeBenefitGrantStateRequest;
+    path: {
+        id: string;
+        grantId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/benefit-grants/{grantId}/suspend';
+};
+
+export type SuspendErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type SuspendError = SuspendErrors[keyof SuspendErrors];
+
+export type SuspendResponses = {
+    /**
+     * Otorgamiento SUSPENDED; historial y auditoria confirmados.
+     */
+    200: BenefitGrantResponse;
+};
+
+export type SuspendResponse = SuspendResponses[keyof SuspendResponses];
+
+export type RenewData = {
+    body: RenewBenefitGrantRequest;
+    path: {
+        id: string;
+        grantId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/benefit-grants/{grantId}/renew';
+};
+
+export type RenewErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type RenewError = RenewErrors[keyof RenewErrors];
+
+export type RenewResponses = {
+    /**
+     * Otorgamiento renovado en ACTIVE; historial y auditoria confirmados.
+     */
+    200: BenefitGrantResponse;
+};
+
+export type RenewResponse = RenewResponses[keyof RenewResponses];
+
+export type FinalizeData = {
+    body: ChangeBenefitGrantStateRequest;
+    path: {
+        id: string;
+        grantId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/benefit-grants/{grantId}/finalize';
+};
+
+export type FinalizeErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type FinalizeError = FinalizeErrors[keyof FinalizeErrors];
+
+export type FinalizeResponses = {
+    /**
+     * Otorgamiento FINALIZED; eventual cierre y liberacion del cupo confirmados.
+     */
+    200: BenefitGrantResponse;
+};
+
+export type FinalizeResponse = FinalizeResponses[keyof FinalizeResponses];
+
+export type List7Data = {
     body?: never;
     path?: never;
     query?: {
@@ -7817,7 +8775,7 @@ export type List5Data = {
     url: '/api/admin/activities';
 };
 
-export type List5Errors = {
+export type List7Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -7836,25 +8794,25 @@ export type List5Errors = {
     500: ErrorResponse;
 };
 
-export type List5Error = List5Errors[keyof List5Errors];
+export type List7Error = List7Errors[keyof List7Errors];
 
-export type List5Responses = {
+export type List7Responses = {
     /**
      * OK
      */
     200: ActivityListResponse;
 };
 
-export type List5Response = List5Responses[keyof List5Responses];
+export type List7Response = List7Responses[keyof List7Responses];
 
-export type Create8Data = {
+export type Create11Data = {
     body: CreateActivityRequest;
     path?: never;
     query?: never;
     url: '/api/admin/activities';
 };
 
-export type Create8Errors = {
+export type Create11Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -7877,16 +8835,16 @@ export type Create8Errors = {
     500: ErrorResponse;
 };
 
-export type Create8Error = Create8Errors[keyof Create8Errors];
+export type Create11Error = Create11Errors[keyof Create11Errors];
 
-export type Create8Responses = {
+export type Create11Responses = {
     /**
      * Created
      */
     201: ActivityResponse;
 };
 
-export type Create8Response = Create8Responses[keyof Create8Responses];
+export type Create11Response = Create11Responses[keyof Create11Responses];
 
 export type EnrollData = {
     body?: never;
@@ -8080,7 +9038,7 @@ export type CancelApplicationVisitResponses = {
 
 export type CancelApplicationVisitResponse = CancelApplicationVisitResponses[keyof CancelApplicationVisitResponses];
 
-export type SuspendData = {
+export type Suspend1Data = {
     body?: never;
     path: {
         /**
@@ -8092,7 +9050,7 @@ export type SuspendData = {
     url: '/api/admin/program-editions/{id}/suspend';
 };
 
-export type SuspendErrors = {
+export type Suspend1Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -8119,16 +9077,16 @@ export type SuspendErrors = {
     500: ErrorResponse;
 };
 
-export type SuspendError = SuspendErrors[keyof SuspendErrors];
+export type Suspend1Error = Suspend1Errors[keyof Suspend1Errors];
 
-export type SuspendResponses = {
+export type Suspend1Responses = {
     /**
      * OK
      */
     200: ProgramEditionResponse;
 };
 
-export type SuspendResponse = SuspendResponses[keyof SuspendResponses];
+export type Suspend1Response = Suspend1Responses[keyof Suspend1Responses];
 
 export type CloseData = {
     body?: never;
@@ -8927,7 +9885,7 @@ export type ReviewErrors = {
 
 export type ReviewError = ReviewErrors[keyof ReviewErrors];
 
-export type PublishData = {
+export type Publish1Data = {
     body?: never;
     path: {
         id: string;
@@ -8936,7 +9894,7 @@ export type PublishData = {
     url: '/api/admin/activities/{id}/publish';
 };
 
-export type PublishErrors = {
+export type Publish1Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -8963,16 +9921,16 @@ export type PublishErrors = {
     500: ErrorResponse;
 };
 
-export type PublishError = PublishErrors[keyof PublishErrors];
+export type Publish1Error = Publish1Errors[keyof Publish1Errors];
 
-export type PublishResponses = {
+export type Publish1Responses = {
     /**
      * OK
      */
     200: ActivityResponse;
 };
 
-export type PublishResponse = PublishResponses[keyof PublishResponses];
+export type Publish1Response = Publish1Responses[keyof Publish1Responses];
 
 export type Close1Data = {
     body?: never;
@@ -9139,7 +10097,7 @@ export type ListLogsByEntityData = {
         /**
          * Tipo de entidad auditada.
          */
-        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'INTERVENTION_PLAN' | 'INTERVENTION_FOLLOW_UP' | 'APPLICATION_RESOLUTION' | 'BENEFIT_GRANT' | 'BENEFIT_GRANT_CHANGE' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
         /**
          * Identificador de la entidad auditada.
          */
@@ -9595,6 +10553,136 @@ export type ListEnrollmentsResponses = {
 
 export type ListEnrollmentsResponse = ListEnrollmentsResponses[keyof ListEnrollmentsResponses];
 
+export type ListOwnInterventionPlansData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/api/intervention-plans';
+};
+
+export type ListOwnInterventionPlansErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListOwnInterventionPlansError = ListOwnInterventionPlansErrors[keyof ListOwnInterventionPlansErrors];
+
+export type ListOwnInterventionPlansResponses = {
+    /**
+     * Pagina propia, con mensaje si no hay planes.
+     */
+    200: CitizenInterventionPlanListResponse;
+};
+
+export type ListOwnInterventionPlansResponse = ListOwnInterventionPlansResponses[keyof ListOwnInterventionPlansResponses];
+
+export type GetOwnInterventionPlanData = {
+    body?: never;
+    path: {
+        planId: string;
+    };
+    query?: never;
+    url: '/api/intervention-plans/{planId}';
+};
+
+export type GetOwnInterventionPlanErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetOwnInterventionPlanError = GetOwnInterventionPlanErrors[keyof GetOwnInterventionPlanErrors];
+
+export type GetOwnInterventionPlanResponses = {
+    /**
+     * Detalle del plan propio y estado calculado.
+     */
+    200: CitizenInterventionPlanResponse;
+};
+
+export type GetOwnInterventionPlanResponse = GetOwnInterventionPlanResponses[keyof GetOwnInterventionPlanResponses];
+
+export type ListOwnPublishedInterventionFollowUpsData = {
+    body?: never;
+    path: {
+        planId: string;
+        actionId: string;
+    };
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/api/intervention-plans/{planId}/actions/{actionId}/follow-ups';
+};
+
+export type ListOwnPublishedInterventionFollowUpsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListOwnPublishedInterventionFollowUpsError = ListOwnPublishedInterventionFollowUpsErrors[keyof ListOwnPublishedInterventionFollowUpsErrors];
+
+export type ListOwnPublishedInterventionFollowUpsResponses = {
+    /**
+     * Pagina de seguimientos publicos del titular.
+     */
+    200: CitizenInterventionFollowUpListResponse;
+};
+
+export type ListOwnPublishedInterventionFollowUpsResponse = ListOwnPublishedInterventionFollowUpsResponses[keyof ListOwnPublishedInterventionFollowUpsResponses];
+
 export type GetPublicImageData = {
     body?: never;
     path: {
@@ -9780,6 +10868,52 @@ export type ListCitizenAppointmentCentersResponses = {
 
 export type ListCitizenAppointmentCentersResponse = ListCitizenAppointmentCentersResponses[keyof ListCitizenAppointmentCentersResponses];
 
+export type ListOwnBenefitGrantsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Numero de pagina, comenzando en cero.
+         */
+        page?: number;
+        /**
+         * Elementos por pagina, entre 1 y 100.
+         */
+        size?: number;
+    };
+    url: '/api/benefit-grants';
+};
+
+export type ListOwnBenefitGrantsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListOwnBenefitGrantsError = ListOwnBenefitGrantsErrors[keyof ListOwnBenefitGrantsErrors];
+
+export type ListOwnBenefitGrantsResponses = {
+    /**
+     * Pagina de beneficios propios, tambien cuando esta vacia.
+     */
+    200: CitizenBenefitGrantListResponse;
+};
+
+export type ListOwnBenefitGrantsResponse = ListOwnBenefitGrantsResponses[keyof ListOwnBenefitGrantsResponses];
+
 export type Get2Data = {
     body?: never;
     path: {
@@ -9912,7 +11046,7 @@ export type GetOwnApplicationVisitRescheduleRequestResponses = {
 
 export type GetOwnApplicationVisitRescheduleRequestResponse = GetOwnApplicationVisitRescheduleRequestResponses[keyof GetOwnApplicationVisitRescheduleRequestResponses];
 
-export type List6Data = {
+export type List8Data = {
     body?: never;
     path: {
         applicationId: string;
@@ -9921,7 +11055,7 @@ export type List6Data = {
     url: '/api/applications/{applicationId}/documents';
 };
 
-export type List6Errors = {
+export type List8Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -9944,16 +11078,16 @@ export type List6Errors = {
     500: ErrorResponse;
 };
 
-export type List6Error = List6Errors[keyof List6Errors];
+export type List8Error = List8Errors[keyof List8Errors];
 
-export type List6Responses = {
+export type List8Responses = {
     /**
      * Documentos entregados en la solicitud propia.
      */
     200: Array<ApplicationDocumentResponse>;
 };
 
-export type List6Response = List6Responses[keyof List6Responses];
+export type List8Response = List8Responses[keyof List8Responses];
 
 export type ContentData = {
     body?: never;
@@ -10224,6 +11358,48 @@ export type GetIndicatorsResponses = {
 
 export type GetIndicatorsResponse = GetIndicatorsResponses[keyof GetIndicatorsResponses];
 
+export type ListAdminBenefitGrantsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+        status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+        applicationNumber?: number;
+    };
+    url: '/api/admin/benefit-grants';
+};
+
+export type ListAdminBenefitGrantsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ListAdminBenefitGrantsError = ListAdminBenefitGrantsErrors[keyof ListAdminBenefitGrantsErrors];
+
+export type ListAdminBenefitGrantsResponses = {
+    /**
+     * OK
+     */
+    200: AdminBenefitGrantListResponse;
+};
+
+export type ListAdminBenefitGrantsResponse = ListAdminBenefitGrantsResponses[keyof ListAdminBenefitGrantsResponses];
+
 export type ListAdminAppointmentsData = {
     body?: never;
     path?: never;
@@ -10478,16 +11654,16 @@ export type Get3Responses = {
 
 export type Get3Response = Get3Responses[keyof Get3Responses];
 
-export type List7Data = {
+export type Get4Data = {
     body?: never;
     path: {
-        applicationId: string;
+        id: string;
     };
     query?: never;
-    url: '/api/admin/applications/{applicationId}/documents';
+    url: '/api/admin/applications/{id}/intervention-plan';
 };
 
-export type List7Errors = {
+export type Get4Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -10510,16 +11686,147 @@ export type List7Errors = {
     500: ErrorResponse;
 };
 
-export type List7Error = List7Errors[keyof List7Errors];
+export type Get4Error = Get4Errors[keyof Get4Errors];
 
-export type List7Responses = {
+export type Get4Responses = {
+    /**
+     * Plan con estructura inicial y estados actuales.
+     */
+    200: InterventionPlanResponse;
+};
+
+export type Get4Response = Get4Responses[keyof Get4Responses];
+
+export type HistoryData = {
+    body?: never;
+    path: {
+        id: string;
+        actionId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/intervention-plan/actions/{actionId}/follow-ups';
+};
+
+export type HistoryErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type HistoryError = HistoryErrors[keyof HistoryErrors];
+
+export type HistoryResponses = {
+    /**
+     * Historial completo de la accion.
+     */
+    200: Array<InterventionFollowUpResponse>;
+};
+
+export type HistoryResponse = HistoryResponses[keyof HistoryResponses];
+
+export type History1Data = {
+    body?: never;
+    path: {
+        id: string;
+        grantId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/benefit-grants/{grantId}/history';
+};
+
+export type History1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type History1Error = History1Errors[keyof History1Errors];
+
+export type History1Responses = {
+    /**
+     * Historial inmutable del otorgamiento.
+     */
+    200: Array<BenefitGrantChangeResponse>;
+};
+
+export type History1Response = History1Responses[keyof History1Responses];
+
+export type List9Data = {
+    body?: never;
+    path: {
+        applicationId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{applicationId}/documents';
+};
+
+export type List9Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List9Error = List9Errors[keyof List9Errors];
+
+export type List9Responses = {
     /**
      * OK
      */
     200: Array<ApplicationDocumentResponse>;
 };
 
-export type List7Response = List7Responses[keyof List7Responses];
+export type List9Response = List9Responses[keyof List9Responses];
 
 export type Content1Data = {
     body?: never;
@@ -10904,7 +12211,7 @@ export type GetApplicationEvaluationResponses = {
 
 export type GetApplicationEvaluationResponse = GetApplicationEvaluationResponses[keyof GetApplicationEvaluationResponses];
 
-export type List8Data = {
+export type List10Data = {
     body?: never;
     path?: never;
     query?: {
@@ -10924,7 +12231,7 @@ export type List8Data = {
     url: '/api/activities';
 };
 
-export type List8Errors = {
+export type List10Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -10943,18 +12250,18 @@ export type List8Errors = {
     500: ErrorResponse;
 };
 
-export type List8Error = List8Errors[keyof List8Errors];
+export type List10Error = List10Errors[keyof List10Errors];
 
-export type List8Responses = {
+export type List10Responses = {
     /**
      * OK
      */
     200: CitizenActivityListResponse;
 };
 
-export type List8Response = List8Responses[keyof List8Responses];
+export type List10Response = List10Responses[keyof List10Responses];
 
-export type Get4Data = {
+export type Get5Data = {
     body?: never;
     path: {
         id: string;
@@ -10963,7 +12270,7 @@ export type Get4Data = {
     url: '/api/activities/{id}';
 };
 
-export type Get4Errors = {
+export type Get5Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -10986,16 +12293,16 @@ export type Get4Errors = {
     500: ErrorResponse;
 };
 
-export type Get4Error = Get4Errors[keyof Get4Errors];
+export type Get5Error = Get5Errors[keyof Get5Errors];
 
-export type Get4Responses = {
+export type Get5Responses = {
     /**
      * OK
      */
     200: CitizenActivityResponse;
 };
 
-export type Get4Response = Get4Responses[keyof Get4Responses];
+export type Get5Response = Get5Responses[keyof Get5Responses];
 
 export type LinksData = {
     body?: never;

@@ -8,11 +8,11 @@ import { AttendanceBadge } from "@/components/activities/AttendanceBadge"
 import { ActivityStatusBadge, availableSeats, formatActivityDateRange, formatActivityDateTime, seatsLabel } from "@/components/activities/activity-ui"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { get4Options } from "@/generated/@tanstack/react-query.gen"
+import { get5Options } from "@/generated/@tanstack/react-query.gen"
 
 export function CitizenActivityDetail({ activityId, canEnroll }: { activityId: string; canEnroll: boolean }) {
   const [enrolling, setEnrolling] = useState(false)
-  const query = useQuery(get4Options({ path: { id: activityId } }))
+  const query = useQuery(get5Options({ path: { id: activityId } }))
   const activity = query.data
   return (
     <ActivityPage portal title={activity?.name ?? "Detalle"}>

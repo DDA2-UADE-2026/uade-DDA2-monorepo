@@ -1,4 +1,4 @@
-import { IconArrowRight, IconCheck, IconSpeakerphone } from "@tabler/icons-react"
+import { IconArrowRight, IconSpeakerphone } from "@tabler/icons-react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import type { ReactNode } from "react"
@@ -16,23 +16,18 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { list8Options } from "@/generated/@tanstack/react-query.gen"
+import { list10Options } from "@/generated/@tanstack/react-query.gen"
 import type { CitizenActivityResponse } from "@/generated/types.gen"
 import { cn } from "@/lib/utils"
 
 const PREVIEW_COUNT = 3
 
-/**
- * Actividades comunitarias en la home del portal. El grupo «Voy a asistir»
- * todavía no se puede armar: la API del ciudadano no expone sus inscripciones
- * (ver GET /api/activities), así que por ahora solo se listan las disponibles.
- */
-export function CitizenActivitiesSection({ className }: { className?: string }) {
+export function CitizenActivitiesSection({ className, canEnroll }: { className?: string; canEnroll: boolean }) {
   const [enrolling, setEnrolling] = useState<CitizenActivityResponse | null>(null)
-  // Solo refleja lo hecho en esta sesión; no sobrevive a un recargado.
+  // Mantiene el estado confirmado mientras se actualiza el listado.
   const [justEnrolled, setJustEnrolled] = useState<ReadonlySet<string>>(new Set())
 
-  const query = useQuery(list8Options({ query: { page: 0, size: PREVIEW_COUNT } }))
+  const query = useQuery(list10Options({ query: { page: 0, size: PREVIEW_COUNT } }))
   const activities = query.data?.content ?? []
 
   if (query.isError) return null
@@ -76,22 +71,21 @@ export function CitizenActivitiesSection({ className }: { className?: string }) 
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {activities.map((activity) => {
-              const enrolled = activity.id !== undefined && justEnrolled.has(activity.id)
+              const enrolled = !!activity.myEnrollment || (activity.id !== undefined && justEnrolled.has(activity.id))
               const full = availableSeats(activity) === 0
 
               return (
                 <ActivityCard
                   key={activity.id ?? activity.name}
                   activity={activity}
+                  enrolled={enrolled}
                   action={
-                    <Button
+                    enrolled ? <Button className="w-full" variant="outline" render={<Link to="/portal/actividades/$actividadId" params={{ actividadId: activity.id ?? "" }} />}>Ver detalle <IconArrowRight /></Button> : canEnroll && <Button
                       className="w-full"
-                      variant={enrolled ? "outline" : "default"}
-                      disabled={enrolled || full || !activity.id}
+                      disabled={full || !activity.id}
                       onClick={() => setEnrolling(activity)}
                     >
-                      {enrolled && <IconCheck />}
-                      {enrolled ? "Te inscribiste" : full ? "Sin cupo" : "Inscribirme"}
+                      {full ? "Sin cupo" : "Inscribirme"}
                     </Button>
                   }
                 />

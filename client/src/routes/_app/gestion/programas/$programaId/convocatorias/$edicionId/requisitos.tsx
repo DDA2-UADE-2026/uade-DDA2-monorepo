@@ -47,7 +47,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
-  create4Mutation,
+  create5Mutation,
   delete4Mutation,
   findAll2Options,
   findAll2QueryKey,
@@ -283,7 +283,7 @@ function RequirementDialog({
   })
 
   const create = useMutation({
-    ...create4Mutation(),
+    ...create5Mutation(),
     onSuccess: () => {
       refresh()
       onOpenChange(false)

@@ -21,6 +21,10 @@ interface InterventionPlanActionCounts {
     val pendingCount: Long
     val completedCount: Long
 }
+interface InterventionPlanApplicationRow {
+    val planId: UUID
+    val applicationId: UUID
+}
 interface CitizenInterventionActionRow {
     val objectiveId: UUID
     val objectiveDescription: String

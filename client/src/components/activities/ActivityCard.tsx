@@ -1,4 +1,4 @@
-import { IconCalendarEvent, IconMapPin, IconUsers } from "@tabler/icons-react"
+import { IconCalendarEvent, IconCircleCheckFilled, IconMapPin, IconUsers } from "@tabler/icons-react"
 import type { ReactNode } from "react"
 import { Link } from "@tanstack/react-router"
 
@@ -10,16 +10,19 @@ import { Skeleton } from "@/components/ui/skeleton"
 import type { CitizenActivityResponse } from "@/generated/types.gen"
 import { cn } from "@/lib/utils"
 
-export function ActivityCard({ activity, action, className }: {
+export function ActivityCard({ activity, action, className, enrolled = false }: {
   activity: CitizenActivityResponse
   action?: ReactNode
   className?: string
+  enrolled?: boolean
 }) {
   const seats = availableSeats(activity)
+  const isEnrolled = enrolled || !!activity.myEnrollment
 
   return (
-    <Card className={cn("h-full", className)}>
+    <Card className={cn("h-full", isEnrolled && "ring-2 ring-primary/50", className)}>
       <CardHeader>
+        {isEnrolled && <div className="mb-1 flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary"><IconCircleCheckFilled className="size-4" />Ya estás inscripto</div>}
         <CardTitle className="text-lg"><Link to="/portal/actividades/$actividadId" params={{ actividadId: activity.id ?? "" }} className="hover:underline">{activity.name || "Actividad sin nombre"}</Link></CardTitle>
         <CardDescription className="line-clamp-2">
           {activity.description || "La descripción de esta actividad se informará próximamente."}
@@ -41,7 +44,7 @@ export function ActivityCard({ activity, action, className }: {
           <IconUsers />
           {seatsLabel(activity)}
         </Badge>}
-        {activity.myEnrollment && <><Badge variant="secondary">Inscripción confirmada</Badge><AttendanceBadge attendance={activity.myEnrollment.attendance} /></>}
+        {activity.myEnrollment && <AttendanceBadge attendance={activity.myEnrollment.attendance} />}
         </div>
       </CardContent>
 

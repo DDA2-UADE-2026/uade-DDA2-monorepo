@@ -40,7 +40,7 @@ class AdminMunicipalCenterController(
         service.create(request)
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') and hasAuthority('centers:management:view')")
+    @PreAuthorize("(hasRole('ADMIN') and hasAuthority('centers:management:view')) or (#active == true and hasAnyAuthority('activities:management:create', 'activities:management:edit'))")
     @Operation(operationId = "listMunicipalCenters", summary = "Listar centros municipales")
     fun list(
         @Min(0) @RequestParam(defaultValue = "0") page: Int,

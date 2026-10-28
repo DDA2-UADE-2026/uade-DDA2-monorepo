@@ -38,7 +38,7 @@ class AdminProgramBenefitController(
             request = request,
         )
 
-    @PreAuthorize("hasAuthority('programs:management:view')")
+    @PreAuthorize("hasAnyAuthority('programs:management:view', 'applications:management:benefits:assign')")
     @GetMapping
     @Operation(summary = "Listar beneficios", description = "Devuelve todos los beneficios de la edición indicada.")
     fun findAll(

@@ -8,7 +8,7 @@ import { DataPagination } from "@/components/DataPagination"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getProfessionalActivityOptions, get4QueryKey, list8QueryKey, listEnrollmentsOptions, listEnrollmentsQueryKey, updateAttendanceMutation } from "@/generated/@tanstack/react-query.gen"
+import { getProfessionalActivityOptions, get5QueryKey, list10QueryKey, listEnrollmentsOptions, listEnrollmentsQueryKey, updateAttendanceMutation } from "@/generated/@tanstack/react-query.gen"
 import type { ProfessionalActivityEnrollmentResponse } from "@/generated/types.gen"
 import { UserChip } from "@/components/UserChip"
 
@@ -63,8 +63,8 @@ function AttendanceRow({ enrollment, activityId, canManage }: { enrollment: Prof
       toast.success("Asistencia guardada")
       await Promise.all([
         client.invalidateQueries({ queryKey: listEnrollmentsQueryKey({ path: { activityId } }) }),
-        client.invalidateQueries({ queryKey: get4QueryKey({ path: { id: activityId } }) }),
-        client.invalidateQueries({ queryKey: list8QueryKey() }),
+        client.invalidateQueries({ queryKey: get5QueryKey({ path: { id: activityId } }) }),
+        client.invalidateQueries({ queryKey: list10QueryKey() }),
       ])
     },
   })

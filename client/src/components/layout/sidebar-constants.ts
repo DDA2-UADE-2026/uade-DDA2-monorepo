@@ -41,7 +41,8 @@ export const PORTAL_NAV: readonly SidebarNavItem[] = [
     icon: IconHomeCheck,
     requiredPermissions: ["applications:own:visits:view"],
   },
-  { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift, requiredPermissions: ["applications:own:view"] },
+  { title: "Mis beneficios", url: "/portal/beneficios", icon: IconGift, requiredPermissions: ["applications:own:benefits:view"] },
+  { title: "Mis intervenciones", url: "/portal/intervenciones", icon: IconClipboardHeart, requiredPermissions: ["applications:own:interventions:view"] },
   {
     title: "Mis turnos",
     url: "/portal/turnos",
@@ -64,6 +65,9 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     requiredPermissions: ["centers:management:view"],
     items: [
       { title: "Servicios ofrecidos", url: "/gestion/centros/servicios", icon: IconLibrary, requiredPermissions: ["services:management:view"] },
+      { title: "Turnos", url: "/gestion/turnos", icon: IconCalendarEvent, requiredPermissions: ["appointments:management:view"] },
+      { title: "Turnos asignados", url: "/gestion/mis-turnos", icon: IconCalendarUser, requiredPermissions: ["appointments:professional:view"] },
+      { title: "Actividades", url: "/gestion/actividades", icon: IconSpeakerphone, requiredPermissions: ["activities:management:view", "activities:attendance:view"] },
     ]
   },
   {
@@ -72,28 +76,20 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
     icon: IconHeartHandshake,
     requiredPermissions: ["programs:management:view"],
     items: [
-      {
-        title: "Solicitudes",
-        url: "/gestion/solicitudes",
-        icon: IconFileText,
-        requiredPermissions: ["applications:management:view"],
-      },
+      { title: "Solicitudes", url: "/gestion/solicitudes", icon: IconFileText, requiredPermissions: ["applications:management:view"] },
       { title: "Solicitud asistida", url: "/gestion/solicitudes/asistida", icon: IconFileCheck, requiredPermissions: ["applications:management:view"] },
+      { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift, requiredPermissions: ["applications:management:view"] },
     ]
   },
-  { title: "Actividades", url: "/gestion/actividades", icon: IconSpeakerphone, requiredPermissions: ["activities:management:view", "activities:attendance:view"] },
-  { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck, requiredPermissions: ["applications:visits:view", "applications:visits:reschedule-requests:view"] },
-  { title: "Evaluaciones", url: "/gestion/casos", icon: IconClipboardHeart, requiredPermissions: ["applications:evaluations:view"] },
-  { title: "Beneficios", url: "/gestion/beneficios", icon: IconGift, requiredPermissions: ["programs:management:view"] },
-  { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart, requiredPermissions: ["applications:management:view"] },
-  {
-    title: "Turnos",
-    url: "/gestion/turnos",
-    icon: IconCalendarEvent,
-    requiredPermissions: ["appointments:management:view"],
+  { 
+    title: "Evaluaciones",
+    url: "/gestion/casos",
+    icon: IconClipboardHeart,
+    requiredPermissions: ["applications:evaluations:view"],
     items: [
-      { title: "Turnos asignados", url: "/gestion/mis-turnos", icon: IconCalendarUser, requiredPermissions: ["appointments:professional:view"] },
-    ],
+      { title: "Visitas", url: "/gestion/visitas", icon: IconHomeCheck, requiredPermissions: ["applications:visits:view", "applications:visits:reschedule-requests:view"] },
+      { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart, requiredPermissions: ["applications:interventions:view", "applications:interventions:create", "applications:interventions:follow-ups:create", "applications:interventions:follow-ups:publish"] },
+    ]
   },
 ]
 
