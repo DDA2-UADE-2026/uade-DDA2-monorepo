@@ -35,6 +35,7 @@ Recursos principales:
 
 - [Roadmaps de integración con Core](roadmaps/README.md)
 - [Implementación técnica y operación de Core](technical/core-integration.md)
+- [Dashboard y prueba HTTP de Core](technical/core-dashboard.md)
 - [Autenticación con cookies y Bearer](technical/cookie-auth.md)
 - [Contrato técnico de solicitudes y documentos](technical/solicitudes-beneficios.md)
 - [Análisis de seguridad y preparación para Ciudadanos](technical/seguridad-ciudadanos-analisis.md)

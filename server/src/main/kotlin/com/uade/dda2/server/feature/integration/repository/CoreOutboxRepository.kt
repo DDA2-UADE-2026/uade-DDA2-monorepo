@@ -37,4 +37,7 @@ interface CoreOutboxRepository : JpaRepository<CoreOutbox, UUID> {
     fun retry(eventId: UUID, token: UUID, next: Instant, error: String): Int
 
     fun countByStatus(status: CoreOutboxStatus): Long
+
+    @Query("select min(o.createdAt) from CoreOutbox o where o.status in :statuses")
+    fun oldestCreatedAtByStatusIn(statuses: Collection<CoreOutboxStatus>): Instant?
 }

@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
 import com.uade.dda2.server.config.CoreProperties
 import com.uade.dda2.server.feature.integration.client.*
+import com.uade.dda2.server.feature.integration.dto.CoreEventStatus
 import com.uade.dda2.server.feature.integration.error.CoreHttpException
 import com.uade.dda2.server.feature.integration.error.CoreIntegrationException
 import org.junit.jupiter.api.AfterEach
@@ -100,5 +101,45 @@ class CoreHttpClientTest {
         properties.machineSecret = ""
         assertEquals("CORE_HTTP_SECRET_MISSING", assertFailsWith<CoreIntegrationException> { tokens.token() }.code)
         assertEquals(0, requests.get())
+    }
+
+    @Test fun `dashboard utiliza Bearer cacheado y deserializa metricas camelCase del modulo`() {
+        val requests = AtomicInteger()
+        tokenEndpoint(requests)
+        server.createContext("/api/v1/dashboard") { request ->
+            assertEquals("GET", request.requestMethod)
+            assertEquals("windowHours=12", request.requestURI.rawQuery)
+            assertEquals("Bearer token-1", request.requestHeaders.getFirst("Authorization"))
+            response(request, 200, CoreDashboardFixtures.json(windowHours = 12))
+        }
+        val dashboards = CoreDashboardClient(CoreApiClient(transport, tokens), json, properties)
+        val result = dashboards.dashboard(12)
+        assertEquals(2L, result.published.inWindow)
+        assertEquals(3L, result.received.delivered)
+        assertEquals(3.25, result.processing.avgMs)
+        assertEquals(2L, result.volumeByHour.single().total)
+        dashboards.dashboard(12)
+        assertEquals(1, requests.get())
+    }
+
+    @Test fun `dashboard rechaza una respuesta perteneciente a otro modulo`() {
+        tokenEndpoint(AtomicInteger())
+        server.createContext("/api/v1/dashboard") { response(it, 200, CoreDashboardFixtures.json(module = "ciudadanos")) }
+        val client = CoreDashboardClient(CoreApiClient(transport, tokens), json, properties)
+        assertEquals("CORE_DASHBOARD_IDENTITY_MISMATCH", assertFailsWith<CoreIntegrationException> { client.dashboard(24) }.code)
+    }
+
+    @Test fun `listado de eventos codifica filtros una sola vez y no expone campos extra`() {
+        tokenEndpoint(AtomicInteger())
+        val correlation = UUID.randomUUID()
+        server.createContext("/api/v1/events") { request ->
+            assertEquals("page=2&size=10&eventType=probe%26other&status=ROUTED&correlationId=$correlation", request.requestURI.rawQuery)
+            assertEquals("Bearer token-1", request.requestHeaders.getFirst("Authorization"))
+            response(request, 200, """{"items":[],"total":0,"page":2,"size":10,"pages":0,"envelope":"not-in-list-contract"}""")
+        }
+        val result = CoreEventClient(CoreApiClient(transport, tokens), json).events(2, 10, "probe&other", CoreEventStatus.ROUTED, correlation)
+        assertEquals(2, result.page)
+        assertTrue(result.items.isEmpty())
+        assertFalse(json.writeValueAsString(result).contains("not-in-list-contract"))
     }
 }
