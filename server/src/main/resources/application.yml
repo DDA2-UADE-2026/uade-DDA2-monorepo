@@ -5,6 +5,30 @@ server:
 spring:
   application:
     name: social-development-api
+  rabbitmq:
+    host: ${CORE_AMQP_HOST:core-uade-2026.duckdns.org}
+    port: ${CORE_AMQP_PORT:5671}
+    virtual-host: ${CORE_AMQP_VHOST:core}
+    username: ${CORE_AMQP_USERNAME:}
+    password: ${CORE_AMQP_PASSWORD:}
+    dynamic: false
+    ssl:
+      enabled: ${CORE_AMQP_TLS:true}
+      validate-server-certificate: true
+      verify-hostname: true
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+      retry:
+        enabled: false
+    listener:
+      simple:
+        acknowledge-mode: manual
+        auto-startup: false
+        default-requeue-rejected: false
+        retry:
+          enabled: false
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -54,6 +78,30 @@ springdoc:
     tags-sorter: alpha
     try-it-out-enabled: true
 app:
+  core:
+    enabled: ${CORE_ENABLED:false}
+    check-on-startup: ${CORE_AMQP_CHECK_ON_STARTUP:false}
+    module: desarrollo-social
+    api-base-url: ${CORE_API_BASE_URL:https://core-uade-2026.duckdns.org/api/v1}
+    machine-secret: ${CORE_MACHINE_SECRET:}
+    queue: ${CORE_QUEUE:q.desarrollo-social}
+    connect-timeout: ${CORE_CONNECT_TIMEOUT:5s}
+    read-timeout: ${CORE_READ_TIMEOUT:10s}
+    publisher:
+      enabled: ${CORE_PUBLISHER_ENABLED:false}
+      poll-interval: ${CORE_OUTBOX_POLL_INTERVAL:5s}
+      batch-size: ${CORE_OUTBOX_BATCH_SIZE:20}
+      confirm-timeout: ${CORE_CONFIRM_TIMEOUT:10s}
+      lease-duration: ${CORE_OUTBOX_LEASE_DURATION:60s}
+      retry-delay: ${CORE_OUTBOX_RETRY_DELAY:5s}
+      max-retry-delay: ${CORE_OUTBOX_MAX_RETRY_DELAY:5m}
+    consumer:
+      enabled: ${CORE_CONSUMER_ENABLED:false}
+      prefetch: ${CORE_CONSUMER_PREFETCH:1}
+    probe:
+      enabled: ${CORE_PROBE_ENABLED:false}
+      event-type: ${CORE_PROBE_EVENT_TYPE:socialCoreConnectivityProbe}
+      run-id: ${CORE_PROBE_RUN_ID:}
   bootstrap:
     admin:
       enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}

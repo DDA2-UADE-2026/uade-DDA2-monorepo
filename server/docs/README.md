@@ -27,11 +27,14 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 | --- | --- |
 | `functional/` | Guías de negocio y recorridos de programas, convocatorias, solicitudes y documentos. |
 | `technical/` | Contratos, seguridad, decisiones técnicas y verificación del backend. |
+| `roadmaps/` | Plan de conexión técnica con Core e integraciones de negocio diferidas. |
 | `database/` | Modelo DBML y datos iniciales para recrear el entorno de pruebas. |
 | `postman/` | Colección de Postman del backend. |
 
 Recursos principales:
 
+- [Roadmaps de integración con Core](roadmaps/README.md)
+- [Implementación técnica y operación de Core](technical/core-integration.md)
 - [Autenticación con cookies y Bearer](technical/cookie-auth.md)
 - [Contrato técnico de solicitudes y documentos](technical/solicitudes-beneficios.md)
 - [Análisis de seguridad y preparación para Ciudadanos](technical/seguridad-ciudadanos-analisis.md)

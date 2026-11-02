@@ -28,6 +28,9 @@ dependencies {
     // Spring MVC: controllers REST, HTTP, JSON, Tomcat, etc.
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
 
+    // Core: RabbitMQ con confirms y ack manual; versión administrada por Spring Boot.
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+
     // Validaciones con Jakarta Validation:
     // @NotNull, @NotBlank, @Size, @Positive, etc.
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -201,6 +204,24 @@ tasks.withType<Test> {
     // Bound retained Hibernate contexts across the full flow suite instead of exhausting the default test heap.
     maxHeapSize = "1g"
     systemProperty("spring.test.context.cache.maxSize", "8")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform { excludeTags("core-smoke") }
+}
+
+tasks.register<Test>("testCoreConnectivity") {
+    group = "verification"
+    description = "Prueba opt-in contra Core; requiere accesos e IP habilitada y una base técnica desechable."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { includeTags("core-smoke") }
+    doNotTrackState("La prueba usa estado remoto y UUIDs de una ejecución deliberada; no puede reutilizar resultados en caché.")
+    doFirst {
+        require(System.getenv("CORE_SMOKE_ENABLED") == "true") {
+            "La prueba remota requiere CORE_SMOKE_ENABLED=true y configuración privada explícita."
+        }
+    }
 }
 
 tasks.register<Test>("generateOpenApiDocs") {
