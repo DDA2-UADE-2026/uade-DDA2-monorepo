@@ -68,6 +68,7 @@ class CoreAmqpConfiguration {
     @Bean fun coreApiClient(transport: CoreHttpTransport, tokens: CoreTokenClient) = CoreApiClient(transport, tokens)
     @Bean fun coreRegistryClient(api: CoreApiClient, json: JsonMapper, core: CoreProperties) = CoreRegistryClient(api, json, core)
     @Bean fun coreEventClient(api: CoreApiClient, json: JsonMapper) = CoreEventClient(api, json)
+    @Bean fun coreDashboardClient(api: CoreApiClient, json: JsonMapper, core: CoreProperties) = CoreDashboardClient(api, json, core)
     @Bean fun coreBrokerClient(factory: CachingConnectionFactory, core: CoreProperties) = CoreBrokerClient(factory, core)
     @Bean fun coreAmqpPublisher(template: RabbitTemplate, core: CoreProperties) = CoreAmqpPublisher(template, core)
 

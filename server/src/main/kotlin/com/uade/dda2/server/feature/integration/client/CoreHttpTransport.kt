@@ -20,7 +20,7 @@ class CoreHttpTransport(private val client: RestClient, private val json: JsonMa
 
     private fun execute(method: HttpMethod, url: String, body: JsonNode?, token: String?): JsonNode {
         try {
-            val request = client.method(method).uri(url)
+            val request = client.method(method).uri(URI.create(url))
                 .accept(MediaType.APPLICATION_JSON)
             token?.let { request.headers { headers -> headers.setBearerAuth(it) } }
             body?.let { request.contentType(MediaType.APPLICATION_JSON).body(json.writeValueAsString(it)) }

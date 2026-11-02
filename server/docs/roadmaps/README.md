@@ -2,9 +2,24 @@
 
 El primer objetivo es conectar el backend de Desarrollo Social con Core y verificar publicación y consumo confiables. Las integraciones de negocio con Ciudadanos, Atención Ciudadana y Rentas quedan para una fase posterior, por indicación del equipo.
 
-Estado al 2 de noviembre de 2026: infraestructura técnica implementada con integración desactivada por defecto y verificaciones locales. Cliente HTTP, adaptadores AMQP, outbox, inbox y prueba remota opt-in están disponibles. No se verificaron accesos, PostgreSQL/broker reales ni conectividad AWS. Los criterios remotos siguen pendientes; los detalles de configuración y verificación están en la [guía técnica](../technical/core-integration.md).
+Estado al 2 de noviembre de 2026: infraestructura técnica y dashboard de integración implementados, con 33 pruebas locales aprobadas e integración desactivada por defecto. Cliente HTTP, adaptadores AMQP, outbox, inbox y prueba remota opt-in están disponibles. El despliegue ya confirmó conexión AMQPS con TLS, autenticación y consulta pasiva de `q.desarrollo-social`; también inició correctamente la conexión PostgreSQL/JPA. Core confirmó la entrega del secreto HTTP rotado: falta configurarlo y comprobarlo desde nuestro despliegue. El intercambio real de eventos sigue pendiente.
 
-Core ya comunicó la credencial AMQPS propia y la habilitación de `187.127.41.168/32`. Se agregó una comprobación pasiva de conexión al arrancar, opt-in, con marcador `CORE_AMQP_CONNECTED`. El usuario realizará el despliegue; el acceso HTTP y la prueba real siguen pendientes. La contraseña se carga en el entorno privado, fuera de Git.
+La [evidencia registrada](evidencias-core.md) distingue lo implementado, lo probado localmente y lo verificado en el despliegue. La [guía técnica](../technical/core-integration.md) documenta variables, arranque y diagnóstico. La contraseña permanece en el entorno privado, fuera de Git.
+
+## Avance actual
+
+| Hito | Estado |
+| --- | --- |
+| C1 Accesos y acuerdos | AMQPS verificado y entrega del secreto HTTP rotado confirmada; pendientes configuración HTTP, acuerdos de prueba y datos operativos. |
+| C2 Configuración | Implementada y comprobación AMQPS de arranque verificada en el despliegue. |
+| C3 Cliente HTTP | Implementado y probado localmente; dashboard protegido de siete endpoints disponible. Autenticación y consultas remotas pendientes. |
+| C4 Conectividad | AMQPS y cola pasiva verificadas; readiness, worker y prueba de caída real pendientes. |
+| C5–C7 Sobre, outbox e inbox | Implementados y con pruebas locales. Persistencia funcional sobre PostgreSQL real y protocolo RabbitMQ pendientes. |
+| C8 Fallos en aislamiento | 33 pruebas locales aprobadas, incluidas autorización y consultas del dashboard; escenarios con servicios desechables pendientes. |
+| C9–C11 Intercambio y recuperación | Driver opt-in preparado; recorrido real y recuperación pendientes. |
+| C12 CI y operación | Compilación, pruebas locales, OpenAPI y guía completados; CI técnico, cobertura y acuerdos operativos pendientes. |
+
+En los checklists, `[x]` indica completado dentro del alcance descrito: implementación, prueba local o comprobación remota. Las pruebas remotas se listan por separado para no confundirlas con código disponible.
 
 ## Orden de ejecución
 
@@ -63,7 +78,7 @@ Quedan para después el login externo, la sincronización de ciudadanos, las ges
 
 Ese bloque ya está implementado: Spring AMQP con JSON de Jackson 3, cliente HTTP de máquina, configuración condicional, outbox e inbox locales, y handler de recepción técnica sin respuesta automática. Los [criterios técnicos](00-contrato-core-verificado.md) definen sus límites. Los checklists distinguen implementación local de habilitación y pruebas reales.
 
-Para el tráfico real siguen pendientes el acceso HTTP, la comprobación de la IP de salida y de los accesos AMQPS recibidos, la versión desplegada, las suscripciones y el backlog efectivos, y el acuerdo del tipo técnico y de las pruebas de fallo. Esos datos no se inventan ni se deducen del seed. La prueba opt-in prevista utiliza una base técnica desechable de M8 y no toca su base de negocio.
+La conexión AMQPS ya tiene evidencia del despliegue. Para intercambiar eventos siguen pendientes configurar y comprobar el acceso HTTP recibido, registrar la IP de salida y la versión desplegada, consultar suscripciones y backlog efectivos, y acordar el tipo técnico y las pruebas de fallo. La [guía del dashboard](../technical/core-dashboard.md) permite comprobar HTTP desde nuestro backend sin entregar credenciales de máquina al navegador. La prueba opt-in prevista utiliza una base técnica desechable de M8 y no toca su base de negocio.
 
 ## Fuentes y precedencia
 

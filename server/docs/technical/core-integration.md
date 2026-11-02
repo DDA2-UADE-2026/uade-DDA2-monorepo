@@ -2,9 +2,11 @@
 
 El backend incorpora el cliente HTTP de máquina, la conexión AMQPS, outbox e inbox y una prueba técnica de autorrecepción. La integración está desactivada por defecto y en el perfil `docs`. No se conectaron todavía los servicios de negocio de Ciudadanos, Atención Ciudadana o Rentas.
 
-La implementación sigue el [contrato contrastado con el código de Core](../roadmaps/00-contrato-core-verificado.md). Queda pendiente verificar la conexión desde el entorno desplegado y coordinar el intercambio técnico de prueba.
+La implementación sigue el [contrato contrastado con el código de Core](../roadmaps/00-contrato-core-verificado.md). El backend desplegado confirmó conexión AMQPS, TLS con verificación de certificado y hostname, autenticación y consulta pasiva de la cola propia. Core confirmó posteriormente la entrega del secreto HTTP rotado; su configuración y comprobación desde nuestro despliegue siguen pendientes, al igual que el intercambio técnico de eventos.
 
-Actualización del 2 de noviembre de 2026: Core comunicó el módulo activo, entregó la credencial AMQPS propia y confirmó la habilitación de `187.127.41.168/32` al puerto 5671. Esa información todavía requiere comprobarse desde el despliegue. El acceso HTTP sigue pendiente y no bloquea la verificación AMQPS; la contraseña recibida no forma parte de los archivos versionados.
+Actualización del 2 de noviembre de 2026: Core comunicó el módulo activo, entregó la credencial AMQPS propia y confirmó la habilitación de `187.127.41.168/32` al puerto 5671. Los logs del despliegue registraron `CORE_AMQP_CONNECTED` a las `13:23:16.173Z`, con cero mensajes y consumidores en ese instante. Los alcances y pendientes están en el [registro de evidencias](../roadmaps/evidencias-core.md). La contraseña recibida no forma parte de los archivos versionados.
+
+El [dashboard de integración](core-dashboard.md) agrega siete endpoints protegidos de lectura para comprobar HTTP y AMQPS, consultar métricas, publicaciones, suscripciones y eventos. Su guía explica cómo cargar `CORE_MACHINE_SECRET`, probar desde Swagger y asignar `integrations:core:view` sin exponer credenciales al navegador.
 
 ## Componentes
 
