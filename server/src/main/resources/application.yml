@@ -105,6 +105,7 @@ app:
   bootstrap:
     admin:
       enabled: ${BOOTSTRAP_ADMIN_ENABLED:true}
+      password: ${BOOTSTRAP_ADMIN_PASSWORD:}
   security:
     cookie:
       secure: ${AUTH_COOKIE_SECURE:false}

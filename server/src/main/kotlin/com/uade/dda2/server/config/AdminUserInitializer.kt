@@ -20,6 +20,7 @@ class AdminUserInitializer(
     private val roles: RoleRepository,
     private val permissions: PermissionRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val properties: BootstrapAdminProperties,
 ) : ApplicationRunner {
     @Transactional
     override fun run(args: ApplicationArguments) {
@@ -37,9 +38,12 @@ class AdminUserInitializer(
         // Preserve credentials and status of existing accounts. An ADMIN account
         // also receives CIUDADANO so the role selector can issue a citizen JWT.
         if (!users.existsByUsernameIgnoreCase("admin")) {
+            require(properties.password.length >= 12) {
+                "BOOTSTRAP_ADMIN_PASSWORD debe tener al menos 12 caracteres para crear el administrador inicial."
+            }
             users.save(User(
                 username = "admin",
-                passwordHash = requireNotNull(passwordEncoder.encode("admin123")),
+                passwordHash = requireNotNull(passwordEncoder.encode(properties.password)),
                 name = "Administrator",
                 email = "admin@example.com",
                 roles = mutableSetOf(adminRole, citizenRole),
