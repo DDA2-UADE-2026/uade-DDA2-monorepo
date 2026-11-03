@@ -45,13 +45,13 @@ jobs:
             changed_files="$(git diff --name-only "$BEFORE_SHA" "$HEAD_SHA")"
           fi
 
-          if grep -q '^client/' <<< "$changed_files"; then
+          if grep -Eq '^client/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
             echo "client=true" >> "$GITHUB_OUTPUT"
           else
             echo "client=false" >> "$GITHUB_OUTPUT"
           fi
 
-          if grep -q '^server/' <<< "$changed_files"; then
+          if grep -Eq '^server/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
             echo "server=true" >> "$GITHUB_OUTPUT"
           else
             echo "server=false" >> "$GITHUB_OUTPUT"
@@ -83,6 +83,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test client
+        run: npm run test:run
+
       - name: Build
         run: npm run build
 
@@ -103,6 +106,6 @@ jobs:
           java-version: "17"
           cache: gradle
 
-      - name: Build server
+      - name: Test and build server
         working-directory: server
-        run: ./gradlew assemble --no-daemon
+        run: ./gradlew build --no-daemon

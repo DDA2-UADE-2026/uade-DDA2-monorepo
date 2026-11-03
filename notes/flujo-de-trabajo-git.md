@@ -21,9 +21,9 @@ El repositorio utiliza un flujo de ramas basado en pull requests para separar el
   - `validate-source-branch`
   - `client-lint-build`
   - `server-assemble`
-- `client-lint-build` se ejecuta si el cambio incluye archivos de `client/`.
-- `server-assemble` se ejecuta si el cambio incluye archivos de `server/`.
-- Si el cambio incluye ambos directorios, se ejecutan ambos checks.
+- `client-lint-build` ejecuta lint, tests de Vitest y build si cambia `client/`.
+- `server-assemble` ejecuta tests de JUnit y build si cambia `server/`.
+- Si el cambio incluye ambos directorios o `.github/workflows/ci.yml`, se ejecutan ambos checks en paralelo.
 - Los pull requests deben estar dirigidos a la rama correcta antes de solicitar revisión.
 
 ## Convención de nombres
@@ -197,7 +197,7 @@ develop -> main
 feature/* -> develop
 ```
 
-El lint y la compilación del frontend, junto con la compilación del backend, se ejecutan mediante `.github/workflows/ci.yml` solo cuando se modifican archivos de la aplicación correspondiente.
+El lint, los tests y la compilación del frontend, junto con los tests y la compilación del backend, se ejecutan mediante `.github/workflows/ci.yml` cuando se modifica la aplicación correspondiente. Un cambio en ese workflow ejecuta ambos checks. La publicación de imágenes requiere que `CI` termine correctamente.
 
 ## Deploy
 
