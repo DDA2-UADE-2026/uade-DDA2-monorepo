@@ -108,3 +108,11 @@ Las carpetas de resolución, otorgamiento, ciclo de vida y planes profesionales 
 Los scripts comprueban códigos de éxito, asociación con la ruta, estados, vigencias, datos conservados, fechas UTC y orden del historial. Capturan identificadores solo después de respuestas exitosas. Los ejemplos de conflicto documentan las condiciones necesarias; no se ejecutan automáticamente como pruebas negativas ni preparan esos escenarios.
 
 Para ejecutar un recorrido, seleccionar sus peticiones en Postman. La colección completa incluye alternativas y operaciones definitivas que no forman un único recorrido lineal.
+
+## Consultas HTTP de Core
+
+En **Integración HTTP con Core → API de Core**, seleccioná un entorno de Postman y configurá `coreMachineSecret` como valor local. Ejecutá **Obtener token de máquina** para guardar `coreAccessToken` en ese entorno. Las consultas directas heredan ese token. Si vence, volvé a solicitarlo. La colección trae la URL base de Core y el módulo `desarrollo-social`.
+
+En **API administrativa de Desarrollo Social**, configurá `baseUrl` con la URL de nuestro backend y usá `adminAccessToken` con el permiso `integrations:core:view` en el rol activo. En **Estado de la integración**, revisá `http.state` y `amqp.state` en la respuesta.
+
+Para consultar un evento individual, copiá su `eventId` en `coreEventId`. En el listado podés habilitar los filtros opcionales de tipo, estado y correlación desde la pestaña **Params**.
