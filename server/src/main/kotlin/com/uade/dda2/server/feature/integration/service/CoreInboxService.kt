@@ -19,7 +19,7 @@ class CoreInboxService(private val repository: CoreInboxRepository, private val 
 
     @Transactional
     fun process(bytes: ByteArray, metadata: CoreMessageMetadata): CoreInboxResult {
-        val envelope = codec.decode(bytes)
+        val envelope = codec.decodeIncoming(bytes)
         if (metadata.messageId?.let { it != envelope.eventId.toString() } == true ||
             metadata.eventIdHeader?.let { it != envelope.eventId.toString() } == true ||
             metadata.targetModule?.let { it != properties.module } == true)

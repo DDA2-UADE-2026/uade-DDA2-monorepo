@@ -1,6 +1,6 @@
 # Integración técnica con Core
 
-El backend incorpora el cliente HTTP de máquina, la conexión AMQPS, outbox e inbox y una prueba técnica de autorrecepción. La integración está desactivada por defecto y en el perfil `docs`. No se conectaron todavía los servicios de negocio de Ciudadanos, Atención Ciudadana o Rentas.
+El backend incorpora el cliente HTTP de máquina, la conexión AMQPS, outbox e inbox y una prueba técnica de autorrecepción. La integración está desactivada por defecto y en el perfil `docs`. Los contratos y procesos de negocio M8 están implementados detrás de `CORE_BUSINESS_ENABLED=false`; ver [eventos M8](m8-events.md) antes de habilitarlos. La interoperabilidad remota sigue pendiente.
 
 La implementación sigue el [contrato contrastado con el código de Core](../roadmaps/00-contrato-core-verificado.md). El backend desplegado confirmó conexión AMQPS, TLS con verificación de certificado y hostname, autenticación y consulta pasiva de la cola propia. Core confirmó posteriormente la entrega del secreto HTTP rotado; su configuración y comprobación desde nuestro despliegue siguen pendientes, al igual que el intercambio técnico de eventos.
 
@@ -97,7 +97,7 @@ Desde el propio entorno de salida puede verificarse la IP con `curl -4 --noproxy
 
 El [script de esquema](../database/core-integration.sql) agrega únicamente `core_outbox` y `core_inbox`, sin seeds ni cambios de datos de negocio. Revisarlo y aplicarlo deliberadamente en la base propia antes de habilitar la integración. El proyecto conserva su política existente de `JPA_DDL_AUTO`: con `update`, Hibernate también puede crear las tablas de las entidades al arrancar, aunque los clientes de Core estén desactivados. Para administrar el esquema exclusivamente por SQL, usar la política de DDL correspondiente al despliegue.
 
-La operación `CoreOutboxService.enqueue` exige una transacción ya activa (`MANDATORY`). Al integrar negocio más adelante, se llama dentro del mismo método transaccional que guarda el cambio local. No hay publicación de red dentro de esa transacción.
+La operación `CoreOutboxService.enqueue` exige una transacción ya activa (`MANDATORY`). Los adaptadores de negocio M8 la llaman dentro de la misma transacción que guarda el cambio local. No hay publicación de red dentro de esa transacción.
 
 ```mermaid
 flowchart TD

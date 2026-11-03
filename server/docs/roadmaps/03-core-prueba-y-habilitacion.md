@@ -80,7 +80,7 @@ Los IDs de los documentos son ilustrativos y no se reutilizan. Una prueba nueva 
 - [x] Separar la salud local de Core: health automático de Rabbit excluido y fallo del chequeo de arranque no fatal. El fallo se verificó localmente; una caída real controlada sigue pendiente.
 - [ ] Definir límites operativos y retención de registros con el equipo, usando la evidencia de la prueba; no fijar volúmenes o plazos sin información.
 - [x] Documentar que Core no recibe un ack de negocio por HTTP. Una entrega puede quedar `RETRYING` aun si el reintento se procesó correctamente; nuestra evidencia de commit y ack sigue siendo necesaria. Este límite está recogido en el [contrato verificado](00-contrato-core-verificado.md).
-- [ ] Al terminar, cerrar el contexto de la prueba, deshabilitar el flag de probe y acordar la pausa o baja de sus registros técnicos propios. Mantener el consumidor remoto deshabilitado si las restantes suscripciones todavía no tienen handlers; no reactivar contratos diferidos por un reinicio.
+- [ ] Al terminar, cerrar el contexto de la prueba, deshabilitar el flag de probe y acordar la pausa o baja de sus registros técnicos propios. Mantener el consumidor remoto deshabilitado si las restantes suscripciones todavía no tienen handlers; no habilitar contratos de negocio sin verificar por un reinicio.
 
 ## C12 Incorporar verificación en CI y documentar operación
 
@@ -119,7 +119,7 @@ Esta tabla es una plantilla para el intercambio de eventos, todavía sin ejecuta
 - [ ] Política de rechazo y reintentos compatible con Core; tratamiento de fallos documentado.
 - [x] Pruebas locales y generación de documentación independientes del ambiente compartido.
 - [ ] Pruebas técnicas incorporadas al CI, sin accesos remotos.
-- [x] Consumo desactivado por defecto y habilitación limitada al handler técnico implementado; ninguna integración de negocio diferida se activa por esta fase.
+- [x] Consumo desactivado por defecto y habilitación técnica separada de los handlers de negocio; la activación de negocio requiere además CORE_BUSINESS_ENABLED y los acuerdos de la etapa M8.
 - [x] Evidencias y pendientes actualizados en estos roadmaps al 2 de noviembre de 2026; el registro se ampliará al ejecutar las pruebas restantes.
 
-El resultado es una conexión técnica operativa. La siguiente fase se planifica desde [integraciones de negocio pendientes](04-integraciones-posteriores.md), cuando el equipo decida retomarla.
+El resultado es una conexión técnica operativa. Los procesos de negocio ya implementados se habilitan mediante la [etapa M8](04-integraciones-posteriores.md), después de resolver sus pendientes externos.

@@ -55,7 +55,7 @@ import java.util.UUID
                 "and result_recorded_at is null and result_recorded_by_user_id is null) or " +
                 "(status = 'CANCELLED' and cancellation_reason is not null " +
                 "and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null " +
-                "and cancelled_by_user_id is not null and result_observations is null and result_conclusions is null " +
+                "and (cancelled_by_user_id is not null or cancelled_by_event_id is not null) and result_observations is null and result_conclusions is null " +
                 "and result_recorded_at is null and result_recorded_by_user_id is null) or " +
                 "(status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null " +
                 "and cancelled_by_user_id is null and result_recorded_at is not null " +
@@ -110,6 +110,9 @@ class ApplicationVisit(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cancelled_by_user_id")
     var cancelledBy: User? = null,
+
+    @Column(name = "cancelled_by_event_id")
+    var cancelledByEventId: UUID? = null,
 
     @Column(name = "result_observations", length = 2000)
     var resultObservations: String? = null,

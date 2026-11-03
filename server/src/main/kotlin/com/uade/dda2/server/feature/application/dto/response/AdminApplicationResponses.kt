@@ -92,4 +92,10 @@ data class AdminApplicationResponse(
     val pendingDocuments: List<PendingApplicationDocumentResponse>,
     @field:Schema(description = "Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.")
     val documentRequirements: List<AvailableProgramDocumentRequirementResponse>,
+    @field:Schema(description = "Motivo de cierre automático, independiente de la resolución histórica.", nullable = true)
+    val closedReason: String? = null,
+    @field:Schema(nullable = true)
+    val closedAt: java.time.OffsetDateTime? = null,
+    @field:Schema(description = "Evento externo que causó el cierre.", nullable = true)
+    val closedByEventId: UUID? = null,
 )

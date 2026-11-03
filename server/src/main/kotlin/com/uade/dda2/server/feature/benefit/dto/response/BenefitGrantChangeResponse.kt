@@ -22,13 +22,17 @@ data class BenefitGrantChangeResponse(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val reason: String?,
-    @field:Schema(description = "Responsable humano; null exclusivamente en vencimientos automaticos.", types = ["integer", "null"], format = "int64")
+    @field:Schema(description = "Responsable humano; null en vencimientos o finalizaciones automáticas con evento causal.", types = ["integer", "null"], format = "int64")
     val responsibleUserId: Long?,
-    @field:Schema(description = "Nombre del responsable, o Sistema en vencimientos automaticos.")
+    @field:Schema(description = "Nombre del responsable, o Sistema en actuaciones automáticas.")
     val responsibleUserName: String,
     @field:Schema(description = "Instante UTC de la actuacion. La finalizacion tiene efecto inmediato.")
     val changedAt: OffsetDateTime,
     val requirementChecks: List<BenefitGrantChangeRequirementResponse>,
+    @field:Schema(description = "Evento causal para cambios automáticos de integración.", nullable = true)
+    val causationEventId: UUID? = null,
+    @field:Schema(description = "Fin efectivo por fallecimiento; no reemplaza la vigencia planificada histórica.", nullable = true)
+    val effectiveEndDate: LocalDate? = null,
 )
 
 data class BenefitGrantChangeRequirementResponse(

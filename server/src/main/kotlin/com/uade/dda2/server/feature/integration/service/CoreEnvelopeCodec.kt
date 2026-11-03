@@ -12,6 +12,15 @@ import java.util.UUID
 
 @Component
 class CoreEnvelopeCodec(private val json: JsonMapper) {
+    fun decodeIncoming(bytes: ByteArray): CoreEnvelope = try {
+        val node = json.readTree(bytes)
+        check(node.isObject)
+        val canonical = json.createObjectNode()
+        FIELDS.forEach { field -> node.get(field)?.let { canonical.set(field, it) } }
+        // Los metadatos añadidos por Core no forman parte del sobre lógico ni de su hash.
+        decode(json.writeValueAsBytes(canonical))
+    } catch (_: Exception) { throw CoreIntegrationException("CORE_INVALID_ENVELOPE") }
+
     fun decode(bytes: ByteArray): CoreEnvelope = try {
         val node = json.readTree(bytes)
         check(node.isObject && node.properties().all { it.key in FIELDS })

@@ -112,3 +112,6 @@ Si `BOOTSTRAP_ADMIN_ENABLED=true`, el inicializador registra el permiso y lo agr
 Las pruebas cubren autenticación, autorización y revocación, configuración desactivada, comprobaciones parciales y fallidas, métricas en H2, filtros, lectura de registros y eventos, traducción de errores, token cacheado y contrato HTTP local del dashboard. OpenAPI comprueba la presencia y seguridad de las siete rutas. No se agregaron dependencias.
 
 El acceso HTTP desde el despliegue queda pendiente de configurar el valor privado y ejecutar `/status`. La entrega de una credencial no acredita esa prueba. El recorrido real de publicación, procesamiento y recepción de eventos sigue separado en el [roadmap de habilitación](../roadmaps/03-core-prueba-y-habilitacion.md).
+
+
+El estado también incluye `businessEnabled`, para distinguir la activación de los procesos M8 de los dos transportes. Los nuevos recursos administrativos de tickets, entregas documentales, Rentas y alertas se describen en [eventos M8](m8-events.md) y usan sus propios permisos.

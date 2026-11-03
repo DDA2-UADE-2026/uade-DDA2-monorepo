@@ -16,7 +16,7 @@ Las rutas de código de este documento son relativas a `core_desappsii-main/` de
 | Cliente HTTP | `RestClient` del stack Spring ya utilizado, sin sumar otra biblioteca HTTP. Token de máquina separado del JWT local. |
 | Persistencia | Outbox e inbox en nuestro PostgreSQL, con transacciones locales y restricciones de unicidad. |
 | Prueba de conexión | Publicación y suscripción propias a un tipo técnico acordado con Core. El código permite que el emisor sea también destinatario; no exige integrar otro módulo. |
-| Alcance | Infraestructura y handler técnico de prueba. Ciudadanos, tickets, documentación y Rentas continúan diferidos. |
+| Alcance | Referencia técnica de Core. Los procesos M8 están implementados con habilitación separada; ver [etapa de negocio](04-integraciones-posteriores.md). |
 
 El bloque técnico de esas decisiones ya está implementado en Desarrollo Social; su configuración está en la [guía técnica](../technical/core-integration.md). La [evidencia del despliegue](evidencias-core.md) confirma conexión AMQPS y consulta pasiva de la cola. Siguen pendientes las verificaciones HTTP, el intercambio real de eventos y las pruebas funcionales de outbox/inbox sobre PostgreSQL real. Este documento conserva por separado los hechos observados en el snapshot de Core.
 

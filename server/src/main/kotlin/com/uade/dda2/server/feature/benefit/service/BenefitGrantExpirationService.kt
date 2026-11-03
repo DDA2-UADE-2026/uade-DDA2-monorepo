@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.benefit.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
@@ -29,6 +30,7 @@ class BenefitGrantExpirationService(
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
     private val clock: Clock,
+    private val businessEvents: org.springframework.context.ApplicationEventPublisher,
 ) {
     @Transactional
     fun expireApplication(applicationId: UUID): Int {
@@ -49,6 +51,7 @@ class BenefitGrantExpirationService(
                 endDate = grant.endDate, reason = EXPIRATION_REASON, responsible = null, changedAt = changedAt)
         }
         val saved = changes.saveAllAndFlush(events)
+        saved.forEach { businessEvents.publishEvent(M8BusinessFact.BenefitChanged(it)) }
         closure.closeIfFinished(application, edition, null, changedAt, requireNotNull(saved.last().id))
         application.updatedAt = localTime
         saved.forEach { event ->

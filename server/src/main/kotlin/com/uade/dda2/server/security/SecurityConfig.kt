@@ -79,6 +79,8 @@ class SecurityConfig(
                 it.requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
                 it.requestMatchers("/actuator/health", "/error").permitAll()
                 it.requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/springwolf/**").denyAll()
+                it.requestMatchers(HttpMethod.GET, "/springwolf/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

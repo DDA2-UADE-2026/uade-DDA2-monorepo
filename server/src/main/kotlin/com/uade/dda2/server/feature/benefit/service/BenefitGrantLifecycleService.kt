@@ -1,5 +1,7 @@
 package com.uade.dda2.server.feature.benefit.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
+import com.uade.dda2.server.feature.application.service.ApplicationDocumentStatesService
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.entity.*
 import com.uade.dda2.server.feature.application.error.ApplicationErrors
@@ -35,7 +37,7 @@ class BenefitGrantLifecycleService(
     private val changes: BenefitGrantChangeRepository,
     private val editions: ProgramEditionRepository,
     private val requirements: ProgramRequirementRepository,
-    private val documents: ApplicationDocumentRepository,
+    private val documents: ApplicationDocumentStatesService,
     private val documentRequirements: ProgramDocumentRequirementRepository,
     private val incompatibilities: ProgramIncompatibilityRepository,
     private val users: UserRepository,
@@ -46,6 +48,7 @@ class BenefitGrantLifecycleService(
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
     private val clock: Clock,
+    private val businessEvents: org.springframework.context.ApplicationEventPublisher,
     private val closure: BenefitGrantClosureService,
 ) {
     @Transactional
@@ -109,6 +112,7 @@ class BenefitGrantLifecycleService(
         }
         // Flush the new status before counting. The application lock serializes every grant of this application.
         val saved = changes.saveAndFlush(event)
+        businessEvents.publishEvent(M8BusinessFact.BenefitChanged(saved))
         if (action == BenefitGrantChangeAction.FINALIZED) closure.closeIfFinished(application, edition, actor, changedAt, requireNotNull(saved.id))
         application.updatedAt = localTime
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.BENEFIT_GRANT_CHANGE,

@@ -53,7 +53,7 @@ class CoreDashboardService(private val properties: CoreProperties, private val a
         }
         return CoreConnectionStatusResponse(checkedAt, properties.module, properties.enabled,
             properties.machineSecret.isNotBlank(), properties.enabled && properties.publisher.enabled,
-            properties.enabled && properties.consumer.enabled, http, amqp)
+            properties.enabled && properties.consumer.enabled, http, amqp, properties.enabled && properties.business.enabled)
     }
 
     fun dashboard(windowHours: Int): CoreDashboardResponse {

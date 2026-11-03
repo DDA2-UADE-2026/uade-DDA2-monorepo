@@ -17,7 +17,7 @@ data class CoreAmqpCheck(val state: CoreConnectionState, val queue: String,
 @Schema(description = "Comprobación activa de HTTP autenticado y AMQPS. No publica ni consume eventos; no es un monitor continuo.")
 data class CoreConnectionStatusResponse(val checkedAt: Instant, val module: String, val enabled: Boolean,
     val machineSecretConfigured: Boolean, val publisherEnabled: Boolean, val consumerEnabled: Boolean,
-    val http: CoreHttpCheck, val amqp: CoreAmqpCheck)
+    val http: CoreHttpCheck, val amqp: CoreAmqpCheck, val businessEnabled: Boolean = false)
 
 @Schema(description = "Contadores locales acumulados, independientes de la ventana de estadísticas de Core. BROKER_CONFIRMED no acredita procesamiento remoto.")
 data class CoreLocalMetrics(val pending: Long, val inFlight: Long, val brokerConfirmed: Long,

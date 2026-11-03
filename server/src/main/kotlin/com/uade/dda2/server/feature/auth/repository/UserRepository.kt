@@ -25,6 +25,7 @@ interface UserRepository : JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = ["roles", "roles.permissions"])
     fun findByExternalCitizenId(externalCitizenId: String): User?
+    fun findByExternalCitizenIdIgnoreCase(externalCitizenId: String): User?
 
     @EntityGraph(attributePaths = ["roles", "roles.permissions"])
     @Query("select u from User u where u.id = :id")

@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.application.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationResolutionRequest
 import com.uade.dda2.server.feature.application.dto.response.ApplicationResolutionResponse
@@ -33,7 +34,7 @@ class ApplicationResolutionService(
     private val resolutions: ApplicationResolutionRepository,
     private val evaluations: ApplicationEvaluationRepository,
     private val visits: ApplicationVisitRepository,
-    private val documents: ApplicationDocumentRepository,
+    private val documents: ApplicationDocumentStatesService,
     private val documentRequirements: ProgramDocumentRequirementRepository,
     private val requirements: ProgramRequirementRepository,
     private val editions: ProgramEditionRepository,
@@ -44,6 +45,7 @@ class ApplicationResolutionService(
     private val logs: LogService,
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
+    private val businessEvents: org.springframework.context.ApplicationEventPublisher,
 ) {
     @Transactional
     fun create(applicationId: UUID, request: CreateApplicationResolutionRequest): ApplicationResolutionResponse {
@@ -87,6 +89,7 @@ class ApplicationResolutionService(
         application.updatedAt = localTime
         if (data.decision == ApplicationResolutionDecision.APPROVED) edition.currentEnrollment += 1
         val saved = resolutions.saveAndFlush(resolution)
+        businessEvents.publishEvent(M8BusinessFact.ApplicationResolved(saved))
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.APPLICATION_RESOLUTION,
             entityId = requireNotNull(saved.id).toString(), newValues = json.writeValueAsString(saved.toAuditSnapshot()))
         return saved.toResponse()

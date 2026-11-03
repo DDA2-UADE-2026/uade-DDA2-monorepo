@@ -14,6 +14,8 @@ import java.util.UUID
 import java.time.LocalDate
 
 interface ApplicationRepository : JpaRepository<Application, UUID> {
+    @Query("select a.id from Application a where a.user.id = :userId and a.status in :statuses order by a.id")
+    fun findIdsByUserAndStatuses(userId: Long, statuses: Collection<ApplicationStatus>): List<UUID>
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select a from Application a where a.id = :id and a.user.id = :userId")
     fun findByIdAndUserIdForUpdate(@Param("id") id: UUID, @Param("userId") userId: Long): Application?

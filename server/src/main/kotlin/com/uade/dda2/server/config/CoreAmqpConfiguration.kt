@@ -70,7 +70,8 @@ class CoreAmqpConfiguration {
     @Bean fun coreEventClient(api: CoreApiClient, json: JsonMapper) = CoreEventClient(api, json)
     @Bean fun coreDashboardClient(api: CoreApiClient, json: JsonMapper, core: CoreProperties) = CoreDashboardClient(api, json, core)
     @Bean fun coreBrokerClient(factory: CachingConnectionFactory, core: CoreProperties) = CoreBrokerClient(factory, core)
-    @Bean fun coreAmqpPublisher(template: RabbitTemplate, core: CoreProperties) = CoreAmqpPublisher(template, core)
+    @Bean fun coreAmqpPublisher(template: RabbitTemplate, core: CoreProperties, rabbit: RabbitProperties) =
+        CoreAmqpPublisher(template, core, rabbit.username)
 
     @Bean
     @ConditionalOnProperty(prefix = "app.core", name = ["check-on-startup"], havingValue = "true")

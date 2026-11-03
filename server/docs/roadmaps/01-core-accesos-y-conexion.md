@@ -99,7 +99,7 @@ Verificación contra Core, pendiente de configurar el secreto HTTP propio recibi
 - [ ] Obtener un token real y ejecutar las consultas con la identidad de máquina propia.
 - [ ] Contrastar `queueName`, publicaciones y suscripciones vigentes con la configuración local.
 - [ ] Consultar el tipo técnico y el schema público del sobre; registrar dueño y schema efectivos.
-- [ ] Documentar cuáles de los registros técnicos necesarios ya existen. No registrar la lista completa de integraciones de negocio diferidas.
+- [ ] Documentar cuáles de los registros técnicos necesarios ya existen. No registrar la lista completa de integraciones de negocio sin verificar.
 
 Si hace falta registrar el contrato técnico, el orden es tipo propio con schema, publicación propia y suscripción propia. Usar los IDs reales devueltos para cualquier pausa posterior. Ante conflicto de registro concurrente, releer antes de modificar; no asumir que un 409 exige volver a crear todo.
 

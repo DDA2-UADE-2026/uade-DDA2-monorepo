@@ -1,5 +1,7 @@
 package com.uade.dda2.server.feature.program.service
 
+import com.uade.dda2.server.error.ConflictException
+import com.uade.dda2.server.feature.integration.service.M8BusinessPolicy
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
 import com.uade.dda2.server.feature.auth.service.CurrentUserService
 import com.uade.dda2.server.feature.log.entity.LogAction
@@ -26,6 +28,7 @@ import java.util.UUID
 
 @Service
 class AdminProgramDocumentRequirementService(
+    private val policy: M8BusinessPolicy,
     private val editions: ProgramEditionRepository,
     private val requirements: ProgramDocumentRequirementRepository,
     private val applications: ApplicationRepository,
@@ -52,6 +55,8 @@ class AdminProgramDocumentRequirementService(
         if (requirements.existsByProgramEditionIdAndCode(editionId, code)) {
             throw ProgramDocumentRequirementErrors.duplicateCode(code)
         }
+        if (policy.enabled() && requirements.findAllByProgramEditionIdOrderByNameAsc(editionId).size >= 10)
+            throw ConflictException("M8_DOCUMENT_REQUIREMENT_LIMIT", "El contrato de Core admite hasta 10 requisitos documentales por edición.")
         val saved = requirements.save(request.toEntity(edition))
         logService.record(
             user = currentUserService.userReference(),

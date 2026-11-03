@@ -66,6 +66,8 @@ class AdminUserInitializer(
             "roles:view", "roles:create", "roles:edit", "roles:delete",
             "users:view", "users:create", "users:edit", "users:delete",
             "logs:view", "indicators:view", "integrations:core:view",
+            "tickets:management:view", "tickets:management:manage",
+            "revenue:management:view", "revenue:management:manage",
             "activities:management:view", "activities:management:create",
             "activities:management:edit", "activities:management:change-status",
             "activities:own:view", "activities:own:enroll",

@@ -12,6 +12,7 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
 import java.time.Instant
+import java.time.LocalDate
 
 /** Optional local data copy. Neither the snapshot nor matching personal data proves identity. */
 @Entity
@@ -41,6 +42,21 @@ class CitizenSnapshot(
 
     @Column(length = 180)
     var email: String? = null,
+
+    @Column(nullable = false)
+    var blocked: Boolean = false,
+    @Column(name = "block_reason", length = 2000)
+    var blockReason: String? = null,
+    @Column(name = "review_required", nullable = false)
+    var reviewRequired: Boolean = false,
+    @Column(name = "deceased_at")
+    var deceasedAt: LocalDate? = null,
+    @Column(name = "last_registered_at")
+    var lastRegisteredAt: Instant? = null,
+    @Column(name = "last_address_at")
+    var lastAddressAt: Instant? = null,
+    @Column(name = "last_state_at")
+    var lastStateAt: Instant? = null,
 
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Instant = Instant.now(),

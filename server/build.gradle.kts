@@ -31,6 +31,10 @@ dependencies {
     // Core: RabbitMQ con confirms y ack manual; versión administrada por Spring Boot.
     implementation("org.springframework.boot:spring-boot-starter-amqp")
 
+    // AsyncAPI desde tipos/anotaciones AMQP y visor; 2.5.x mantiene la línea Boot 4.0.x.
+    implementation("io.github.springwolf:springwolf-amqp:2.5.0")
+    runtimeOnly("io.github.springwolf:springwolf-ui:2.5.0")
+
     // Validaciones con Jakarta Validation:
     // @NotNull, @NotBlank, @Size, @Positive, etc.
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -324,4 +328,13 @@ tasks.register<Test>("testAppointmentsPostgres") {
         "appointment.test.postgres-password",
         providers.environmentVariable("APPOINTMENT_TEST_POSTGRES_PASSWORD").orElse("").get()
     )
+}
+
+tasks.register<Test>("generateAsyncApiDocs") {
+    group = "documentation"
+    description = "Genera AsyncAPI desde los adaptadores y data classes M8 en build/asyncapi/asyncapi.json, sin Core remoto."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.AsyncApiDocsGenerationTest") }
+    outputs.dir(layout.buildDirectory.dir("asyncapi"))
 }
