@@ -1,6 +1,7 @@
 package com.uade.dda2.server.feature.auth
 
 import com.uade.dda2.server.config.AdminUserInitializer
+import com.uade.dda2.server.config.BootstrapAdminProperties
 import com.uade.dda2.server.feature.auth.entity.Permission
 import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.entity.User
@@ -28,9 +29,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import kotlin.test.assertFailsWith
 
 @SpringBootTest(properties = [
     "app.bootstrap.admin.enabled=true",
+    "app.bootstrap.admin.password=bootstrap-test-password",
     "spring.datasource.url=jdbc:h2:mem:admin-bootstrap;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;NON_KEYWORDS=VALUE",
     "spring.jpa.hibernate.ddl-auto=create-drop",
 ])
@@ -51,8 +54,8 @@ class AdminUserInitializerTest {
     fun `startup creates an active admin with an encoded password and repeated runs do nothing`() {
         val admin = assertNotNull(users.findByUsernameIgnoreCase("admin"))
         assertTrue(admin.active)
-        assertTrue(encoder.matches("admin123", admin.passwordHash))
-        assertNotEquals("admin123", admin.passwordHash)
+        assertTrue(encoder.matches("bootstrap-test-password", admin.passwordHash))
+        assertNotEquals("bootstrap-test-password", admin.passwordHash)
         assertEquals(setOf("ADMIN", "CIUDADANO"), admin.roles.map { it.name }.toSet())
         assertTrue(admin.roles.first { it.name == "CIUDADANO" }.permissions.any { it.name == "activities:own:view" })
         assertTrue(admin.roles.first { it.name == "ADMIN" }.permissions.any { it.name == "users:view" })
@@ -67,6 +70,17 @@ class AdminUserInitializerTest {
         assertEquals(1L, users.count())
         assertEquals(2L, roles.count())
         assertEquals(originalHash, users.findByUsernameIgnoreCase("admin")!!.passwordHash)
+    }
+
+    @Test
+    fun `new admin requires an explicit strong bootstrap password`() {
+        users.deleteAll()
+        users.flush()
+        val invalidInitializer = AdminUserInitializer(users, roles, permissions, encoder,
+            BootstrapAdminProperties(password = "short"))
+
+        assertFailsWith<IllegalArgumentException> { invalidInitializer.run(DefaultApplicationArguments()) }
+        assertEquals(0L, users.count())
     }
 
     @Test
@@ -119,7 +133,7 @@ class AdminUserInitializerTest {
         val adminRole = users.findByUsernameIgnoreCase("admin")!!.roles.first { it.name == "ADMIN" }
         assertEquals("ADMIN", adminRole.name)
         assertTrue(adminRole.permissions.map { it.name }.containsAll(listOf("users:view", "roles:view")))
-        assertTrue(encoder.matches("admin123", users.findByUsernameIgnoreCase("admin")!!.passwordHash))
+        assertTrue(encoder.matches("bootstrap-test-password", users.findByUsernameIgnoreCase("admin")!!.passwordHash))
     }
 
     @Test
@@ -146,7 +160,7 @@ class AdminUserInitializerTest {
     @Test
     fun `admin can authenticate as citizen and switch back without sharing permissions`() {
         val loginJson = mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
-            .content("""{"username":"admin","password":"admin123"}"""))
+            .content("""{"username":"admin","password":"bootstrap-test-password"}"""))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.requiresRoleSelection").value(true))
             .andExpect(jsonPath("$.user.roles").isArray)
