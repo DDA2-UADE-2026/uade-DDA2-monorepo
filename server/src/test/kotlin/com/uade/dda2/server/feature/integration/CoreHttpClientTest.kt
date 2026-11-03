@@ -122,6 +122,22 @@ class CoreHttpClientTest {
         assertEquals(1, requests.get())
     }
 
+    @Test fun `dashboard acepta la lista de motivos de Core vacia o con resultados`() {
+        tokenEndpoint(AtomicInteger())
+        val reasons = listOf("[]", """[{"reasonCode":"SCHEMA_VIOLATION","total":2}]""")
+        val call = AtomicInteger()
+        server.createContext("/api/v1/dashboard") { request ->
+            val body = CoreDashboardFixtures.json().replace(
+                """"byReason":{}""",
+                """"byReason":${reasons[call.getAndIncrement()]}""",
+            )
+            response(request, 200, body)
+        }
+        val client = CoreDashboardClient(CoreApiClient(transport, tokens), json, properties)
+        assertEquals(emptyMap(), client.dashboard(24).deadLetters.byReason)
+        assertEquals(mapOf("SCHEMA_VIOLATION" to 2L), client.dashboard(24).deadLetters.byReason)
+    }
+
     @Test fun `dashboard rechaza una respuesta perteneciente a otro modulo`() {
         tokenEndpoint(AtomicInteger())
         server.createContext("/api/v1/dashboard") { response(it, 200, CoreDashboardFixtures.json(module = "ciudadanos")) }
