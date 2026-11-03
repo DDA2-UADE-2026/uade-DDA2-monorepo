@@ -6,18 +6,25 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.UUID
 
-enum class CoreConnectionState { DISABLED, NOT_CONFIGURED, UP, DOWN }
+enum class CoreConnectionState { DISABLED, NOT_CONFIGURED, UP, DEGRADED, DOWN }
 
 data class CoreHttpCheck(val state: CoreConnectionState, val upstreamStatus: Int? = null,
+    val code: String? = null, val traceId: String? = null)
+
+@Schema(description = "Readiness pública de Core según el cuerpo de GET /health/ready. Core puede responder HTTP 200 con " +
+    "status degraded o down; state lo refleja. checks resume cada dependencia remota (database, broker). " +
+    "No acredita que el worker de Core esté consumiendo.")
+data class CoreReadinessCheck(val state: CoreConnectionState, val status: String? = null,
+    val checks: Map<String, String> = emptyMap(), val upstreamStatus: Int? = null,
     val code: String? = null, val traceId: String? = null)
 
 data class CoreAmqpCheck(val state: CoreConnectionState, val queue: String,
     val pendingMessages: Int? = null, val activeConsumers: Int? = null, val code: String? = null)
 
-@Schema(description = "Comprobación activa de HTTP autenticado y AMQPS. No publica ni consume eventos; no es un monitor continuo.")
+@Schema(description = "Comprobación activa de la readiness de Core, HTTP autenticado y AMQPS. No publica ni consume eventos; no es un monitor continuo.")
 data class CoreConnectionStatusResponse(val checkedAt: Instant, val module: String, val enabled: Boolean,
     val machineSecretConfigured: Boolean, val publisherEnabled: Boolean, val consumerEnabled: Boolean,
-    val http: CoreHttpCheck, val amqp: CoreAmqpCheck)
+    val readiness: CoreReadinessCheck, val http: CoreHttpCheck, val amqp: CoreAmqpCheck)
 
 @Schema(description = "Contadores locales acumulados, independientes de la ventana de estadísticas de Core. BROKER_CONFIRMED no acredita procesamiento remoto.")
 data class CoreLocalMetrics(val pending: Long, val inFlight: Long, val brokerConfirmed: Long,

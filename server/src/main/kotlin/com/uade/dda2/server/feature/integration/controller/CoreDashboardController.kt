@@ -54,8 +54,9 @@ class CoreDashboardController(
     @GetMapping("/status")
     @Operation(
         operationId = "getCoreConnectionStatus",
-        summary = "Comprobar acceso HTTP y AMQPS",
-        description = "Realiza GET /dashboard autenticado y una consulta pasiva de la cola propia. " +
+        summary = "Comprobar readiness de Core, acceso HTTP y AMQPS",
+        description = "Consulta GET /health/ready de Core (público, se evalúa el cuerpo: puede ser degraded con HTTP 200), " +
+            "realiza GET /dashboard autenticado y una consulta pasiva de la cola propia. " +
             "Devuelve el resultado de cada transporte, incluso ante fallo, con código y HTTP remoto cuando existen. " +
             "No publica, consume ni purga mensajes. Una respuesta local 200 no significa que ambos transportes estén UP. " +
             "No verifica el worker ni el recorrido de eventos.",

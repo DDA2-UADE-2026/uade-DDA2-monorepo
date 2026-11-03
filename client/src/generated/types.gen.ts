@@ -2780,6 +2780,220 @@ export type MunicipalCenterListResponse = {
     totalPages?: number;
 };
 
+export type CoreSubscription = {
+    id?: string;
+    moduleName?: string;
+    eventType?: string;
+    queueName?: string;
+    maxAttempts?: number;
+    active?: boolean;
+};
+
+export type CoreAmqpCheck = {
+    state?: 'DISABLED' | 'NOT_CONFIGURED' | 'UP' | 'DEGRADED' | 'DOWN';
+    queue?: string;
+    pendingMessages?: number;
+    activeConsumers?: number;
+    code?: string;
+};
+
+/**
+ * Comprobación activa de la readiness de Core, HTTP autenticado y AMQPS. No publica ni consume eventos; no es un monitor continuo.
+ */
+export type CoreConnectionStatusResponse = {
+    checkedAt?: string;
+    module?: string;
+    enabled?: boolean;
+    machineSecretConfigured?: boolean;
+    publisherEnabled?: boolean;
+    consumerEnabled?: boolean;
+    readiness?: CoreReadinessCheck;
+    http?: CoreHttpCheck;
+    amqp?: CoreAmqpCheck;
+};
+
+export type CoreHttpCheck = {
+    state?: 'DISABLED' | 'NOT_CONFIGURED' | 'UP' | 'DEGRADED' | 'DOWN';
+    upstreamStatus?: number;
+    code?: string;
+    traceId?: string;
+};
+
+/**
+ * Readiness pública de Core según el cuerpo de GET /health/ready. Core puede responder HTTP 200 con status degraded o down; state lo refleja. checks resume cada dependencia remota (database, broker). No acredita que el worker de Core esté consumiendo.
+ */
+export type CoreReadinessCheck = {
+    state?: 'DISABLED' | 'NOT_CONFIGURED' | 'UP' | 'DEGRADED' | 'DOWN';
+    status?: string;
+    checks?: {
+        [key: string]: string;
+    };
+    upstreamStatus?: number;
+    code?: string;
+    traceId?: string;
+};
+
+export type CorePublication = {
+    id?: string;
+    moduleName?: string;
+    eventType?: string;
+    active?: boolean;
+};
+
+/**
+ * Contadores locales acumulados, independientes de la ventana de estadísticas de Core. BROKER_CONFIRMED no acredita procesamiento remoto.
+ */
+export type CoreLocalMetrics = {
+    pending?: number;
+    inFlight?: number;
+    brokerConfirmed?: number;
+    inboxProcessed?: number;
+    oldestUnconfirmedAt?: string;
+};
+
+/**
+ * Página de Core: page comienza en 1. El listado no incluye el payload del evento.
+ */
+export type CoreEventPage = {
+    items?: Array<CoreEventSummary>;
+    total?: number;
+    page?: number;
+    size?: number;
+    pages?: number;
+};
+
+export type CoreEventSummary = {
+    id?: string;
+    eventId?: string;
+    eventType?: string;
+    eventVersion?: string;
+    sourceModule?: string;
+    occurredAt?: string;
+    receivedAt?: string;
+    correlationId?: string;
+    status?: string;
+    rejectionCode?: string;
+    ingestionChannel?: string;
+    processingMs?: number;
+    deliveryCount?: number;
+    deliveredCount?: number;
+};
+
+export type CoreDelivery = {
+    targetModule?: string;
+    queueName?: string;
+    status?: string;
+    attempts?: number;
+    maxAttempts?: number;
+};
+
+export type CoreEventDetail = {
+    eventId?: string;
+    eventType?: string;
+    status?: string;
+    ingestionChannel?: string;
+    envelope?: JsonNode;
+    deliveries?: Array<CoreDelivery>;
+};
+
+export type JsonNode = {
+    array?: boolean;
+    empty?: boolean;
+    null?: boolean;
+    float?: boolean;
+    number?: boolean;
+    missingNode?: boolean;
+    object?: boolean;
+    container?: boolean;
+    valueNode?: boolean;
+    pojo?: boolean;
+    short?: boolean;
+    int?: boolean;
+    nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING';
+    string?: boolean;
+    integralNumber?: boolean;
+    double?: boolean;
+    /**
+     * @deprecated
+     */
+    textual?: boolean;
+    long?: boolean;
+    bigDecimal?: boolean;
+    bigInteger?: boolean;
+    binary?: boolean;
+    boolean?: boolean;
+    floatingPointNumber?: boolean;
+    embeddedValue?: boolean;
+};
+
+export type CoreDashboardResponse = {
+    checkedAt?: string;
+    local?: CoreLocalMetrics;
+    core?: CoreModuleDashboard;
+};
+
+export type CoreDeadLetterMetrics = {
+    open?: number;
+    byReason?: {
+        [key: string]: number;
+    };
+};
+
+export type CoreHourlyVolume = {
+    hour?: string;
+    total?: number;
+    rejected?: number;
+};
+
+export type CoreModuleDashboard = {
+    module?: string;
+    windowHours?: number;
+    generatedAt?: string;
+    published?: CorePublishedMetrics;
+    received?: CoreReceivedMetrics;
+    deadLetters?: CoreDeadLetterMetrics;
+    subscriptions?: CoreSubscriptionMetrics;
+    publications?: CorePublicationMetrics;
+    volumeByHour?: Array<CoreHourlyVolume>;
+    processing?: CoreProcessingMetrics;
+};
+
+export type CoreProcessingMetrics = {
+    avgMs?: number;
+    maxMs?: number;
+};
+
+export type CorePublicationMetrics = {
+    declared?: Array<string>;
+};
+
+export type CorePublishedMetrics = {
+    total?: number;
+    inWindow?: number;
+    topTypes?: Array<CoreTypeVolume>;
+};
+
+export type CoreReceivedMetrics = {
+    byStatus?: {
+        [key: string]: number;
+    };
+    total?: number;
+    delivered?: number;
+    pendingRetry?: number;
+    dead?: number;
+};
+
+export type CoreSubscriptionMetrics = {
+    total?: number;
+    active?: number;
+    eventTypes?: Array<string>;
+};
+
+export type CoreTypeVolume = {
+    eventType?: string;
+    total?: number;
+};
+
 export type ActivityIndicators = {
     enrollments?: number;
     present?: number;
@@ -11307,6 +11521,340 @@ export type ListProgramEditionOptionsResponses = {
 };
 
 export type ListProgramEditionOptionsResponse = ListProgramEditionOptionsResponses[keyof ListProgramEditionOptionsResponses];
+
+export type ListCoreSubscriptionsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/integrations/core/subscriptions';
+};
+
+export type ListCoreSubscriptionsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type ListCoreSubscriptionsError = ListCoreSubscriptionsErrors[keyof ListCoreSubscriptionsErrors];
+
+export type ListCoreSubscriptionsResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: Array<CoreSubscription>;
+};
+
+export type ListCoreSubscriptionsResponse = ListCoreSubscriptionsResponses[keyof ListCoreSubscriptionsResponses];
+
+export type GetCoreConnectionStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/integrations/core/status';
+};
+
+export type GetCoreConnectionStatusErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type GetCoreConnectionStatusError = GetCoreConnectionStatusErrors[keyof GetCoreConnectionStatusErrors];
+
+export type GetCoreConnectionStatusResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: CoreConnectionStatusResponse;
+};
+
+export type GetCoreConnectionStatusResponse = GetCoreConnectionStatusResponses[keyof GetCoreConnectionStatusResponses];
+
+export type ListCorePublicationsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/integrations/core/publications';
+};
+
+export type ListCorePublicationsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type ListCorePublicationsError = ListCorePublicationsErrors[keyof ListCorePublicationsErrors];
+
+export type ListCorePublicationsResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: Array<CorePublication>;
+};
+
+export type ListCorePublicationsResponse = ListCorePublicationsResponses[keyof ListCorePublicationsResponses];
+
+export type GetCoreLocalMetricsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/admin/integrations/core/metrics';
+};
+
+export type GetCoreLocalMetricsErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type GetCoreLocalMetricsError = GetCoreLocalMetricsErrors[keyof GetCoreLocalMetricsErrors];
+
+export type GetCoreLocalMetricsResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: CoreLocalMetrics;
+};
+
+export type GetCoreLocalMetricsResponse = GetCoreLocalMetricsResponses[keyof GetCoreLocalMetricsResponses];
+
+export type ListCoreEventsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página, comenzando en uno.
+         */
+        page?: number;
+        /**
+         * Cantidad de elementos por página, entre 1 y 200.
+         */
+        size?: number;
+        /**
+         * Nombre exacto del tipo de evento, de 1 a 120 caracteres.
+         */
+        eventType?: string;
+        /**
+         * Estado de ingesta y ruteo del evento en Core.
+         */
+        status?: 'ROUTED' | 'NO_SUBSCRIBERS' | 'REJECTED' | 'DUPLICATE';
+        /**
+         * UUID de correlación del trámite.
+         */
+        correlationId?: string;
+    };
+    url: '/api/admin/integrations/core/events';
+};
+
+export type ListCoreEventsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type ListCoreEventsError = ListCoreEventsErrors[keyof ListCoreEventsErrors];
+
+export type ListCoreEventsResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: CoreEventPage;
+};
+
+export type ListCoreEventsResponse = ListCoreEventsResponses[keyof ListCoreEventsResponses];
+
+export type GetCoreEventData = {
+    body?: never;
+    path: {
+        /**
+         * UUID lógico del evento enviado o recibido.
+         */
+        eventId: string;
+    };
+    query?: never;
+    url: '/api/admin/integrations/core/events/{eventId}';
+};
+
+export type GetCoreEventErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type GetCoreEventError = GetCoreEventErrors[keyof GetCoreEventErrors];
+
+export type GetCoreEventResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: CoreEventDetail;
+};
+
+export type GetCoreEventResponse = GetCoreEventResponses[keyof GetCoreEventResponses];
+
+export type GetCoreDashboardData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Ventana remota en horas, de 1 a 720.
+         */
+        windowHours?: number;
+    };
+    url: '/api/admin/integrations/core/dashboard';
+};
+
+export type GetCoreDashboardErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Core respondió con un error HTTP o un contrato inesperado.
+     */
+    502: ErrorResponse;
+    /**
+     * Integración desactivada, secreto HTTP ausente o Core inaccesible.
+     */
+    503: ErrorResponse;
+};
+
+export type GetCoreDashboardError = GetCoreDashboardErrors[keyof GetCoreDashboardErrors];
+
+export type GetCoreDashboardResponses = {
+    /**
+     * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+     */
+    200: CoreDashboardResponse;
+};
+
+export type GetCoreDashboardResponse = GetCoreDashboardResponses[keyof GetCoreDashboardResponses];
 
 export type GetIndicatorsData = {
     body?: never;

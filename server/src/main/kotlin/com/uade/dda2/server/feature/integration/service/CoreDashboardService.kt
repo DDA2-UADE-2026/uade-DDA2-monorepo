@@ -7,6 +7,7 @@ import com.uade.dda2.server.error.NotFoundException
 import com.uade.dda2.server.feature.integration.client.CoreBrokerClient
 import com.uade.dda2.server.feature.integration.client.CoreDashboardClient
 import com.uade.dda2.server.feature.integration.client.CoreEventClient
+import com.uade.dda2.server.feature.integration.client.CoreHttpTransport
 import com.uade.dda2.server.feature.integration.client.CoreRegistryClient
 import com.uade.dda2.server.feature.integration.dto.*
 import com.uade.dda2.server.feature.integration.error.CoreHttpException
@@ -15,19 +16,35 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.ObjectProvider
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import tools.jackson.databind.JsonNode
 import java.time.Clock
 import java.util.UUID
+
+private val TRACE_ID = Regex("[A-Za-z0-9_.:-]{1,100}")
+private val STATUS_TOKEN = Regex("[a-z0-9_.-]{1,40}")
 
 @Service
 class CoreDashboardService(private val properties: CoreProperties, private val access: CoreDashboardAccess,
     private val local: CoreLocalMetricsService, private val dashboards: ObjectProvider<CoreDashboardClient>,
     private val registries: ObjectProvider<CoreRegistryClient>, private val events: ObjectProvider<CoreEventClient>,
-    private val brokers: ObjectProvider<CoreBrokerClient>, private val clock: Clock) {
+    private val brokers: ObjectProvider<CoreBrokerClient>, private val transports: ObjectProvider<CoreHttpTransport>,
+    private val clock: Clock) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     fun status(): CoreConnectionStatusResponse {
         access.check()
         val checkedAt = clock.instant()
+        // /health/ready es público: no depende del secret de máquina.
+        val readiness = if (!properties.enabled) CoreReadinessCheck(CoreConnectionState.DISABLED)
+        else try {
+            readiness(client(transports).readiness())
+        } catch (exception: Exception) {
+            val code = (exception as? CoreIntegrationException)?.code ?: "CORE_READINESS_CHECK_FAILED"
+            val failure = exception as? CoreHttpException
+            logger.warn("CORE_READINESS_FAILED module={} upstreamStatus={} code={}", properties.module, failure?.status, code)
+            CoreReadinessCheck(CoreConnectionState.DOWN, upstreamStatus = failure?.status, code = code,
+                traceId = failure?.traceId?.takeIf { it.matches(TRACE_ID) })
+        }
         val http = when {
             !properties.enabled -> CoreHttpCheck(CoreConnectionState.DISABLED)
             properties.machineSecret.isBlank() -> CoreHttpCheck(CoreConnectionState.NOT_CONFIGURED, code = "CORE_HTTP_SECRET_MISSING")
@@ -40,7 +57,7 @@ class CoreDashboardService(private val properties: CoreProperties, private val a
                 val failure = exception as? CoreHttpException
                 logger.warn("CORE_HTTP_CONNECTION_FAILED module={} upstreamStatus={} code={}", properties.module, failure?.status, code)
                 CoreHttpCheck(CoreConnectionState.DOWN, failure?.status, code,
-                    failure?.traceId?.takeIf { it.matches(Regex("[A-Za-z0-9_.:-]{1,100}")) })
+                    failure?.traceId?.takeIf { it.matches(TRACE_ID) })
             }
         }
         val amqp = if (!properties.enabled) CoreAmqpCheck(CoreConnectionState.DISABLED, properties.queue)
@@ -53,7 +70,31 @@ class CoreDashboardService(private val properties: CoreProperties, private val a
         }
         return CoreConnectionStatusResponse(checkedAt, properties.module, properties.enabled,
             properties.machineSecret.isNotBlank(), properties.enabled && properties.publisher.enabled,
-            properties.enabled && properties.consumer.enabled, http, amqp)
+            properties.enabled && properties.consumer.enabled, readiness, http, amqp)
+    }
+
+    // Core puede responder 200 con status degraded/down: el estado sale del cuerpo, no del código HTTP.
+    private fun readiness(body: JsonNode): CoreReadinessCheck {
+        val status = statusOf(body)
+        val checks = body.get("checks")?.takeIf { it.isObject }?.properties()
+            ?.mapNotNull { (name, check) -> statusOf(check)?.let { name to it } }
+            ?.filter { (name, _) -> name.matches(STATUS_TOKEN) }
+            ?.take(10)?.toMap().orEmpty()
+        val state = when (status) {
+            "up", "ok", "ready" -> CoreConnectionState.UP
+            "degraded" -> CoreConnectionState.DEGRADED
+            else -> CoreConnectionState.DOWN
+        }
+        if (state != CoreConnectionState.UP)
+            logger.warn("CORE_READINESS_NOT_UP module={} status={} checks={}", properties.module, status, checks)
+        return CoreReadinessCheck(state, status, checks, upstreamStatus = 200,
+            code = if (status == null) "CORE_INVALID_READINESS_RESPONSE" else null)
+    }
+
+    // Cada check puede llegar como string ("up") o como objeto ({"status":"up"}).
+    private fun statusOf(node: JsonNode?): String? {
+        val value = if (node?.isString == true) node else node?.get("status")
+        return value?.takeIf { it.isString }?.asString()?.lowercase()?.takeIf { it.matches(STATUS_TOKEN) }
     }
 
     fun dashboard(windowHours: Int): CoreDashboardResponse {

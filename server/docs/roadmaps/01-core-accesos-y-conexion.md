@@ -110,7 +110,7 @@ Los POST de registro reutilizan entradas existentes, pero pueden reactivarlas y 
 - [x] Probar, desde el backend desplegado, DNS, TCP al 5671, TLS y autenticación contra el vhost; evidencia E2.
 - [x] Comprobar pasivamente la existencia de la cola propia, sin crear recursos ni purgarla; evidencia E2.
 - [x] Usar un canal diagnóstico separado para la declaración pasiva, implementado en `CoreBrokerClient` y comprobado localmente. `GET /topology` solo muestra el plan del registro; si falta la cola, Core debe aplicar la topología.
-- [ ] Consultar `/health/ready` leyendo `status` y los checks del cuerpo, incluso cuando HTTP sea 200. Registrar aparte la comprobación de actividad del worker.
+- [ ] Consultar `/health/ready` leyendo `status` y los checks del cuerpo, incluso cuando HTTP sea 200. Implementado como `readiness` en `/status`; falta la evidencia desde el despliegue. Registrar aparte la comprobación de actividad del worker.
 - [x] Implementar códigos de diagnóstico para red, TLS, autenticación, permisos y recursos ausentes; no todos esos fallos se provocaron contra Core.
 - [x] Verificar localmente el arranque deshabilitado y que un fallo del chequeo se registra sin detener el backend.
 - [ ] Probar una indisponibilidad real controlada sin afectar operaciones locales independientes.
