@@ -33,6 +33,7 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 
 Recursos principales:
 
+- [Tests locales, tiempos y PostgreSQL desechable](technical/testing.md)
 - [Roadmaps de integración con Core](roadmaps/README.md)
 - [Implementación técnica y operación de Core](technical/core-integration.md)
 - [Dashboard y prueba HTTP de Core](technical/core-dashboard.md)

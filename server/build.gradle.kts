@@ -201,6 +201,8 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Test content stays UTF-8 even when the Windows launcher needs a native-encoded classpath file.
+    defaultCharacterEncoding = "UTF-8"
     // Bound retained Hibernate contexts across the full flow suite instead of exhausting the default test heap.
     maxHeapSize = "1g"
     systemProperty("spring.test.context.cache.maxSize", "8")
