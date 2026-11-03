@@ -130,6 +130,18 @@ Para validar la configuración sin imprimir credenciales, ejecutar `docker compo
 
 Si el arranque falla, revisar `docker compose ps -a` y `docker compose logs local-init db rabbitmq core-mock server client`. Errores de descarga requieren conectividad; errores de bind requieren liberar los puertos. Un contenedor `unhealthy` no se considera G1 cumplido.
 
+## Integración continua
+
+El workflow principal `CI` corre en pull requests y pushes a `develop` y `main`:
+
+- Cambios en `client/`: `npm ci`, lint, tests de Vitest (`npm run test:run`) y build con TypeScript/Vite.
+- Cambios en `server/`: `./gradlew build --no-daemon`, que compila, ejecuta la suite `test` de JUnit y genera los artefactos.
+- Si cambian ambas aplicaciones, los jobs corren en paralelo. Si cambia `.github/workflows/ci.yml`, se ejecutan ambos. Los cambios solo de documentación omiten las suites.
+
+Un fallo de tests hace fallar `CI`; la publicación de imágenes existente requiere que ese workflow termine correctamente. Los tests frontend ya no se duplican en un workflow separado.
+
+La suite habitual del backend usa H2 y adaptadores locales. Las tareas opt-in de PostgreSQL y `testCoreConnectivity` contra Core remoto no se ejecutan con `build`; requieren preparación y autorización propias. Esta configuración no agrega pruebas E2E ni acredita los demás controles de G3.
+
 ## Stack
 
 - **Frontend**: Vite, React 19, TypeScript, TanStack Router/Query, Tailwind CSS, shadcn/ui, Tabler Icons, HeyAPI (cliente OpenAPI)
