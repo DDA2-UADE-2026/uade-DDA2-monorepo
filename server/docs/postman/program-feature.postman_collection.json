@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "aeb11dec-9d53-47f1-9ce0-8fe4586bc5f5",
     "name": "DDA2 - Program Feature",
-    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles. Incluye resolución de solicitudes, otorgamiento y ciclo de vida de beneficios, planes de intervención y seguimientos. Preparación y permisos: docs/postman/README.md. Las decisiones alternativas se ejecutan individualmente. Incluye la consulta general de beneficios propios del ciudadano, con estado, vigencia, descripción y monto. Incluye planes propios con progreso calculado y publicación, corrección o retiro de resúmenes ciudadanos de seguimiento.",
+    "description": "Colección del backend para autenticación con rol activo, usuarios/roles, programas, actividades comunitarias, solicitudes propias y asistidas, catálogo documental, documentos protegidos y visitas o entrevistas sociales. Incluye la consulta ciudadana de actuaciones propias sin observaciones ni conclusiones sensibles. Incluye resolución de solicitudes, otorgamiento y ciclo de vida de beneficios, planes de intervención y seguimientos. Preparación y permisos: docs/postman/README.md. Las decisiones alternativas se ejecutan individualmente. Incluye la consulta general de beneficios propios del ciudadano, con estado, vigencia, descripción y monto. Incluye planes propios con progreso calculado y publicación, corrección o retiro de resúmenes ciudadanos de seguimiento. Incluye consultas HTTP de Core y monitoreo administrativo de la integración.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "37274374"
   },
@@ -15366,6 +15366,510 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Integración HTTP con Core",
+      "description": "Consultas directas a Core con token de máquina y consultas administrativas a través del backend de Desarrollo Social.",
+      "item": [
+        {
+          "name": "API de Core",
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{coreAccessToken}}",
+                "type": "string"
+              }
+            ]
+          },
+          "item": [
+            {
+              "name": "Obtener token de máquina",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/auth/module-token",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "module-token"
+                  ]
+                },
+                "description": "Seleccioná un entorno con coreMachineSecret como valor local. La respuesta guarda coreAccessToken en ese entorno. Repetí esta consulta cuando venza el token.",
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"module\": \"{{coreModule}}\",\n  \"secret\": \"{{coreMachineSecret}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.environment.unset('coreAccessToken');",
+                      "const secret = pm.environment.get('coreMachineSecret');",
+                      "if (typeof secret !== 'string' || !secret.trim()) {",
+                      "  console.warn('Configurá coreMachineSecret en el entorno activo de Postman.');",
+                      "  pm.execution.skipRequest();",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('Core devuelve un token de máquina', function () {",
+                      "  pm.response.to.have.status(200);",
+                      "  const data = pm.response.json();",
+                      "  pm.expect(data.accessToken).to.be.a('string').and.not.be.empty;",
+                      "  pm.environment.set('coreAccessToken', data.accessToken);",
+                      "});"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Dashboard del módulo",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/dashboard?windowHours={{coreWindowHours}}",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard"
+                  ],
+                  "query": [
+                    {
+                      "key": "windowHours",
+                      "value": "{{coreWindowHours}}"
+                    }
+                  ]
+                },
+                "description": "Métricas de Core para el módulo autenticado. Ventana de 1 a 720 horas."
+              },
+              "response": []
+            },
+            {
+              "name": "Publicaciones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/publications",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "publications"
+                  ]
+                },
+                "description": "Publicaciones visibles en Core. El backend filtra este resultado por su módulo."
+              },
+              "response": []
+            },
+            {
+              "name": "Suscripciones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/subscriptions",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "subscriptions"
+                  ]
+                },
+                "description": "Suscripciones visibles en Core. El backend filtra este resultado por su módulo."
+              },
+              "response": []
+            },
+            {
+              "name": "Eventos",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/events?page={{coreEventPage}}&size={{coreEventPageSize}}",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "{{coreEventPage}}"
+                    },
+                    {
+                      "key": "size",
+                      "value": "{{coreEventPageSize}}"
+                    },
+                    {
+                      "key": "eventType",
+                      "value": "{{coreEventType}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "{{coreEventStatus}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "correlationId",
+                      "value": "{{coreCorrelationId}}",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Eventos visibles para el módulo. Página desde 1. Activá los filtros opcionales según la consulta."
+              },
+              "response": []
+            },
+            {
+              "name": "Detalle de un evento",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/events/{{coreEventId}}",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "events",
+                    "{{coreEventId}}"
+                  ]
+                },
+                "description": "Completá coreEventId con el eventId del listado."
+              },
+              "response": []
+            },
+            {
+              "name": "Mapa de tipos de evento",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/event-types/map",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "event-types",
+                    "map"
+                  ]
+                },
+                "description": "Consulta el mapa de tipos, publicaciones y suscripciones de Core."
+              },
+              "response": []
+            },
+            {
+              "name": "Detalle de un tipo de evento",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/event-types/{{coreEventType}}",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "event-types",
+                    "{{coreEventType}}"
+                  ]
+                },
+                "description": "Consulta el schema registrado para el tipo indicado."
+              },
+              "response": []
+            },
+            {
+              "name": "Schema del envelope",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/events-meta/envelope-schema",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "events-meta",
+                    "envelope-schema"
+                  ]
+                },
+                "description": "Consulta el formato común del sobre de eventos."
+              },
+              "response": []
+            },
+            {
+              "name": "Entregas",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/deliveries",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "deliveries"
+                  ]
+                },
+                "description": "Consulta entregas visibles para el módulo."
+              },
+              "response": []
+            },
+            {
+              "name": "Dead letters",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{coreBaseUrl}}/dlq",
+                  "host": [
+                    "{{coreBaseUrl}}"
+                  ],
+                  "path": [
+                    "dlq"
+                  ]
+                },
+                "description": "Consulta registros de la DLQ por HTTP."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "API administrativa de Desarrollo Social",
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "{{adminAccessToken}}",
+                "type": "string"
+              }
+            ]
+          },
+          "description": "Usa un JWT local con integrations:core:view en el rol activo.",
+          "item": [
+            {
+              "name": "Estado de la integración",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/status",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "status"
+                  ]
+                },
+                "description": "Revisá http.state y amqp.state para conocer el resultado de cada comprobación."
+              },
+              "response": []
+            },
+            {
+              "name": "Dashboard y contadores locales",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/dashboard?windowHours={{coreWindowHours}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "dashboard"
+                  ],
+                  "query": [
+                    {
+                      "key": "windowHours",
+                      "value": "{{coreWindowHours}}"
+                    }
+                  ]
+                },
+                "description": "Combina el dashboard remoto con las métricas locales de inbox y outbox."
+              },
+              "response": []
+            },
+            {
+              "name": "Métricas locales",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/metrics",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "metrics"
+                  ]
+                },
+                "description": "Consulta los contadores de inbox y outbox del backend."
+              },
+              "response": []
+            },
+            {
+              "name": "Publicaciones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/publications",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "publications"
+                  ]
+                },
+                "description": "Publicaciones visibles en Core. El backend filtra este resultado por su módulo."
+              },
+              "response": []
+            },
+            {
+              "name": "Suscripciones",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/subscriptions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "subscriptions"
+                  ]
+                },
+                "description": "Suscripciones visibles en Core. El backend filtra este resultado por su módulo."
+              },
+              "response": []
+            },
+            {
+              "name": "Eventos",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/events?page={{coreEventPage}}&size={{coreEventPageSize}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "{{coreEventPage}}"
+                    },
+                    {
+                      "key": "size",
+                      "value": "{{coreEventPageSize}}"
+                    },
+                    {
+                      "key": "eventType",
+                      "value": "{{coreEventType}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "{{coreEventStatus}}",
+                      "disabled": true
+                    },
+                    {
+                      "key": "correlationId",
+                      "value": "{{coreCorrelationId}}",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Eventos visibles para el módulo. Página desde 1. Activá los filtros opcionales según la consulta."
+              },
+              "response": []
+            },
+            {
+              "name": "Detalle de un evento",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/integrations/core/events/{{coreEventId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "integrations",
+                    "core",
+                    "events",
+                    "{{coreEventId}}"
+                  ]
+                },
+                "description": "Completá coreEventId con el eventId del listado."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
     }
   ],
   "auth": {
@@ -15854,6 +16358,60 @@
       "value": "Se acordó continuar el acompañamiento.",
       "type": "string",
       "description": "Resumen específico para el ciudadano, de 1 a 2000 caracteres. No copiar automáticamente notas ni resultados profesionales."
+    },
+    {
+      "key": "coreBaseUrl",
+      "value": "https://core-uade-2026.duckdns.org/api/v1",
+      "type": "string",
+      "description": "URL base de la API de Core, incluido /api/v1."
+    },
+    {
+      "key": "coreModule",
+      "value": "desarrollo-social",
+      "type": "string",
+      "description": "Identificador de módulo para el token de máquina."
+    },
+    {
+      "key": "coreWindowHours",
+      "value": "24",
+      "type": "string",
+      "description": "Ventana del dashboard en horas, de 1 a 720."
+    },
+    {
+      "key": "coreEventPage",
+      "value": "1",
+      "type": "string",
+      "description": "Página de eventos, desde 1."
+    },
+    {
+      "key": "coreEventPageSize",
+      "value": "25",
+      "type": "string",
+      "description": "Cantidad de eventos por página."
+    },
+    {
+      "key": "coreEventId",
+      "value": "",
+      "type": "string",
+      "description": "UUID eventId del evento a consultar."
+    },
+    {
+      "key": "coreEventType",
+      "value": "socialBenefitUpdated",
+      "type": "string",
+      "description": "Nombre del tipo de evento. También se usa como filtro opcional."
+    },
+    {
+      "key": "coreEventStatus",
+      "value": "",
+      "type": "string",
+      "description": "Filtro opcional: ROUTED, NO_SUBSCRIBERS, REJECTED o DUPLICATE."
+    },
+    {
+      "key": "coreCorrelationId",
+      "value": "",
+      "type": "string",
+      "description": "UUID de correlación para el filtro opcional."
     }
   ]
 }
