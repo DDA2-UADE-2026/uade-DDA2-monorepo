@@ -1,0 +1,33 @@
+initscript {
+    repositories { gradlePluginPortal(); mavenCentral() }
+    dependencies { classpath 'info.solidsoft.pitest:info.solidsoft.pitest.gradle.plugin:1.19.0' }
+}
+
+// Opt-in mutation testing. Does not change the application's runtime dependencies.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    p.pluginManager.apply(info.solidsoft.gradle.pitest.PitestPlugin)
+    // Spring Boot resolves Jupiter/Platform 6.0.3. The plugin's default launcher
+    // 1.10.1 cannot discover those tests. Keep this alignment opt-in as well.
+    p.dependencies.add('testRuntimeOnly', 'org.junit.platform:junit-platform-launcher:6.0.3')
+    p.extensions.configure(info.solidsoft.gradle.pitest.PitestPluginExtension) { pit ->
+        pit.pitestVersion.set('1.22.1')
+        pit.junit5PluginVersion.set('1.2.3')
+        pit.addJUnitPlatformLauncher.set(false)
+        // Scope fixed before the run: every business validator, across all features.
+        pit.targetClasses.set(['com.uade.dda2.server.feature.*.validator.*Validator'] as Set)
+        pit.targetTests.set(['com.uade.dda2.server.feature.*.validator.*Test'] as Set)
+        pit.mutators.set(['DEFAULTS'] as Set)
+        pit.threads.set(2)
+        pit.verbose.set(false)
+        pit.mainProcessJvmArgs.set(['-Dfile.encoding=UTF-8'])
+        pit.outputCharset.set(java.nio.charset.StandardCharsets.UTF_8)
+        pit.jvmArgs.set(['-Xmx512m'])
+        pit.timeoutConstInMillis.set(10000)
+        pit.mutationThreshold.set(60)
+        pit.failWhenNoMutations.set(true)
+        pit.outputFormats.set(['HTML', 'XML'] as Set)
+        pit.timestampedReports.set(false)
+        pit.reportDir.set(p.layout.buildDirectory.dir('reports/pitest'))
+    }
+}

@@ -25,5 +25,13 @@ class EffectiveScheduleValidatorTest {
 
     private fun range(start: Int, end: Int) = EffectiveScheduleValidator.TimeRange(time(start), time(end))
 
+    @Test
+    fun `cubre exactamente los limites y rechaza una franja insuficiente`() {
+        assertTrue(validator.isCovered(time(9), time(12), listOf(range(9, 12))))
+        assertFalse(validator.isCovered(time(9), time(12), listOf(range(9, 11))))
+        assertFalse(validator.isCovered(time(9), time(12), emptyList()))
+        assertTrue(validator.isCovered(time(9), time(12), listOf(range(7, 8), range(9, 12))))
+    }
+
     private fun time(hour: Int) = LocalTime.of(hour, 0)
 }
