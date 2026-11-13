@@ -15,6 +15,8 @@ export default defineConfig([
     'dist',
     'coverage',
     'test-results',
+    'playwright-report',
+    'e2e-server-logs',
     'src/routeTree.gen.ts',
     'src/generated'
   ]),

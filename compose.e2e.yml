@@ -1,0 +1,15 @@
+name: uade-e2e
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: uade_e2e
+      POSTGRES_USER: e2e
+      POSTGRES_PASSWORD: e2e-disposable-only
+    ports:
+      - '127.0.0.1:55440:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U e2e -d uade_e2e']
+      interval: 2s
+      timeout: 3s
+      retries: 30

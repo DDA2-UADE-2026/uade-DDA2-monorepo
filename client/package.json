@@ -12,7 +12,10 @@
     "test:coverage": "vitest run --coverage --maxWorkers=2 --testTimeout=15000",
     "preview": "vite preview",
     "gen:api": "openapi-ts",
-    "gen:visualizer": "tsc -b && vite build --mode visualizer"
+    "gen:visualizer": "tsc -b && vite build --mode visualizer",
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:check": "tsc -p tsconfig.e2e.json"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -61,6 +64,7 @@
     "@babel/core": "^7.29.7",
     "@eslint/js": "^10.0.1",
     "@hey-api/openapi-ts": "^0.99.0",
+    "@playwright/test": "1.65.0",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tanstack/devtools-vite": "^0.8.5",
     "@tanstack/eslint-plugin-query": "^5.101.4",

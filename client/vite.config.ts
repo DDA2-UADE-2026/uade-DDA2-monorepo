@@ -68,6 +68,7 @@ export default defineConfig(({ mode }) => {
         : undefined,
     },
     test: {
+      include: ['src/**/*.{test,spec}.{ts,tsx}'],
       environment: 'jsdom',
       coverage: {
         provider: 'v8',
