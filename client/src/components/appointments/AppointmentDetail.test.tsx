@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { render, screen, waitFor } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import type { ReactNode } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -74,6 +75,9 @@ describe("detalle de confirmación", () => {
     respond = async () => Response.json({ status: 404, code: "APPOINTMENT_RESOURCE_NOT_FOUND", message: "No existe." }, { status: 404 })
     renderDetail("96172376-2255-450f-b318-b0707d10f31d")
     await waitFor(() => expect(screen.getByText("No encontramos ese turno")).toBeInTheDocument())
-    expect(screen.getByRole("button", { name: "Reintentar" })).toBeInTheDocument()
+    respond = async () => Response.json(detail)
+    await userEvent.click(screen.getByRole("button", { name: "Reintentar" }))
+    await waitFor(() => expect(screen.getByText("Clínica")).toBeInTheDocument())
+    expect(requests).toHaveLength(2)
   })
 })

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getAuthenticatedUser,
   getRoleHome,
+  redirectAuthenticatedUser,
   requireAuthenticatedUser,
   requireRoleChoice,
 } from '@/lib/auth-route-guards'
@@ -56,6 +57,15 @@ describe('auth route guards', () => {
     await expect(requireAuthenticatedUser(queryClient)).resolves.toEqual({ user })
   })
 
+  it('redirige al login si /auth/me no devuelve un usuario', async () => {
+    const queryClient = new QueryClient()
+    meQueryFn.mockResolvedValue({ user: null })
+
+    await expect(requireAuthenticatedUser(queryClient)).rejects.toMatchObject({
+      options: { to: '/login', replace: true },
+    })
+  })
+
   it('limpia la sesión local cuando /auth/me falla', async () => {
     const queryClient = new QueryClient()
 
@@ -84,5 +94,71 @@ describe('auth route guards', () => {
     pendingQueryFn.mockResolvedValue({ requiresRoleSelection: true, user })
     await expect(requireRoleChoice(queryClient)).resolves.toEqual({ mode: 'select', pending: { user } })
     expect(sessionStorage.getItem('role-selection')).toBeNull()
+  })
+
+  it('permite cambiar de rol cuando el usuario ya tiene más de un rol', async () => {
+    const queryClient = new QueryClient()
+    const user = {
+      username: 'test',
+      activeRole: 'CIUDADANO',
+      roles: ['CIUDADANO', 'AUDITOR'],
+    }
+    meQueryFn.mockResolvedValue({ user })
+
+    await expect(requireRoleChoice(queryClient)).resolves.toEqual({ mode: 'switch', user })
+  })
+
+  it('redirige al inicio del rol activo si no hay otro rol para elegir', async () => {
+    const queryClient = new QueryClient()
+    meQueryFn.mockResolvedValue({
+      user: { username: 'test', activeRole: 'CIUDADANO', roles: ['CIUDADANO'] },
+    })
+
+    await expect(requireRoleChoice(queryClient)).rejects.toMatchObject({
+      options: { to: '/portal', replace: true },
+    })
+  })
+
+  it('trata como rol único una sesión activa sin lista de roles', async () => {
+    const queryClient = new QueryClient()
+    meQueryFn.mockResolvedValue({ user: { username: 'test', activeRole: 'AUDITOR' } })
+
+    await expect(requireRoleChoice(queryClient)).rejects.toMatchObject({
+      options: { to: '/gestion', replace: true },
+    })
+  })
+
+  it('redirige al login cuando no hay sesión ni selección de rol pendiente', async () => {
+    const queryClient = new QueryClient()
+    meQueryFn.mockRejectedValue({ status: 401 })
+    pendingQueryFn.mockResolvedValue({ requiresRoleSelection: false })
+
+    await expect(requireRoleChoice(queryClient)).rejects.toMatchObject({
+      options: { to: '/login', replace: true },
+    })
+  })
+
+  it('redirige una sesión activa según el rol que ya tiene seleccionado', async () => {
+    const queryClient = new QueryClient()
+    meQueryFn.mockResolvedValue({
+      user: { username: 'test', activeRole: 'AUDITOR', roles: ['AUDITOR'] },
+    })
+
+    await expect(redirectAuthenticatedUser(queryClient)).rejects.toMatchObject({
+      options: { to: '/gestion', replace: true },
+    })
+  })
+
+  it('redirige a seleccionar rol si la sesión pendiente todavía no tiene un rol activo', async () => {
+    const queryClient = new QueryClient()
+    meQueryFn.mockRejectedValue({ status: 401 })
+    pendingQueryFn.mockResolvedValue({
+      requiresRoleSelection: true,
+      user: { username: 'test', roles: ['CIUDADANO', 'AUDITOR'] },
+    })
+
+    await expect(redirectAuthenticatedUser(queryClient)).rejects.toMatchObject({
+      options: { to: '/seleccionar-rol', replace: true },
+    })
   })
 })
