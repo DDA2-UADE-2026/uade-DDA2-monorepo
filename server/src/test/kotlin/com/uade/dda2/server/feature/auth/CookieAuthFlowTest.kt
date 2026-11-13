@@ -73,6 +73,29 @@ class CookieAuthFlowTest {
     }
 
     @Test
+    fun `tampered unsigned and wrong issuer tokens return 401 through HTTP`() {
+        val valid = jwt.createToken(user, citizen)
+        val parts = valid.split('.')
+        val encoder = java.util.Base64.getUrlEncoder().withoutPadding()
+        val unsignedHeader = encoder.encodeToString("""{"alg":"none","typ":"JWT"}""".toByteArray())
+        val tampered = parts[0] + "." + parts[1] + "." +
+            (if (parts[2].startsWith("A")) "B" else "A") + parts[2].drop(1)
+        val wrongIssuer = Jwts.builder().subject("42").issuer("untrusted-test-issuer")
+            .expiration(Date.from(Instant.now().plusSeconds(120)))
+            .claim("token_type", "ACCESS").claim("active_role", "CIUDADANO")
+            .claim("permissions", emptyList<String>())
+            .signWith(Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray()), Jwts.SIG.HS256).compact()
+        for (token in listOf(tampered, "$unsignedHeader.${parts[1]}.", wrongIssuer)) {
+            mvc.perform(get("/auth/me").header("Authorization", "Bearer $token"))
+                .andExpect(status().isUnauthorized)
+                .andExpect(jsonPath("$.code").value("AUTH_INVALID_TOKEN"))
+                .andExpect(jsonPath("$.user").doesNotExist())
+            mvc.perform(get("/auth/me").cookie(Cookie(ACCESS_COOKIE, token)))
+                .andExpect(status().isUnauthorized)
+        }
+    }
+
+    @Test
     fun `login issues HttpOnly cookie without exposing JWT and me survives reload`() {
         val access = loginCookie()
         assertEquals("CIUDADANO", jwt.parse(access.value).activeRole)
@@ -192,6 +215,22 @@ class CookieAuthFlowTest {
         mvc.perform(post("/auth/session/login").cookie(csrf.cookie).header("X-XSRF-TOKEN", csrf.token)
             .contentType(MediaType.APPLICATION_JSON).content("""{"username":"test","password":"incorrect"}"""))
             .andExpect(status().isUnauthorized).andExpect(cookie().doesNotExist(ACCESS_COOKIE))
+    }
+
+    @Test
+    fun `unknown user and wrong password return the same generic error`() {
+        val csrf = csrf()
+        val messages = listOf("test", "unknown-qa-user").map { username ->
+            val response = mvc.perform(post("/auth/session/login").cookie(csrf.cookie)
+                .header("X-XSRF-TOKEN", csrf.token).contentType(MediaType.APPLICATION_JSON)
+                .content("""{"username":"$username","password":"incorrect"}"""))
+                .andExpect(status().isUnauthorized).andExpect(cookie().doesNotExist(ACCESS_COOKIE))
+                .andReturn().response.contentAsString
+            val error = json.readTree(response)
+            assertNotNull(error.get("message"))
+            error.get("code").toString() to error.get("message").toString()
+        }
+        assertEquals(messages[0], messages[1])
     }
 
     @Test

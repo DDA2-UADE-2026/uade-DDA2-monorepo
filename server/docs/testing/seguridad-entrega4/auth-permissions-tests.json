@@ -1,0 +1,108 @@
+[
+  {
+    "suite": "com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest",
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "recorre alta edicion publicacion inscripcion asistencia correccion y cierre()",
+      "recupera la inscripcion propia y no revela la de otro ciudadano()",
+      "dos inscripciones concurrentes no superan el ultimo cupo()",
+      "conserva el historial cerrado solo para su titular y pagina sus inscripciones()",
+      "exige actividad abierta y cupo disponible()",
+      "lista y consulta solamente actividades abiertas con cupos disponibles()",
+      "confirma la inscripcion y rechaza duplicados()",
+      "requiere autenticacion y permisos ciudadanos()"
+    ]
+  },
+  {
+    "suite": "com.uade.dda2.server.feature.appointment.AppointmentFlowTest",
+    "tests": 23,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "reprogramacion rechaza horario ocupado y conserva los datos originales()",
+      "registra atencion y corrige a ausencia sin exponer descripcion al ciudadano ni al log()",
+      "protege turno ajeno y rechaza campos inesperados()",
+      "administrativo cancela y habilita manualmente el horario mientras ciudadano consulta su estado()",
+      "catalogos excluyen servicio centro y vinculo deshabilitados()",
+      "serializa reservas concurrentes por profesional y ciudadano()",
+      "lista turnos propios con su estado sin exponer turnos ajenos()",
+      "resume el mes con confirmados libres y retenidos y filtra por servicio()",
+      "rechaza reserva pasada fuera de agenda y sin clave sin persistir()",
+      "dos registros simultaneos dejan una sola constancia vigente()",
+      "consulta opciones confirma obtiene y reintenta sin duplicar()",
+      "la disponibilidad diaria lista horarios libres con servicio y profesional()",
+      "no registra turnos futuros o cancelados y respeta el profesional reprogramado()",
+      "reprograma en el mismo centro hacia otro profesional sin cambiar titular ni identificador()",
+      "no cambia centro ni servicio y rechaza superposicion del ciudadano()",
+      "un turno cancelado retiene el horario profesional hasta su liberacion sin bloquear al ciudadano()",
+      "reproduce un turno aunque su horario ya haya pasado()",
+      "dias pasados informan cero libres pero conservan el historial()",
+      "dos cancelaciones simultaneas no modifican el turno dos veces()",
+      "professional lists own appointments over a date range()",
+      "ausencia no acepta datos y profesional ajeno no puede consultar ni registrar()",
+      "rechaza superposicion ciudadana horario ocupado clave reutilizada y rol incorrecto()",
+      "permisos profesionales permiten consultar y registrar desde otro rol activo()"
+    ]
+  },
+  {
+    "suite": "com.uade.dda2.server.feature.auth.AuthFlowTest",
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "rechaza credenciales operativas o falsas como token de seleccion()",
+      "seleccionar ciudadano no hereda los permisos de auditor()",
+      "administracion conserva cuentas externas y agrega credenciales al mismo User()",
+      "login multirrol no concede acceso antes de seleccionar()",
+      "seleccion verifica nuevamente roles y estado del usuario()",
+      "no crea contexto operativo para usuarios sin roles o credenciales locales()",
+      "switch requiere JWT y rechaza un rol no asignado()",
+      "cambiar rol emite permisos actuales sin invalidar el JWT anterior()",
+      "un solo rol se activa automaticamente aunque no tenga permisos()",
+      "administracion no permite agregar solo media credencial local()"
+    ]
+  },
+  {
+    "suite": "com.uade.dda2.server.feature.auth.CookieAuthFlowTest",
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "login requires csrf even without session or with Bearer()",
+      "unknown user and wrong password return the same generic error()",
+      "multi role cookie cannot authenticate until role selected and pending survives reload()",
+      "logout clears all cookies including broken session and requires csrf()",
+      "tampered unsigned and wrong issuer tokens return 401 through HTTP()",
+      "cookie writes reject missing and wrong csrf and accept matching token()",
+      "each deployed API allows its frontend credentials and rejects the other environment()",
+      "missing invalid and operational selection cookies are rejected()",
+      "Bearer stays compatible and wins over cookie without falling back on invalid header()",
+      "login issues HttpOnly cookie without exposing JWT and me survives reload()",
+      "expired access and selection JWTs cannot authenticate but allow csrf and logout()",
+      "CORS permits configured credentialed origin and csrf header but rejects foreign origin()",
+      "broken previous cookie does not prevent login and bad credentials do not issue access()"
+    ]
+  },
+  {
+    "suite": "com.uade.dda2.server.security.JwtServiceTest",
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "rechaza tokens vencidos o firmados por otro emisor o clave()",
+      "rechaza un token anterior sin proposito ni rol activo()",
+      "cada token tiene solo los permisos de un rol y admite username ausente()",
+      "requiere una clave propia y tiempos de vida positivos()",
+      "rechaza tokens sin vencimiento y claims de autorizacion incompletos()",
+      "los tokens de seleccion y operativos no son intercambiables()",
+      "no emite tokens con un rol ajeno o usuario inactivo()"
+    ]
+  }
+]

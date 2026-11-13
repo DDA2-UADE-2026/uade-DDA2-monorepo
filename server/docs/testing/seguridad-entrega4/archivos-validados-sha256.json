@@ -1,0 +1,22 @@
+[
+  {
+    "file": "client/package.json",
+    "sha256": "2918880ADCB1315DFFCFB486ECF599C8102A8937E8A0309DF93D97E33A0A7745"
+  },
+  {
+    "file": "client/package-lock.json",
+    "sha256": "980049D84F6FBB817E5CA899C08CD09E476B2CF64BE3B7B0B8AB72CF67859C2B"
+  },
+  {
+    "file": "server/build.gradle.kts",
+    "sha256": "87649CFF0363381C8F282103726696113869F83E653D0767221769231401F99A"
+  },
+  {
+    "file": "server/qa-security.init.gradle",
+    "sha256": "8157B8AA300BABDC6BFBE5F113E6AF60668D01373430D3876600EC2EDD19E347"
+  },
+  {
+    "file": "server/src/test/kotlin/com/uade/dda2/server/feature/auth/CookieAuthFlowTest.kt",
+    "sha256": "BFCD4FEC20F9E1489F6C4FC99A05F6211A51C77D3DF4B93A686DFAE3A8EA19C5"
+  }
+]

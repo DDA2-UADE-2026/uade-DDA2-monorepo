@@ -1,0 +1,1158 @@
+{
+  "generatedUtc": "2026-11-13T00:45:23.627388+00:00",
+  "commit": null,
+  "runId": null,
+  "attempt": null,
+  "environment": {
+    "RUNNER_OS": null,
+    "RUNNER_ARCH": null,
+    "ImageOS": null,
+    "ImageVersion": null
+  },
+  "totals": {
+    "tests": 253,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "suites": [
+    {
+      "name": "com.uade.dda2.server.feature.application.ApplicationVisitFlowTest",
+      "tests": 44,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "cancela con motivo libera agenda y devuelve la ultima actuacion a evaluacion()",
+          "result": "PASS"
+        },
+        {
+          "name": "ciudadano lista y consulta modalidades estados reprogramacion y cancelacion sin datos sensibles()",
+          "result": "PASS"
+        },
+        {
+          "name": "conflicto al aprobar deja solicitud pendiente y visita intacta()",
+          "result": "PASS"
+        },
+        {
+          "name": "registra no realizada sin textos y conserva visita cuando queda otra pendiente()",
+          "result": "PASS"
+        },
+        {
+          "name": "request real de Postman registra resultado y rechaza repeticion y visita futura()",
+          "result": "PASS"
+        },
+        {
+          "name": "lista con filtros ventana semiabierta y obtiene detalle()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza cuerpos invalidos y campos administrados por el servidor()",
+          "result": "PASS"
+        },
+        {
+          "name": "reprograma horario duracion y lugar conservando identidad y trazabilidad sensible()",
+          "result": "PASS"
+        },
+        {
+          "name": "bandeja administrativa filtra y no expone textos ni lugares()",
+          "result": "PASS"
+        },
+        {
+          "name": "reprogramacion detecta conflictos excluye la propia actuacion y permite limites()",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo de auditoria revierte alta y aprobacion completas()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza cuerpos de resultado invalidos y propiedades administradas por el servidor()",
+          "result": "PASS"
+        },
+        {
+          "name": "exige autenticacion permiso vigente usuario activo y rol asignado()",
+          "result": "PASS"
+        },
+        {
+          "name": "ciudadano solicita reprogramacion sin cambiar visita y consulta historial separado()",
+          "result": "PASS"
+        },
+        {
+          "name": "un fallo de auditoria revierte resultado y transicion de solicitud()",
+          "result": "PASS"
+        },
+        {
+          "name": "cancelar una de varias actuaciones conserva la solicitud en visita()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos resultados concurrentes finalizan la actuacion una sola vez()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza ventana invertida y detalle inexistente()",
+          "result": "PASS"
+        },
+        {
+          "name": "gestion exige autenticacion permiso vigente usuario activo rol y asignacion()",
+          "result": "PASS"
+        },
+        {
+          "name": "pendiente bloquea reprogramacion cancelacion y resultado directos()",
+          "result": "PASS"
+        },
+        {
+          "name": "revision valida combinaciones y permite una nueva solicitud despues del rechazo()",
+          "result": "PASS"
+        },
+        {
+          "name": "detecta conflictos del responsable y del ciudadano y permite limites contiguos()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza datos de gestion invalidos actuaciones no pendientes y rutas inconsistentes()",
+          "result": "PASS"
+        },
+        {
+          "name": "un fallo de auditoria revierte actuacion y cambio de estado()",
+          "result": "PASS"
+        },
+        {
+          "name": "base impide fechas de reprogramacion inconsistentes()",
+          "result": "PASS"
+        },
+        {
+          "name": "visita vencida solo permite rechazo manual y luego una decision no se repite()",
+          "result": "PASS"
+        },
+        {
+          "name": "un fallo de auditoria revierte reprogramacion cancelacion y estado()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos solicitudes concurrentes crean una pendiente y un conflicto()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos revisiones concurrentes deciden una sola vez()",
+          "result": "PASS"
+        },
+        {
+          "name": "responsable aprueba aplica agenda y conserva textos sensibles fuera de auditoria()",
+          "result": "PASS"
+        },
+        {
+          "name": "consulta ciudadana protege propiedad permiso vigente usuario rol y paginacion()",
+          "result": "PASS"
+        },
+        {
+          "name": "resultado exige horario finalizado estado solicitud responsable y ruta consistente()",
+          "result": "PASS"
+        },
+        {
+          "name": "registra resultado realizado con profesional fecha textos sensibles y trazabilidad()",
+          "result": "PASS"
+        },
+        {
+          "name": "visita cancelada rechaza solicitud ciudadana de reprogramacion sin crear historial()",
+          "result": "PASS"
+        },
+        {
+          "name": "resultado exige autenticacion permiso vigente usuario activo rol y asignacion()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos altas concurrentes dejan una sola actuacion en el horario()",
+          "result": "PASS"
+        },
+        {
+          "name": "programa multiples actuaciones y registra responsable estado y auditoria sin lugar()",
+          "result": "PASS"
+        },
+        {
+          "name": "la base exige que el resultado lo registre el responsable y que sus textos sean validos()",
+          "result": "PASS"
+        },
+        {
+          "name": "visitas y turnos comparten ocupacion de agenda en ambos sentidos()",
+          "result": "PASS"
+        },
+        {
+          "name": "valida motivo propiedad duplicado y campos desconocidos()",
+          "result": "PASS"
+        },
+        {
+          "name": "seguridad revalida permisos de solicitud consulta y revision()",
+          "result": "PASS"
+        },
+        {
+          "name": "exige evaluacion etapa permitida y trabajador asignado()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos cancelaciones concurrentes aplican el cambio una sola vez()",
+          "result": "PASS"
+        },
+        {
+          "name": "ciudadano lista visitas de todas sus solicitudes y filtra proximas()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest",
+      "tests": 116,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "cases": [
+        {
+          "name": "renovar suspender finalizar y vencer se reflejan sin perder registros de casos cerrados()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos beneficios distintos se otorgan concurrentemente sin ocupar mas cupos()",
+          "result": "PASS"
+        },
+        {
+          "name": "edicion y otorgamiento concurrentes no dejan vigencia fuera de rango()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] gap = -1",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] gap = 0",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] gap = 1",
+          "result": "PASS"
+        },
+        {
+          "name": "nueva asignacion y finalizacion concurrentes mantienen solicitud y reserva consistentes()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] suspended = false",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] suspended = true",
+          "result": "PASS"
+        },
+        {
+          "name": "suspende renueva y finaliza conservando secuencia datos resolucion y fechas UTC()",
+          "result": "PASS"
+        },
+        {
+          "name": "finalizar uno conserva cupo y solo finalizar ultimo suspendido cierra solicitud()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza vigencias invertidas futuras vencidas o fuera de la edicion()",
+          "result": "PASS"
+        },
+        {
+          "name": "bandeja administrativa filtra y protege otorgamientos()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "result": "PASS"
+        },
+        {
+          "name": "baja de catalogo y otorgamiento concurrentes conservan referencias validas()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos altas simultaneas del mismo beneficio producen una creacion y un conflicto()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] reverse = false",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] reverse = true",
+          "result": "PASS"
+        },
+        {
+          "name": "requests reales de Postman consultan beneficios propios y validan paginacion()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza datos faltantes nulos incorrectos y campos controlados por servidor()",
+          "result": "PASS"
+        },
+        {
+          "name": "contador inconsistente revierte vencimiento automatico sin perder historia()",
+          "result": "PASS"
+        },
+        {
+          "name": "estado definitivo y suspension repetida no generan cambios aunque existan otros beneficios()",
+          "result": "PASS"
+        },
+        {
+          "name": "liberar cupo y aprobar otra solicitud concurrentemente nunca sobreocupa la edicion()",
+          "result": "PASS"
+        },
+        {
+          "name": "renovacion y alta de requisito concurrentes usan configuracion consistente()",
+          "result": "PASS"
+        },
+        {
+          "name": "no usa permiso de otro rol ni permiso agregado despues de emitir JWT()",
+          "result": "PASS"
+        },
+        {
+          "name": "vence juntos los pendientes y solo cierra al terminar el ultimo incluso suspendido()",
+          "result": "PASS"
+        },
+        {
+          "name": "renovacion y finalizacion concurrentes no reabren beneficio definitivo()",
+          "result": "PASS"
+        },
+        {
+          "name": "otro rol configurable puede consultar solo sus datos con permiso propio()",
+          "result": "PASS"
+        },
+        {
+          "name": "finalizar dos ultimos otorgamientos concurrentes libera exactamente un cupo()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] status = SUBMITTED",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] status = IN_VALIDATION",
+          "result": "PASS"
+        },
+        {
+          "name": "[4] status = PENDING_DOCUMENTATION",
+          "result": "PASS"
+        },
+        {
+          "name": "[5] status = IN_EVALUATION",
+          "result": "PASS"
+        },
+        {
+          "name": "[6] status = IN_VISIT",
+          "result": "PASS"
+        },
+        {
+          "name": "[7] status = REJECTED",
+          "result": "PASS"
+        },
+        {
+          "name": "[8] status = WAITLISTED",
+          "result": "PASS"
+        },
+        {
+          "name": "[9] status = CLOSED",
+          "result": "PASS"
+        },
+        {
+          "name": "renovacion y cambio de fechas de edicion concurrentes conservan contencion()",
+          "result": "PASS"
+        },
+        {
+          "name": "cerrar ultimo beneficio elimina reserva incompatible pero suspension la conserva()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] status = ACTIVE",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] status = SUSPENDED",
+          "result": "PASS"
+        },
+        {
+          "name": "[4] status = CLOSED",
+          "result": "PASS"
+        },
+        {
+          "name": "solicitud inexistente devuelve 404 en ambas operaciones()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "result": "PASS"
+        },
+        {
+          "name": "permiso ciudadano se migra repetidamente sin tocar otorgamientos ni dar acceso a otros roles()",
+          "result": "SKIPPED"
+        },
+        {
+          "name": "otorga activo con copia vigencia actor auditoria y privacidad sin ocupar otro cupo()",
+          "result": "PASS"
+        },
+        {
+          "name": "reevalua catalogo actual y guarda copias resistentes a cambios y bajas()",
+          "result": "PASS"
+        },
+        {
+          "name": "consulta propia valida usuario rol activo y permiso vigente en JWT y base()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] suspended = false",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] suspended = true",
+          "result": "PASS"
+        },
+        {
+          "name": "contador inconsistente impide finalizar sin perder estado ni historia()",
+          "result": "PASS"
+        },
+        {
+          "name": "bloquea baja del beneficio otorgado y permite borrar otro sin otorgamientos()",
+          "result": "PASS"
+        },
+        {
+          "name": "vencimiento y nueva asignacion conservan reserva solo si el alta gana el bloqueo()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "result": "PASS"
+        },
+        {
+          "name": "requiere token usuario activo rol actual y permisos en JWT y base()",
+          "result": "PASS"
+        },
+        {
+          "name": "no permite eliminar al administrativo referenciado()",
+          "result": "PASS"
+        },
+        {
+          "name": "listado propio aisla titulares agrega solicitudes y reconoce otorgamiento sobre solicitud asistida()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "result": "PASS"
+        },
+        {
+          "name": "barrido recupera atrasados por lotes y continua despues de un caso fallido()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "result": "PASS"
+        },
+        {
+          "name": "ultimo dia sigue vigente en zona local aunque UTC ya sea el dia siguiente()",
+          "result": "PASS"
+        },
+        {
+          "name": "historial y cambios requieren usuario rol activo y permisos vigentes sin exposicion ciudadana()",
+          "result": "PASS"
+        },
+        {
+          "name": "admite diferentes beneficios con monto opcional y orden cronologico()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "result": "PASS"
+        },
+        {
+          "name": "sin solicitudes o sin otorgamientos devuelve pagina vacia y mensaje sin fabricar beneficios()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] range = \"TODAY\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] range = \"EDITION\"",
+          "result": "PASS"
+        },
+        {
+          "name": "consulta propia usa copias del otorgamiento y admite descripcion y monto nulos()",
+          "result": "PASS"
+        },
+        {
+          "name": "otras personas y solicitudes sin aprobar no bloquean()",
+          "result": "PASS"
+        },
+        {
+          "name": "migracion de ciclo PostgreSQL conserva asignaciones y elimina restricciones de estado anteriores()",
+          "result": "SKIPPED"
+        },
+        {
+          "name": "protege al responsable de cambios aunque no sea quien asigno()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos procesadores vencen el mismo caso una vez incluso con varios beneficios()",
+          "result": "PASS"
+        },
+        {
+          "name": "pagina por fecha e id descendentes y distingue pagina fuera de rango de ausencia total()",
+          "result": "PASS"
+        },
+        {
+          "name": "edicion vencida admite finalizar y no admite renovar fuera de sus fechas()",
+          "result": "PASS"
+        },
+        {
+          "name": "consulta no cambia fechas cupos historial ni auditoria y mantiene contrato de solicitud()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] query = \"?page=-1\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] query = \"?size=0\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] query = \"?size=101\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[4] query = \"?page=x\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[5] query = \"?size=x\"",
+          "result": "PASS"
+        },
+        {
+          "name": "edicion no puede excluir otorgamientos pero puede ampliar fechas()",
+          "result": "PASS"
+        },
+        {
+          "name": "no acepta beneficio inexistente o de otra edicion()",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] reverse = false",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] reverse = true",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] status = \"MISSING\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] status = \"PENDING\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] status = \"OBSERVED\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[4] status = \"VALID\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] entityType = \"benefit_grant_change\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] entityType = \"application\"",
+          "result": "PASS"
+        },
+        {
+          "name": "[1] gap = -1",
+          "result": "PASS"
+        },
+        {
+          "name": "[2] gap = 0",
+          "result": "PASS"
+        },
+        {
+          "name": "[3] gap = 1",
+          "result": "PASS"
+        },
+        {
+          "name": "copia no cambia al editar catalogo y futuros otorgamientos usan nuevos valores()",
+          "result": "PASS"
+        },
+        {
+          "name": "renovacion exige nueva fecha completa posterior dentro de edicion y cubriendo hoy()",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo de auditoria revierte otorgamiento y updatedAt sin alterar cupo()",
+          "result": "PASS"
+        },
+        {
+          "name": "migracion PostgreSQL es repetible y no fabrica otorgamientos ni cupos()",
+          "result": "SKIPPED"
+        },
+        {
+          "name": "vencimiento y aprobacion concurrentes no sobreocupan el ultimo cupo()",
+          "result": "PASS"
+        },
+        {
+          "name": "listado carga contexto de varios programas sin consultas adicionales por elemento()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "publica JSON persistente con UUID y routing key vacia()",
+          "result": "PASS"
+        },
+        {
+          "name": "un confirm positivo con retorno no es un envio correcto()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreBrokerClientTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "la comprobacion solo consulta pasivamente sin consumir purgar o publicar()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "registra conexion confirmada sin exigir secret HTTP ni registrar secretos(CapturedOutput)",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo de conexion queda visible sin detener el backend(CapturedOutput)",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreDashboardBranchTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "unexpected failures expose stable fallback codes()",
+          "result": "PASS"
+        },
+        {
+          "name": "boundary filters are forwarded and missing events return not found()",
+          "result": "PASS"
+        },
+        {
+          "name": "\"OK\"",
+          "result": "PASS"
+        },
+        {
+          "name": "{\"status\":\"ready\"}",
+          "result": "PASS"
+        },
+        {
+          "name": "{\"status\":\"degraded\"}",
+          "result": "PASS"
+        },
+        {
+          "name": "{\"status\":\"down\"}",
+          "result": "PASS"
+        },
+        {
+          "name": "{\"status\":5}",
+          "result": "PASS"
+        },
+        {
+          "name": "{\"status\":\"bad status with spaces\"}",
+          "result": "PASS"
+        },
+        {
+          "name": "{}",
+          "result": "PASS"
+        },
+        {
+          "name": "{\"status\":\"up\",\"checks\":[]}",
+          "result": "PASS"
+        },
+        {
+          "name": "trace=null",
+          "result": "PASS"
+        },
+        {
+          "name": "trace=trace-valid:1",
+          "result": "PASS"
+        },
+        {
+          "name": "trace=secret with spaces",
+          "result": "PASS"
+        },
+        {
+          "name": "CoreHttpExceptionDENIED",
+          "result": "PASS"
+        },
+        {
+          "name": "CoreIntegrationExceptionCORE_INVALID_BODY",
+          "result": "PASS"
+        },
+        {
+          "name": "CoreIntegrationExceptionCORE_DASHBOARD_IDENTITY_MISMATCH",
+          "result": "PASS"
+        },
+        {
+          "name": "CoreIntegrationExceptionCORE_UNAVAILABLE",
+          "result": "PASS"
+        },
+        {
+          "name": "IllegalStateExceptionsecret",
+          "result": "PASS"
+        },
+        {
+          "name": "missing machine secret does not disable public readiness or broker checks()",
+          "result": "PASS"
+        },
+        {
+          "name": "0 10 null",
+          "result": "PASS"
+        },
+        {
+          "name": "1 0 null",
+          "result": "PASS"
+        },
+        {
+          "name": "1 201 null",
+          "result": "PASS"
+        },
+        {
+          "name": "1 10  ",
+          "result": "PASS"
+        },
+        {
+          "name": "1 10 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "result": "PASS"
+        },
+        {
+          "name": "readiness filters malformed dependency names and values and limits the summary()",
+          "result": "PASS"
+        },
+        {
+          "name": "unavailable and disabled clients return service unavailable()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreDashboardFlowTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "usuario inactivo rol retirado y permiso revocado invalidan tambien tokens vigentes()",
+          "result": "PASS"
+        },
+        {
+          "name": "consultas de registro y eventos reutilizan clientes sin ejecutar escrituras()",
+          "result": "PASS"
+        },
+        {
+          "name": "todos los endpoints requieren sesion y permiso antes de consultar Core()",
+          "result": "PASS"
+        },
+        {
+          "name": "dashboard separa ventana remota de contadores locales y metricas funcionan sin Core()",
+          "result": "PASS"
+        },
+        {
+          "name": "estado comprueba HTTP y AMQPS sin devolver credenciales ni confundir fallos con exito()",
+          "result": "PASS"
+        },
+        {
+          "name": "estado distingue integracion desactivada de secret HTTP ausente y no intenta HTTP()",
+          "result": "PASS"
+        },
+        {
+          "name": "filtros invalidos se rechazan antes de consultar red()",
+          "result": "PASS"
+        },
+        {
+          "name": "errores remotos conservan diagnostico y no se presentan como perdida de sesion local()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreDisabledConfigurationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "docs arranca sin credenciales ni objetos que puedan conectar a Core()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rechaza errata de fecha falta de offset y extras de raiz()",
+          "result": "PASS"
+        },
+        {
+          "name": "usa el sobre propio canonico y preserva el evento()",
+          "result": "PASS"
+        },
+        {
+          "name": "hash ignora orden de propiedades y offsets equivalentes pero detecta cambios()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreFailureClassifierBranchTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "reply=403 connection=false",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=403 connection=true",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=404 connection=false",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=404 connection=true",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=406 connection=false",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=406 connection=true",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=500 connection=false",
+          "result": "PASS"
+        },
+        {
+          "name": "reply=500 connection=true",
+          "result": "PASS"
+        },
+        {
+          "name": "AuthenticationFailureException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "AuthenticationFailureException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "AmqpAuthenticationException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "AmqpAuthenticationException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "SSLException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "SSLException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "UnknownHostException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "UnknownHostException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "SocketTimeoutException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "SocketTimeoutException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "HttpTimeoutException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "HttpTimeoutException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "ConnectException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "ConnectException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "IllegalStateException wrapped=false",
+          "result": "PASS"
+        },
+        {
+          "name": "IllegalStateException wrapped=true",
+          "result": "PASS"
+        },
+        {
+          "name": "unknown shutdown reason falls back and cause scanning is bounded()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreHttpClientTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "403 no renueva y no filtra mensajes del servidor en excepciones()",
+          "result": "PASS"
+        },
+        {
+          "name": "sin secret HTTP falla antes de enviar una solicitud()",
+          "result": "PASS"
+        },
+        {
+          "name": "listado de eventos codifica filtros una sola vez y no expone campos extra()",
+          "result": "PASS"
+        },
+        {
+          "name": "renovacion concurrente comparte token y no consulta red en constructor()",
+          "result": "PASS"
+        },
+        {
+          "name": "dashboard rechaza una respuesta perteneciente a otro modulo()",
+          "result": "PASS"
+        },
+        {
+          "name": "renueva solo una vez ante 401 y filtra publicaciones globales()",
+          "result": "PASS"
+        },
+        {
+          "name": "dashboard utiliza Bearer cacheado y deserializa metricas camelCase del modulo()",
+          "result": "PASS"
+        },
+        {
+          "name": "readiness consulta la raiz y conserva degraded aunque HTTP sea 200()",
+          "result": "PASS"
+        },
+        {
+          "name": "dashboard acepta la lista de motivos de Core vacia o con resultados()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreMessageListenerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "confirma despues del retorno del servicio y admite duplicados()",
+          "result": "PASS"
+        },
+        {
+          "name": "un fallo de ack no rechaza un resultado ya confirmado()",
+          "result": "PASS"
+        },
+        {
+          "name": "rechaza sin requeue un fallo del procesamiento()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CoreOutboxPublisherBranchTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "CORE_BROKER_UNAVAILABLE",
+          "result": "PASS"
+        },
+        {
+          "name": "CORE_PUBLISH_UNAVAILABLE",
+          "result": "PASS"
+        },
+        {
+          "name": "confirmed=true",
+          "result": "PASS"
+        },
+        {
+          "name": "confirmed=false",
+          "result": "PASS"
+        },
+        {
+          "name": "polling failures are contained and interruption stops before reserving()",
+          "result": "PASS"
+        },
+        {
+          "name": "batch limit bounds work and an empty queue does not publish()",
+          "result": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "com.uade.dda2.server.feature.integration.CorePersistenceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rollback del llamador revierte tambien la outbox()",
+          "result": "PASS"
+        },
+        {
+          "name": "inbox deduplica y rechaza UUID reutilizado con otro contenido()",
+          "result": "PASS"
+        },
+        {
+          "name": "reserva vencida conserva evento y callback viejo no confirma intento nuevo()",
+          "result": "PASS"
+        },
+        {
+          "name": "outbox deduplica el mismo evento y conserva el original ante conflicto()",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo del handler revierte la reserva de inbox y permite reintento()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos publicadores solo reservan una vez la misma fila()",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo de publicacion espera backoff y recupera sin duplicar la operacion()",
+          "result": "PASS"
+        }
+      ]
+    }
+  ]
+}

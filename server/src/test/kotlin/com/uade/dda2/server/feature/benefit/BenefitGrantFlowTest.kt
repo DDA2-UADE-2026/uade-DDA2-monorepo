@@ -1177,6 +1177,22 @@ class BenefitGrantFlowTest {
         assertEquals(if (result.second.response.status == 201) 1 else 0, editions.findById(f.editionId).orElseThrow().currentEnrollment)
     }
 
+    @Test fun `requests reales de Postman consultan beneficios propios y validan paginacion`() {
+        val names = listOf("Consultar mis beneficios asignados", "Consultar la pagina siguiente de mis beneficios",
+            "Rechazar pagina negativa de beneficios propios")
+        for (populated in listOf(false, true)) {
+            if (populated) assigned()
+            names.forEachIndexed { index, name ->
+                val item = com.uade.dda2.server.feature.application.PostmanQaEvidence.request(name)
+                assertEquals("GET", item.path("request").path("method").asText())
+                val url = item.path("request").path("url").path("raw").asText().replace("{{baseUrl}}", "")
+                val result = mvc.perform(get(url).header("Authorization", "Bearer ${f.citizenToken}")).andReturn()
+                expect(result, if (index == 2) 400 else 200)
+                com.uade.dda2.server.feature.application.PostmanQaEvidence.save("benefits-$populated-$index", name, result)
+            }
+        }
+    }
+
     private fun ownGrants(token: String? = f.citizenToken, query: String = ""): MvcResult {
         val request = get("/api/benefit-grants$query")
         if (token != null) request.header("Authorization", "Bearer $token")

@@ -1,0 +1,4968 @@
+{
+  "java": "17",
+  "springBoot": "4.0.9",
+  "tests": 872.0,
+  "errors": 0.0,
+  "suitesDetail": [
+    {
+      "suite": "com.uade.dda2.server.feature.activity.ActivityAttendanceFlowTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "muestra inscriptos y registra presente con profesional fecha y auditoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permite corregir una asistencia y conserva el ultimo valor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere autenticacion y permisos profesionales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza borradores inscripciones ajenas y valores invalidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lista actividades publicadas y cerradas pero no borradores()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta el detalle profesional sin permitir borradores ni acceso sin permiso()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "recorre alta edicion publicacion inscripcion asistencia correccion y cierre()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "recupera la inscripcion propia y no revela la de otro ciudadano()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos inscripciones concurrentes no superan el ultimo cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "conserva el historial cerrado solo para su titular y pagina sus inscripciones()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "exige actividad abierta y cupo disponible()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lista y consulta solamente actividades abiertas con cupos disponibles()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "confirma la inscripcion y rechaza duplicados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere autenticacion y permisos ciudadanos()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.activity.ActivityFlowTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "lista consulta y actualiza una actividad en borrador()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza cierre de borrador y recursos inexistentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "impide eliminar al usuario que creo una actividad()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publica y cierra siguiendo transiciones unidireccionales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida campos capacidad y rango de fechas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida parametros de paginacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "crea actividad en borrador con actor y auditoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere autenticacion y permisos especificos()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "solo permite publicar borradores()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solo permite cerrar actividades abiertas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza fecha final anterior a la inicial()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solo permite editar borradores()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "acepta actividades de un solo dia()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.ApplicationAssignmentFlowTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "vuelve a la asignacion automatica solo antes de la evaluacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida cuerpo usuario elegible y solicitud existente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "exige autenticacion y permiso de asignacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "asigna y reasigna un trabajador habilitado y lo audita()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza estados resueltos y reasignar con visitas programadas()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.ApplicationDocumentFlowTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "listados publican objetivo periodos configurados y actividad del programa()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no permite eliminar al revisor referenciado por un documento()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reemplazos concurrentes conservan un vinculo y un archivo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solicitud conserva nombres y catalogo completo aunque la edicion este cerrada()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "carga reemplaza elimina y descarga inline PDF JPEG y PNG sin archivos huerfanos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza archivos vacios grandes y con extension MIME o firma inconsistentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "pendientes incluye obligatorios faltantes u observados y excluye opcionales y entregas pendientes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "administrativo lista descarga revisa y auditoria nunca guarda bytes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "entrega asistida carga en nombre del titular la atribuye al administrativo y el titular la ve()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo de auditoria revierte archivo vinculo y actualizacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "catalogo CRUD normaliza codigo se publica y se bloquea al existir solicitudes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "revision observada aparece pendiente y reemplazar reinicia revision()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "la entrega asistida exige el permiso administrativo y no la habilita el titular()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "propiedad permisos y rol activo protegen operaciones()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.ApplicationEvaluationFlowTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "exige usuario activo rol vigente y permiso presente en jwt y base()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lista con cada filtro individual filtros vacios y pagina sin resultados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lista evaluaciones con filtros y obtiene el detalle completo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "registra evaluacion responsable fecha asignacion estado y auditoria sin recomendacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos altas concurrentes producen una evaluacion y un conflicto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "el titular no puede evaluar su propia solicitud ni quedar asignado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "responde inexistente y no crea evaluacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "protege las consultas con permiso vigente usuario activo y rol asignado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza rango de evaluacion invertido y detalle inexistente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un fallo de auditoria revierte evaluacion asignacion y estado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no permite eliminar al profesional referenciado por una evaluacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "una segunda evaluacion responde conflicto y conserva la original()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] status = WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[6] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza solicitud asignada a otro trabajador()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza datos ausentes nulos desconocidos extras y recomendacion invalida()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.ApplicationFlowTest",
+      "tests": 59,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "idempotencia devuelve original aun cerrada la convocatoria sin repetir auditoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] status = IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[6] status = IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[7] status = APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[8] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[9] status = WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[10] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cors permite usar idempotencia desde el frontend sin cambiarlo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "presentacion propia y asistida concurrentes no duplican()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "misma clave es independiente por usuario()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no permite eliminar un usuario referenciado solo como registrante()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta administrativa exige su propio permiso en el rol activo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consultas filtran propiedad y paginan sin filtrar por parametros de usuario()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "detalle administrativo devuelve la entidad completa que la vista propia no expone()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "duplicados comparten titular entre presentacion propia y asistida sin cambiar regla de rechazo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta administrativa valida la paginacion y responde inexistente sin filtrar por titular()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "asistida valida titular payload y campos que solo decide el servidor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un fallo de auditoria revierte la solicitud y permite reintentar la clave()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "pedidos concurrentes sin clave o con claves distintas no duplican()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "base respalda unicidad funcional y de idempotencia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usuario inactivo o rol retirado no puede presentar ni consultar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] status = IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[6] status = IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[7] status = APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[8] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[9] status = WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[10] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reintento asistido comparte clave por titular y conserva registrante aunque cambie el actor o cierre convocatoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos convocatorias concurrentes de una edicion no eluden la regla()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "listado administrativo pagina solicitudes de todos los titulares e identifica a cada uno()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permiso asistido depende del rol activo y no habilita presentaciones propias()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "titular consulta asistida pero registrante no la recibe como propia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "asistida conserva validacion de convocatoria fechas y edicion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "administrativo inactivo o con rol retirado no registra ni recupera por idempotencia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos administrativos concurrentes reintentan sin duplicar ni cambiar al registrante original()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reintentos concurrentes crean exactamente una solicitud()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo de auditoria asistida revierte y libera clave del titular()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permiso depende del rol activo y token de seleccion no sirve()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "presenta con cupo agotado y registra identidad numero y auditoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "request rechaza campos internos y payloads invalidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = SCHEDULED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismo administrativo puede usar misma clave para titulares diferentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "asistencia admite usuario existente sin snapshot identidad externa o credenciales locales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "asistida guarda al titular y registrante por separado sin consumir cupo ni asignar trabajador()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "secuencia global es unica en presentaciones concurrentes de distintos usuarios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida fechas inclusivas()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest",
+      "tests": 48,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "cases": [
+        {
+          "name": "rechaza sin exigir cumplimiento documentos o cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "edicion sin requisitos acepta lista vacia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "aprueba con responsable distinto cupo auditoria y privacidad()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] gap = -1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] gap = 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] gap = 1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] type = VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] type = INTERVIEW",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = \"MISSING\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = \"PENDING\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = \"OBSERVED\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = \"VALID\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no elimina responsable historico()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos titulares compiten por el ultimo cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no bloquean otras personas ni solicitudes incompatibles sin aprobar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solicitud incompatible sin aprobar no bloquea al titular()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cupo determina aprobar o esperar sin fallback automatico()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "revalida requisitos y documentos al aprobar desde espera()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "edicion vencida bloquea y fecha final inclusiva permite()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "incumplimiento bloquea aprobar y espera sin resolucion automatica()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos programas incompatibles no aprueban al mismo titular simultaneamente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] reverse = false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] reverse = true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo de auditoria revierte estado historial y cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "migracion PostgreSQL puede repetirse sin fabricar historial o ajustar cupos()",
+          "skipped": true,
+          "failed": false
+        },
+        {
+          "name": "[1] reason = \"\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] reason = \" \"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] reason = \"LONG\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no admite permiso otorgado despues del token ni permiso en otro rol activo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "historial conserva requisito modificado y eliminado y permite consulta sin resolver()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza cuerpos incompletos campos desconocidos y checklist invalido()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] status = IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[6] status = APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[7] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[8] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "inexistente devuelve 404()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "exige evaluacion y ningun turno de visita pendiente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos resoluciones simultaneas solo resuelven una vez()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "seguridad exige token rol vigente usuario activo y permiso en base()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] decision = \"APPROVED\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] decision = \"REJECTED\"",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.ApplicationVisitFlowTest",
+      "tests": 44,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "cancela con motivo libera agenda y devuelve la ultima actuacion a evaluacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ciudadano lista y consulta modalidades estados reprogramacion y cancelacion sin datos sensibles()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "conflicto al aprobar deja solicitud pendiente y visita intacta()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "registra no realizada sin textos y conserva visita cuando queda otra pendiente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "request real de Postman registra resultado y rechaza repeticion y visita futura()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lista con filtros ventana semiabierta y obtiene detalle()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza cuerpos invalidos y campos administrados por el servidor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reprograma horario duracion y lugar conservando identidad y trazabilidad sensible()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "bandeja administrativa filtra y no expone textos ni lugares()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reprogramacion detecta conflictos excluye la propia actuacion y permite limites()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo de auditoria revierte alta y aprobacion completas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza cuerpos de resultado invalidos y propiedades administradas por el servidor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "exige autenticacion permiso vigente usuario activo y rol asignado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ciudadano solicita reprogramacion sin cambiar visita y consulta historial separado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un fallo de auditoria revierte resultado y transicion de solicitud()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cancelar una de varias actuaciones conserva la solicitud en visita()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos resultados concurrentes finalizan la actuacion una sola vez()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza ventana invertida y detalle inexistente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "gestion exige autenticacion permiso vigente usuario activo rol y asignacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "pendiente bloquea reprogramacion cancelacion y resultado directos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "revision valida combinaciones y permite una nueva solicitud despues del rechazo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "detecta conflictos del responsable y del ciudadano y permite limites contiguos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza datos de gestion invalidos actuaciones no pendientes y rutas inconsistentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un fallo de auditoria revierte actuacion y cambio de estado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "base impide fechas de reprogramacion inconsistentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visita vencida solo permite rechazo manual y luego una decision no se repite()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un fallo de auditoria revierte reprogramacion cancelacion y estado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos solicitudes concurrentes crean una pendiente y un conflicto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos revisiones concurrentes deciden una sola vez()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "responsable aprueba aplica agenda y conserva textos sensibles fuera de auditoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta ciudadana protege propiedad permiso vigente usuario rol y paginacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "resultado exige horario finalizado estado solicitud responsable y ruta consistente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "registra resultado realizado con profesional fecha textos sensibles y trazabilidad()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visita cancelada rechaza solicitud ciudadana de reprogramacion sin crear historial()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "resultado exige autenticacion permiso vigente usuario activo rol y asignacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos altas concurrentes dejan una sola actuacion en el horario()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "programa multiples actuaciones y registra responsable estado y auditoria sin lugar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "la base exige que el resultado lo registre el responsable y que sus textos sean validos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visitas y turnos comparten ocupacion de agenda en ambos sentidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida motivo propiedad duplicado y campos desconocidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "seguridad revalida permisos de solicitud consulta y revision()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "exige evaluacion etapa permitida y trabajador asignado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos cancelaciones concurrentes aplican el cambio una sola vez()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ciudadano lista visitas de todas sus solicitudes y filtra proximas()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.validator.ApplicationDocumentFileBranchTest",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "actual content is checked even when multipart metadata reports a different size()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "empty and oversized uploads fail while exact size limit succeeds()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 2",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 3",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 4",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 5",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 6",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename    ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename bad<LF>.jpg",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename /",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename .",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename ..",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpg",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": " C:\\photos\\PHOTO.JPG ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "/photos/photo.jpeg",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "/photos/photo.png",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.validator.ApplicationDomainMutationTest",
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation prevents self review and respects the assigned professional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation normalizes recommendation and requires both classifications()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "application valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "application null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "application inactive",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "application role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "application token",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation inactive",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation token",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "evaluation database",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit inactive",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit token",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit database",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "submission includes both date boundaries and requires open period and active edition()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "optional idempotency keys enforce length and visible ASCII boundaries()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "normaliza motivo preserva resultado negativo y exige campos explicitos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "limite de motivo se aplica despues de recortar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere todos los controles sin duplicados ni ajenos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "aprobar y esperar tienen condiciones de cupo opuestas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechazo no exige elegibilidad adicional()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.validator.ApplicationVisitMutationTest",
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "unassigned and differently assigned applications cannot schedule visits()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "visit schedule normalizes timezone precision location and computes end()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result requires final status and normalizes optional bounded professional notes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "schedule rejects missing fields nonpositive durations past time and long locations()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cancellation reason must be meaningful and bounded()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage application owner",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage visit owner",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage application state",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage visit state",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage boundary",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "manage past",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result application owner",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result visit owner",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result application state",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result visit state",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result boundary",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "result past",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.application.validator.VisitRescheduleBranchTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "reason length=null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reason length=0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reason length=1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reason length=1001",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reason length=3",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reason length=1000",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rejection cannot carry new scheduling fields and decision is mandatory()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED comment length=null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED comment length=0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED comment length=1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED comment length=1001",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED comment length=13",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "APPROVED comment length=1000",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED comment length=null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED comment length=0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED comment length=1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED comment length=1001",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED comment length=13",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "REJECTED comment length=1000",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.appointment.AppointmentConcurrencyFlowTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "dos ciudadanos no obtienen el mismo horario del mismo profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "el mismo profesional no queda doble reservado por asignaciones distintas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reintentos concurrentes con la misma clave no duplican()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "el mismo ciudadano no confirma dos turnos superpuestos()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.appointment.AppointmentFlowTest",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "reprogramacion rechaza horario ocupado y conserva los datos originales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "registra atencion y corrige a ausencia sin exponer descripcion al ciudadano ni al log()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "protege turno ajeno y rechaza campos inesperados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "administrativo cancela y habilita manualmente el horario mientras ciudadano consulta su estado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "catalogos excluyen servicio centro y vinculo deshabilitados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "serializa reservas concurrentes por profesional y ciudadano()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lista turnos propios con su estado sin exponer turnos ajenos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "resume el mes con confirmados libres y retenidos y filtra por servicio()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza reserva pasada fuera de agenda y sin clave sin persistir()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos registros simultaneos dejan una sola constancia vigente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta opciones confirma obtiene y reintenta sin duplicar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "la disponibilidad diaria lista horarios libres con servicio y profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no registra turnos futuros o cancelados y respeta el profesional reprogramado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reprograma en el mismo centro hacia otro profesional sin cambiar titular ni identificador()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no cambia centro ni servicio y rechaza superposicion del ciudadano()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un turno cancelado retiene el horario profesional hasta su liberacion sin bloquear al ciudadano()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reproduce un turno aunque su horario ya haya pasado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dias pasados informan cero libres pero conservan el historial()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos cancelaciones simultaneas no modifican el turno dos veces()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "professional lists own appointments over a date range()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ausencia no acepta datos y profesional ajeno no puede consultar ni registrar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza superposicion ciudadana horario ocupado clave reutilizada y rol incorrecto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permisos profesionales permiten consultar y registrar desde otro rol activo()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.appointment.AppointmentSlotGeneratorTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "genera bloques completos descarta remanente y permite adyacencia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "excluye ocupacion profesional y ciudadana y no fusiona franjas()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.appointment.validator.AppointmentAuthorizationBranchTest",
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "key length 1 valid=true chars=[33]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 128 valid=true chars=[126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126, 126]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 0 valid=false chars=[]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 129 valid=false chars=[120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 9 valid=false chars=[104, 97, 115, 32, 115, 112, 97, 99, 101]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 5 valid=false chars=[108, 105, 110, 101, 10]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 1 valid=false chars=[225]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "key length 1 valid=false chars=[127]",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requested ranges must be ordered and strictly in the future()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "date validation uses the center timezone at day boundaries()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - missing user",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - inactive",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - wrong active role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - missing role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - missing token permission",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CIUDADANO - missing database permission",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - missing user",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - inactive",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - wrong active role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - missing role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - missing token permission",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ADMIN - missing database permission",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - valid",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - missing user",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - inactive",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - wrong active role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - missing role",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - missing token permission",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "PROFESIONAL_CENTRO - missing database permission",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.auth.AdminUserInitializerTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "startup creates an active admin with an encoded password and repeated runs do nothing()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "new admin requires an explicit strong bootstrap password()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "existing mixed case username is never reset reactivated or assigned other roles()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "existing admin gains citizen role without changing password status or other roles()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "missing ADMIN role is created with the registered permissions()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "new admin reuses the existing role and preserves its custom permissions()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "new users assigned ADMIN also receive CIUDADANO immediately()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "admin can authenticate as citizen and switch back without sharing permissions()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.auth.AuthFlowTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rechaza credenciales operativas o falsas como token de seleccion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "seleccionar ciudadano no hereda los permisos de auditor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "administracion conserva cuentas externas y agrega credenciales al mismo User()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "login multirrol no concede acceso antes de seleccionar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "seleccion verifica nuevamente roles y estado del usuario()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no crea contexto operativo para usuarios sin roles o credenciales locales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "switch requiere JWT y rechaza un rol no asignado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cambiar rol emite permisos actuales sin invalidar el JWT anterior()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un solo rol se activa automaticamente aunque no tenga permisos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "administracion no permite agregar solo media credencial local()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.auth.CitizenModelTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "vinculo externo es unico e independiente de snapshot()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usuarios sin credenciales locales ni snapshot tienen identidad propia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "base rechaza credenciales locales incompletas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "snapshot usa la PK del usuario y se elimina con el usuario()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.auth.CookieAuthFlowTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "login requires csrf even without session or with Bearer()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "unknown user and wrong password return the same generic error()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "multi role cookie cannot authenticate until role selected and pending survives reload()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "logout clears all cookies including broken session and requires csrf()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "tampered unsigned and wrong issuer tokens return 401 through HTTP()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cookie writes reject missing and wrong csrf and accept matching token()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "each deployed API allows its frontend credentials and rejects the other environment()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "missing invalid and operational selection cookies are rejected()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "Bearer stays compatible and wins over cookie without falling back on invalid header()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "login issues HttpOnly cookie without exposing JWT and me survives reload()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "expired access and selection JWTs cannot authenticate but allow csrf and logout()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CORS permits configured credentialed origin and csrf header but rejects foreign origin()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "broken previous cookie does not prevent login and bad credentials do not issue access()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.auth.validator.AuthMutationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "login requires a local active account and matching encoded credentials()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest",
+      "tests": 116,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "cases": [
+        {
+          "name": "renovar suspender finalizar y vencer se reflejan sin perder registros de casos cerrados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos beneficios distintos se otorgan concurrentemente sin ocupar mas cupos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "edicion y otorgamiento concurrentes no dejan vigencia fuera de rango()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] gap = -1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] gap = 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] gap = 1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "nueva asignacion y finalizacion concurrentes mantienen solicitud y reserva consistentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] suspended = false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] suspended = true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "suspende renueva y finaliza conservando secuencia datos resolucion y fechas UTC()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "finalizar uno conserva cupo y solo finalizar ultimo suspendido cierra solicitud()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza vigencias invertidas futuras vencidas o fuera de la edicion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "bandeja administrativa filtra y protege otorgamientos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "baja de catalogo y otorgamiento concurrentes conservan referencias validas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos altas simultaneas del mismo beneficio producen una creacion y un conflicto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] reverse = false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] reverse = true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requests reales de Postman consultan beneficios propios y validan paginacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza datos faltantes nulos incorrectos y campos controlados por servidor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "contador inconsistente revierte vencimiento automatico sin perder historia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "estado definitivo y suspension repetida no generan cambios aunque existan otros beneficios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "liberar cupo y aprobar otra solicitud concurrentemente nunca sobreocupa la edicion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renovacion y alta de requisito concurrentes usan configuracion consistente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no usa permiso de otro rol ni permiso agregado despues de emitir JWT()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "vence juntos los pendientes y solo cierra al terminar el ultimo incluso suspendido()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renovacion y finalizacion concurrentes no reabren beneficio definitivo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "otro rol configurable puede consultar solo sus datos con permiso propio()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "finalizar dos ultimos otorgamientos concurrentes libera exactamente un cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] status = IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[6] status = IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[7] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[8] status = WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[9] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renovacion y cambio de fechas de edicion concurrentes conservan contencion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cerrar ultimo beneficio elimina reserva incompatible pero suspension la conserva()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = ACTIVE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solicitud inexistente devuelve 404 en ambas operaciones()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permiso ciudadano se migra repetidamente sin tocar otorgamientos ni dar acceso a otros roles()",
+          "skipped": true,
+          "failed": false
+        },
+        {
+          "name": "otorga activo con copia vigencia actor auditoria y privacidad sin ocupar otro cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reevalua catalogo actual y guarda copias resistentes a cambios y bajas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta propia valida usuario rol activo y permiso vigente en JWT y base()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] suspended = false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] suspended = true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "contador inconsistente impide finalizar sin perder estado ni historia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "bloquea baja del beneficio otorgado y permite borrar otro sin otorgamientos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "vencimiento y nueva asignacion conservan reserva solo si el alta gana el bloqueo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere token usuario activo rol actual y permisos en JWT y base()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no permite eliminar al administrativo referenciado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "listado propio aisla titulares agrega solicitudes y reconoce otorgamiento sobre solicitud asistida()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "barrido recupera atrasados por lotes y continua despues de un caso fallido()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ultimo dia sigue vigente en zona local aunque UTC ya sea el dia siguiente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "historial y cambios requieren usuario rol activo y permisos vigentes sin exposicion ciudadana()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "admite diferentes beneficios con monto opcional y orden cronologico()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] action = \"renew\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] action = \"suspend\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] action = \"finalize\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "sin solicitudes o sin otorgamientos devuelve pagina vacia y mensaje sin fabricar beneficios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] range = \"TODAY\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] range = \"EDITION\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta propia usa copias del otorgamiento y admite descripcion y monto nulos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "otras personas y solicitudes sin aprobar no bloquean()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "migracion de ciclo PostgreSQL conserva asignaciones y elimina restricciones de estado anteriores()",
+          "skipped": true,
+          "failed": false
+        },
+        {
+          "name": "protege al responsable de cambios aunque no sea quien asigno()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos procesadores vencen el mismo caso una vez incluso con varios beneficios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "pagina por fecha e id descendentes y distingue pagina fuera de rango de ausencia total()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "edicion vencida admite finalizar y no admite renovar fuera de sus fechas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta no cambia fechas cupos historial ni auditoria y mantiene contrato de solicitud()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] query = \"?page=-1\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] query = \"?size=0\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] query = \"?size=101\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] query = \"?page=x\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] query = \"?size=x\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "edicion no puede excluir otorgamientos pero puede ampliar fechas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no acepta beneficio inexistente o de otra edicion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] reverse = false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] reverse = true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = \"MISSING\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = \"PENDING\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = \"OBSERVED\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = \"VALID\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] entityType = \"benefit_grant_change\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] entityType = \"application\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] gap = -1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] gap = 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] gap = 1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "copia no cambia al editar catalogo y futuros otorgamientos usan nuevos valores()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renovacion exige nueva fecha completa posterior dentro de edicion y cubriendo hoy()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo de auditoria revierte otorgamiento y updatedAt sin alterar cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "migracion PostgreSQL es repetible y no fabrica otorgamientos ni cupos()",
+          "skipped": true,
+          "failed": false
+        },
+        {
+          "name": "vencimiento y aprobacion concurrentes no sobreocupan el ultimo cupo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "listado carga contexto de varios programas sin consultas adicionales por elemento()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "evita solapamiento local y libera guardia al terminar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "recupera guardia despues de un fallo de descubrimiento()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cursor recorre todos los lotes aunque cambien los anteriores y reintenta fallidos al reiniciar()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "arranque procesa atrasados y configuracion deshabilitada no registra scheduler()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "permiso retirado del rol activo bloquea lectura aunque siga en JWT()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permiso nuevo requiere token renovado aunque el rol ya lo tenga()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usuario inactivo no puede leer sus otorgamientos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta por titular autenticado y distingue ausencia total de pagina fuera de rango()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "transiciones son definitivas y no aceptan asignacion como cambio()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renovacion requiere fecha y checklist explicitos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "motivo recortado admite limites y rechaza vacios nulos y extensos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "acepta renovar el ultimo dia inclusivo pero rechaza despues del vencimiento()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "checklist distingue estructura invalida de requisito incumplido()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.benefit.validator.BenefitGrantValidatorTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "requiere identificador y ambas fechas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza fechas fuera de edicion invertidas futuras o vencidas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usa el dia recibido del servidor y no la fecha del sistema()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permite extremos inclusivos y vigencia de un dia()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.CenterCatalogFlowTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "administra catalogo central de servicios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "administra centros con busqueda estados y auditoria()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "gestion de actividades solo puede consultar centros activos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza nombres duplicados y datos invalidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "informa recursos inexistentes y valida paginacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere rol admin ademas del permiso()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.CenterConcurrencyFlowTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "serializa cambio de apertura contra alta de disponibilidad()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "serializa disponibilidades concurrentes de asignaciones del mismo profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "serializa altas concurrentes de horarios del mismo centro()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.CenterLifecycleFlowTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "protege usuario con asignaciones profesionales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "impide eliminar profesional aun con asignaciones inactivas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "revalida solapamientos al activar cada dependencia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "protege rol profesional mientras existen asignaciones activas()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.CenterOpeningHourFlowTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rechaza bulk con días inválidos o centro inactivo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "impide cambios que dejan disponibilidad sin cobertura()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "crea lista edita y cambia estado de horarios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "crea la misma franja en varios días y revierte todo ante conflicto()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.CenterPersistenceTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rechaza duracion de servicio no positiva()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "persiste relaciones unicas y permite listarlas por padre y estado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta solapamientos activos de centro con intervalos semiabiertos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza asignacion profesional duplicada()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta conflictos globales del profesional y filtra toda la cadena activa()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza rangos invalidos de disponibilidad profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza nombres normalizados duplicados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza rangos invalidos de horarios de centro()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "persiste y actualiza nombres normalizados y campos recortados()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.CenterServiceFlowTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "requiere permisos y recursos existentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "asigna lista desactiva y reactiva el mismo servicio del centro()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza asignar o reactivar con antecedentes inactivos()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.entity.MunicipalNameNormalizerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "normaliza a NFC recorta y colapsa whitespace()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usa locale root aunque cambie el locale por defecto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "conserva acentos()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.ProfessionalAssignmentFlowTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "asigna lista desactiva y reactiva profesional en la misma fila()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza usuarios inactivos o sin rol profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza asignar cuando alguna dependencia esta inactiva()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.ProfessionalAvailabilityFlowTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "crea disponibilidad por servicio y permite franjas adyacentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "crea la misma disponibilidad en varios días y revierte todo ante conflicto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza bulk sin cobertura o con días inválidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza crear disponibilidad con asignacion inactiva()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "edita desactiva y revalida al reactivar()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "cubre exactamente los limites y rechaza una franja insuficiente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "une franjas adyacentes sin dejar huecos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza cobertura con interrupciones()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "acepta cobertura en una franja()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.enrollmentperiod.service.EnrollmentPeriodExpirationServiceTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "cierra períodos vencidos una sola vez y los audita como sistema()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "no permite abrir si la edición ya tiene otro período abierto()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solo períodos abiertos o suspendidos pueden cerrarse()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza un período fuera de las fechas de la edición()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza un rango con fecha de cierre anterior a la apertura()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solo un período abierto puede suspenderse()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solo permite abrir si la edición está activa()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "considera superposición cuando dos períodos comparten un día límite()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "solo acepta solicitudes de un período abierto vigente y de la misma edición()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no permite abrir anticipadamente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "al editar excluye el período actual de la búsqueda de solapamientos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "permite abrir en los límites inclusivos del período()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no permite reabrir después de la fecha de cierre()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.indicator.IndicatorFlowTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "agrega solicitudes resoluciones cupos y tiempos del periodo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida periodo y permisos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mapa de evaluacion casos pendientes visitas y carga de trabajo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usa meses en periodos largos y aisla por programa()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "una nueva consulta refleja solicitudes registradas despues de la consulta anterior()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "publica JSON persistente con UUID y routing key vacia()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un confirm positivo con retorno no es un envio correcto()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreBrokerClientTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "la comprobacion solo consulta pasivamente sin consumir purgar o publicar()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "registra conexion confirmada sin exigir secret HTTP ni registrar secretos(CapturedOutput)",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo de conexion queda visible sin detener el backend(CapturedOutput)",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreDashboardBranchTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "unexpected failures expose stable fallback codes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "boundary filters are forwarded and missing events return not found()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "\"OK\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{\"status\":\"ready\"}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{\"status\":\"degraded\"}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{\"status\":\"down\"}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{\"status\":5}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{\"status\":\"bad status with spaces\"}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "{\"status\":\"up\",\"checks\":[]}",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "trace=null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "trace=trace-valid:1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "trace=secret with spaces",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CoreHttpExceptionDENIED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CoreIntegrationExceptionCORE_INVALID_BODY",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CoreIntegrationExceptionCORE_DASHBOARD_IDENTITY_MISMATCH",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CoreIntegrationExceptionCORE_UNAVAILABLE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IllegalStateExceptionsecret",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "missing machine secret does not disable public readiness or broker checks()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "0 10 null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "1 0 null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "1 201 null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "1 10  ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "1 10 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "readiness filters malformed dependency names and values and limits the summary()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "unavailable and disabled clients return service unavailable()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreDashboardFlowTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "usuario inactivo rol retirado y permiso revocado invalidan tambien tokens vigentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consultas de registro y eventos reutilizan clientes sin ejecutar escrituras()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "todos los endpoints requieren sesion y permiso antes de consultar Core()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dashboard separa ventana remota de contadores locales y metricas funcionan sin Core()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "estado comprueba HTTP y AMQPS sin devolver credenciales ni confundir fallos con exito()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "estado distingue integracion desactivada de secret HTTP ausente y no intenta HTTP()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filtros invalidos se rechazan antes de consultar red()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "errores remotos conservan diagnostico y no se presentan como perdida de sesion local()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreDisabledConfigurationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "docs arranca sin credenciales ni objetos que puedan conectar a Core()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rechaza errata de fecha falta de offset y extras de raiz()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "usa el sobre propio canonico y preserva el evento()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "hash ignora orden de propiedades y offsets equivalentes pero detecta cambios()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreFailureClassifierBranchTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "reply=403 connection=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=403 connection=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=404 connection=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=404 connection=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=406 connection=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=406 connection=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=500 connection=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reply=500 connection=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "AuthenticationFailureException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "AuthenticationFailureException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "AmqpAuthenticationException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "AmqpAuthenticationException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SSLException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SSLException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "UnknownHostException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "UnknownHostException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SocketTimeoutException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SocketTimeoutException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HttpTimeoutException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HttpTimeoutException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ConnectException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ConnectException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IllegalStateException wrapped=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "IllegalStateException wrapped=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "unknown shutdown reason falls back and cause scanning is bounded()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreHttpClientTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "403 no renueva y no filtra mensajes del servidor en excepciones()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "sin secret HTTP falla antes de enviar una solicitud()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "listado de eventos codifica filtros una sola vez y no expone campos extra()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renovacion concurrente comparte token y no consulta red en constructor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dashboard rechaza una respuesta perteneciente a otro modulo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "renueva solo una vez ante 401 y filtra publicaciones globales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dashboard utiliza Bearer cacheado y deserializa metricas camelCase del modulo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "readiness consulta la raiz y conserva degraded aunque HTTP sea 200()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dashboard acepta la lista de motivos de Core vacia o con resultados()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreMessageListenerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "confirma despues del retorno del servicio y admite duplicados()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "un fallo de ack no rechaza un resultado ya confirmado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza sin requeue un fallo del procesamiento()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CoreOutboxPublisherBranchTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "CORE_BROKER_UNAVAILABLE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CORE_PUBLISH_UNAVAILABLE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "confirmed=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "confirmed=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "polling failures are contained and interruption stops before reserving()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "batch limit bounds work and an empty queue does not publish()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.integration.CorePersistenceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rollback del llamador revierte tambien la outbox()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "inbox deduplica y rechaza UUID reutilizado con otro contenido()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reserva vencida conserva evento y callback viejo no confirma intento nuevo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fallo del handler revierte la reserva de inbox y permite reintento()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos publicadores solo reservan una vez la misma fila()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest",
+      "tests": 51,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "cases": [
+        {
+          "name": "ausencia total pagina fuera de rango y orden estable de planes son distinguibles()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos altas concurrentes crean un unico plan()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "plan independiente de estado y fechas de la edicion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos publicaciones iguales crean una sola fila y una sola actuacion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "migracion PostgreSQL repetible sin planes fabricados y con restricciones completas()",
+          "skipped": true,
+          "failed": false
+        },
+        {
+          "name": "seguimiento y cierre por ultimo beneficio concurrentes conservan ambos cambios()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publicacion valida permiso actual responsabilidad y pertenencia de todos los recursos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publicar y completar seguimiento concurrentes conservan ambos sin publicar resultado profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida estructura textos fechas y rechaza campos adicionales en todos los niveles()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "planes propios incluyen casos asistidos rechazados y cerrados y ocultan datos de otros titulares()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos finalizaciones simultaneas solo confirman un resultado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publicar y retirar inicialmente concurrentes respetan orden de bloqueo sin duplicar publicaciones()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = IN_EVALUATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = IN_VISIT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = APPROVED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] status = WAITLISTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[6] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publicacion rechaza cuerpo invalido campos administrados y no cambia los POST existentes()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "avances repetidos y resultado definitivo conservan historial y fechas reales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida seguimiento obligatorio fechas cronologia y campos extra sin modificar accion()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = SUBMITTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] status = IN_VALIDATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] status = PENDING_DOCUMENTATION",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] query = \"?page=-1\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] query = \"?size=0\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] query = \"?size=101\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[4] query = \"?page=x\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[5] query = \"?size=x\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "totales y orden solo incluyen seguimientos publicados sin revelar secuencias privadas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dos avances simultaneos conservan secuencia y estados previos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "lectura propia exige permiso vigente en rol activo JWT base y usuario activo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "progreso del plan deriva de todas las acciones incluso finalizaciones directas parciales()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "exige evaluacion y trabajador asignado coincidente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] operation = \"publish\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] operation = \"correct\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[3] operation = \"withdraw\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = \"IN_PROGRESS\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = \"COMPLETED\"",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publicaciones diferentes concurrentes conservan la ultima version y una sola fila()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "consulta de varios planes no agrega consultas por elemento ni carga responsables()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "seguridad actual por usuario rol activo y permisos de JWT y base()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "privacidad ciudadana estructura sin edicion y proteccion de responsables()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "corregir y retirar concurrentemente no pierde registro ni expone publicaciones retiradas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "recursos ajenos ausentes y lectura por permiso sin ser responsable()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "auditoria fallida revierte alta completa incluidos objetivos y acciones()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[1] status = REJECTED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "[2] status = CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "publicacion correccion retiro y republicacion conservan seguimiento original y resumen privado profesional()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "crea estructura ordenada con ciudadano responsable UTC y auditoria sin textos()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.intervention.mapper.InterventionProgressTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "estado contempla pendientes avances y finalizaciones directas parciales()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "validacion de estructura exige cada nivel y fechas completas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "fecha real inclusiva admite carga historica y accion vencida pero usa hoy del servidor()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "resumen publico se recorta exige texto y admite hasta dos mil caracteres()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "notas y resultado respetan limites y finalizacion directa requiere resultado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "responsable del plan debe seguir siendo trabajador asignado aun en caso cerrado()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "estructura admite limites recortados fechas iguales y planificacion futura()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.program.CatalogAuditQaFlowTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "detalle conserva nombre beneficios requisitos fechas y cupos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "auditoria informa actor fecha operacion entidad y filtros()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "catalogo pagina vacia y parametros invalidos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "auditoria requiere permiso en las tres consultas()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "auditoria no admite escrituras por API y conserva registro()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "catalogo excluye borradores suspendidas cerradas y vencidas y admite futuras activas()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.program.ProgramImageFlowTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "crear publica la imagen y agrega su URL a todas las respuestas de programa()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "eliminar un programa sin otras relaciones tambien elimina su imagen()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "reemplazar conserva la URL y eliminar quita la asociacion y el contenido()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "valida permisos existencia tamaño tipo MIME extension y firma()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "convocatoria creada conserva programa y edicion y rechaza ruta de otro programa()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.program.validator.AdminProgramEditionBranchTest",
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "duplicate names are rejected on create and update excluding own id()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "capacity 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "capacity -1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "capacity can equal enrollment but cannot fall below it()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "deletion requires no enrollment and an edition that is not closed()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "DRAFT -> DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "DRAFT -> ACTIVE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "DRAFT -> SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "DRAFT -> CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ACTIVE -> DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ACTIVE -> ACTIVE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ACTIVE -> SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "ACTIVE -> CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SUSPENDED -> DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SUSPENDED -> ACTIVE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SUSPENDED -> SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "SUSPENDED -> CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED -> DRAFT",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED -> ACTIVE",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED -> SUSPENDED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "CLOSED -> CLOSED",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "date changes preserve enrollment periods and benefit grants()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "inverted dates are rejected in both operations()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "creation accepts same day dates and minimum capacity with normalized name()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dependency 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dependency 1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dependency 2",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "dependency 3",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.program.validator.ProgramCatalogBranchTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "program deletion is blocked by editions or incompatibilities independently()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "benefits accept absent zero or positive amount but reject negative amounts()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "incompatibility requires two different programs and a new relationship()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "program names are normalized and update excludes its own id()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.program.validator.ProgramImageBranchTest",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "actual content is checked even when multipart metadata reports a different size()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "empty and oversized uploads fail while exact size limit succeeds()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 0",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 1",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 2",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 3",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 4",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 5",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "mismatch 6",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename null",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename    ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename bad<LF>.jpg",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename /",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename .",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename ..",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "filename aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.jpg",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": " C:\\photos\\PHOTO.JPG ",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "/photos/photo.jpeg",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "/photos/photo.png",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.feature.program.validator.ProgramRequirementBranchTest",
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "MIN_AGE '0' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE ' 18 ' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE '2147483647' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE '-1' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE '1.5' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE '2147483648' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE 'abc' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MIN_AGE '' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME '0' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME ' 0.01 ' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME '100000000000000000000.50' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME '-0.01' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME 'abc' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME '' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "MAX_INCOME '1,5' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS '0' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS ' 18 ' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS '2147483647' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS '-1' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS '1.5' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS '2147483648' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS 'abc' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "RESIDENCY_YEARS '' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN 'true' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN 'FALSE' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN ' True ' accepted=true",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN '1' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN 'yes' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN '' accepted=false",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "HAS_CHILDREN 'falsehood' accepted=false",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.OpenApiDocsGenerationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "dumps the OpenAPI spec to build openapi openapi json()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.security.JwtServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rechaza tokens vencidos o firmados por otro emisor o clave()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza un token anterior sin proposito ni rol activo()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "cada token tiene solo los permisos de un rol y admite username ausente()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "requiere una clave propia y tiempos de vida positivos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "rechaza tokens sin vencimiento y claims de autorizacion incompletos()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "los tokens de seleccion y operativos no son intercambiables()",
+          "skipped": false,
+          "failed": false
+        },
+        {
+          "name": "no emite tokens con un rol ajeno o usuario inactivo()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    },
+    {
+      "suite": "com.uade.dda2.server.ServerApplicationTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "contextLoads()",
+          "skipped": false,
+          "failed": false
+        }
+      ]
+    }
+  ],
+  "skipped": 5.0,
+  "duration": "5m 6s",
+  "failures": 0.0,
+  "suites": 66,
+  "rabbitClient": "5.37.1",
+  "result": "BUILD SUCCESSFUL"
+}

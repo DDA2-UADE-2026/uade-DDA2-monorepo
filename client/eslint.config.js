@@ -13,6 +13,8 @@ export default defineConfig([
   globalIgnores([
     '.tanstack',
     'dist',
+    'coverage',
+    'test-results',
     'src/routeTree.gen.ts',
     'src/generated'
   ]),

@@ -1,0 +1,57 @@
+{
+  "generatedUtc": "2026-11-13T00:49:55.967598+00:00",
+  "commit": null,
+  "runId": null,
+  "attempt": null,
+  "environment": {
+    "RUNNER_OS": null,
+    "RUNNER_ARCH": null,
+    "ImageOS": null,
+    "ImageVersion": null
+  },
+  "totals": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "com.uade.dda2.server.feature.integration.CorePersistenceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rollback del llamador revierte tambien la outbox()",
+          "result": "PASS"
+        },
+        {
+          "name": "inbox deduplica y rechaza UUID reutilizado con otro contenido()",
+          "result": "PASS"
+        },
+        {
+          "name": "reserva vencida conserva evento y callback viejo no confirma intento nuevo()",
+          "result": "PASS"
+        },
+        {
+          "name": "outbox deduplica el mismo evento y conserva el original ante conflicto()",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo del handler revierte la reserva de inbox y permite reintento()",
+          "result": "PASS"
+        },
+        {
+          "name": "dos publicadores solo reservan una vez la misma fila()",
+          "result": "PASS"
+        },
+        {
+          "name": "fallo de publicacion espera backoff y recupera sin duplicar la operacion()",
+          "result": "PASS"
+        }
+      ]
+    }
+  ]
+}

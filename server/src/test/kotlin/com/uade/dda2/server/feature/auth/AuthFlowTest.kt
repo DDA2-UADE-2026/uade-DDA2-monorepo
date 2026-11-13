@@ -58,27 +58,6 @@ class AuthFlowTest {
     }
 
     @Test
-    fun `login multirrol no concede acceso antes de seleccionar`() {
-        val response = mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
-            .content("""{"username":"test","password":"password123"}"""))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.requiresRoleSelection").value(true))
-            .andExpect(jsonPath("$.token").isEmpty)
-            .andExpect(jsonPath("$.permissions").doesNotExist())
-            .andExpect(jsonPath("$.user.permissions").isEmpty)
-            .andExpect(jsonPath("$.user.activeRole").isEmpty)
-            .andReturn().response.contentAsString
-        val selection = assertNotNull(json.readValue(response, LoginResponse::class.java).selectionToken)
-        for (path in listOf("/auth/me", "/api/programs", "/roles", "/actuator/info")) {
-            mvc.perform(get(path).header("Authorization", "Bearer $selection"))
-                .andExpect(status().isUnauthorized)
-        }
-        mvc.perform(post("/auth/switch-role").header("Authorization", "Bearer $selection")
-            .contentType(MediaType.APPLICATION_JSON).content("""{"role":"AUDITOR"}"""))
-            .andExpect(status().isUnauthorized)
-    }
-
-    @Test
     fun `un solo rol se activa automaticamente aunque no tenga permisos`() {
         user.roles.remove(auditor)
         mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
@@ -112,6 +91,27 @@ class AuthFlowTest {
             .andExpect(jsonPath("$.code").value("AUTH_ROLE_NOT_ASSIGNED"))
         user.active = false
         select(selection, "CIUDADANO").andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    fun `login multirrol no concede acceso antes de seleccionar`() {
+        val response = mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+            .content("""{"username":"test","password":"password123"}"""))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.requiresRoleSelection").value(true))
+            .andExpect(jsonPath("$.token").isEmpty)
+            .andExpect(jsonPath("$.permissions").doesNotExist())
+            .andExpect(jsonPath("$.user.permissions").isEmpty)
+            .andExpect(jsonPath("$.user.activeRole").isEmpty)
+            .andReturn().response.contentAsString
+        val selection = assertNotNull(json.readValue(response, LoginResponse::class.java).selectionToken)
+        for (path in listOf("/auth/me", "/api/programs", "/roles", "/actuator/info")) {
+            mvc.perform(get(path).header("Authorization", "Bearer $selection"))
+                .andExpect(status().isUnauthorized)
+        }
+        mvc.perform(post("/auth/switch-role").header("Authorization", "Bearer $selection")
+            .contentType(MediaType.APPLICATION_JSON).content("""{"role":"AUDITOR"}"""))
+            .andExpect(status().isUnauthorized)
     }
 
     @Test

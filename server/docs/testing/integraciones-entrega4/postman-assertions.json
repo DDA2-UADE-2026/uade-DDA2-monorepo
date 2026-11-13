@@ -1,0 +1,109 @@
+{
+  "environment": "MockMvc + H2 synthetic fixture responses; actual collection test scripts; not Newman/network E2E",
+  "cases": [
+    {
+      "id": "benefits-false-0",
+      "name": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-0",
+      "name": "Pagina ciudadana y mensaje coherentes",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-0",
+      "name": "Solo datos ciudadanos del otorgamiento",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-1",
+      "name": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-1",
+      "name": "Pagina ciudadana y mensaje coherentes",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-1",
+      "name": "Solo datos ciudadanos del otorgamiento",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-2",
+      "name": "HTTP 400",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-false-2",
+      "name": "Paginación inválida",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-0",
+      "name": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-0",
+      "name": "Pagina ciudadana y mensaje coherentes",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-0",
+      "name": "Solo datos ciudadanos del otorgamiento",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-1",
+      "name": "HTTP 200",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-1",
+      "name": "Pagina ciudadana y mensaje coherentes",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-1",
+      "name": "Solo datos ciudadanos del otorgamiento",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-2",
+      "name": "HTTP 400",
+      "result": "PASS"
+    },
+    {
+      "id": "benefits-true-2",
+      "name": "Paginación inválida",
+      "result": "PASS"
+    },
+    {
+      "id": "visit-future",
+      "status": 409,
+      "code": "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+      "result": "PASS",
+      "source": "negative HTTP assertion (not Postman script)"
+    },
+    {
+      "id": "visit-repeat",
+      "status": 409,
+      "code": "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+      "result": "PASS",
+      "source": "negative HTTP assertion (not Postman script)"
+    },
+    {
+      "id": "visit-result",
+      "name": "HTTP 201",
+      "result": "PASS"
+    },
+    {
+      "id": "visit-result",
+      "name": "Resultado registrado",
+      "result": "PASS"
+    }
+  ]
+}

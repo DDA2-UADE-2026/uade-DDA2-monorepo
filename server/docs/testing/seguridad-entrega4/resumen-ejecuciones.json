@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-12",
+  "baseCommit": "652b247991ae7df5eeddfefecd90b1a47adad6e3",
+  "workingTree": "modified; includes pre-existing tests",
+  "frontend": {
+    "command": "npm run test:run -- --maxWorkers=2",
+    "skipped": 6,
+    "passed": 124,
+    "buildExit": 0,
+    "audit": {
+      "moderate": 13,
+      "critical": 0,
+      "high": 0,
+      "low": 2
+    },
+    "expectedFailure": 1,
+    "yamlParserSmoke": "js-yaml 4.3.2: parsed OpenAPI YAML fixture",
+    "lintExit": 0
+  },
+  "secrets": {
+    "commits": 243,
+    "findings": 0,
+    "tool": "Gitleaks 8.30.1",
+    "redaction": "100%",
+    "scope": "git --log-opts=--all; local available refs"
+  },
+  "authPermissions": {
+    "errors": 0,
+    "skipped": 0,
+    "failures": 0,
+    "scope": "JWT, cookies, CORS, appointments, activity enrollments; before dependency update",
+    "tests": 61
+  },
+  "backendFinal": {
+    "suites": 66,
+    "tests": 872,
+    "build": "SUCCESSFUL",
+    "runtimePackages": 137,
+    "errors": 0,
+    "failures": 0,
+    "duration": "5m 6s",
+    "skipped": 5,
+    "osvAdvisories": 0,
+    "passed": 867
+  }
+}

@@ -1,5 +1,11 @@
 .opencode
 
+# Local security tooling and raw logs (publish sanitized evidence only).
+/tmp/security-*
+/tmp/ci-*
+/tmp/integration-*
+/tmp/sonar-*
+
 # Local configuration and generated credentials
 .env
 .env.*

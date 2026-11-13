@@ -69,6 +69,20 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       environment: 'jsdom',
+      coverage: {
+        provider: 'v8',
+        reporter: ['text-summary', 'html', 'lcov', 'json-summary'],
+        reportsDirectory: './coverage',
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: [
+          'src/**/*.test.{ts,tsx}',
+          'src/**/*.spec.{ts,tsx}',
+          'src/**/*.d.ts',
+          'src/test/**',
+          'src/generated/**',
+          'src/routeTree.gen.ts',
+        ],
+      },
       // Node 25+ exposes Web Storage globals that shadow JSDOM's implementation.
       execArgv: Number(process.versions.node.split('.')[0]) >= 25 ? ['--no-webstorage'] : [],
       setupFiles: './src/test/setup.ts',

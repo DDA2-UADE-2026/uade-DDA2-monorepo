@@ -108,6 +108,47 @@ class AppointmentFlowTest {
     }
 
     @Test
+    fun `rechaza reserva pasada fuera de agenda y sin clave sin persistir`() {
+        val before = appointments.count()
+        val past = OffsetDateTime.now(zone).minusDays(1).withNano(0)
+        val body = """{"professionalAssignmentId":"${fixture.firstAssignmentId}","startsAt":"$past","endsAt":"${past.plusHours(1)}"}"""
+        val pastResult = mvc.perform(post("/api/citizen/appointments")
+            .header("Authorization", "Bearer ${fixture.token}")
+            .header("Idempotency-Key", UUID.randomUUID().toString())
+            .contentType(MediaType.APPLICATION_JSON).content(body)).andReturn()
+        expect(pastResult, 400, "APPOINTMENT_TIME_IN_PAST")
+        expect(create(fixture.firstAssignmentId, 8, 9, UUID.randomUUID().toString()), 409, "APPOINTMENT_SLOT_UNAVAILABLE")
+        val withoutKey = mvc.perform(post("/api/citizen/appointments")
+            .header("Authorization", "Bearer ${fixture.token}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"professionalAssignmentId":"${fixture.firstAssignmentId}","startsAt":"${at(9)}","endsAt":"${at(10)}"}""")).andReturn()
+        expect(withoutKey, 400)
+        assertEquals(before, appointments.count())
+    }
+
+    @Test
+    fun `catalogos excluyen servicio centro y vinculo deshabilitados`() {
+        tx { services.findById(fixture.serviceId).orElseThrow().active = false }
+        val serviceList = authorizedGet("/api/citizen/appointment-services")
+        expect(serviceList, 200)
+        assertFalse(serviceList.response.contentAsString.contains(fixture.serviceId.toString()))
+        tx {
+            services.findById(fixture.serviceId).orElseThrow().active = true
+            centers.findById(fixture.centerId).orElseThrow().active = false
+        }
+        val centerList = authorizedGet("/api/citizen/appointment-services/${fixture.serviceId}/centers")
+        expect(centerList, 200)
+        assertFalse(centerList.response.contentAsString.contains(fixture.centerServiceId.toString()))
+        tx {
+            centers.findById(fixture.centerId).orElseThrow().active = true
+            centerServices.findById(fixture.centerServiceId).orElseThrow().active = false
+        }
+        val linkList = authorizedGet("/api/citizen/appointment-services/${fixture.serviceId}/centers")
+        expect(linkList, 200)
+        assertFalse(linkList.response.contentAsString.contains(fixture.centerServiceId.toString()))
+    }
+
+    @Test
     fun `consulta opciones confirma obtiene y reintenta sin duplicar`() {
         val servicesResult = authorizedGet("/api/citizen/appointment-services")
         expect(servicesResult, 200)
@@ -366,6 +407,9 @@ class AppointmentFlowTest {
         assertTrue(json.readTree(cancelled.response.contentAsString).get("slotRetained").asBoolean())
         assertEquals("CANCELLED", response(authorizedGet("/api/citizen/appointments/${created.id}")).status.name)
         expect(adminPatch(created.id, "cancel"), 409, "APPOINTMENT_NOT_MANAGEABLE")
+        val beforeRejectedReschedule = response(authorizedGet("/api/citizen/appointments/${created.id}"))
+        expect(reschedule(created.id, fixture.secondAssignmentId, 10, 11), 409, "APPOINTMENT_NOT_MANAGEABLE")
+        assertEquals(beforeRejectedReschedule, response(authorizedGet("/api/citizen/appointments/${created.id}")))
         expect(create(fixture.firstAssignmentId, 9, 10, UUID.randomUUID().toString(), fixture.secondCitizenToken),
             409, "APPOINTMENT_SLOT_UNAVAILABLE")
 

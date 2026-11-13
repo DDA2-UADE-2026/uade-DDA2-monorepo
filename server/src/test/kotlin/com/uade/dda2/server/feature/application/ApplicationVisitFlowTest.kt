@@ -325,6 +325,32 @@ class ApplicationVisitFlowTest {
         return mvc.perform(request).andReturn()
     }
 
+    @Test
+    fun `request real de Postman registra resultado y rechaza repeticion y visita futura`() {
+        val name = "Registrar resultado de actuacion finalizada"
+        val item = PostmanQaEvidence.request(name)
+        assertEquals("POST", item.path("request").path("method").asText())
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        val body = item.path("request").path("body").path("raw").asText()
+        val url = item.path("request").path("url").path("raw").asText()
+            .replace("{{baseUrl}}", "").replace("{{applicationId}}", fixture.applicationId.toString())
+            .replace("{{applicationVisitResultId}}", visit.id.toString())
+        fun send() = mvc.perform(post(url).header("Authorization", "Bearer ${fixture.actorToken}")
+            .contentType(MediaType.APPLICATION_JSON).content(body)).andReturn()
+        val future = send()
+        expect(future, 409)
+        PostmanQaEvidence.save("visit-future", name, future)
+        markEnded(visit.id)
+        val result = send()
+        expect(result, 201)
+        PostmanQaEvidence.save("visit-result", name, result)
+        val repeated = send()
+        expect(repeated, 409)
+        PostmanQaEvidence.save("visit-repeat", name, repeated)
+        val stored = tx { visits.findById(visit.id).orElseThrow().status.name }
+        assertEquals("REALIZED", stored)
+    }
+
     private fun markEnded(visitId: UUID) {
         tx {
             val visit = visits.findById(visitId).orElseThrow()
@@ -446,6 +472,14 @@ class ApplicationVisitFlowTest {
         assertEquals(requestId.toString(), ownVisit["latestRescheduleRequest"]["id"].stringValue())
         assertEquals("PENDING", ownVisit["latestRescheduleRequest"]["status"].stringValue())
         assertFalse(ownVisit["latestRescheduleRequest"].has("reason"))
+    }
+
+    @Test
+    fun `visita cancelada rechaza solicitud ciudadana de reprogramacion sin crear historial`() {
+        val visit = json.readValue(create().response.contentAsString, ApplicationVisitResponse::class.java)
+        expect(cancel(visit.id), 200)
+        expect(requestReschedule(visit.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_ALLOWED")
+        assertTrue(visitRescheduleRequests.findLatestCandidates(listOf(visit.id)).isEmpty())
     }
 
     @Test
@@ -1189,6 +1223,8 @@ class ApplicationVisitFlowTest {
         expect(result, 201)
         val completed = json.readValue(result.response.contentAsString, ApplicationVisitResponse::class.java)
         assertEquals("REALIZED", completed.status.name)
+        expect(requestReschedule(created.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_ALLOWED")
+        assertTrue(visitRescheduleRequests.findLatestCandidates(listOf(created.id)).isEmpty())
         assertEquals("La familia recibio al profesional.", completed.observations)
         assertEquals("Se requiere continuar con la evaluacion.", completed.conclusions)
         assertEquals(fixture.actorId, completed.resultRecordedById)
@@ -1252,6 +1288,8 @@ class ApplicationVisitFlowTest {
         expect(result, 201)
         val completed = json.readValue(result.response.contentAsString, ApplicationVisitResponse::class.java)
         assertEquals("NOT_REALIZED", completed.status.name)
+        expect(requestReschedule(first.id), 409, "APPLICATION_VISIT_RESCHEDULE_REQUEST_NOT_ALLOWED")
+        assertTrue(visitRescheduleRequests.findLatestCandidates(listOf(first.id)).isEmpty())
         assertEquals(null, completed.observations)
         assertEquals(null, completed.conclusions)
         assertEquals(ApplicationStatus.IN_VISIT, completed.applicationStatus)

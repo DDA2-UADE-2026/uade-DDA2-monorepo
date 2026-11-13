@@ -1,0 +1,8 @@
+{
+  "baseCommit": "652b247991ae7df5eeddfefecd90b1a47adad6e3",
+  "workingTree": "modified; no push",
+  "environment": "MockMvc/H2, local HTTP stub and simulated AMQP; no PostgreSQL or RabbitMQ service",
+  "collectionSha256": "65ae95b47d8968f8ef3314c981c964d20f0c55d35e2c15369a7ca6e107844669",
+  "responseCases": 9,
+  "postmanChecks": 20
+}

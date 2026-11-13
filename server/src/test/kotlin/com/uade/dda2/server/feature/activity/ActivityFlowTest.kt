@@ -105,6 +105,10 @@ class ActivityFlowTest {
         assertEquals(ActivityStatus.DRAFT, response.status)
         assertEquals("Taller comunitario de RCP", response.name)
         assertEquals(30, response.capacity)
+        assertEquals("Capacitación abierta sobre técnicas básicas de reanimación.", response.description)
+        assertEquals("Centro Municipal Norte", response.location)
+        assertEquals(LocalDate.of(2026, 10, 10), response.startDate)
+        assertEquals(LocalDate.of(2026, 10, 10), response.endDate)
         assertEquals("Activity Admin", response.createdBy.name)
         assertNotNull(response.createdAt)
 
@@ -112,6 +116,9 @@ class ActivityFlowTest {
             val stored = activities.findById(response.id).orElseThrow()
             assertEquals(ActivityStatus.DRAFT, stored.status)
             assertEquals("Centro Municipal Norte", stored.location)
+            assertEquals(response.description, stored.description)
+            assertEquals(response.startDate, stored.startDate)
+            assertEquals(response.endDate, stored.endDate)
         }
 
         val log = jdbc.queryForMap(

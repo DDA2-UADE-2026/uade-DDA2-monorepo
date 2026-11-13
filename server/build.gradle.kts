@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
-    id("org.springframework.boot") version "4.0.7"
+    id("org.springframework.boot") version "4.0.9"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.2.21"
     kotlin("plugin.lombok") version "2.2.21"
@@ -9,6 +9,9 @@ plugins {
 
 group = "com.uade.dda2"
 version = "0.0.1-SNAPSHOT"
+
+// Security fixes newer than the Spring Boot 4.0.9 managed AMQP client.
+extra["rabbit-amqp-client.version"] = "5.37.1"
 
 java {
     toolchain {

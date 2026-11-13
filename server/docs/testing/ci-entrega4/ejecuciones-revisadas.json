@@ -1,0 +1,89 @@
+[
+  {
+    "id": 41644659797,
+    "sha": "d7bfe59c7096a6b1a378ecdbb4ffd2170a80cff7",
+    "branch": "develop",
+    "result": "success",
+    "attempt": 1,
+    "url": "https://github.com/DDA2-UADE-2026/uade-DDA2-monorepo/actions/runs/41644659797",
+    "date": "2026-11-03T13:28:38Z",
+    "jobs": [
+      {
+        "name": "detect-changes",
+        "result": "success",
+        "start": "2026-11-03T13:28:41Z",
+        "end": "2026-11-03T13:28:48Z"
+      },
+      {
+        "name": "server-assemble",
+        "result": "success",
+        "start": "2026-11-03T13:28:50Z",
+        "end": "2026-11-03T13:32:21Z"
+      },
+      {
+        "name": "client-lint-build",
+        "result": "skipped",
+        "start": "2026-11-03T13:28:48Z",
+        "end": "2026-11-03T13:28:48Z"
+      }
+    ]
+  },
+  {
+    "id": 41644040233,
+    "sha": "42a6c2da8357d187d7486af84fc505cfe291734f",
+    "branch": "feature/server/core-http-api-validation",
+    "result": "success",
+    "attempt": 1,
+    "url": "https://github.com/DDA2-UADE-2026/uade-DDA2-monorepo/actions/runs/41644040233",
+    "date": "2026-11-03T13:24:23Z",
+    "jobs": [
+      {
+        "name": "detect-changes",
+        "result": "success",
+        "start": "2026-11-03T13:24:26Z",
+        "end": "2026-11-03T13:24:32Z"
+      },
+      {
+        "name": "client-lint-build",
+        "result": "success",
+        "start": "2026-11-03T13:24:35Z",
+        "end": "2026-11-03T13:26:35Z"
+      },
+      {
+        "name": "server-assemble",
+        "result": "success",
+        "start": "2026-11-03T13:24:34Z",
+        "end": "2026-11-03T13:28:02Z"
+      }
+    ]
+  },
+  {
+    "id": 41627866301,
+    "sha": "df4888188ef8300101e210f7f502201bc4ea942a",
+    "branch": "develop",
+    "result": "success",
+    "attempt": 1,
+    "url": "https://github.com/DDA2-UADE-2026/uade-DDA2-monorepo/actions/runs/41627866301",
+    "date": "2026-11-03T11:29:00Z",
+    "jobs": [
+      {
+        "name": "detect-changes",
+        "result": "success",
+        "start": "2026-11-03T11:29:03Z",
+        "end": "2026-11-03T11:29:09Z"
+      },
+      {
+        "name": "server-assemble",
+        "result": "success",
+        "start": "2026-11-03T11:29:11Z",
+        "end": "2026-11-03T11:32:30Z"
+      },
+      {
+        "name": "client-lint-build",
+        "result": "success",
+        "start": "2026-11-03T11:29:11Z",
+        "end": "2026-11-03T11:31:32Z"
+      }
+    ]
+  }
+]

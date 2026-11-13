@@ -364,6 +364,50 @@ class ApplicationEvaluationFlowTest {
     }
 
     @Test
+    fun `lista con cada filtro individual filtros vacios y pagina sin resultados`() {
+        val result = create()
+        expect(result, 201)
+        val created = json.readValue(result.response.contentAsString, ApplicationEvaluationResponse::class.java)
+        val application = tx {
+            val value = applications.findById(fixture.applicationId).orElseThrow()
+            requireNotNull(value.applicationNumber) to requireNotNull(value.user.id)
+        }
+        val filters = listOf(
+            "applicationId" to fixture.applicationId.toString(),
+            "applicationNumber" to application.first.toString(),
+            "applicantUserId" to application.second.toString(),
+            "professionalId" to fixture.actorId.toString(),
+            "programId" to fixture.programId.toString(),
+            "programEditionId" to fixture.editionId.toString(),
+            "vulnerability" to "HIGH",
+            "priority" to "URGENT",
+            "evaluatedFrom" to created.evaluatedAt.minusSeconds(1).toString(),
+            "evaluatedTo" to created.evaluatedAt.plusSeconds(1).toString(),
+        )
+        for (parameters in filters.map { listOf(it) } + listOf(emptyList(), filters.map { it.first to "" })) {
+            val request = get("/api/admin/application-evaluations")
+                .header("Authorization", "Bearer ${fixture.actorToken}")
+                .param("size", "100")
+            parameters.forEach { (key, value) -> request.param(key, value) }
+            val listing = mvc.perform(request).andReturn()
+            expect(listing, 200)
+            val content = json.readTree(listing.response.contentAsString).get("content")
+            assertTrue(content.any { it.get("id").stringValue() == created.id.toString() }, parameters.toString())
+            assertTrue(content.none { it.has("recommendation") })
+        }
+        val outsidePage = mvc.perform(
+            get("/api/admin/application-evaluations")
+                .header("Authorization", "Bearer ${fixture.actorToken}")
+                .param("applicationId", fixture.applicationId.toString())
+                .param("page", "1").param("size", "1"),
+        ).andReturn()
+        expect(outsidePage, 200)
+        val page = json.readTree(outsidePage.response.contentAsString)
+        assertEquals(1L, page.get("totalElements").longValue())
+        assertEquals(0, page.get("content").size())
+    }
+
+    @Test
     fun `protege las consultas con permiso vigente usuario activo y rol asignado`() {
         expect(list(token = null), 401, "AUTH_UNAUTHENTICATED")
         expect(list(token = "invalid"), 401, "AUTH_INVALID_TOKEN")

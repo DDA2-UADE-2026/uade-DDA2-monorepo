@@ -1,0 +1,100 @@
+{
+  "scope": "local JaCoCo counters; not imported in Sonar; measured before two new CorePersistenceTest cases",
+  "global": {
+    "INSTRUCTION": {
+      "covered": 56147,
+      "missed": 11221,
+      "percent": 83.34
+    },
+    "BRANCH": {
+      "covered": 3029,
+      "missed": 1240,
+      "percent": 70.95
+    },
+    "LINE": {
+      "covered": 10254,
+      "missed": 1166,
+      "percent": 89.79
+    },
+    "COMPLEXITY": {
+      "covered": 4600,
+      "missed": 1669,
+      "percent": 73.38
+    },
+    "METHOD": {
+      "covered": 3616,
+      "missed": 558,
+      "percent": 86.63
+    },
+    "CLASS": {
+      "covered": 563,
+      "missed": 21,
+      "percent": 96.4
+    }
+  },
+  "featurePackages": {
+    "INSTRUCTION": {
+      "covered": 52099,
+      "missed": 10708,
+      "percent": 82.95
+    },
+    "BRANCH": {
+      "covered": 2770,
+      "missed": 1129,
+      "percent": 71.04
+    },
+    "LINE": {
+      "covered": 9617,
+      "missed": 1138,
+      "percent": 89.42
+    },
+    "COMPLEXITY": {
+      "covered": 4354,
+      "missed": 1535,
+      "percent": 73.93
+    },
+    "METHOD": {
+      "covered": 3448,
+      "missed": 531,
+      "percent": 86.65
+    },
+    "CLASS": {
+      "covered": 528,
+      "missed": 20,
+      "percent": 96.35
+    }
+  },
+  "validatorPackages": {
+    "INSTRUCTION": {
+      "covered": 4884,
+      "missed": 363,
+      "percent": 93.08
+    },
+    "BRANCH": {
+      "covered": 828,
+      "missed": 86,
+      "percent": 90.59
+    },
+    "LINE": {
+      "covered": 867,
+      "missed": 23,
+      "percent": 97.42
+    },
+    "COMPLEXITY": {
+      "covered": 593,
+      "missed": 85,
+      "percent": 87.46
+    },
+    "METHOD": {
+      "covered": 217,
+      "missed": 3,
+      "percent": 98.64
+    },
+    "CLASS": {
+      "covered": 42,
+      "missed": 0,
+      "percent": 100.0
+    }
+  },
+  "reportSha256": "6abe75c3307174bf4996a01f572d2bcb798bd565fe7bc1ae3876326921ba9f41"
+}

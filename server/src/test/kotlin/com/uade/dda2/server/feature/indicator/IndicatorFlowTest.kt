@@ -269,6 +269,15 @@ class IndicatorFlowTest {
     }
 
     @Test
+    fun `una nueva consulta refleja solicitudes registradas despues de la consulta anterior`() {
+        val before = body(indicators()).get("summary").get("applicationsSubmitted").longValue()
+        application(ApplicationStatus.SUBMITTED, submittedDaysAgo = 2)
+        val after = body(indicators())
+        assertEquals(before + 1, after.get("summary").get("applicationsSubmitted").longValue())
+        assertEquals(before + 1, after.get("applicationsTrend").sumOf { it.get("submitted").longValue() })
+    }
+
+    @Test
     fun `mapa de evaluacion casos pendientes visitas y carga de trabajo`() {
         application(ApplicationStatus.IN_EVALUATION, 8, evaluatedDaysAgo = 3, evaluation = VulnerabilityLevel.HIGH to EvaluationPriority.URGENT)
         application(ApplicationStatus.IN_EVALUATION, 9, evaluatedDaysAgo = 4, evaluation = VulnerabilityLevel.HIGH to EvaluationPriority.URGENT)

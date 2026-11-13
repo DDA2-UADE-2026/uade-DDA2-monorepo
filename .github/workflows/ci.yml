@@ -1,14 +1,18 @@
 name: CI
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
       - develop
   push:
+    tags:
+      - v2.0-entrega4
     branches:
       - main
       - develop
+      - feature/backend-branch-coverage
 
 permissions:
   contents: read
@@ -37,6 +41,12 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [[ "$EVENT_NAME" == "workflow_dispatch" || "$GITHUB_REF_TYPE" == "tag" ]]; then
+            echo "client=true" >> "$GITHUB_OUTPUT"
+            echo "server=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           if [[ "$EVENT_NAME" == "pull_request" ]]; then
             changed_files="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
           elif [[ "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
@@ -45,13 +55,13 @@ jobs:
             changed_files="$(git diff --name-only "$BEFORE_SHA" "$HEAD_SHA")"
           fi
 
-          if grep -Eq '^client/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
+          if grep -Eq '^client/|^scripts/testing/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
             echo "client=true" >> "$GITHUB_OUTPUT"
           else
             echo "client=false" >> "$GITHUB_OUTPUT"
           fi
 
-          if grep -Eq '^server/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
+          if grep -Eq '^server/|^scripts/testing/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
             echo "server=true" >> "$GITHUB_OUTPUT"
           else
             echo "server=false" >> "$GITHUB_OUTPUT"
@@ -59,6 +69,7 @@ jobs:
 
   client-lint-build:
     name: client-lint-build
+    timeout-minutes: 15
     needs: changes
     if: needs.changes.outputs.client == 'true'
     runs-on: ubuntu-latest
@@ -84,13 +95,26 @@ jobs:
         run: npm run lint
 
       - name: Test client
-        run: npm run test:run
+        run: npm run test:run -- --maxWorkers=2 --reporter=default --reporter=junit --outputFile.junit=test-results/junit.xml
 
       - name: Build
         run: npm run build
 
+      - name: Summarize tests without response bodies or credentials
+        if: always()
+        run: python3 ../scripts/testing/summarize-junit.py test-results test-results/summary.json
+
+      - name: Save client test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-tests-${{ github.sha }}-${{ github.run_attempt }}
+          path: client/test-results/summary.json
+          if-no-files-found: error
+
   server-assemble:
     name: server-assemble
+    timeout-minutes: 15
     needs: changes
     if: needs.changes.outputs.server == 'true'
     runs-on: ubuntu-latest
@@ -109,3 +133,15 @@ jobs:
       - name: Test and build server
         working-directory: server
         run: ./gradlew build --no-daemon
+
+      - name: Summarize tests without response bodies or credentials
+        if: always()
+        run: python3 scripts/testing/summarize-junit.py server/build/test-results/test server/build/reports/qa-summary.json
+
+      - name: Save server test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-tests-${{ github.sha }}-${{ github.run_attempt }}
+          path: server/build/reports/qa-summary.json
+          if-no-files-found: error

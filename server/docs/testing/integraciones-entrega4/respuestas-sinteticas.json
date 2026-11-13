@@ -1,0 +1,154 @@
+[
+  {
+    "caseId": "benefits-false-0",
+    "requestName": "Consultar mis beneficios asignados",
+    "status": 200,
+    "body": {
+      "content": [],
+      "page": 0,
+      "size": 20,
+      "totalElements": 0,
+      "totalPages": 0,
+      "message": "No tenés beneficios asignados."
+    }
+  },
+  {
+    "caseId": "benefits-false-1",
+    "requestName": "Consultar la pagina siguiente de mis beneficios",
+    "status": 200,
+    "body": {
+      "content": [],
+      "page": 1,
+      "size": 20,
+      "totalElements": 0,
+      "totalPages": 0,
+      "message": "No tenés beneficios asignados."
+    }
+  },
+  {
+    "caseId": "benefits-false-2",
+    "requestName": "Rechazar pagina negativa de beneficios propios",
+    "status": 400,
+    "body": {
+      "message": "La validación falló.",
+      "code": "VALIDATION_ERROR",
+      "status": 400,
+      "timestamp": "2026-11-12T18:36:00.454785300Z",
+      "path": "/api/benefit-grants",
+      "fields": null
+    }
+  },
+  {
+    "caseId": "benefits-true-0",
+    "requestName": "Consultar mis beneficios asignados",
+    "status": 200,
+    "body": {
+      "content": [
+        {
+          "id": "9ba3c04b-eac4-4d44-abb2-9dd1a1726beb",
+          "applicationId": "10335b60-6de1-4a57-a267-7571e539c6ca",
+          "applicationNumber": 30,
+          "programBenefitId": "0e58eda4-7311-4fc6-84a1-2298eb18ea0f",
+          "programId": "8f7e5a0a-5061-40de-8f68-fe311d3e76e2",
+          "programName": "[REDACTED]",
+          "programEditionId": "5ffc267f-1b7f-4482-a30f-07037bb974d5",
+          "programEditionName": "[REDACTED]",
+          "benefitType": "FOOD_ASSISTANCE",
+          "description": "Descripcion reservada",
+          "amount": 1250.5,
+          "status": "ACTIVE",
+          "startDate": "2026-11-07",
+          "endDate": "2026-11-22"
+        }
+      ],
+      "page": 0,
+      "size": 20,
+      "totalElements": 1,
+      "totalPages": 1,
+      "message": null
+    }
+  },
+  {
+    "caseId": "benefits-true-1",
+    "requestName": "Consultar la pagina siguiente de mis beneficios",
+    "status": 200,
+    "body": {
+      "content": [],
+      "page": 1,
+      "size": 20,
+      "totalElements": 1,
+      "totalPages": 1,
+      "message": null
+    }
+  },
+  {
+    "caseId": "benefits-true-2",
+    "requestName": "Rechazar pagina negativa de beneficios propios",
+    "status": 400,
+    "body": {
+      "message": "La validación falló.",
+      "code": "VALIDATION_ERROR",
+      "status": 400,
+      "timestamp": "2026-11-12T18:36:00.605784100Z",
+      "path": "/api/benefit-grants",
+      "fields": null
+    }
+  },
+  {
+    "caseId": "visit-future",
+    "requestName": "Registrar resultado de actuacion finalizada",
+    "status": 409,
+    "body": {
+      "message": "Solo se puede registrar el resultado de una visita o entrevista programada que ya finalizo.",
+      "code": "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+      "status": 409,
+      "timestamp": "2026-11-12T18:35:39.474907500Z",
+      "path": "/api/applications/60f11eab-4081-49f3-aec9-4314a793483f/visits/9cb0ba95-01d8-4f54-8706-45447e9af68a/result",
+      "fields": null
+    }
+  },
+  {
+    "caseId": "visit-repeat",
+    "requestName": "Registrar resultado de actuacion finalizada",
+    "status": 409,
+    "body": {
+      "message": "Solo se puede registrar el resultado de una visita o entrevista programada que ya finalizo.",
+      "code": "APPLICATION_VISIT_RESULT_NOT_REGISTRABLE",
+      "status": 409,
+      "timestamp": "2026-11-12T18:35:39.592956Z",
+      "path": "/api/applications/60f11eab-4081-49f3-aec9-4314a793483f/visits/9cb0ba95-01d8-4f54-8706-45447e9af68a/result",
+      "fields": null
+    }
+  },
+  {
+    "caseId": "visit-result",
+    "requestName": "Registrar resultado de actuacion finalizada",
+    "status": 201,
+    "body": {
+      "id": "9cb0ba95-01d8-4f54-8706-45447e9af68a",
+      "applicationId": "60f11eab-4081-49f3-aec9-4314a793483f",
+      "applicationStatus": "IN_EVALUATION",
+      "type": "VISIT",
+      "startsAt": "2026-11-12T13:35:39.485906-03:00",
+      "endsAt": "2026-11-12T14:35:39.485906-03:00",
+      "durationMinutes": 60,
+      "location": "Domicilio declarado",
+      "status": "REALIZED",
+      "responsibleId": 17,
+      "responsibleName": "[REDACTED]",
+      "scheduledAt": "2026-11-12T18:35:39.390898Z",
+      "rescheduled": false,
+      "lastRescheduledAt": null,
+      "latestRescheduleRequest": null,
+      "cancellationReason": null,
+      "cancelledAt": null,
+      "cancelledById": null,
+      "cancelledByName": "[REDACTED]",
+      "observations": "La familia recibio al profesional.",
+      "conclusions": "Se requiere continuar con la evaluacion.",
+      "resultRecordedAt": "2026-11-12T18:35:39.538956Z",
+      "resultRecordedById": 17,
+      "resultRecordedByName": "[REDACTED]"
+    }
+  }
+]

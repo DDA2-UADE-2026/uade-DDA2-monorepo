@@ -1,0 +1,7 @@
+{
+  "tool": "OSV querybatch API v1",
+  "packages": 137,
+  "date": "2026-11-12T15:17:40.7780933-03:00",
+  "scope": "Gradle runtimeClasspath; Maven ecosystem",
+  "findings": []
+}

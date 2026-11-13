@@ -1,0 +1,15 @@
+// Optional dependency inventory; does not alter the application build.
+allprojects {
+    afterEvaluate {
+        tasks.register('qaSecurityDependencies') {
+            doLast {
+                def modules = configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.collect {
+                    [name: "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}", version: it.moduleVersion.id.version]
+                }.unique().sort { it.name }
+                def output = layout.buildDirectory.file('reports/security/runtime-packages.json').get().asFile
+                output.parentFile.mkdirs()
+                output.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(modules))
+            }
+        }
+    }
+}

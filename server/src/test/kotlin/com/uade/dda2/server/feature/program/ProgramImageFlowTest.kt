@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import tools.jackson.databind.JsonNode
@@ -77,10 +78,13 @@ class ProgramImageFlowTest {
                 ?: permissions.save(Permission(name = "programs:management:edit"))
             val view = permissions.findAll().firstOrNull { it.name == "programs:management:view" }
                 ?: permissions.save(Permission(name = "programs:management:view"))
+            val periodPermissions = listOf("enrollment-periods:management:create", "enrollment-periods:management:view").map { name ->
+                permissions.findAll().firstOrNull { it.name == name } ?: permissions.save(Permission(name = name))
+            }
             val role = roles.save(
                 Role(
                     name = "PROGRAM_IMAGE_ADMIN_${UUID.randomUUID().toString().take(8)}",
-                    permissions = mutableSetOf(create, edit, view),
+                    permissions = (listOf(create, edit, view) + periodPermissions).toMutableSet(),
                 ),
             )
             val emptyRole = roles.save(Role(name = "PROGRAM_IMAGE_VIEWER_${UUID.randomUUID().toString().take(8)}"))
@@ -123,6 +127,21 @@ class ProgramImageFlowTest {
                 noPermissionToken = jwt.createToken(viewer, emptyRole),
             )
         }
+    }
+
+    @Test
+    fun `convocatoria creada conserva programa y edicion y rechaza ruta de otro programa`() {
+        val editionId = transaction { editions.findAll().single { it.program.id == fixture.programId }.id!! }
+        val base = "/api/admin/programs/${fixture.programId}/editions/$editionId/enrollment-periods"
+        val created = body(mvc.perform(post(base).header("Authorization", authorization(fixture.adminToken))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""{"openDate":"${LocalDate.now().plusDays(1)}","closeDate":"${LocalDate.now().plusDays(7)}"}""" )).andReturn(), 201)
+        val id = created.get("id").asString()
+        val stored = body(mvc.perform(get("$base/$id").header("Authorization", authorization(fixture.adminToken))).andReturn(), 200)
+        assertEquals(fixture.programId.toString(), stored.get("programId").asString())
+        assertEquals(editionId.toString(), stored.get("programEditionId").asString())
+        assertEquals(404, mvc.perform(get("/api/admin/programs/${UUID.randomUUID()}/editions/$editionId/enrollment-periods/$id")
+            .header("Authorization", authorization(fixture.adminToken))).andReturn().response.status)
     }
 
     @Test

@@ -92,6 +92,57 @@ class CorePersistenceTest {
         } finally { pool.shutdownNow() }
     }
 
+    @Test fun `outbox deduplica el mismo evento y conserva el original ante conflicto`() {
+        val event = envelope()
+        enqueue(event)
+        val original = outbox.findById(event.eventId).orElseThrow().payloadJson
+        enqueue(event)
+        assertEquals(1L, outbox.count())
+        val conflict = assertFailsWith<CoreIntegrationException> {
+            enqueue(event.copy(causationId = UUID.randomUUID()))
+        }
+        assertEquals("CORE_EVENT_ID_CONFLICT", conflict.code)
+        assertEquals(1L, outbox.count())
+        assertEquals(original, outbox.findById(event.eventId).orElseThrow().payloadJson)
+        evidence("outbox-duplicate", mapOf("eventId" to event.eventId, "correlationId" to event.correlationId,
+            "storedRows" to outbox.count(), "conflictCode" to conflict.code, "originalPayloadPreserved" to true))
+    }
+
+    @Test fun `fallo de publicacion espera backoff y recupera sin duplicar la operacion`() {
+        val event = envelope()
+        enqueue(event)
+        val first = assertNotNull(store.reserveNext())
+        store.retry(first, "CORE_BROKER_UNAVAILABLE")
+        val pending = outbox.findById(event.eventId).orElseThrow()
+        assertEquals(CoreOutboxStatus.PENDING, pending.status)
+        assertEquals("CORE_BROKER_UNAVAILABLE", pending.lastError)
+        assertNull(store.reserveNext())
+        now = now.plus(properties.publisher.retryDelay)
+        val second = assertNotNull(store.reserveNext())
+        assertEquals(first.eventId, second.eventId)
+        assertEquals(first.payloadJson, second.payloadJson)
+        assertEquals(first.traceId, second.traceId)
+        assertNotEquals(first.token, second.token)
+        assertFalse(store.confirm(first))
+        assertTrue(store.confirm(second))
+        val confirmed = outbox.findById(event.eventId).orElseThrow()
+        assertEquals(CoreOutboxStatus.BROKER_CONFIRMED, confirmed.status)
+        assertEquals(2, confirmed.attempts)
+        assertNull(confirmed.lastError)
+        assertEquals(1L, outbox.count())
+        assertNull(store.reserveNext())
+        evidence("outbox-recovery", mapOf("eventId" to event.eventId, "correlationId" to event.correlationId,
+            "traceId" to second.traceId, "statusAfterFailure" to pending.status.name,
+            "finalStatus" to confirmed.status.name, "attempts" to confirmed.attempts,
+            "storedRows" to outbox.count(), "lastError" to confirmed.lastError))
+    }
+
+    private fun evidence(id: String, values: Map<String, Any?>) {
+        val directory = java.nio.file.Path.of("build/qa-integration")
+        java.nio.file.Files.createDirectories(directory)
+        java.nio.file.Files.writeString(directory.resolve("$id.json"), json.writeValueAsString(values))
+    }
+
     @Test fun `inbox deduplica y rechaza UUID reutilizado con otro contenido`() {
         val event = envelope()
         val codec = CoreEnvelopeCodec(json)
