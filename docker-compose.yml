@@ -1,0 +1,147 @@
+# G1: docker compose up --build --wait --wait-timeout 300
+name: dda2-desarrollo-social
+
+services:
+  local-init:
+    build:
+      context: ./infra/local
+      dockerfile: init/Dockerfile
+    env_file: .env
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:?Falta DB_PASSWORD en .env. Copia .env.example a .env y completalo.}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:?Falta RABBITMQ_PASSWORD en .env.}
+      JWT_SECRET: ${JWT_SECRET:?Falta JWT_SECRET en .env.}
+      BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:?Falta BOOTSTRAP_ADMIN_PASSWORD en .env.}
+      CORE_MACHINE_SECRET: ${CORE_MACHINE_SECRET:?Falta CORE_MACHINE_SECRET en .env.}
+    volumes:
+      - local-ca:/ca
+      - db-secrets:/db
+      - rabbit-secrets:/rabbit
+      - server-secrets:/server
+      - core-secrets:/core
+    restart: "no"
+
+  db:
+    image: postgres:16-alpine
+    depends_on:
+      local-init:
+        condition: service_completed_successfully
+    environment:
+      POSTGRES_DB: dda2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - db-secrets:/run/secrets:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dda2"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    hostname: rabbitmq
+    depends_on:
+      local-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbit-secrets:/run/local-secrets:ro
+      - ./infra/local/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  core-mock:
+    build: ./infra/local/core-mock
+    depends_on:
+      local-init:
+        condition: service_completed_successfully
+    volumes:
+      - core-secrets:/run/secrets:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import ssl, urllib.request; urllib.request.urlopen('https://localhost:8443/health/ready', context=ssl.create_default_context(cafile='/run/secrets/ca.crt'), timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  server:
+    build: ./server
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      core-mock:
+        condition: service_healthy
+    entrypoint: ["sh", "/app/local-entrypoint.sh"]
+    environment:
+      SPRING_CONFIG_IMPORT: configtree:/run/secrets/
+      SERVER_PORT: 8080
+      DB_URL: jdbc:postgresql://db:5432/dda2
+      DB_USERNAME: postgres
+      JPA_DDL_AUTO: update
+      BOOTSTRAP_ADMIN_ENABLED: "true"
+      AUTH_COOKIE_SECURE: "false"
+      AUTH_COOKIE_SAME_SITE: Lax
+      CORS_ALLOWED_ORIGIN_1: http://localhost:5173
+      CORS_ALLOWED_ORIGIN_2: http://127.0.0.1:5173
+      CORE_ENABLED: "true"
+      CORE_AMQP_CHECK_ON_STARTUP: "true"
+      CORE_API_BASE_URL: https://core-mock:8443/api/v1
+      CORE_AMQP_HOST: rabbitmq
+      CORE_AMQP_PORT: 5671
+      CORE_AMQP_VHOST: core
+      CORE_AMQP_USERNAME: module_desarrollo-social
+      CORE_AMQP_TLS: "true"
+      CORE_PUBLISHER_ENABLED: "false"
+      CORE_CONSUMER_ENABLED: "false"
+    volumes:
+      - server-secrets:/run/secrets:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      start_period: 60s
+      retries: 30
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_SERVER_URL: http://localhost:8080
+        VITE_CLIENT_URL: http://localhost:5173
+    depends_on:
+      server:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5173:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  verify:
+    image: python:3.13-alpine
+    profiles: [tools]
+    volumes:
+      - server-secrets:/run/secrets:ro
+      - ./infra/local/verify.py:/verify.py:ro
+    command: ["python", "/verify.py"]
+
+volumes:
+  db-data:
+  rabbitmq-data:
+  local-ca:
+  db-secrets:
+  rabbit-secrets:
+  server-secrets:
+  core-secrets:

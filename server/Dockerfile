@@ -14,6 +14,7 @@ FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
+COPY local-entrypoint.sh /app/local-entrypoint.sh
 
 EXPOSE 8080
 

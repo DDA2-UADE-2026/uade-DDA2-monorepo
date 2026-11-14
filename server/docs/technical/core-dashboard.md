@@ -48,6 +48,7 @@ Fragmento del resultado esperado de `/status`:
   "machineSecretConfigured": true,
   "publisherEnabled": false,
   "consumerEnabled": false,
+  "readiness": { "state": "UP", "status": "up", "checks": { "database": "up", "broker": "up" }, "upstreamStatus": 200 },
   "http": { "state": "UP", "upstreamStatus": 200 },
   "amqp": { "state": "UP", "queue": "q.desarrollo-social", "pendingMessages": 0, "activeConsumers": 0 }
 }
@@ -55,13 +56,15 @@ Fragmento del resultado esperado de `/status`:
 
 El resultado incluye además `checkedAt` y campos de diagnóstico opcionales. Los contadores de cola son observaciones del instante; no se exige que sean cero para la consulta de estado.
 
-`/status` devuelve HTTP local 200 aunque un transporte esté `DOWN`, `DISABLED` o `NOT_CONFIGURED`; hay que leer el cuerpo. El chequeo HTTP hace un GET autenticado al dashboard, y el chequeo AMQPS una declaración **pasiva** en un canal separado. No publica, consume, purga ni configura recursos. Es una consulta activa con timeouts, no una señal continua de salud ni una prueba de actividad del worker.
+`/status` devuelve HTTP local 200 aunque un transporte esté `DOWN`, `DEGRADED`, `DISABLED` o `NOT_CONFIGURED`; hay que leer el cuerpo. El chequeo `readiness` consulta `GET /health/ready` de Core (público, sin token) y toma el estado del cuerpo: `up` → `UP`, `degraded` → `DEGRADED`, cualquier otro → `DOWN`, aunque Core responda HTTP 200. `checks` resume `database` y `broker` según Core. El chequeo HTTP hace un GET autenticado al dashboard, y el chequeo AMQPS una declaración **pasiva** en un canal separado. No publica, consume, purga ni configura recursos. Es una consulta activa con timeouts, no una señal continua de salud ni una prueba de actividad del worker.
 
 Al invocar `/status` también se registra:
 
 ```text
 CORE_HTTP_CONNECTED module=desarrollo-social endpoint=/dashboard
 ```
+
+Si la readiness no está `up` se registra `CORE_READINESS_NOT_UP module=desarrollo-social status=<status> checks=<checks>`, y si no se pudo consultar, `CORE_READINESS_FAILED module=desarrollo-social upstreamStatus=<HTTP remoto o null> code=<código>`.
 
 Ante fallo: `CORE_HTTP_CONNECTION_FAILED module=desarrollo-social upstreamStatus=<HTTP remoto o null> code=<código>`. El log HTTP aparece al consultar el endpoint, no automáticamente al arrancar. El chequeo AMQPS de arranque conserva su marcador `CORE_AMQP_CONNECTED`.
 
@@ -94,6 +97,7 @@ Los contadores locales son acumulados: `pending`, `inFlight`, `brokerConfirmed`,
 | Resultado | Acción |
 | --- | --- |
 | HTTP local 401/403 | Revisar sesión, rol activo, permiso y estado actual del usuario en nuestro backend. |
+| `readiness.state=DEGRADED` o `DOWN` | Core reporta una dependencia propia caída; revisar `readiness.checks` y avisar a Core. No depende de nuestra configuración. |
 | `http.state=NOT_CONFIGURED` | Falta `CORE_MACHINE_SECRET` en el proceso del backend. |
 | `http.state=DOWN` | Revisar `upstreamStatus`, `code` y `traceId` cuando estén disponibles. Compartir esos datos con Core. |
 | HTTP local 502 | Core rechazó la solicitud o devolvió un contrato inesperado. El error conserva código y, en el mensaje, HTTP remoto cuando corresponde. Un 401 remoto no invalida la sesión local. |

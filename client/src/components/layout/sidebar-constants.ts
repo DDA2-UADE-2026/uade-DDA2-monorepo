@@ -98,7 +98,7 @@ export const ANALISIS_NAV: readonly SidebarNavItem[] = [
   { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock, requiredPermissions: ["roles:view"] },
   { title: "Indicadores", url: "/gestion/indicadores", icon: IconChartBar, requiredPermissions: ["indicators:view"] },
   { title: "Auditoría", url: "/gestion/auditoria", icon: IconShieldCheck, requiredPermissions: ["logs:view"] },
-  { title: "Eventos", url: "/gestion/auditoria/eventos", icon: IconTimelineEventText, requiredPermissions: ["logs:view"] },
+  { title: "Eventos", url: "/gestion/auditoria/eventos", icon: IconTimelineEventText, requiredPermissions: ["integrations:core:view"] },
 ]
 
 export const DEBUG_NAV: readonly SidebarNavItem[] = [

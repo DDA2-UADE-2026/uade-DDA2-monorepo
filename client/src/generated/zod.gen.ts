@@ -2086,6 +2086,239 @@ export const zMunicipalCenterListResponse = z.object({
     totalPages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
 });
 
+export const zCoreSubscription = z.object({
+    id: z.uuid().optional(),
+    moduleName: z.string().optional(),
+    eventType: z.string().optional(),
+    queueName: z.string().optional(),
+    maxAttempts: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    active: z.boolean().optional()
+});
+
+export const zCoreAmqpCheck = z.object({
+    state: z.enum([
+        'DISABLED',
+        'NOT_CONFIGURED',
+        'UP',
+        'DEGRADED',
+        'DOWN'
+    ]).optional(),
+    queue: z.string().optional(),
+    pendingMessages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    activeConsumers: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    code: z.string().optional()
+});
+
+export const zCoreHttpCheck = z.object({
+    state: z.enum([
+        'DISABLED',
+        'NOT_CONFIGURED',
+        'UP',
+        'DEGRADED',
+        'DOWN'
+    ]).optional(),
+    upstreamStatus: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    code: z.string().optional(),
+    traceId: z.string().optional()
+});
+
+/**
+ * Readiness pública de Core según el cuerpo de GET /health/ready. Core puede responder HTTP 200 con status degraded o down; state lo refleja. checks resume cada dependencia remota (database, broker). No acredita que el worker de Core esté consumiendo.
+ */
+export const zCoreReadinessCheck = z.object({
+    state: z.enum([
+        'DISABLED',
+        'NOT_CONFIGURED',
+        'UP',
+        'DEGRADED',
+        'DOWN'
+    ]).optional(),
+    status: z.string().optional(),
+    checks: z.record(z.string(), z.string()).optional(),
+    upstreamStatus: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    code: z.string().optional(),
+    traceId: z.string().optional()
+});
+
+/**
+ * Comprobación activa de la readiness de Core, HTTP autenticado y AMQPS. No publica ni consume eventos; no es un monitor continuo.
+ */
+export const zCoreConnectionStatusResponse = z.object({
+    checkedAt: z.iso.datetime().optional(),
+    module: z.string().optional(),
+    enabled: z.boolean().optional(),
+    machineSecretConfigured: z.boolean().optional(),
+    publisherEnabled: z.boolean().optional(),
+    consumerEnabled: z.boolean().optional(),
+    readiness: zCoreReadinessCheck.optional(),
+    http: zCoreHttpCheck.optional(),
+    amqp: zCoreAmqpCheck.optional()
+});
+
+export const zCorePublication = z.object({
+    id: z.uuid().optional(),
+    moduleName: z.string().optional(),
+    eventType: z.string().optional(),
+    active: z.boolean().optional()
+});
+
+/**
+ * Contadores locales acumulados, independientes de la ventana de estadísticas de Core. BROKER_CONFIRMED no acredita procesamiento remoto.
+ */
+export const zCoreLocalMetrics = z.object({
+    pending: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    inFlight: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    brokerConfirmed: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    inboxProcessed: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    oldestUnconfirmedAt: z.iso.datetime().optional()
+});
+
+export const zCoreEventSummary = z.object({
+    id: z.uuid().optional(),
+    eventId: z.uuid().optional(),
+    eventType: z.string().optional(),
+    eventVersion: z.string().optional(),
+    sourceModule: z.string().optional(),
+    occurredAt: z.iso.datetime().optional(),
+    receivedAt: z.iso.datetime().optional(),
+    correlationId: z.uuid().optional(),
+    status: z.string().optional(),
+    rejectionCode: z.string().optional(),
+    ingestionChannel: z.string().optional(),
+    processingMs: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    deliveryCount: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    deliveredCount: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+/**
+ * Página de Core: page comienza en 1. El listado no incluye el payload del evento.
+ */
+export const zCoreEventPage = z.object({
+    items: z.array(zCoreEventSummary).optional(),
+    total: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    pages: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+export const zCoreDelivery = z.object({
+    targetModule: z.string().optional(),
+    queueName: z.string().optional(),
+    status: z.string().optional(),
+    attempts: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    maxAttempts: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional()
+});
+
+export const zJsonNode = z.object({
+    array: z.boolean().optional(),
+    empty: z.boolean().optional(),
+    null: z.boolean().optional(),
+    float: z.boolean().optional(),
+    number: z.boolean().optional(),
+    missingNode: z.boolean().optional(),
+    object: z.boolean().optional(),
+    container: z.boolean().optional(),
+    valueNode: z.boolean().optional(),
+    pojo: z.boolean().optional(),
+    short: z.boolean().optional(),
+    int: z.boolean().optional(),
+    nodeType: z.enum([
+        'ARRAY',
+        'BINARY',
+        'BOOLEAN',
+        'MISSING',
+        'NULL',
+        'NUMBER',
+        'OBJECT',
+        'POJO',
+        'STRING'
+    ]).optional(),
+    string: z.boolean().optional(),
+    integralNumber: z.boolean().optional(),
+    double: z.boolean().optional(),
+    textual: z.boolean().optional(),
+    long: z.boolean().optional(),
+    bigDecimal: z.boolean().optional(),
+    bigInteger: z.boolean().optional(),
+    binary: z.boolean().optional(),
+    boolean: z.boolean().optional(),
+    floatingPointNumber: z.boolean().optional(),
+    embeddedValue: z.boolean().optional()
+});
+
+export const zCoreEventDetail = z.object({
+    eventId: z.uuid().optional(),
+    eventType: z.string().optional(),
+    status: z.string().optional(),
+    ingestionChannel: z.string().optional(),
+    envelope: zJsonNode.optional(),
+    deliveries: z.array(zCoreDelivery).optional()
+});
+
+export const zCoreDeadLetterMetrics = z.object({
+    open: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    byReason: z.record(z.string(), z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })).optional()
+});
+
+export const zCoreHourlyVolume = z.object({
+    hour: z.iso.datetime().optional(),
+    total: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    rejected: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+export const zCoreProcessingMetrics = z.object({
+    avgMs: z.number().optional(),
+    maxMs: z.number().optional()
+});
+
+export const zCorePublicationMetrics = z.object({
+    declared: z.array(z.string()).optional()
+});
+
+export const zCoreReceivedMetrics = z.object({
+    byStatus: z.record(z.string(), z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' })).optional(),
+    total: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    delivered: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    pendingRetry: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    dead: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+export const zCoreSubscriptionMetrics = z.object({
+    total: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    active: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    eventTypes: z.array(z.string()).optional()
+});
+
+export const zCoreTypeVolume = z.object({
+    eventType: z.string().optional(),
+    total: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional()
+});
+
+export const zCorePublishedMetrics = z.object({
+    total: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    inWindow: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
+    topTypes: z.array(zCoreTypeVolume).optional()
+});
+
+export const zCoreModuleDashboard = z.object({
+    module: z.string().optional(),
+    windowHours: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional(),
+    generatedAt: z.iso.datetime().optional(),
+    published: zCorePublishedMetrics.optional(),
+    received: zCoreReceivedMetrics.optional(),
+    deadLetters: zCoreDeadLetterMetrics.optional(),
+    subscriptions: zCoreSubscriptionMetrics.optional(),
+    publications: zCorePublicationMetrics.optional(),
+    volumeByHour: z.array(zCoreHourlyVolume).optional(),
+    processing: zCoreProcessingMetrics.optional()
+});
+
+export const zCoreDashboardResponse = z.object({
+    checkedAt: z.iso.datetime().optional(),
+    local: zCoreLocalMetrics.optional(),
+    core: zCoreModuleDashboard.optional()
+});
+
 export const zActivityIndicators = z.object({
     enrollments: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
     present: z.coerce.bigint().min(BigInt('-9223372036854775808'), { error: 'Invalid value: Expected int64 to be >= -9223372036854775808' }).max(BigInt('9223372036854775807'), { error: 'Invalid value: Expected int64 to be <= 9223372036854775807' }).optional(),
@@ -4478,6 +4711,62 @@ export const zListProgramEditionOptionsPath = z.object({
  * OK
  */
 export const zListProgramEditionOptionsResponse = z.array(zProgramEditionOptionResponse);
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zListCoreSubscriptionsResponse = z.array(zCoreSubscription);
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zGetCoreConnectionStatusResponse = zCoreConnectionStatusResponse;
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zListCorePublicationsResponse = z.array(zCorePublication);
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zGetCoreLocalMetricsResponse = zCoreLocalMetrics;
+
+export const zListCoreEventsQuery = z.object({
+    page: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(1),
+    size: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(25),
+    eventType: z.string().optional(),
+    status: z.enum([
+        'ROUTED',
+        'NO_SUBSCRIBERS',
+        'REJECTED',
+        'DUPLICATE'
+    ]).optional(),
+    correlationId: z.uuid().optional()
+});
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zListCoreEventsResponse = zCoreEventPage;
+
+export const zGetCoreEventPath = z.object({
+    eventId: z.uuid()
+});
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zGetCoreEventResponse = zCoreEventDetail;
+
+export const zGetCoreDashboardQuery = z.object({
+    windowHours: z.int().min(-2147483648, { error: 'Invalid value: Expected int32 to be >= -2147483648' }).max(2147483647, { error: 'Invalid value: Expected int32 to be <= 2147483647' }).optional().default(24)
+});
+
+/**
+ * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
+ */
+export const zGetCoreDashboardResponse = zCoreDashboardResponse;
 
 export const zGetIndicatorsQuery = z.object({
     from: z.iso.date().optional(),
