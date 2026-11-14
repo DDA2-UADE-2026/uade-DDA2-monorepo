@@ -15,6 +15,8 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 interface ApplicationVisitRepository : JpaRepository<ApplicationVisit, UUID> {
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    fun findAllByApplicationIdAndStatus(applicationId: UUID, status: ApplicationVisitStatus): List<ApplicationVisit>
     fun existsByApplicationIdAndStatus(applicationId: UUID, status: ApplicationVisitStatus): Boolean
     fun existsByResponsibleId(responsibleId: Long): Boolean
 

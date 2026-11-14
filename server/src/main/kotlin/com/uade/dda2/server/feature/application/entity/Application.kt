@@ -67,6 +67,13 @@ class Application(
     @Column(name = "updated_at", nullable = false)
     var updatedAt: LocalDateTime = submittedAt,
 
+    @Column(name = "closed_reason", length = 1000)
+    var closedReason: String? = null,
+    @Column(name = "closed_at")
+    var closedAt: java.time.OffsetDateTime? = null,
+    @Column(name = "closed_by_event_id")
+    var closedByEventId: UUID? = null,
+
     @Column(name = "idempotency_key", length = 128, updatable = false)
     var idempotencyKey: String? = null,
     @Column(name = "request_hash", length = 64, updatable = false)

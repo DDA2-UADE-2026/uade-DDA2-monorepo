@@ -1,10 +1,12 @@
 # Roadmaps de integración con Core
 
-El primer objetivo es conectar el backend de Desarrollo Social con Core y verificar publicación y consumo confiables. Las integraciones de negocio con Ciudadanos, Atención Ciudadana y Rentas quedan para una fase posterior, por indicación del equipo.
+El primer objetivo es conectar el backend de Desarrollo Social con Core y verificar publicación y consumo confiables. El equipo amplió el alcance y autorizó los contratos y procesos de negocio con Ciudadanos, Atención Ciudadana y Rentas; están implementados con activación independiente. La habilitación remota conserva sus requisitos y evidencia.
 
 Estado al 2 de noviembre de 2026: infraestructura técnica y dashboard de integración implementados, con 33 pruebas locales aprobadas e integración desactivada por defecto. Cliente HTTP, adaptadores AMQP, outbox, inbox y prueba remota opt-in están disponibles. El despliegue ya confirmó conexión AMQPS con TLS, autenticación y consulta pasiva de `q.desarrollo-social`; también inició correctamente la conexión PostgreSQL/JPA. Core confirmó la entrega del secreto HTTP rotado: falta configurarlo y comprobarlo desde nuestro despliegue. El intercambio real de eventos sigue pendiente.
 
 La [evidencia registrada](evidencias-core.md) distingue lo implementado, lo probado localmente y lo verificado en el despliegue. La [guía técnica](../technical/core-integration.md) documenta variables, arranque y diagnóstico. La contraseña permanece en el entorno privado, fuera de Git.
+
+La [etapa de negocio M8](04-integraciones-posteriores.md) y [su guía técnica](../technical/m8-events.md) agregan los diez contratos, procesos, endpoints administrativos y AsyncAPI; requieren migración y verificación con las contrapartes antes de habilitarse.
 
 ## Avance actual
 
@@ -29,7 +31,7 @@ En los checklists, `[x]` indica completado dentro del alcance descrito: implemen
 | 1 | [Accesos y conexión con Core](01-core-accesos-y-conexion.md) | Configuración aislada, autenticación HTTP y conexión AMQPS verificadas, sin modificar la topología. |
 | 2 | [Mensajería confiable](02-core-mensajeria-confiable.md) | Sobre común, outbox, inbox, publicación confirmada y consumo idempotente probados en un entorno aislado. |
 | 3 | [Prueba coordinada y habilitación](03-core-prueba-y-habilitacion.md) | Publicación y recepción verificadas con Core, con evidencia y recuperación ante fallos. |
-| Después | [Integraciones de negocio pendientes](04-integraciones-posteriores.md) | Alcance conservado para otra fase; sus contratos no bloquean el desarrollo de la infraestructura genérica. |
+| 4 | [Procesos de negocio M8](04-integraciones-posteriores.md) | Contratos, procesos y AsyncAPI implementados; migración, compatibilidad y habilitación externa pendientes. |
 
 ```mermaid
 flowchart TD
@@ -37,7 +39,7 @@ flowchart TD
     B --> C[Mensajería confiable probada en aislamiento]
     C --> D[Prueba coordinada con Core]
     D --> E[Conexión técnica habilitada]
-    E --> F[Fase posterior de integraciones de negocio]
+    E --> F[Habilitación de procesos M8 implementados]
 ```
 
 ## Alcance de esta fase
@@ -72,7 +74,7 @@ Quedan para después el login externo, la sincronización de ciudadanos, las ges
 - Desarrollar y ejecutar pruebas locales sin depender de los secretos del ambiente compartido.
 - Mantener desactivado el consumo remoto hasta acordar los eventos de prueba y comprobar las suscripciones y los mensajes pendientes de la cola propia.
 - Contrastar las rutas, clases, variables y tablas con el código y la guía técnica; los hitos pendientes pueden incluir propuestas todavía sin implementar.
-- Resolver los pendientes externos de cada hito antes de ejecutar la parte que depende de ellos. Los contratos de negocio posteriores permanecen diferidos.
+- Resolver los pendientes externos de cada hito antes de ejecutar la parte que depende de ellos. Los procesos de negocio requieren además cumplir la [etapa M8](04-integraciones-posteriores.md).
 
 ## Bloque técnico implementado
 
@@ -82,12 +84,14 @@ La conexión AMQPS ya tiene evidencia del despliegue. Para intercambiar eventos 
 
 ## Fuentes y precedencia
 
-1. Instrucción del equipo: comenzar por Core y realizar las otras integraciones más adelante.
-2. Lista editada de eventos aportada por el equipo: alcance previsto de publicaciones y suscripciones de negocio.
-3. `core_desappsii-main.zip`: implementación técnica inspeccionada. La [referencia verificada](00-contrato-core-verificado.md) registra el hash del archivo y las rutas y símbolos que sustentan los ajustes. El comportamiento implementado prevalece sobre comentarios o ejemplos desactualizados del propio ZIP, sin asumir que sea la versión desplegada.
-4. `Core — Guía común de integración AWS.docx`, borrador del 20 de octubre de 2026: valores públicos y restricciones operativas del ambiente AWS, sujetos a confirmación de Core.
-5. `EventosConEnvelopeM8.pdf`, `EventosConEnvelopeM8V2.pdf` y `EventosConEnvelopeM8V3.pdf`: ejemplos de payloads y evolución de reglas. Las diferencias con la lista editada y el seed del ZIP se conservan en el [backlog posterior](04-integraciones-posteriores.md).
-6. `TPO - Desarrollo de Apps II - Gestión de municipalidad.pdf`: arquitectura, independencia de datos, idempotencia, trazabilidad y tolerancia a fallos.
-7. Código y configuración de Desarrollo Social revisados al preparar estos documentos.
+Para negocio prevalecen el contrato final M8 y M2 v1.79, junto con las decisiones expresas del equipo sobre vinculación, CLOSED por fallecimiento y finalización de ACTIVE/SUSPENDED. Las fuentes históricas siguientes conservan contexto técnico, sin imponer los nombres preliminares sobre los contratos finales.
+
+1. Decisiones del equipo: primero Core; posteriormente se autorizó implementar también todos los procesos de negocio. Se exige vinculación M1 para publicar; fallecimiento cierra con CLOSED y finaliza ACTIVE y SUSPENDED.
+2. `Contrato de eventos M8 para backend.pdf` y `Eventos M2 - V1.79.docx`: contrato funcional vigente, nombres finales y reglas de payloads.
+3. Código y configuración actuales de Desarrollo Social, junto con las pruebas locales registradas.
+4. `core_desappsii-main.zip`: snapshot técnico inspeccionado. La [referencia verificada](00-contrato-core-verificado.md) registra hash, rutas y límites; no acredita la versión desplegada de Core.
+5. `Core — Guía común de integración AWS.docx` y confirmaciones de Core: transporte y operación, sujetos a comprobación en el despliegue.
+6. Lista editada inicial y `EventosConEnvelopeM8.pdf`, V2 y V3: antecedentes; reemplazados por el contrato final en lo que difieran.
+7. `TPO - Desarrollo de Apps II - Gestión de municipalidad.pdf`: arquitectura, independencia de datos, idempotencia y tolerancia a fallos.
 
 Los documentos originales fueron aportados fuera del repositorio. Sus secretos no forman parte de estos roadmaps. La guía de Core es un borrador: sus valores deben contrastarse con la ficha privada y la habilitación efectiva del módulo.

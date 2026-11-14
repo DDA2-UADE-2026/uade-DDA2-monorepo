@@ -21,12 +21,13 @@ class CoreAmqpPublisherTest {
             assertEquals("muni.inbox", exchange)
             assertEquals("", routing)
             assertEquals(lease.eventId.toString(), message.messageProperties.messageId)
+            assertEquals("module_desarrollo-social", message.messageProperties.userId)
             assertEquals("application/json", message.messageProperties.contentType)
             assertEquals(MessageDeliveryMode.PERSISTENT, message.messageProperties.deliveryMode)
             assertEquals(lease.token.toString(), correlation.id)
             correlation.future.complete(CorrelationData.Confirm(true, null))
         }
-        CoreAmqpPublisher(template, CoreProperties()).publish(lease)
+        CoreAmqpPublisher(template, CoreProperties(), "module_desarrollo-social").publish(lease)
     }
 
     @Test fun `un confirm positivo con retorno no es un envio correcto`() {
@@ -34,7 +35,7 @@ class CoreAmqpPublisherTest {
             correlation.setReturned(ReturnedMessage(message, 312, "NO_ROUTE", exchange, routing))
             correlation.future.complete(CorrelationData.Confirm(true, null))
         }
-        val error = assertFailsWith<CoreIntegrationException> { CoreAmqpPublisher(template, CoreProperties()).publish(lease) }
+        val error = assertFailsWith<CoreIntegrationException> { CoreAmqpPublisher(template, CoreProperties(), "module_desarrollo-social").publish(lease) }
         assertEquals("CORE_PUBLISH_RETURNED", error.code)
     }
 

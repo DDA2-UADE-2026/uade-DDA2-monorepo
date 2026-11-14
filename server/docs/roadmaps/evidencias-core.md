@@ -56,4 +56,13 @@ Estas verificaciones siguen siendo locales: HTTP controlado y H2, sin la credenc
 - Ejecutar el recorrido de publicación y recepción por AMQP, y guardar `eventId`, confirm, estado en Core e inbox/ack.
 - Probar recuperación y reintentos reales; incorporar las pruebas técnicas al CI y definir operación y retención.
 
-Los siguientes pasos están en [C1/C3/C4](01-core-accesos-y-conexion.md), [C8](02-core-mensajeria-confiable.md) y [C9–C12](03-core-prueba-y-habilitacion.md). Las integraciones de negocio siguen [diferidas](04-integraciones-posteriores.md).
+Los siguientes pasos están en [C1/C3/C4](01-core-accesos-y-conexion.md), [C8](02-core-mensajeria-confiable.md) y [C9–C12](03-core-prueba-y-habilitacion.md). Los procesos de negocio ahora están implementados con activación independiente; su [habilitación M8](04-integraciones-posteriores.md) y pruebas remotas siguen pendientes.
+
+
+## Procesos M8 y documentación de eventos
+
+El contrato final M8 y M2 v1.79 reemplazan los nombres preliminares. Se implementaron tres publicadores y siete consumidores tipados sobre la outbox/inbox existentes, con documentación AsyncAPI 3.1 autogenerada por Springwolf, visor de lectura y endpoints administrativos protegidos para tickets, documentos externos, Rentas y alertas de Ciudadanos.
+
+Se verificó localmente la suite completa del backend sin fallos. La regresión de Core y solicitudes también pasó después de integrar las rutas existentes de evaluación, resolución y reprogramación. Los 23 tests de contratos/procesos M8 cubren precondición de identidad, rollback, orden temporal, deduplicación, anonimato, información adicional, escalamiento, documentos y revisión, restricciones de M1, fallecimiento de ACTIVE/SUSPENDED, eventos de beneficios, Rentas y permisos. La generación documental comprueba diez operaciones, sobres tipados, campos obligatorios, nulabilidad y visor sin publicación. OpenAPI y bootJar también se generan localmente.
+
+No se usaron secretos ni el broker compartido en estas pruebas. Docker local no estaba iniciado; no se validó esta migración contra PostgreSQL ni se hizo una nueva prueba real de protocolo RabbitMQ. La evidencia AMQPS previa conserva su alcance: conexión, TLS, autenticación y consulta pasiva. La [guía M8](../technical/m8-events.md) detalla migración, bandera de activación, requisitos de identidad M1 y coordinación de contratos/suscripciones antes de intercambiar eventos reales.

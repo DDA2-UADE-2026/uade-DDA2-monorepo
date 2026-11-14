@@ -9,6 +9,7 @@ fun BenefitGrantChange.toResponse() = BenefitGrantChangeResponse(
     sequenceNumber = sequenceNumber, action = action, previousStatus = previousStatus, status = status,
     previousStartDate = previousStartDate, previousEndDate = previousEndDate, startDate = startDate, endDate = endDate,
     reason = reason, responsibleUserId = responsible?.id, responsibleUserName = responsible?.name ?: "Sistema", changedAt = changedAt,
+    causationEventId = causationEventId, effectiveEndDate = effectiveEndDate,
     requirementChecks = requirementChecks.map { BenefitGrantChangeRequirementResponse(it.requirementId, it.type, it.value, it.description, it.fulfilled) },
 )
 

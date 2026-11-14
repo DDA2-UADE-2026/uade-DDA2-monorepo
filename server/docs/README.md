@@ -1,5 +1,7 @@
 # Guía funcional de programas y solicitudes
 
+Para una explicación completa del módulo, sus recorridos y conexiones con otras áreas, comenzar por [Módulo 8: Desarrollo Social, Salud Comunitaria y Beneficios](modulo-8/README.md). Incluye pasos de negocio, entradas/salidas y eventos asociados, contrastados con la rama de integración actual.
+
 Esta guía explica cómo el municipio organiza su oferta de programas sociales, habilita convocatorias y recibe solicitudes de las personas interesadas. Está pensada para alguien que no conoce el proyecto y no requiere conocimientos técnicos.
 
 Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no está disponible, se indica expresamente. Los recorridos explican acciones de los usuarios sin presuponer nombres de botones ni un diseño particular de pantallas.
@@ -25,9 +27,10 @@ Describe el funcionamiento disponible actualmente. Cuando una etapa todavía no 
 
 | Carpeta | Contenido |
 | --- | --- |
+| `modulo-8/` | Visión integral del módulo, flujos detallados, conexiones por contraparte y catálogo de eventos por paso. |
 | `functional/` | Guías de negocio y recorridos de programas, convocatorias, solicitudes y documentos. |
 | `technical/` | Contratos, seguridad, decisiones técnicas y verificación del backend. |
-| `roadmaps/` | Plan de conexión técnica con Core e integraciones de negocio diferidas. |
+| `roadmaps/` | Planes de integración con Core y otros módulos, con avance y pendientes de habilitación. |
 | `database/` | Modelo DBML y datos iniciales para recrear el entorno de pruebas. |
 | `postman/` | Colección de Postman del backend. |
 

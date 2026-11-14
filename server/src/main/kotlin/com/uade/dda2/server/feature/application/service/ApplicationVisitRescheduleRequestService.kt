@@ -1,5 +1,7 @@
 package com.uade.dda2.server.feature.application.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
+import org.springframework.context.ApplicationEventPublisher
 import com.uade.dda2.server.config.AppointmentProperties
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationVisitRescheduleRequest
@@ -83,6 +85,7 @@ class ApplicationVisitRescheduleRequestService(
     private val applicationTime: EnrollmentPeriodExpirationProperties,
     private val appointmentTime: AppointmentProperties,
     private val entityManager: EntityManager,
+    private val businessEvents: ApplicationEventPublisher,
 ) {
     @Transactional
     fun createOwn(
@@ -313,6 +316,7 @@ class ApplicationVisitRescheduleRequestService(
         rescheduleRequest.approvedEndsAt = schedule.endsAt
         rescheduleRequest.approvedLocation = schedule.location
         visits.saveAndFlush(locked.visit)
+        businessEvents.publishEvent(M8BusinessFact.VisitScheduled(locked.visit))
         logs.record(
             user = locked.actor,
             action = LogAction.UPDATE,

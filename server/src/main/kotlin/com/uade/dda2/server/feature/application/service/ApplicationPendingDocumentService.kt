@@ -4,7 +4,7 @@ import com.uade.dda2.server.feature.application.dto.response.PendingApplicationD
 import com.uade.dda2.server.feature.application.dto.response.PendingDocumentReason
 import com.uade.dda2.server.feature.application.entity.Application
 import com.uade.dda2.server.feature.application.entity.ApplicationDocumentStatus
-import com.uade.dda2.server.feature.application.repository.ApplicationDocumentRepository
+import com.uade.dda2.server.feature.application.service.ApplicationDocumentStatesService
 import com.uade.dda2.server.feature.program.repository.ProgramDocumentRequirementRepository
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -12,7 +12,7 @@ import java.util.UUID
 @Service
 class ApplicationPendingDocumentService(
     private val requirements: ProgramDocumentRequirementRepository,
-    private val documents: ApplicationDocumentRepository,
+    private val documents: ApplicationDocumentStatesService,
 ) {
     fun calculate(application: Application): List<PendingApplicationDocumentResponse> =
         calculate(listOf(application))[requireNotNull(application.id)].orEmpty()

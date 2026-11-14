@@ -19,6 +19,11 @@ class CoreProperties {
     var publisher = Publisher()
     var consumer = Consumer()
     var probe = Probe()
+    var business = Business()
+
+    class Business {
+        var enabled = false
+    }
 
     class Publisher {
         var enabled = false
@@ -63,7 +68,10 @@ class CoreProperties {
         require(publisher.leaseDuration > publisher.confirmTimeout.plusSeconds(1)) { "La reserva de outbox debe superar el timeout del confirm." }
         require(publisher.batchSize in 1..100 && consumer.prefetch in 1..100) { "Lote y prefetch de Core deben estar entre 1 y 100." }
         require(publisher.maxRetryDelay >= publisher.retryDelay) { "El máximo backoff debe superar el inicial." }
-        require(!consumer.enabled || probe.enabled) { "Todavía solo está implementado el consumidor técnico; habilitar CORE_PROBE_ENABLED." }
+        require(!consumer.enabled || probe.enabled || business.enabled) { "El consumo requiere handlers técnicos o de negocio habilitados." }
+        require(!business.enabled || publisher.enabled || !consumer.enabled) {
+            "Los consumidores de negocio pueden responder eventos y requieren CORE_PUBLISHER_ENABLED=true."
+        }
         if (probe.enabled) {
             require(probe.runId != null) { "La prueba técnica requiere CORE_PROBE_RUN_ID explícito." }
             require(probe.eventType.isNotBlank() && probe.eventType.length <= 120) { "Tipo de prueba Core inválido." }

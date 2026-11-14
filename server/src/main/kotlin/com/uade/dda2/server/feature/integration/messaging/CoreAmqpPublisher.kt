@@ -12,13 +12,15 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-class CoreAmqpPublisher(private val template: RabbitTemplate, private val properties: CoreProperties) {
+class CoreAmqpPublisher(private val template: RabbitTemplate, private val properties: CoreProperties,
+    private val rabbitUsername: String? = null) {
     fun publish(lease: CoreOutboxLease) {
         val metadata = MessageProperties().apply {
             contentType = "application/json"
             contentEncoding = "UTF-8"
             deliveryMode = MessageDeliveryMode.PERSISTENT
             setMessageId(lease.eventId.toString())
+            rabbitUsername?.let { setUserId(it) }
             setHeader("x-core-trace-id", lease.traceId)
         }
         val correlation = CorrelationData(lease.token.toString())

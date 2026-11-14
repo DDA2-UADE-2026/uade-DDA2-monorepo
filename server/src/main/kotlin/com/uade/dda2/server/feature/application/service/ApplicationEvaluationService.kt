@@ -1,5 +1,7 @@
 package com.uade.dda2.server.feature.application.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
+import org.springframework.context.ApplicationEventPublisher
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationEvaluationRequest
 import com.uade.dda2.server.feature.application.dto.response.ApplicationEvaluationResponse
@@ -64,6 +66,7 @@ class ApplicationEvaluationService(
     private val logs: LogService,
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
+    private val businessEvents: ApplicationEventPublisher,
 ) {
     @Transactional
     fun create(applicationId: UUID, request: CreateApplicationEvaluationRequest): ApplicationEvaluationResponse {
@@ -81,6 +84,7 @@ class ApplicationEvaluationService(
         val evaluatedAt = OffsetDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MICROS)
 
         application.assignedWorker = professional
+        businessEvents.publishEvent(M8BusinessFact.WorkerAssigned(application))
         application.status = ApplicationStatus.IN_EVALUATION
         application.updatedAt = LocalDateTime.ofInstant(evaluatedAt.toInstant(), timeProperties.zone())
             .truncatedTo(ChronoUnit.MICROS)

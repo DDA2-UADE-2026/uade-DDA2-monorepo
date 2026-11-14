@@ -77,9 +77,31 @@ springdoc:
     operations-sorter: method
     tags-sorter: alpha
     try-it-out-enabled: true
+springwolf:
+  enabled: true
+  use-fqn: false
+  docket:
+    base-package: com.uade.dda2.server.feature.integration
+    default-content-type: application/json
+    info:
+      title: Eventos de Desarrollo Social — Core
+      version: 1.0.0
+      description: Contratos M8 v1.0 sobre AMQPS. Los recursos son administrados por Core; no se declaran automáticamente. Documentación de lectura, sin envío de mensajes desde el visor.
+    servers:
+      core:
+        protocol: amqps
+        protocol-version: 0.9.1
+        host: ${CORE_AMQP_HOST:core-uade-2026.duckdns.org}:${CORE_AMQP_PORT:5671}
+        description: Vhost core. Publicación en muni.inbox con routing key vacía y consumo de q.desarrollo-social. Credenciales privadas del backend.
+  plugin:
+    amqp:
+      publishing:
+        enabled: false
 app:
   core:
     enabled: ${CORE_ENABLED:false}
+    business:
+      enabled: ${CORE_BUSINESS_ENABLED:false}
     check-on-startup: ${CORE_AMQP_CHECK_ON_STARTUP:false}
     module: desarrollo-social
     api-base-url: ${CORE_API_BASE_URL:https://core-uade-2026.duckdns.org/api/v1}
