@@ -242,6 +242,43 @@ class M8BusinessFlowTest {
         assertFalse(tickets.existsById(UUID.fromString(event.data["ticketId"].asString())))
     }
 
+    @Test fun `reclasificacion a otra area cierra la gestion local sin aceptar eventos atrasados`() {
+        val variants = listOf(
+            "INFORMATION_REQUIRED" to TicketDetailsData(informationRequest = InformationRequestData(purpose = "RECLASSIFICATION")),
+            "INFORMATION_PROVIDED" to TicketDetailsData(informationResponse = InformationResponseData(purpose = "RECLASSIFICATION")),
+        )
+        for ((type, details) in variants) {
+            val id = UUID.randomUUID()
+            val queuedBefore = outbox.count()
+            val routed = send(ticket(id))
+            send(ticket(id, type = type, area = "M3", at = now.minusSeconds(1), details = details))
+            val open = tickets.findById(id).orElseThrow()
+            assertEquals(SocialTicketState.RECEIVED, open.state)
+            assertEquals("M8", open.responsibleAreaId)
+            assertEquals(routed.eventId, open.lastEventId)
+
+            val reclassified = send(ticket(id, type = type, area = "M3", at = now.plusSeconds(2), details = details))
+            val closed = tickets.findById(id).orElseThrow()
+            assertEquals(SocialTicketState.CLOSED, closed.state)
+            assertEquals("M3", closed.responsibleAreaId)
+            assertEquals("Ticket reasignado a otra área.", closed.closedReason)
+            assertEquals(reclassified.eventId, closed.lastEventId)
+            assertEquals(now.plusSeconds(2).toInstant(), closed.sourceUpdatedAt)
+            assertFalse(closed.informationPending)
+            assertFalse(closed.requiresAttention)
+            assertEquals(CoreInboxResult.DUPLICATE, receive(reclassified))
+
+            send(ticket(id, at = now.plusSeconds(1), reassignment = true))
+            val afterDelayedRoute = tickets.findById(id).orElseThrow()
+            assertEquals(SocialTicketState.CLOSED, afterDelayedRoute.state)
+            assertEquals("M3", afterDelayedRoute.responsibleAreaId)
+            assertEquals(reclassified.eventId, afterDelayedRoute.lastEventId)
+            expect(api("POST", "/api/admin/integrations/core/tickets/$id/updates",
+                mapOf("updateType" to "PROGRESS", "publicMessage" to "Avance")), 409)
+            assertEquals(queuedBefore, outbox.count())
+        }
+    }
+
     @Test fun `contratos invalidos fallan sin reservar inbox y Core puede reintentarlos`() {
         val bad = message(ticket()).let { it.copy(sourceModule = "otro-modulo") }
         assertFailsWith<CoreIntegrationException> { receive(bad) }

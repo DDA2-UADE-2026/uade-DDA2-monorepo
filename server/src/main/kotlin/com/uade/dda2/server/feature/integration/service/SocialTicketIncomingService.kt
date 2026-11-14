@@ -29,7 +29,6 @@ class SocialTicketIncomingService(
 ) {
     fun receive(message: M8EventEnvelope<TicketUpdatedData>) {
         val data = message.data
-        if (validator.isReclassification(data)) return
         val updatedAt = data.updatedAt.toInstant()
         val cursor = cursors.lockById(data.ticketId)
         if (cursor != null && updatedAt.isBefore(cursor.sourceUpdatedAt)) return
@@ -52,6 +51,8 @@ class SocialTicketIncomingService(
             }
             return
         }
+        // Ignorar la reclasificación solo después de cerrar una gestión que pasó a otra área.
+        if (validator.isReclassification(data)) return
         if (ticket == null) {
             if (data.updateType != "ROUTED") return
             ticket = tickets.save(SocialTicket(id = data.ticketId, publicId = data.publicId, citizenId = data.citizenId,
