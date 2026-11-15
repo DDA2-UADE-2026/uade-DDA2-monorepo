@@ -11,7 +11,8 @@
     "test:run": "vitest run",
     "preview": "vite preview",
     "gen:api": "openapi-ts",
-    "gen:visualizer": "tsc -b && vite build --mode visualizer"
+    "gen:visualizer": "tsc -b && vite build --mode visualizer",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov --coverage.reportsDirectory=./coverage --maxWorkers=2 --testTimeout=15000"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -68,6 +69,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
+    "@vitest/coverage-v8": "^4.1.12",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^10.8.0",
     "eslint-plugin-react-hooks": "^7.1.1",

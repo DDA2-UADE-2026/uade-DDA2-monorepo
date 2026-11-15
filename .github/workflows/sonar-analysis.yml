@@ -1,0 +1,79 @@
+name: SonarQube Cloud
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Tests, coverage and Sonar analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Install frontend dependencies
+        working-directory: client
+        run: npm ci --ignore-scripts
+
+      - name: Run frontend tests and generate LCOV coverage
+        working-directory: client
+        run: npm run test:coverage
+
+      - name: Run backend tests and generate JaCoCo XML coverage
+        working-directory: server
+        run: ./gradlew -I qa-coverage.init.gradle qaCoverageReport --no-daemon --no-configuration-cache
+
+      - name: Verify coverage reports exist
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s client/coverage/lcov.info
+          test -s server/build/reports/qa-coverage/coverage.xml
+
+      - name: Analyze with SonarQube Cloud
+        uses: SonarSource/sonarqube-scan-action@59202af334b4ba7b5db01b701b8e79f8b3bef0f4 # v8.5.0
+        with:
+          args: >-
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Save coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-coverage-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            client/coverage/lcov.info
+            server/build/reports/qa-coverage/coverage.xml
+          if-no-files-found: error
