@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:00:24.581Z" hostname="DESKTOP-OL92NPA" time="10.176">
+  <properties/>
+  <testcase name="startup creates an active admin with an encoded password and repeated runs do nothing()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.176"/>
+  <testcase name="new admin requires an explicit strong bootstrap password()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.02"/>
+  <testcase name="existing mixed case username is never reset reactivated or assigned other roles()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.192"/>
+  <testcase name="existing admin gains citizen role without changing password status or other roles()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.242"/>
+  <testcase name="missing ADMIN role is created with the registered permissions()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.416"/>
+  <testcase name="new admin reuses the existing role and preserves its custom permissions()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.232"/>
+  <testcase name="new users assigned ADMIN also receive CIUDADANO immediately()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.441"/>
+  <testcase name="admin can authenticate as citizen and switch back without sharing permissions()" classname="com.uade.dda2.server.feature.auth.AdminUserInitializerTest" time="0.31"/>
+  <system-out><![CDATA[2026-11-15T19:00:24.584-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.AdminUserInitializerTest]: AdminUserInitializerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:00:25.000-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.AdminUserInitializerTest
+2026-11-15T19:00:25.003-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.AdminUserInitializerTest]: AdminUserInitializerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:00:25.008-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.AdminUserInitializerTest
+2026-11-15T19:00:25.029-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:00:25.041-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown initiated...
+2026-11-15T19:00:25.044-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:00:25.113-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.auth.AdminUserInitializerTest  : Starting AdminUserInitializerTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:00:25.113-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.auth.AdminUserInitializerTest  : The following 1 profile is active: "docs"
+2026-11-15T19:00:26.781-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:00:27.252-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 465 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:00:27.733-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:00:27.837-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:00:27.839-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Starting...
+2026-11-15T19:00:27.841-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-14 - Added connection conn130: url=jdbc:h2:mem:admin-bootstrap user=SA
+2026-11-15T19:00:27.841-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Start completed.
+2026-11-15T19:00:27.842-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:00:27.843-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:admin-bootstrap]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: ADMIN-BOOTSTRAP/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:00:28.208-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:00:28.261-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:00:30.763-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:00:30.763-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:00:30.768-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:00:30.772-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 9 ms
+2026-11-15T19:00:30.817-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.auth.AdminUserInitializerTest  : Started AdminUserInitializerTest in 5.766 seconds (process running for 196.176)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.M8ContractCodecTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:18.175Z" hostname="DESKTOP-OL92NPA" time="0.24">
+  <properties/>
+  <testcase name="sobre de salida tiene ocho claves canonicas como maximo e ignora metadatos de Core en entrada()" classname="com.uade.dda2.server.feature.integration.M8ContractCodecTest" time="0.004"/>
+  <testcase name="reglas condicionales exigen causas mensajes y variantes completas()" classname="com.uade.dda2.server.feature.integration.M8ContractCodecTest" time="0.029"/>
+  <testcase name="campos obligatorios nullables deben existir y los numeros no aceptan coercion()" classname="com.uade.dda2.server.feature.integration.M8ContractCodecTest" time="0.01"/>
+  <testcase name="M2 v179 acepta ROUTED sin opcionales y respuesta de informacion con adjuntos en data()" classname="com.uade.dda2.server.feature.integration.M8ContractCodecTest" time="0.036"/>
+  <testcase name="los diez contratos conservan data tipada y los nombres finales del contrato()" classname="com.uade.dda2.server.feature.integration.M8ContractCodecTest" time="0.136"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

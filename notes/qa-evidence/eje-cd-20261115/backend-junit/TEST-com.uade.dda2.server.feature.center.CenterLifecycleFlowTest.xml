@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.center.CenterLifecycleFlowTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:02:30.685Z" hostname="DESKTOP-OL92NPA" time="11.965">
+  <properties/>
+  <testcase name="protege usuario con asignaciones profesionales()" classname="com.uade.dda2.server.feature.center.CenterLifecycleFlowTest" time="0.17"/>
+  <testcase name="impide eliminar profesional aun con asignaciones inactivas()" classname="com.uade.dda2.server.feature.center.CenterLifecycleFlowTest" time="0.053"/>
+  <testcase name="revalida solapamientos al activar cada dependencia()" classname="com.uade.dda2.server.feature.center.CenterLifecycleFlowTest" time="0.396"/>
+  <testcase name="protege rol profesional mientras existen asignaciones activas()" classname="com.uade.dda2.server.feature.center.CenterLifecycleFlowTest" time="0.054"/>
+  <system-out><![CDATA[2026-11-15T19:02:30.695-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.center.CenterLifecycleFlowTest]: CenterLifecycleFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:02:30.699-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.center.CenterLifecycleFlowTest
+2026-11-15T19:02:30.702-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.center.CenterLifecycleFlowTest]: CenterLifecycleFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:02:30.705-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.center.CenterLifecycleFlowTest
+2026-11-15T19:02:30.723-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:02:30.734-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown initiated...
+2026-11-15T19:02:30.736-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:02:30.799-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.c.CenterLifecycleFlowTest      : Starting CenterLifecycleFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:02:30.799-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.c.CenterLifecycleFlowTest      : The following 1 profile is active: "docs"
+2026-11-15T19:02:32.909-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:02:33.568-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 654 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:02:34.352-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:02:34.434-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:02:34.441-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-21 - Starting...
+2026-11-15T19:02:34.444-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-21 - Added connection conn200: url=jdbc:h2:mem:center-lifecycle user=SA
+2026-11-15T19:02:34.445-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-21 - Start completed.
+2026-11-15T19:02:34.446-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:02:34.446-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:center-lifecycle]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: CENTER-LIFECYCLE/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:02:35.083-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:02:35.181-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:02:39.511-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:02:39.512-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:02:39.545-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:02:39.566-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 54 ms
+2026-11-15T19:02:39.670-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.c.CenterLifecycleFlowTest      : Started CenterLifecycleFlowTest in 8.927 seconds (process running for 325.03)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

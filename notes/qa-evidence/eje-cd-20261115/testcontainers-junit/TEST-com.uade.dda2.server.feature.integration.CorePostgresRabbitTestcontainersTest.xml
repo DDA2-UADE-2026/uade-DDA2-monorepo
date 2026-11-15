@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:05:10.693Z" hostname="DESKTOP-OL92NPA" time="104.757">
+  <properties/>
+  <testcase name="PostgreSQL inbox procesa una entrega y deduplica el mismo evento()" classname="com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest" time="0.999"/>
+  <testcase name="RabbitMQ local confirma la publicacion persistente y entrega el mensaje()" classname="com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest" time="0.435"/>
+  <testcase name="PostgreSQL revierte outbox junto con la transaccion y retiene el evento si el broker no confirma()" classname="com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest" time="0.244"/>
+  <system-out><![CDATA[19:05:10.957 [Test worker] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+19:05:10.983 [Test worker] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+19:05:11.026 [Test worker] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 2.0.5
+19:05:12.197 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Loaded org.testcontainers.dockerclient.NpipeSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+19:05:23.688 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Npipe socket (npipe:////./pipe/docker_engine)
+19:05:23.700 [Test worker] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+19:05:23.802 [Test worker] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.9.3
+  API Version: 1.56
+  Operating System: Docker Desktop
+  Total Memory: 7810 MB
+  Labels: 
+    com.docker.desktop.address=npipe://\\.\pipe\docker_cli
+19:05:24.442 [Test worker] INFO tc.testcontainers/ryuk:0.14.0 -- Creating container for image: testcontainers/ryuk:0.14.0
+19:05:25.739 [Test worker] INFO tc.testcontainers/ryuk:0.14.0 -- Container testcontainers/ryuk:0.14.0 is starting: 85be0e686ae98590dcc7fe83d59b9d260fc17c62b1b4d3a2144bac634f5c0694
+19:05:27.030 [Test worker] INFO tc.testcontainers/ryuk:0.14.0 -- Container testcontainers/ryuk:0.14.0 started in PT2.588134S
+19:05:27.049 [Test worker] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+19:05:27.050 [Test worker] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+19:05:27.052 [Test worker] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+19:05:27.055 [Test worker] INFO tc.rabbitmq:3.13-management-alpine -- Creating container for image: rabbitmq:3.13-management-alpine
+19:05:27.251 [Test worker] INFO tc.rabbitmq:3.13-management-alpine -- Container rabbitmq:3.13-management-alpine is starting: 895bc4e8da11da5be44905e1b1ae0e50e1fcb5b219d94916702058236baacb47
+19:05:48.942 [Test worker] INFO tc.rabbitmq:3.13-management-alpine -- Container rabbitmq:3.13-management-alpine started in PT21.8873488S
+19:05:48.946 [Test worker] INFO tc.postgres:16-alpine -- Creating container for image: postgres:16-alpine
+19:05:49.170 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine is starting: 1e51c36225d3539badc570cbdec2e3de1c58786f0f833f3a247185404f9a59e5
+19:05:52.016 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine started in PT3.070688S
+19:05:52.018 [Test worker] INFO tc.postgres:16-alpine -- Container is started (JDBC URL: jdbc:postgresql://localhost:51011/integration_test?loggerLevel=OFF)
+19:05:52.435 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest]: CorePostgresRabbitTestcontainersTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:05:53.339 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest
+19:05:53.752 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest]: CorePostgresRabbitTestcontainersTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:05:53.763 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.CorePostgresRabbitTestcontainersTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:05:55.218-03:00  INFO 3480 --- [social-development-api] [    Test worker] f.i.CorePostgresRabbitTestcontainersTest : Starting CorePostgresRabbitTestcontainersTest using Java 17.0.16 with PID 3480 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:05:55.223-03:00  INFO 3480 --- [social-development-api] [    Test worker] f.i.CorePostgresRabbitTestcontainersTest : No active profile set, falling back to 1 default profile: "default"
+2026-11-15T19:06:03.707-03:00  INFO 3480 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:06:04.756-03:00  INFO 3480 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 1005 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:06:11.253-03:00  INFO 3480 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:06:11.582-03:00  INFO 3480 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.19.Final
+2026-11-15T19:06:13.344-03:00  INFO 3480 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:06:13.538-03:00  INFO 3480 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-11-15T19:06:14.187-03:00  INFO 3480 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@557de967
+2026-11-15T19:06:14.194-03:00  INFO 3480 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-11-15T19:06:14.504-03:00  INFO 3480 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:51011/integration_test?loggerLevel=OFF]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 16.16
+	Default catalog/schema: integration_test/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:06:22.540-03:00  INFO 3480 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:06:23.822-03:00  INFO 3480 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:06:24.332-03:00  INFO 3480 --- [social-development-api] [    Test worker] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-15T19:06:47.602-03:00  INFO 3480 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:06:47.899-03:00  INFO 3480 --- [social-development-api] [    Test worker] f.i.CorePostgresRabbitTestcontainersTest : Started CorePostgresRabbitTestcontainersTest in 53.836 seconds (process running for 99.901)
+2026-11-15T19:06:54.853-03:00  INFO 3480 --- [social-development-api] [    Test worker] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: localhost:57500
+2026-11-15T19:06:55.041-03:00  INFO 3480 --- [social-development-api] [    Test worker] o.s.a.r.c.CachingConnectionFactory       : Created new connection: coreConnectionFactory#36122658:0/SimpleConnection@1792afda [delegate=amqp://guest@127.0.0.1:57500/, localPort=64903]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

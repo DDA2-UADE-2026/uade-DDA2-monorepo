@@ -33,6 +33,11 @@ class ConflictException(
     message: String,
 ) : ApiException(HttpStatus.CONFLICT, code, message)
 
+class PreconditionFailedException(
+    code: String,
+    message: String,
+) : ApiException(HttpStatus.PRECONDITION_FAILED, code, message)
+
 class PayloadTooLargeException(
     code: String,
     message: String,

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:42.771Z" hostname="DESKTOP-OL92NPA" time="0.29">
+  <properties/>
+  <testcase name="registra conexion confirmada sin exigir secret HTTP ni registrar secretos(CapturedOutput)" classname="com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest" time="0.012"/>
+  <testcase name="fallo de conexion queda visible sin detener el backend(CapturedOutput)" classname="com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest" time="0.001"/>
+  <system-out><![CDATA[2026-11-15T19:03:43.054-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreConnectionCheckRunner  : CORE_AMQP_CONNECTED host=core-uade-2026.duckdns.org port=5671 vhost=core queue=q.desarrollo-social tls=true certificateVerification=true hostnameVerification=true pendingMessages=3 activeConsumers=0
+2026-11-15T19:03:43.063-03:00  WARN 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreConnectionCheckRunner  : CORE_AMQP_CONNECTION_FAILED host=core-uade-2026.duckdns.org port=5671 vhost=core queue=q.desarrollo-social code=CORE_TLS_FAILURE backendContinues=true
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

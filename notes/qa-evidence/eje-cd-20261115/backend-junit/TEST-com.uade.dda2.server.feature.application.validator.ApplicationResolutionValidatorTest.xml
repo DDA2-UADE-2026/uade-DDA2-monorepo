@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:00:03.961Z" hostname="DESKTOP-OL92NPA" time="0.011">
+  <properties/>
+  <testcase name="normaliza motivo preserva resultado negativo y exige campos explicitos()" classname="com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest" time="0.001"/>
+  <testcase name="limite de motivo se aplica despues de recortar()" classname="com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest" time="0.002"/>
+  <testcase name="requiere todos los controles sin duplicados ni ajenos()" classname="com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest" time="0.001"/>
+  <testcase name="aprobar y esperar tienen condiciones de cupo opuestas()" classname="com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest" time="0.0"/>
+  <testcase name="rechazo no exige elegibilidad adicional()" classname="com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

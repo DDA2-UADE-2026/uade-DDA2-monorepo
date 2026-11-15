@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:43.062Z" hostname="DESKTOP-OL92NPA" time="9.903">
+  <properties/>
+  <testcase name="usuario inactivo rol retirado y permiso revocado invalidan tambien tokens vigentes()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.051"/>
+  <testcase name="consultas de registro y eventos reutilizan clientes sin ejecutar escrituras()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.049"/>
+  <testcase name="todos los endpoints requieren sesion y permiso antes de consultar Core()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.054"/>
+  <testcase name="dashboard separa ventana remota de contadores locales y metricas funcionan sin Core()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.108"/>
+  <testcase name="estado comprueba HTTP y AMQPS sin devolver credenciales ni confundir fallos con exito()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.218"/>
+  <testcase name="estado distingue integracion desactivada de secret HTTP ausente y no intenta HTTP()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.031"/>
+  <testcase name="filtros invalidos se rechazan antes de consultar red()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.044"/>
+  <testcase name="errores remotos conservan diagnostico y no se presentan como perdida de sesion local()" classname="com.uade.dda2.server.feature.integration.CoreDashboardFlowTest" time="0.024"/>
+  <system-out><![CDATA[2026-11-15T19:03:43.066-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.CoreDashboardFlowTest]: CoreDashboardFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:03:43.374-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.CoreDashboardFlowTest
+2026-11-15T19:03:43.376-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.CoreDashboardFlowTest]: CoreDashboardFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:03:43.381-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.CoreDashboardFlowTest
+2026-11-15T19:03:43.397-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:03:43.404-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-20 - Shutdown initiated...
+2026-11-15T19:03:43.405-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-20 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:03:43.452-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.CoreDashboardFlowTest        : Starting CoreDashboardFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:03:43.452-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.CoreDashboardFlowTest        : The following 1 profile is active: "docs"
+2026-11-15T19:03:44.921-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:03:45.353-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 429 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:03:46.475-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:03:46.501-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:03:46.501-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-28 - Starting...
+2026-11-15T19:03:46.501-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-28 - Added connection conn270: url=jdbc:h2:mem:core-dashboard user=SA
+2026-11-15T19:03:46.517-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-28 - Start completed.
+2026-11-15T19:03:46.517-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:03:46.517-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:core-dashboard]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: CORE-DASHBOARD/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:03:46.900-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:03:46.932-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:03:50.144-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:03:50.144-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:03:50.162-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:03:50.176-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 32 ms
+2026-11-15T19:03:50.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.CoreDashboardFlowTest        : Started CoreDashboardFlowTest in 6.861 seconds (process running for 395.632)
+2026-11-15T19:03:52.657-03:00  WARN 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreDashboardService       : CORE_READINESS_FAILED module=desarrollo-social upstreamStatus=null code=CORE_CLIENT_UNAVAILABLE
+2026-11-15T19:03:52.657-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreDashboardService       : CORE_HTTP_CONNECTED module=desarrollo-social endpoint=/dashboard
+2026-11-15T19:03:52.853-03:00  WARN 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreDashboardService       : CORE_READINESS_FAILED module=desarrollo-social upstreamStatus=null code=CORE_CLIENT_UNAVAILABLE
+2026-11-15T19:03:52.854-03:00  WARN 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreDashboardService       : CORE_HTTP_CONNECTION_FAILED module=desarrollo-social upstreamStatus=403 code=MACHINE_FORBIDDEN
+2026-11-15T19:03:52.889-03:00  WARN 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.s.CoreDashboardService       : CORE_READINESS_FAILED module=desarrollo-social upstreamStatus=null code=CORE_CLIENT_UNAVAILABLE
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

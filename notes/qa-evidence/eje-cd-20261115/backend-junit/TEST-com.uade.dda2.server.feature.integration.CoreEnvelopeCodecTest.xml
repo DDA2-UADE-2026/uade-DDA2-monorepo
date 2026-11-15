@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:00.082Z" hostname="DESKTOP-OL92NPA" time="0.017">
+  <properties/>
+  <testcase name="rechaza errata de fecha falta de offset y extras de raiz()" classname="com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest" time="0.003"/>
+  <testcase name="usa el sobre propio canonico y preserva el evento()" classname="com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest" time="0.001"/>
+  <testcase name="hash ignora orden de propiedades y offsets equivalentes pero detecta cambios()" classname="com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

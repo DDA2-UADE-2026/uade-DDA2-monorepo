@@ -8,9 +8,12 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.PathItem
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.headers.Header
 import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.MediaType
 import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.media.StringSchema
+import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
@@ -87,6 +90,9 @@ class OpenApiConfig {
                         operation.responses.addApiResponse("401", errorResponse("Credenciales o token de selección inválidos."))
                         operation.responses.addApiResponse("403", errorResponse("Usuario sin roles o rol no asignado."))
                     }
+                    if (path in loginRateLimitedPaths) {
+                        operation.responses.addApiResponse("429", errorResponse("Se alcanzó el límite de intentos de autenticación."))
+                    }
                     if (operation.requestBody != null || operation.parameters.orEmpty().isNotEmpty()) {
                         operation.responses.addApiResponse("400", errorResponse("La solicitud es inválida."))
                     }
@@ -101,6 +107,32 @@ class OpenApiConfig {
                         operation.responses.addApiResponse("409", errorResponse("La operación entra en conflicto con el estado actual de los datos."))
                     }
                     operation.responses.addApiResponse("500", errorResponse("Ocurrió un error interno inesperado."))
+                    operation.responses.values.forEach { response ->
+                        val legacyProblemContent = response.content?.entries?.firstOrNull { (_, media) ->
+                            media.schema?.`$ref`?.endsWith("/ErrorResponse") == true
+                        }
+                        if (legacyProblemContent != null) {
+                            val (mediaName, media) = legacyProblemContent
+                            response.content.remove(mediaName)
+                            response.content.addMediaType("application/problem+json", media)
+                        }
+                    }
+                    if (path == "/api/admin/programs/{id}") {
+                        if (method == PathItem.HttpMethod.GET || method == PathItem.HttpMethod.PUT) {
+                            operation.responses["200"]?.headers?.put(
+                                "ETag",
+                                Header().description("Etiqueta fuerte de la representación actual."),
+                            )
+                        }
+                        if (method == PathItem.HttpMethod.PUT || method == PathItem.HttpMethod.DELETE) {
+                            operation.addParametersItem(
+                                Parameter().name("If-Match").`in`("header").required(false)
+                                    .description("Si se envía, la escritura solo se realiza si la etiqueta coincide con la representación actual.")
+                                    .schema(StringSchema()),
+                            )
+                            operation.responses.addApiResponse("412", errorResponse("La representación cambió desde la última consulta."))
+                        }
+                    }
                 }
             }
         }
@@ -110,7 +142,7 @@ class OpenApiConfig {
             .description(description)
             .content(
                 Content().addMediaType(
-                    "application/json",
+                    "application/problem+json",
                     MediaType().schema(Schema<ErrorResponse>().`$ref`("#/components/schemas/ErrorResponse")),
                 ),
             )
@@ -125,6 +157,13 @@ class OpenApiConfig {
         "/auth/session/logout",
         "/api/images/{imageId}",
         "/actuator/health",
+    )
+
+    private val loginRateLimitedPaths = setOf(
+        "/auth/login",
+        "/auth/select-role",
+        "/auth/session/login",
+        "/auth/session/select-role",
     )
 
     private val actuatorDescriptions = mapOf(

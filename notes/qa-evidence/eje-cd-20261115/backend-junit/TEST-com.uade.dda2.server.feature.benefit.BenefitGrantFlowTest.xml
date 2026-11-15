@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" tests="115" skipped="3" failures="0" errors="0" timestamp="2026-11-15T22:01:35.801Z" hostname="DESKTOP-OL92NPA" time="26.763">
+  <properties/>
+  <testcase name="renovar suspender finalizar y vencer se reflejan sin perder registros de casos cerrados()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.719"/>
+  <testcase name="dos beneficios distintos se otorgan concurrentemente sin ocupar mas cupos()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.117"/>
+  <testcase name="edicion y otorgamiento concurrentes no dejan vigencia fuera de rango()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.1"/>
+  <testcase name="[1] gap = -1" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.098"/>
+  <testcase name="[2] gap = 0" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.122"/>
+  <testcase name="[3] gap = 1" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.141"/>
+  <testcase name="nueva asignacion y finalizacion concurrentes mantienen solicitud y reserva consistentes()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.124"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.062"/>
+  <testcase name="[2] status = SUSPENDED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.072"/>
+  <testcase name="[3] status = CLOSED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.085"/>
+  <testcase name="[1] suspended = false" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.091"/>
+  <testcase name="[2] suspended = true" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.126"/>
+  <testcase name="suspende renueva y finaliza conservando secuencia datos resolucion y fechas UTC()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.287"/>
+  <testcase name="finalizar uno conserva cupo y solo finalizar ultimo suspendido cierra solicitud()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.163"/>
+  <testcase name="rechaza vigencias invertidas futuras vencidas o fuera de la edicion()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.119"/>
+  <testcase name="bandeja administrativa filtra y protege otorgamientos()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.208"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.128"/>
+  <testcase name="[2] status = SUSPENDED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.115"/>
+  <testcase name="[3] status = CLOSED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.115"/>
+  <testcase name="baja de catalogo y otorgamiento concurrentes conservan referencias validas()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.061"/>
+  <testcase name="dos altas simultaneas del mismo beneficio producen una creacion y un conflicto()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.082"/>
+  <testcase name="[1] reverse = false" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.137"/>
+  <testcase name="[2] reverse = true" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.167"/>
+  <testcase name="rechaza datos faltantes nulos incorrectos y campos controlados por servidor()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.221"/>
+  <testcase name="contador inconsistente revierte vencimiento automatico sin perder historia()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.118"/>
+  <testcase name="estado definitivo y suspension repetida no generan cambios aunque existan otros beneficios()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.269"/>
+  <testcase name="liberar cupo y aprobar otra solicitud concurrentemente nunca sobreocupa la edicion()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.2"/>
+  <testcase name="renovacion y alta de requisito concurrentes usan configuracion consistente()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.107"/>
+  <testcase name="no usa permiso de otro rol ni permiso agregado despues de emitir JWT()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.051"/>
+  <testcase name="vence juntos los pendientes y solo cierra al terminar el ultimo incluso suspendido()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.193"/>
+  <testcase name="renovacion y finalizacion concurrentes no reabren beneficio definitivo()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.075"/>
+  <testcase name="otro rol configurable puede consultar solo sus datos con permiso propio()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.108"/>
+  <testcase name="finalizar dos ultimos otorgamientos concurrentes libera exactamente un cupo()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.106"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.063"/>
+  <testcase name="[2] status = SUBMITTED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.059"/>
+  <testcase name="[3] status = IN_VALIDATION" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.057"/>
+  <testcase name="[4] status = PENDING_DOCUMENTATION" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.068"/>
+  <testcase name="[5] status = IN_EVALUATION" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.049"/>
+  <testcase name="[6] status = IN_VISIT" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.055"/>
+  <testcase name="[7] status = REJECTED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.062"/>
+  <testcase name="[8] status = WAITLISTED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.056"/>
+  <testcase name="[9] status = CLOSED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.048"/>
+  <testcase name="renovacion y cambio de fechas de edicion concurrentes conservan contencion()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.115"/>
+  <testcase name="cerrar ultimo beneficio elimina reserva incompatible pero suspension la conserva()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.215"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.099"/>
+  <testcase name="[2] status = ACTIVE" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.078"/>
+  <testcase name="[3] status = SUSPENDED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.088"/>
+  <testcase name="[4] status = CLOSED" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.087"/>
+  <testcase name="solicitud inexistente devuelve 404 en ambas operaciones()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.07"/>
+  <testcase name="[1] action = &quot;renew&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.129"/>
+  <testcase name="[2] action = &quot;suspend&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.077"/>
+  <testcase name="[3] action = &quot;finalize&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.09"/>
+  <testcase name="permiso ciudadano se migra repetidamente sin tocar otorgamientos ni dar acceso a otros roles()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.039">
+    <skipped message="org.opentest4j.TestAbortedException: Assumption failed: assumption is not true" type="org.opentest4j.TestAbortedException">org.opentest4j.TestAbortedException: Assumption failed: assumption is not true
+	at org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:340)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:127)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:74)
+	at com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest.permiso ciudadano se migra repetidamente sin tocar otorgamientos ni dar acceso a otros roles(BenefitGrantFlowTest.kt:1380)
+</skipped>
+  </testcase>
+  <testcase name="otorga activo con copia vigencia actor auditoria y privacidad sin ocupar otro cupo()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.165"/>
+  <testcase name="reevalua catalogo actual y guarda copias resistentes a cambios y bajas()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.319"/>
+  <testcase name="consulta propia valida usuario rol activo y permiso vigente en JWT y base()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.15"/>
+  <testcase name="[1] suspended = false" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.183"/>
+  <testcase name="[2] suspended = true" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.179"/>
+  <testcase name="contador inconsistente impide finalizar sin perder estado ni historia()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.086"/>
+  <testcase name="bloquea baja del beneficio otorgado y permite borrar otro sin otorgamientos()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.076"/>
+  <testcase name="vencimiento y nueva asignacion conservan reserva solo si el alta gana el bloqueo()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.08"/>
+  <testcase name="[1] action = &quot;renew&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.088"/>
+  <testcase name="[2] action = &quot;suspend&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.094"/>
+  <testcase name="[3] action = &quot;finalize&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.083"/>
+  <testcase name="requiere token usuario activo rol actual y permisos en JWT y base()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.113"/>
+  <testcase name="no permite eliminar al administrativo referenciado()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.081"/>
+  <testcase name="listado propio aisla titulares agrega solicitudes y reconoce otorgamiento sobre solicitud asistida()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.224"/>
+  <testcase name="[1] action = &quot;renew&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.098"/>
+  <testcase name="[2] action = &quot;suspend&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.091"/>
+  <testcase name="[3] action = &quot;finalize&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.086"/>
+  <testcase name="barrido recupera atrasados por lotes y continua despues de un caso fallido()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.21"/>
+  <testcase name="[1] action = &quot;renew&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.172"/>
+  <testcase name="[2] action = &quot;suspend&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.138"/>
+  <testcase name="[3] action = &quot;finalize&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.156"/>
+  <testcase name="ultimo dia sigue vigente en zona local aunque UTC ya sea el dia siguiente()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.113"/>
+  <testcase name="historial y cambios requieren usuario rol activo y permisos vigentes sin exposicion ciudadana()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.227"/>
+  <testcase name="admite diferentes beneficios con monto opcional y orden cronologico()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.09"/>
+  <testcase name="[1] action = &quot;renew&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.132"/>
+  <testcase name="[2] action = &quot;suspend&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.136"/>
+  <testcase name="[3] action = &quot;finalize&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.146"/>
+  <testcase name="sin solicitudes o sin otorgamientos devuelve pagina vacia y mensaje sin fabricar beneficios()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.056"/>
+  <testcase name="[1] range = &quot;TODAY&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.04"/>
+  <testcase name="[2] range = &quot;EDITION&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.047"/>
+  <testcase name="consulta propia usa copias del otorgamiento y admite descripcion y monto nulos()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.101"/>
+  <testcase name="otras personas y solicitudes sin aprobar no bloquean()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.085"/>
+  <testcase name="migracion de ciclo PostgreSQL conserva asignaciones y elimina restricciones de estado anteriores()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.034">
+    <skipped message="org.opentest4j.TestAbortedException: Assumption failed: assumption is not true" type="org.opentest4j.TestAbortedException">org.opentest4j.TestAbortedException: Assumption failed: assumption is not true
+	at org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:340)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:127)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:74)
+	at com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest.migracion de ciclo PostgreSQL conserva asignaciones y elimina restricciones de estado anteriores(BenefitGrantFlowTest.kt:420)
+</skipped>
+  </testcase>
+  <testcase name="protege al responsable de cambios aunque no sea quien asigno()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.121"/>
+  <testcase name="dos procesadores vencen el mismo caso una vez incluso con varios beneficios()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.076"/>
+  <testcase name="pagina por fecha e id descendentes y distingue pagina fuera de rango de ausencia total()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.165"/>
+  <testcase name="edicion vencida admite finalizar y no admite renovar fuera de sus fechas()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.095"/>
+  <testcase name="consulta no cambia fechas cupos historial ni auditoria y mantiene contrato de solicitud()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.109"/>
+  <testcase name="[1] query = &quot;?page=-1&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.038"/>
+  <testcase name="[2] query = &quot;?size=0&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.022"/>
+  <testcase name="[3] query = &quot;?size=101&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.024"/>
+  <testcase name="[4] query = &quot;?page=x&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.024"/>
+  <testcase name="[5] query = &quot;?size=x&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.028"/>
+  <testcase name="edicion no puede excluir otorgamientos pero puede ampliar fechas()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.093"/>
+  <testcase name="no acepta beneficio inexistente o de otra edicion()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.073"/>
+  <testcase name="[1] reverse = false" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.055"/>
+  <testcase name="[2] reverse = true" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.063"/>
+  <testcase name="[1] status = &quot;MISSING&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.086"/>
+  <testcase name="[2] status = &quot;PENDING&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.085"/>
+  <testcase name="[3] status = &quot;OBSERVED&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.077"/>
+  <testcase name="[4] status = &quot;VALID&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.066"/>
+  <testcase name="[1] entityType = &quot;benefit_grant_change&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.14"/>
+  <testcase name="[2] entityType = &quot;application&quot;" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.124"/>
+  <testcase name="[1] gap = -1" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.08"/>
+  <testcase name="[2] gap = 0" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.091"/>
+  <testcase name="[3] gap = 1" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.1"/>
+  <testcase name="copia no cambia al editar catalogo y futuros otorgamientos usan nuevos valores()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.104"/>
+  <testcase name="renovacion exige nueva fecha completa posterior dentro de edicion y cubriendo hoy()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.159"/>
+  <testcase name="fallo de auditoria revierte otorgamiento y updatedAt sin alterar cupo()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.046"/>
+  <testcase name="migracion PostgreSQL es repetible y no fabrica otorgamientos ni cupos()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.039">
+    <skipped message="org.opentest4j.TestAbortedException: Assumption failed: assumption is not true" type="org.opentest4j.TestAbortedException">org.opentest4j.TestAbortedException: Assumption failed: assumption is not true
+	at org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:340)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:127)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:74)
+	at com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest.migracion PostgreSQL es repetible y no fabrica otorgamientos ni cupos(BenefitGrantFlowTest.kt:382)
+</skipped>
+  </testcase>
+  <testcase name="vencimiento y aprobacion concurrentes no sobreocupan el ultimo cupo()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.098"/>
+  <testcase name="listado carga contexto de varios programas sin consultas adicionales por elemento()" classname="com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest" time="0.108"/>
+  <system-out><![CDATA[2026-11-15T19:01:35.806-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest]: BenefitGrantFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:01:36.196-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest
+2026-11-15T19:01:36.199-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest]: BenefitGrantFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:01:36.204-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest
+2026-11-15T19:01:36.227-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:01:36.255-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown initiated...
+2026-11-15T19:01:36.260-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:01:36.380-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.benefit.BenefitGrantFlowTest   : Starting BenefitGrantFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:01:36.381-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.benefit.BenefitGrantFlowTest   : The following 1 profile is active: "docs"
+2026-11-15T19:01:38.576-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:01:39.082-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 502 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:01:40.012-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:01:40.140-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:01:40.145-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-18 - Starting...
+2026-11-15T19:01:40.149-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-18 - Added connection conn170: url=jdbc:h2:mem:benefit-grants user=SA
+2026-11-15T19:01:40.149-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-18 - Start completed.
+2026-11-15T19:01:40.150-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:01:40.151-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:benefit-grants]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: BENEFIT-GRANTS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:01:41.030-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:01:41.354-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:01:46.573-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:01:46.573-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:01:46.601-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:01:46.628-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 55 ms
+2026-11-15T19:01:46.757-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.benefit.BenefitGrantFlowTest   : Started BenefitGrantFlowTest in 10.487 seconds (process running for 272.116)
+2026-11-15T19:01:55.682-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:01:55.682-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_LIFECYCLE_AUDIT_FAILURE: "
+Check constraint violation: "CK_LIFECYCLE_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:01:55.762-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:01:55.763-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_LIFECYCLE_AUDIT_FAILURE: "
+Check constraint violation: "CK_LIFECYCLE_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:01:55.862-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:01:55.862-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_LIFECYCLE_AUDIT_FAILURE: "
+Check constraint violation: "CK_LIFECYCLE_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:01:58.272-03:00 ERROR 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Fallo de vencimiento de beneficios: applicationId=30cda4f9-1ed8-4443-87ad-920d583c0315, errorType=ConflictException
+2026-11-15T19:01:58.314-03:00 ERROR 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Fallo de vencimiento de beneficios: applicationId=c7e91624-5405-42c8-81ef-df3bc687ee32, errorType=ConflictException
+2026-11-15T19:01:58.329-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Vencimiento de beneficios: fecha=2026-11-15, vencidos=3, solicitudesFallidas=2
+2026-11-15T19:01:58.351-03:00 ERROR 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Fallo de vencimiento de beneficios: applicationId=30cda4f9-1ed8-4443-87ad-920d583c0315, errorType=ConflictException
+2026-11-15T19:01:58.368-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Vencimiento de beneficios: fecha=2026-11-15, vencidos=1, solicitudesFallidas=1
+2026-11-15T19:02:01.548-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:02:01.549-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_EXPIRATION_TEST_AUDIT: "
+Check constraint violation: "CK_EXPIRATION_TEST_AUDIT: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:02:01.687-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:02:01.687-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_EXPIRATION_TEST_AUDIT: "
+Check constraint violation: "CK_EXPIRATION_TEST_AUDIT: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:02:02.301-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:02:02.301-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_GRANT_TEST_AUDIT_FAILURE: "
+Check constraint violation: "CK_GRANT_TEST_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

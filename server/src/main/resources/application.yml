@@ -108,7 +108,7 @@ app:
     machine-secret: ${CORE_MACHINE_SECRET:}
     queue: ${CORE_QUEUE:q.desarrollo-social}
     connect-timeout: ${CORE_CONNECT_TIMEOUT:5s}
-    read-timeout: ${CORE_READ_TIMEOUT:10s}
+    read-timeout: ${CORE_READ_TIMEOUT:5s}
     publisher:
       enabled: ${CORE_PUBLISHER_ENABLED:false}
       poll-interval: ${CORE_OUTBOX_POLL_INTERVAL:5s}

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" tests="42" skipped="0" failures="0" errors="0" timestamp="2026-11-15T21:59:49.317Z" hostname="DESKTOP-OL92NPA" time="14.642">
+  <properties/>
+  <testcase name="cancela con motivo libera agenda y devuelve la ultima actuacion a evaluacion()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.332"/>
+  <testcase name="ciudadano lista y consulta modalidades estados reprogramacion y cancelacion sin datos sensibles()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.457"/>
+  <testcase name="conflicto al aprobar deja solicitud pendiente y visita intacta()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.231"/>
+  <testcase name="registra no realizada sin textos y conserva visita cuando queda otra pendiente()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.141"/>
+  <testcase name="lista con filtros ventana semiabierta y obtiene detalle()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.143"/>
+  <testcase name="rechaza cuerpos invalidos y campos administrados por el servidor()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.178"/>
+  <testcase name="reprograma horario duracion y lugar conservando identidad y trazabilidad sensible()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.113"/>
+  <testcase name="bandeja administrativa filtra y no expone textos ni lugares()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.145"/>
+  <testcase name="reprogramacion detecta conflictos excluye la propia actuacion y permite limites()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.335"/>
+  <testcase name="fallo de auditoria revierte alta y aprobacion completas()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.2"/>
+  <testcase name="rechaza cuerpos de resultado invalidos y propiedades administradas por el servidor()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.107"/>
+  <testcase name="exige autenticacion permiso vigente usuario activo y rol asignado()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.073"/>
+  <testcase name="ciudadano solicita reprogramacion sin cambiar visita y consulta historial separado()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.12"/>
+  <testcase name="un fallo de auditoria revierte resultado y transicion de solicitud()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.09"/>
+  <testcase name="cancelar una de varias actuaciones conserva la solicitud en visita()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.098"/>
+  <testcase name="dos resultados concurrentes finalizan la actuacion una sola vez()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.069"/>
+  <testcase name="rechaza ventana invertida y detalle inexistente()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.066"/>
+  <testcase name="gestion exige autenticacion permiso vigente usuario activo rol y asignacion()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.148"/>
+  <testcase name="pendiente bloquea reprogramacion cancelacion y resultado directos()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.233"/>
+  <testcase name="revision valida combinaciones y permite una nueva solicitud despues del rechazo()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.195"/>
+  <testcase name="detecta conflictos del responsable y del ciudadano y permite limites contiguos()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.167"/>
+  <testcase name="rechaza datos de gestion invalidos actuaciones no pendientes y rutas inconsistentes()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.503"/>
+  <testcase name="un fallo de auditoria revierte actuacion y cambio de estado()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.063"/>
+  <testcase name="base impide fechas de reprogramacion inconsistentes()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.066"/>
+  <testcase name="visita vencida solo permite rechazo manual y luego una decision no se repite()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.2"/>
+  <testcase name="un fallo de auditoria revierte reprogramacion cancelacion y estado()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.145"/>
+  <testcase name="dos solicitudes concurrentes crean una pendiente y un conflicto()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.09"/>
+  <testcase name="dos revisiones concurrentes deciden una sola vez()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.164"/>
+  <testcase name="responsable aprueba aplica agenda y conserva textos sensibles fuera de auditoria()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.146"/>
+  <testcase name="consulta ciudadana protege propiedad permiso vigente usuario rol y paginacion()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.153"/>
+  <testcase name="resultado exige horario finalizado estado solicitud responsable y ruta consistente()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.386"/>
+  <testcase name="registra resultado realizado con profesional fecha textos sensibles y trazabilidad()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.093"/>
+  <testcase name="resultado exige autenticacion permiso vigente usuario activo rol y asignacion()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.116"/>
+  <testcase name="dos altas concurrentes dejan una sola actuacion en el horario()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.047"/>
+  <testcase name="programa multiples actuaciones y registra responsable estado y auditoria sin lugar()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.066"/>
+  <testcase name="la base exige que el resultado lo registre el responsable y que sus textos sean validos()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.051"/>
+  <testcase name="visitas y turnos comparten ocupacion de agenda en ambos sentidos()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.651"/>
+  <testcase name="valida motivo propiedad duplicado y campos desconocidos()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.107"/>
+  <testcase name="seguridad revalida permisos de solicitud consulta y revision()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.091"/>
+  <testcase name="exige evaluacion etapa permitida y trabajador asignado()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.105"/>
+  <testcase name="dos cancelaciones concurrentes aplican el cambio una sola vez()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.093"/>
+  <testcase name="ciudadano lista visitas de todas sus solicitudes y filtra proximas()" classname="com.uade.dda2.server.feature.application.ApplicationVisitFlowTest" time="0.204"/>
+  <system-out><![CDATA[2026-11-15T18:59:49.319-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.application.ApplicationVisitFlowTest]: ApplicationVisitFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:59:49.323-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.application.ApplicationVisitFlowTest
+2026-11-15T18:59:49.324-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.application.ApplicationVisitFlowTest]: ApplicationVisitFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:59:49.327-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.application.ApplicationVisitFlowTest
+2026-11-15T18:59:49.373-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:59:49.398-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-11-15T18:59:49.399-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T18:59:49.445-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ApplicationVisitFlowTest     : Starting ApplicationVisitFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T18:59:49.445-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ApplicationVisitFlowTest     : The following 1 profile is active: "docs"
+2026-11-15T18:59:51.059-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T18:59:51.537-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 474 ms. Found 43 JPA repository interfaces.
+2026-11-15T18:59:51.901-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T18:59:51.989-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T18:59:51.993-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Starting...
+2026-11-15T18:59:51.996-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-11 - Added connection conn100: url=jdbc:h2:mem:application-visits user=SA
+2026-11-15T18:59:51.996-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Start completed.
+2026-11-15T18:59:51.997-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T18:59:51.997-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:application-visits]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: APPLICATION-VISITS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T18:59:52.476-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T18:59:52.539-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:59:55.079-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T18:59:55.079-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T18:59:55.091-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T18:59:55.101-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 22 ms
+2026-11-15T18:59:55.157-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ApplicationVisitFlowTest     : Started ApplicationVisitFlowTest in 5.751 seconds (process running for 160.516)
+2026-11-15T18:59:58.910-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T18:59:58.911-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_RESCHEDULE_REQUEST_CREATE_FAILURE: "
+Check constraint violation: "CK_RESCHEDULE_REQUEST_CREATE_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T18:59:59.002-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T18:59:59.002-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_RESCHEDULE_REQUEST_REVIEW_FAILURE: "
+Check constraint violation: "CK_RESCHEDULE_REQUEST_REVIEW_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T18:59:59.393-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T18:59:59.393-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_VISIT_RESULT_AUDIT_FAILURE: "
+Check constraint violation: "CK_VISIT_RESULT_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:00:00.947-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:00:00.948-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_VISIT_TEST_AUDIT_FAILURE: "
+Check constraint violation: "CK_VISIT_TEST_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:00:01.329-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:00:01.330-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_VISIT_MANAGEMENT_AUDIT_FAILURE: "
+Check constraint violation: "CK_VISIT_MANAGEMENT_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:00:01.358-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:00:01.358-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_VISIT_MANAGEMENT_AUDIT_FAILURE: "
+Check constraint violation: "CK_VISIT_MANAGEMENT_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

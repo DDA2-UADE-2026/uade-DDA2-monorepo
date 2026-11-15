@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.security.JwtServiceTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:38.722Z" hostname="DESKTOP-OL92NPA" time="0.013">
+  <properties/>
+  <testcase name="rechaza tokens vencidos o firmados por otro emisor o clave()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.002"/>
+  <testcase name="rechaza un token anterior sin proposito ni rol activo()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.001"/>
+  <testcase name="cada token tiene solo los permisos de un rol y admite username ausente()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.001"/>
+  <testcase name="requiere una clave propia y tiempos de vida positivos()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.0"/>
+  <testcase name="rechaza tokens sin vencimiento y claims de autorizacion incompletos()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.002"/>
+  <testcase name="los tokens de seleccion y operativos no son intercambiables()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.001"/>
+  <testcase name="no emite tokens con un rol ajeno o usuario inactivo()" classname="com.uade.dda2.server.security.JwtServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

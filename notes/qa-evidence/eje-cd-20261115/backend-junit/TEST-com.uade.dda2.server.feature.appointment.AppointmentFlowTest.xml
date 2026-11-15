@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:00:12.074Z" hostname="DESKTOP-OL92NPA" time="12.499">
+  <properties/>
+  <testcase name="reprogramacion rechaza horario ocupado y conserva los datos originales()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.411"/>
+  <testcase name="registra atencion y corrige a ausencia sin exponer descripcion al ciudadano ni al log()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.307"/>
+  <testcase name="protege turno ajeno y rechaza campos inesperados()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.122"/>
+  <testcase name="administrativo cancela y habilita manualmente el horario mientras ciudadano consulta su estado()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.55"/>
+  <testcase name="serializa reservas concurrentes por profesional y ciudadano()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.304"/>
+  <testcase name="lista turnos propios con su estado sin exponer turnos ajenos()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.242"/>
+  <testcase name="resume el mes con confirmados libres y retenidos y filtra por servicio()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.387"/>
+  <testcase name="dos registros simultaneos dejan una sola constancia vigente()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.034"/>
+  <testcase name="consulta opciones confirma obtiene y reintenta sin duplicar()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.355"/>
+  <testcase name="la disponibilidad diaria lista horarios libres con servicio y profesional()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.172"/>
+  <testcase name="no registra turnos futuros o cancelados y respeta el profesional reprogramado()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.464"/>
+  <testcase name="reprograma en el mismo centro hacia otro profesional sin cambiar titular ni identificador()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.389"/>
+  <testcase name="no cambia centro ni servicio y rechaza superposicion del ciudadano()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.425"/>
+  <testcase name="un turno cancelado retiene el horario profesional hasta su liberacion sin bloquear al ciudadano()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.441"/>
+  <testcase name="reproduce un turno aunque su horario ya haya pasado()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.183"/>
+  <testcase name="dias pasados informan cero libres pero conservan el historial()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.123"/>
+  <testcase name="dos cancelaciones simultaneas no modifican el turno dos veces()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.182"/>
+  <testcase name="professional lists own appointments over a date range()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.141"/>
+  <testcase name="ausencia no acepta datos y profesional ajeno no puede consultar ni registrar()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.113"/>
+  <testcase name="rechaza superposicion ciudadana horario ocupado clave reutilizada y rol incorrecto()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.379"/>
+  <testcase name="permisos profesionales permiten consultar y registrar desde otro rol activo()" classname="com.uade.dda2.server.feature.appointment.AppointmentFlowTest" time="0.187"/>
+  <system-out><![CDATA[2026-11-15T19:00:12.077-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.appointment.AppointmentFlowTest]: AppointmentFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:00:12.082-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.appointment.AppointmentFlowTest
+2026-11-15T19:00:12.084-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.appointment.AppointmentFlowTest]: AppointmentFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:00:12.087-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.appointment.AppointmentFlowTest
+2026-11-15T19:00:12.089-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:00:12.103-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-11-15T19:00:12.104-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:00:12.146-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.AppointmentFlowTest          : Starting AppointmentFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:00:12.146-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.AppointmentFlowTest          : The following 1 profile is active: "docs"
+2026-11-15T19:00:13.525-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:00:13.829-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 290 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:00:14.189-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:00:14.243-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:00:14.247-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Starting...
+2026-11-15T19:00:14.249-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-13 - Added connection conn120: url=jdbc:h2:mem:appointments user=SA
+2026-11-15T19:00:14.249-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Start completed.
+2026-11-15T19:00:14.250-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:00:14.250-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:appointments]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: APPOINTMENTS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:00:14.598-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:00:14.652-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:00:17.149-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:00:17.150-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:00:17.171-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:00:17.172-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 22 ms
+2026-11-15T19:00:17.250-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.AppointmentFlowTest          : Started AppointmentFlowTest in 5.141 seconds (process running for 182.609)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

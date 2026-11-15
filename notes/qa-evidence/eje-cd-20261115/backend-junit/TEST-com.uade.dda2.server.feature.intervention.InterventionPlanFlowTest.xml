@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" tests="51" skipped="1" failures="0" errors="0" timestamp="2026-11-15T22:04:18.417Z" hostname="DESKTOP-OL92NPA" time="11.368">
+  <properties/>
+  <testcase name="ausencia total pagina fuera de rango y orden estable de planes son distinguibles()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.241"/>
+  <testcase name="dos altas concurrentes crean un unico plan()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.029"/>
+  <testcase name="plan independiente de estado y fechas de la edicion()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.073"/>
+  <testcase name="dos publicaciones iguales crean una sola fila y una sola actuacion()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.086"/>
+  <testcase name="migracion PostgreSQL repetible sin planes fabricados y con restricciones completas()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.017">
+    <skipped message="org.opentest4j.TestAbortedException: Assumption failed: assumption is not true" type="org.opentest4j.TestAbortedException">org.opentest4j.TestAbortedException: Assumption failed: assumption is not true
+	at org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:340)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:127)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:74)
+	at com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest.migracion PostgreSQL repetible sin planes fabricados y con restricciones completas(InterventionPlanFlowTest.kt:368)
+</skipped>
+  </testcase>
+  <testcase name="seguimiento y cierre por ultimo beneficio concurrentes conservan ambos cambios()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.077"/>
+  <testcase name="publicacion valida permiso actual responsabilidad y pertenencia de todos los recursos()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.184"/>
+  <testcase name="publicar y completar seguimiento concurrentes conservan ambos sin publicar resultado profesional()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.105"/>
+  <testcase name="valida estructura textos fechas y rechaza campos adicionales en todos los niveles()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.13"/>
+  <testcase name="planes propios incluyen casos asistidos rechazados y cerrados y ocultan datos de otros titulares()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.145"/>
+  <testcase name="dos finalizaciones simultaneas solo confirman un resultado()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.045"/>
+  <testcase name="publicar y retirar inicialmente concurrentes respetan orden de bloqueo sin duplicar publicaciones()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.062"/>
+  <testcase name="[1] status = IN_EVALUATION" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.04"/>
+  <testcase name="[2] status = IN_VISIT" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.044"/>
+  <testcase name="[3] status = APPROVED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.034"/>
+  <testcase name="[4] status = REJECTED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.045"/>
+  <testcase name="[5] status = WAITLISTED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.057"/>
+  <testcase name="[6] status = CLOSED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.037"/>
+  <testcase name="publicacion rechaza cuerpo invalido campos administrados y no cambia los POST existentes()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.1"/>
+  <testcase name="avances repetidos y resultado definitivo conservan historial y fechas reales()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.12"/>
+  <testcase name="valida seguimiento obligatorio fechas cronologia y campos extra sin modificar accion()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.197"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.023"/>
+  <testcase name="[2] status = SUBMITTED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.022"/>
+  <testcase name="[3] status = IN_VALIDATION" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.022"/>
+  <testcase name="[4] status = PENDING_DOCUMENTATION" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.023"/>
+  <testcase name="[1] query = &quot;?page=-1&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.037"/>
+  <testcase name="[2] query = &quot;?size=0&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.036"/>
+  <testcase name="[3] query = &quot;?size=101&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.043"/>
+  <testcase name="[4] query = &quot;?page=x&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.031"/>
+  <testcase name="[5] query = &quot;?size=x&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.029"/>
+  <testcase name="totales y orden solo incluyen seguimientos publicados sin revelar secuencias privadas()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.137"/>
+  <testcase name="dos avances simultaneos conservan secuencia y estados previos()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.055"/>
+  <testcase name="lectura propia exige permiso vigente en rol activo JWT base y usuario activo()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.149"/>
+  <testcase name="progreso del plan deriva de todas las acciones incluso finalizaciones directas parciales()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.089"/>
+  <testcase name="exige evaluacion y trabajador asignado coincidente()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.056"/>
+  <testcase name="[1] operation = &quot;publish&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.078"/>
+  <testcase name="[2] operation = &quot;correct&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.086"/>
+  <testcase name="[3] operation = &quot;withdraw&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.094"/>
+  <testcase name="[1] status = &quot;IN_PROGRESS&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.08"/>
+  <testcase name="[2] status = &quot;COMPLETED&quot;" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.075"/>
+  <testcase name="publicaciones diferentes concurrentes conservan la ultima version y una sola fila()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.118"/>
+  <testcase name="consulta de varios planes no agrega consultas por elemento ni carga responsables()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.097"/>
+  <testcase name="seguridad actual por usuario rol activo y permisos de JWT y base()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.269"/>
+  <testcase name="privacidad ciudadana estructura sin edicion y proteccion de responsables()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.166"/>
+  <testcase name="corregir y retirar concurrentemente no pierde registro ni expone publicaciones retiradas()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.112"/>
+  <testcase name="recursos ajenos ausentes y lectura por permiso sin ser responsable()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.156"/>
+  <testcase name="auditoria fallida revierte alta completa incluidos objetivos y acciones()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.031"/>
+  <testcase name="[1] status = REJECTED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.099"/>
+  <testcase name="[2] status = CLOSED" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.083"/>
+  <testcase name="publicacion correccion retiro y republicacion conservan seguimiento original y resumen privado profesional()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.213"/>
+  <testcase name="crea estructura ordenada con ciudadano responsable UTC y auditoria sin textos()" classname="com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest" time="0.119"/>
+  <system-out><![CDATA[2026-11-15T19:04:18.425-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest]: InterventionPlanFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:04:18.757-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest
+2026-11-15T19:04:18.758-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest]: InterventionPlanFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:04:18.758-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest
+2026-11-15T19:04:18.782-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:04:18.800-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-24 - Shutdown initiated...
+2026-11-15T19:04:18.801-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-24 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:04:18.855-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.InterventionPlanFlowTest     : Starting InterventionPlanFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:04:18.855-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.InterventionPlanFlowTest     : The following 1 profile is active: "docs"
+2026-11-15T19:04:20.082-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:04:20.388-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 304 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:04:20.773-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:04:20.840-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:04:20.841-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-32 - Starting...
+2026-11-15T19:04:20.842-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-32 - Added connection conn310: url=jdbc:h2:mem:interventions user=SA
+2026-11-15T19:04:20.842-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-32 - Start completed.
+2026-11-15T19:04:20.843-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:04:20.843-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:interventions]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: INTERVENTIONS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:04:21.192-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:04:21.231-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:04:23.299-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:04:23.299-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:04:23.309-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:04:23.319-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 20 ms
+2026-11-15T19:04:23.375-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.InterventionPlanFlowTest     : Started InterventionPlanFlowTest in 4.57 seconds (process running for 428.734)
+2026-11-15T19:04:27.936-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:04:27.937-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_PUBLICATION_AUDIT_TEST: "
+Check constraint violation: "CK_PUBLICATION_AUDIT_TEST: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:04:28.030-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:04:28.031-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_PUBLICATION_AUDIT_TEST: "
+Check constraint violation: "CK_PUBLICATION_AUDIT_TEST: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:04:28.119-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:04:28.119-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_PUBLICATION_AUDIT_TEST: "
+Check constraint violation: "CK_PUBLICATION_AUDIT_TEST: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:04:28.209-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:04:28.209-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_INTERVENTION_FOLLOW_AUDIT_FAILURE: "
+Check constraint violation: "CK_INTERVENTION_FOLLOW_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:04:28.284-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:04:28.284-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_INTERVENTION_FOLLOW_AUDIT_FAILURE: "
+Check constraint violation: "CK_INTERVENTION_FOLLOW_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T19:04:28.891-03:00  WARN 25964 --- [social-development-api] [    Test worker] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PUT' is not supported]
+2026-11-15T19:04:28.896-03:00  WARN 25964 --- [social-development-api] [    Test worker] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'DELETE' is not supported]
+2026-11-15T19:04:29.254-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:04:29.254-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_INTERVENTION_PLAN_AUDIT_FAILURE: "
+Check constraint violation: "CK_INTERVENTION_PLAN_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

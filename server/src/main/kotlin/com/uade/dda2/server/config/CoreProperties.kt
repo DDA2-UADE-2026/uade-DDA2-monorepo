@@ -15,7 +15,7 @@ class CoreProperties {
     var machineSecret = ""
     var queue = "q.desarrollo-social"
     var connectTimeout: Duration = Duration.ofSeconds(5)
-    var readTimeout: Duration = Duration.ofSeconds(10)
+    var readTimeout: Duration = Duration.ofSeconds(5)
     var publisher = Publisher()
     var consumer = Consumer()
     var probe = Probe()

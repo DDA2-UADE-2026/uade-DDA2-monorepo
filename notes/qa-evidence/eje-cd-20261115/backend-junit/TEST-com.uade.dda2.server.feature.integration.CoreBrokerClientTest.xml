@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreBrokerClientTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:41.559Z" hostname="DESKTOP-OL92NPA" time="1.21">
+  <properties/>
+  <testcase name="la comprobacion solo consulta pasivamente sin consumir purgar o publicar()" classname="com.uade.dda2.server.feature.integration.CoreBrokerClientTest" time="1.209"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

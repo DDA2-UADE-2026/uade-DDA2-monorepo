@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:29.787Z" hostname="DESKTOP-OL92NPA" time="0.019">
+  <properties/>
+  <testcase name="validacion de estructura exige cada nivel y fechas completas()" classname="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" time="0.001"/>
+  <testcase name="fecha real inclusiva admite carga historica y accion vencida pero usa hoy del servidor()" classname="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" time="0.002"/>
+  <testcase name="resumen publico se recorta exige texto y admite hasta dos mil caracteres()" classname="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" time="0.0"/>
+  <testcase name="notas y resultado respetan limites y finalizacion directa requiere resultado()" classname="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" time="0.004"/>
+  <testcase name="responsable del plan debe seguir siendo trabajador asignado aun en caso cerrado()" classname="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" time="0.001"/>
+  <testcase name="estructura admite limites recortados fechas iguales y planificacion futura()" classname="com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
