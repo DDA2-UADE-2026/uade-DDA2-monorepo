@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.intervention.mapper.InterventionProgressTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:29.786Z" hostname="DESKTOP-OL92NPA" time="0.001">
+  <properties/>
+  <testcase name="estado contempla pendientes avances y finalizaciones directas parciales()" classname="com.uade.dda2.server.feature.intervention.mapper.InterventionProgressTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:31.396Z" hostname="DESKTOP-OL92NPA" time="0.004">
+  <properties/>
+  <testcase name="une franjas adyacentes sin dejar huecos()" classname="com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest" time="0.001"/>
+  <testcase name="rechaza cobertura con interrupciones()" classname="com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest" time="0.001"/>
+  <testcase name="acepta cobertura en una franja()" classname="com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

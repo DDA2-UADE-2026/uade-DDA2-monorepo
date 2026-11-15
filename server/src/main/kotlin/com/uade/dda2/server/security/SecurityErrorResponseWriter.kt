@@ -20,7 +20,7 @@ class SecurityErrorResponseWriter(
         message: String,
     ) {
         response.status = status.value()
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
+        response.contentType = MediaType.APPLICATION_PROBLEM_JSON_VALUE
 
         jsonMapper.writeValue(
             response.outputStream,

@@ -4,6 +4,7 @@ import com.uade.dda2.server.config.JwtProperties
 import com.uade.dda2.server.config.CorsProperties
 import com.uade.dda2.server.security.SecurityConfig
 import com.uade.dda2.server.security.JwtAuthenticationFilter
+import com.uade.dda2.server.security.LoginRateLimitFilter
 import com.uade.dda2.server.security.SecurityErrorResponseWriter
 import com.uade.dda2.server.feature.auth.entity.Permission
 import com.uade.dda2.server.feature.auth.entity.Role
@@ -233,6 +234,7 @@ class CookieAuthFlowTest {
             // Construct the configuration directly: invoking @Bean on Spring's
             // proxy would return the already configured localhost singleton.
             val config = SecurityConfig(mock(JwtAuthenticationFilter::class.java),
+                mock(LoginRateLimitFilter::class.java),
                 mock(SecurityErrorResponseWriter::class.java), properties, mock(CsrfTokenRepository::class.java))
             val filter = CorsFilter(config.corsConfigurationSource(properties))
             fun preflight(origin: String): MockHttpServletResponse {

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" tests="48" skipped="1" failures="0" errors="0" timestamp="2026-11-15T21:59:38.955Z" hostname="DESKTOP-OL92NPA" time="10.36">
+  <properties/>
+  <testcase name="rechaza sin exigir cumplimiento documentos o cupo()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.148"/>
+  <testcase name="edicion sin requisitos acepta lista vacia()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.034"/>
+  <testcase name="aprueba con responsable distinto cupo auditoria y privacidad()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.115"/>
+  <testcase name="[1] gap = -1" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.118"/>
+  <testcase name="[2] gap = 0" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.065"/>
+  <testcase name="[3] gap = 1" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.051"/>
+  <testcase name="[1] type = VISIT" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.035"/>
+  <testcase name="[2] type = INTERVIEW" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.034"/>
+  <testcase name="[1] status = &quot;MISSING&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.048"/>
+  <testcase name="[2] status = &quot;PENDING&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.063"/>
+  <testcase name="[3] status = &quot;OBSERVED&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.058"/>
+  <testcase name="[4] status = &quot;VALID&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.04"/>
+  <testcase name="no elimina responsable historico()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.074"/>
+  <testcase name="dos titulares compiten por el ultimo cupo()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.057"/>
+  <testcase name="no bloquean otras personas ni solicitudes incompatibles sin aprobar()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.075"/>
+  <testcase name="solicitud incompatible sin aprobar no bloquea al titular()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.058"/>
+  <testcase name="cupo determina aprobar o esperar sin fallback automatico()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.094"/>
+  <testcase name="revalida requisitos y documentos al aprobar desde espera()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.099"/>
+  <testcase name="edicion vencida bloquea y fecha final inclusiva permite()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.068"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.045"/>
+  <testcase name="[2] status = SUSPENDED" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.046"/>
+  <testcase name="[3] status = CLOSED" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.047"/>
+  <testcase name="incumplimiento bloquea aprobar y espera sin resolucion automatica()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.061"/>
+  <testcase name="dos programas incompatibles no aprueban al mismo titular simultaneamente()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.065"/>
+  <testcase name="[1] reverse = false" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.095"/>
+  <testcase name="[2] reverse = true" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.109"/>
+  <testcase name="fallo de auditoria revierte estado historial y cupo()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.049"/>
+  <testcase name="migracion PostgreSQL puede repetirse sin fabricar historial o ajustar cupos()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.036">
+    <skipped message="org.opentest4j.TestAbortedException: Assumption failed: assumption is not true" type="org.opentest4j.TestAbortedException">org.opentest4j.TestAbortedException: Assumption failed: assumption is not true
+	at org.junit.jupiter.api.Assumptions.throwAssumptionFailed(Assumptions.java:340)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:127)
+	at org.junit.jupiter.api.Assumptions.assumeTrue(Assumptions.java:74)
+	at com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest.migracion PostgreSQL puede repetirse sin fabricar historial o ajustar cupos(ApplicationResolutionFlowTest.kt:362)
+</skipped>
+  </testcase>
+  <testcase name="[1] reason = &quot;&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.039"/>
+  <testcase name="[2] reason = &quot; &quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.034"/>
+  <testcase name="[3] reason = &quot;LONG&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.034"/>
+  <testcase name="no admite permiso otorgado despues del token ni permiso en otro rol activo()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.027"/>
+  <testcase name="historial conserva requisito modificado y eliminado y permite consulta sin resolver()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.083"/>
+  <testcase name="rechaza cuerpos incompletos campos desconocidos y checklist invalido()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.097"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.031"/>
+  <testcase name="[2] status = SUBMITTED" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.036"/>
+  <testcase name="[3] status = IN_VALIDATION" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.035"/>
+  <testcase name="[4] status = PENDING_DOCUMENTATION" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.038"/>
+  <testcase name="[5] status = IN_VISIT" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.03"/>
+  <testcase name="[6] status = APPROVED" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.026"/>
+  <testcase name="[7] status = REJECTED" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.029"/>
+  <testcase name="[8] status = CLOSED" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.029"/>
+  <testcase name="inexistente devuelve 404()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.032"/>
+  <testcase name="exige evaluacion y ningun turno de visita pendiente()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.031"/>
+  <testcase name="dos resoluciones simultaneas solo resuelven una vez()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.049"/>
+  <testcase name="seguridad exige token rol vigente usuario activo y permiso en base()" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.092"/>
+  <testcase name="[1] decision = &quot;APPROVED&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.102"/>
+  <testcase name="[2] decision = &quot;REJECTED&quot;" classname="com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest" time="0.076"/>
+  <system-out><![CDATA[2026-11-15T18:59:38.957-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest]: ApplicationResolutionFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:59:38.964-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest
+2026-11-15T18:59:38.965-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest]: ApplicationResolutionFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:59:38.965-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest
+2026-11-15T18:59:39.007-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:59:39.010-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-11-15T18:59:39.012-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T18:59:39.085-03:00  INFO 25964 --- [social-development-api] [    Test worker] .u.d.s.f.a.ApplicationResolutionFlowTest : Starting ApplicationResolutionFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T18:59:39.085-03:00  INFO 25964 --- [social-development-api] [    Test worker] .u.d.s.f.a.ApplicationResolutionFlowTest : The following 1 profile is active: "docs"
+2026-11-15T18:59:40.601-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T18:59:41.063-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 455 ms. Found 43 JPA repository interfaces.
+2026-11-15T18:59:41.477-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T18:59:41.548-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T18:59:41.551-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Starting...
+2026-11-15T18:59:41.555-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-10 - Added connection conn90: url=jdbc:h2:mem:application-resolutions user=SA
+2026-11-15T18:59:41.555-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Start completed.
+2026-11-15T18:59:41.556-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T18:59:41.556-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:application-resolutions]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: APPLICATION-RESOLUTIONS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T18:59:42.035-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T18:59:42.112-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:59:44.873-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T18:59:44.873-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T18:59:44.891-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T18:59:44.892-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 19 ms
+2026-11-15T18:59:44.981-03:00  INFO 25964 --- [social-development-api] [    Test worker] .u.d.s.f.a.ApplicationResolutionFlowTest : Started ApplicationResolutionFlowTest in 5.963 seconds (process running for 150.34)
+2026-11-15T18:59:48.277-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T18:59:48.277-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_RESOLUTION_TEST_AUDIT_FAILURE: "
+Check constraint violation: "CK_RESOLUTION_TEST_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

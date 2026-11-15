@@ -193,6 +193,12 @@ dependencies {
     developmentOnly("com.h2database:h2")
     testRuntimeOnly("com.h2database:h2")
     testImplementation(kotlin("test"))
+
+    // Real disposable PostgreSQL and RabbitMQ services for integration tests.
+    testImplementation(platform("org.testcontainers:testcontainers-bom:2.0.5"))
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation("org.testcontainers:testcontainers-rabbitmq")
 }
 
 kotlin {
@@ -217,7 +223,16 @@ tasks.withType<Test> {
 }
 
 tasks.named<Test>("test") {
-    useJUnitPlatform { excludeTags("core-smoke") }
+    useJUnitPlatform { excludeTags("core-smoke", "testcontainers") }
+}
+
+tasks.register<Test>("testContainers") {
+    group = "verification"
+    description = "Integration tests against disposable PostgreSQL and RabbitMQ containers."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { includeTags("testcontainers") }
+    maxHeapSize = "1g"
 }
 
 tasks.register<Test>("testCoreConnectivity") {

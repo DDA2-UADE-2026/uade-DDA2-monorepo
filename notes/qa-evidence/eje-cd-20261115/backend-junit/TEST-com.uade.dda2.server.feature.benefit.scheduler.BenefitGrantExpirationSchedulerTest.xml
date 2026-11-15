@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:02:02.566Z" hostname="DESKTOP-OL92NPA" time="0.775">
+  <properties/>
+  <testcase name="evita solapamiento local y libera guardia al terminar()" classname="com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest" time="0.039"/>
+  <testcase name="recupera guardia despues de un fallo de descubrimiento()" classname="com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest" time="0.008"/>
+  <testcase name="cursor recorre todos los lotes aunque cambien los anteriores y reintenta fallidos al reiniciar()" classname="com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest" time="0.008"/>
+  <testcase name="arranque procesa atrasados y configuracion deshabilitada no registra scheduler()" classname="com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest" time="0.112"/>
+  <system-out><![CDATA[2026-11-15T19:02:03.225-03:00 ERROR 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Fallo de vencimiento de beneficios: applicationId=c373f4e7-7885-4563-b5d4-a7c3278b4e9f, errorType=IllegalStateException
+2026-11-15T19:02:03.225-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Vencimiento de beneficios: fecha=2026-10-31, vencidos=2, solicitudesFallidas=1
+2026-11-15T19:02:03.227-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.f.b.s.BenefitGrantExpirationScheduler : Vencimiento de beneficios: fecha=2026-10-31, vencidos=3, solicitudesFallidas=0
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,5 +1,7 @@
 package com.uade.dda2.server.feature.program.controller
 
+import com.uade.dda2.server.config.EntityTag
+import com.uade.dda2.server.error.PreconditionFailedException
 import com.uade.dda2.server.feature.program.dto.admin.request.CreateProgramRequest
 import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramRequest
 import com.uade.dda2.server.feature.program.dto.admin.response.ProgramListResponse
@@ -13,10 +15,12 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.UUID
+import tools.jackson.databind.json.JsonMapper
 
 @RestController
 @RequestMapping("/api/admin/programs")
@@ -24,6 +28,7 @@ import java.util.UUID
 @Tag(name = "Programas", description = "Administración del catálogo de programas sociales.")
 class AdminProgramController(
     private val adminProgramService: AdminProgramService,
+    private val json: JsonMapper,
 ) {
 
     @PreAuthorize("hasAuthority('programs:management:create')")
@@ -69,8 +74,10 @@ class AdminProgramController(
     fun findById(
         @Parameter(description = "UUID del programa.", example = "550e8400-e29b-41d4-a716-446655440000")
         @PathVariable id: UUID,
-    ): ProgramResponse =
-        adminProgramService.get(id)
+    ): ResponseEntity<ProgramResponse> {
+        val program = adminProgramService.get(id)
+        return ResponseEntity.ok().eTag(EntityTag.fromRepresentation(program, json)).body(program)
+    }
 
     @PreAuthorize("hasAuthority('programs:management:edit')")
     @PutMapping("/{id}")
@@ -78,12 +85,16 @@ class AdminProgramController(
     fun update(
         @Parameter(description = "UUID del programa.", example = "550e8400-e29b-41d4-a716-446655440000")
         @PathVariable id: UUID,
+        @RequestHeader(name = "If-Match", required = false) ifMatch: String?,
         @Valid @RequestBody request: UpdateProgramRequest,
-    ): ProgramResponse =
-        adminProgramService.update(
+    ): ResponseEntity<ProgramResponse> {
+        validateIfMatch(id, ifMatch)
+        val updated = adminProgramService.update(
             id = id,
             request = request,
         )
+        return ResponseEntity.ok().eTag(EntityTag.fromRepresentation(updated, json)).body(updated)
+    }
 
     @PreAuthorize("hasAuthority('programs:management:edit')")
     @DeleteMapping("/{id}")
@@ -92,7 +103,20 @@ class AdminProgramController(
     fun delete(
         @Parameter(description = "UUID del programa.", example = "550e8400-e29b-41d4-a716-446655440000")
         @PathVariable id: UUID,
+        @RequestHeader(name = "If-Match", required = false) ifMatch: String?,
     ) {
+        validateIfMatch(id, ifMatch)
         adminProgramService.delete(id)
+    }
+
+    private fun validateIfMatch(id: UUID, ifMatch: String?) {
+        if (ifMatch == null) return
+        val current = EntityTag.fromRepresentation(adminProgramService.get(id), json)
+        if (!EntityTag.matches(ifMatch, current)) {
+            throw PreconditionFailedException(
+                code = "PROGRAM_ETAG_MISMATCH",
+                message = "El programa cambió desde la última consulta. Volvé a cargarlo antes de guardar.",
+            )
+        }
     }
 }

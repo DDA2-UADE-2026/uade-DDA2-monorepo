@@ -108,4 +108,19 @@ jobs:
 
       - name: Test and build server
         working-directory: server
-        run: ./gradlew build --no-daemon
+        run: |
+          ./gradlew build --no-daemon
+          ./gradlew testContainers --no-daemon
+
+      - name: Upload backend test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports-${{ github.run_id }}
+          path: |
+            server/build/test-results/test/**/*.xml
+            server/build/test-results/testContainers/**/*.xml
+            server/build/reports/tests/test/index.html
+            server/build/reports/tests/testContainers/index.html
+          if-no-files-found: warn
+          retention-days: 14

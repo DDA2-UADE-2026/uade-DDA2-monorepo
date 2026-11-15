@@ -22,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import tools.jackson.databind.json.JsonMapper
@@ -156,6 +158,27 @@ class AuthFlowTest {
         mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
             .content("""{"username":"test","password":"password123"}"""))
             .andExpect(status().isUnauthorized)
+    }
+
+    @Test
+    fun `limita intentos de login y responde 429 con Problem Details`() {
+        val remoteAddress = "198.51.100.77"
+        repeat(10) {
+            mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                .content("""{"username":"test","password":"incorrecta"}""")
+                .with { request -> request.remoteAddr = remoteAddress; request })
+                .andExpect(status().isUnauthorized)
+        }
+
+        mvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+            .content("""{"username":"test","password":"incorrecta"}""")
+            .with { request -> request.remoteAddr = remoteAddress; request })
+            .andExpect(status().isTooManyRequests)
+            .andExpect(header().exists("Retry-After"))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.type").value("about:blank"))
+            .andExpect(jsonPath("$.status").value(429))
+            .andExpect(jsonPath("$.code").value("AUTH_RATE_LIMITED"))
     }
 
     @Test

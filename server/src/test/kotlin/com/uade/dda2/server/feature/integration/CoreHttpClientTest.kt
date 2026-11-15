@@ -2,6 +2,7 @@ package com.uade.dda2.server.feature.integration
 
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
+import com.uade.dda2.server.config.CoreAmqpConfiguration
 import com.uade.dda2.server.config.CoreProperties
 import com.uade.dda2.server.feature.integration.client.*
 import com.uade.dda2.server.feature.integration.dto.CoreEventStatus
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestClient
 import tools.jackson.databind.json.JsonMapper
 import java.net.InetSocketAddress
 import java.time.Clock
+import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
@@ -93,6 +95,23 @@ class CoreHttpClientTest {
             response(request, 200, """{"status":"degraded","checks":{"database":{"status":"up"},"broker":{"status":"down"}}}""")
         }
         assertEquals("degraded", transport.readiness().get("status").asString())
+    }
+
+    @Test fun `transporte HTTP aplica timeout de lectura configurado`() {
+        server.createContext("/api/v1/slow") { request ->
+            Thread.sleep(800)
+            response(request, 200, "{}")
+        }
+        val shortTimeout = CoreProperties().apply {
+            apiBaseUrl = properties.apiBaseUrl
+            connectTimeout = Duration.ofSeconds(1)
+            readTimeout = Duration.ofMillis(200)
+        }
+        val configuredTransport = CoreAmqpConfiguration().coreHttpTransport(shortTimeout, json)
+
+        assertFailsWith<CoreIntegrationException> {
+            configuredTransport.request(org.springframework.http.HttpMethod.GET, "/slow")
+        }
     }
 
     @Test fun `sin secret HTTP falla antes de enviar una solicitud`() {

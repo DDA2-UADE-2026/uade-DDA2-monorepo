@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.auth.AuthFlowTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:00:34.768Z" hostname="DESKTOP-OL92NPA" time="29.717">
+  <properties/>
+  <testcase name="rechaza credenciales operativas o falsas como token de seleccion()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.548"/>
+  <testcase name="seleccionar ciudadano no hereda los permisos de auditor()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.476"/>
+  <testcase name="administracion conserva cuentas externas y agrega credenciales al mismo User()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.804"/>
+  <testcase name="login multirrol no concede acceso antes de seleccionar()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.489"/>
+  <testcase name="seleccion verifica nuevamente roles y estado del usuario()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.437"/>
+  <testcase name="no crea contexto operativo para usuarios sin roles o credenciales locales()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.646"/>
+  <testcase name="limita intentos de login y responde 429 con Problem Details()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="2.475"/>
+  <testcase name="switch requiere JWT y rechaza un rol no asignado()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.229"/>
+  <testcase name="cambiar rol emite permisos actuales sin invalidar el JWT anterior()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.275"/>
+  <testcase name="un solo rol se activa automaticamente aunque no tenga permisos()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.512"/>
+  <testcase name="administracion no permite agregar solo media credencial local()" classname="com.uade.dda2.server.feature.auth.AuthFlowTest" time="0.531"/>
+  <system-out><![CDATA[2026-11-15T19:00:34.765-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.AuthFlowTest]: AuthFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:00:34.783-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.AuthFlowTest
+2026-11-15T19:00:34.784-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.AuthFlowTest]: AuthFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:00:34.787-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.AuthFlowTest
+2026-11-15T19:00:34.791-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:00:34.815-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown initiated...
+2026-11-15T19:00:34.816-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:00:34.870-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.server.feature.auth.AuthFlowTest   : Starting AuthFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:00:34.870-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.server.feature.auth.AuthFlowTest   : The following 1 profile is active: "docs"
+2026-11-15T19:00:36.040-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:00:36.517-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 468 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:00:39.399-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:00:39.558-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:00:39.567-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Starting...
+2026-11-15T19:00:39.570-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-15 - Added connection conn140: url=jdbc:h2:mem:docsdb user=SA
+2026-11-15T19:00:39.574-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Start completed.
+2026-11-15T19:00:39.576-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:00:39.576-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:docsdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: DOCSDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:00:41.294-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:00:41.299-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:00:51.575-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:00:51.576-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:00:51.635-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:00:51.683-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 106 ms
+2026-11-15T19:00:51.973-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.server.feature.auth.AuthFlowTest   : Started AuthFlowTest in 17.151 seconds (process running for 217.344)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

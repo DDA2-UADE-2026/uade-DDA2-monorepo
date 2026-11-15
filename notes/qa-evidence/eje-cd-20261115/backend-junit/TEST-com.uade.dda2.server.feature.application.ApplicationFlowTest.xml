@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.application.ApplicationFlowTest" tests="59" skipped="0" failures="0" errors="0" timestamp="2026-11-15T21:59:27.695Z" hostname="DESKTOP-OL92NPA" time="11.256">
+  <properties/>
+  <testcase name="idempotencia devuelve original aun cerrada la convocatoria sin repetir auditoria()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.145"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.056"/>
+  <testcase name="[2] status = SUBMITTED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.058"/>
+  <testcase name="[3] status = IN_VALIDATION" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.047"/>
+  <testcase name="[4] status = PENDING_DOCUMENTATION" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.047"/>
+  <testcase name="[5] status = IN_EVALUATION" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.045"/>
+  <testcase name="[6] status = IN_VISIT" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.053"/>
+  <testcase name="[7] status = APPROVED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.055"/>
+  <testcase name="[8] status = REJECTED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.054"/>
+  <testcase name="[9] status = WAITLISTED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.05"/>
+  <testcase name="[10] status = CLOSED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.053"/>
+  <testcase name="cors permite usar idempotencia desde el frontend sin cambiarlo()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.019"/>
+  <testcase name="presentacion propia y asistida concurrentes no duplican()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.061"/>
+  <testcase name="misma clave es independiente por usuario()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.079"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.032"/>
+  <testcase name="[2] status = SUSPENDED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.031"/>
+  <testcase name="[3] status = CLOSED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.043"/>
+  <testcase name="no permite eliminar un usuario referenciado solo como registrante()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.066"/>
+  <testcase name="consulta administrativa exige su propio permiso en el rol activo()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.124"/>
+  <testcase name="consultas filtran propiedad y paginan sin filtrar por parametros de usuario()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.156"/>
+  <testcase name="detalle administrativo devuelve la entidad completa que la vista propia no expone()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.078"/>
+  <testcase name="duplicados comparten titular entre presentacion propia y asistida sin cambiar regla de rechazo()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.107"/>
+  <testcase name="consulta administrativa valida la paginacion y responde inexistente sin filtrar por titular()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.048"/>
+  <testcase name="asistida valida titular payload y campos que solo decide el servidor()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.125"/>
+  <testcase name="un fallo de auditoria revierte la solicitud y permite reintentar la clave()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.059"/>
+  <testcase name="pedidos concurrentes sin clave o con claves distintas no duplican()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.051"/>
+  <testcase name="base respalda unicidad funcional y de idempotencia()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.053"/>
+  <testcase name="usuario inactivo o rol retirado no puede presentar ni consultar()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.048"/>
+  <testcase name="[1] status = DRAFT" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.058"/>
+  <testcase name="[2] status = SUBMITTED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.056"/>
+  <testcase name="[3] status = IN_VALIDATION" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.051"/>
+  <testcase name="[4] status = PENDING_DOCUMENTATION" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.05"/>
+  <testcase name="[5] status = IN_EVALUATION" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.053"/>
+  <testcase name="[6] status = IN_VISIT" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.047"/>
+  <testcase name="[7] status = APPROVED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.057"/>
+  <testcase name="[8] status = REJECTED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.057"/>
+  <testcase name="[9] status = WAITLISTED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.047"/>
+  <testcase name="[10] status = CLOSED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.055"/>
+  <testcase name="reintento asistido comparte clave por titular y conserva registrante aunque cambie el actor o cierre convocatoria()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.093"/>
+  <testcase name="dos convocatorias concurrentes de una edicion no eluden la regla()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.047"/>
+  <testcase name="listado administrativo pagina solicitudes de todos los titulares e identifica a cada uno()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.13"/>
+  <testcase name="permiso asistido depende del rol activo y no habilita presentaciones propias()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.076"/>
+  <testcase name="titular consulta asistida pero registrante no la recibe como propia()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.108"/>
+  <testcase name="asistida conserva validacion de convocatoria fechas y edicion()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.064"/>
+  <testcase name="administrativo inactivo o con rol retirado no registra ni recupera por idempotencia()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.06"/>
+  <testcase name="dos administrativos concurrentes reintentan sin duplicar ni cambiar al registrante original()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.056"/>
+  <testcase name="reintentos concurrentes crean exactamente una solicitud()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.058"/>
+  <testcase name="fallo de auditoria asistida revierte y libera clave del titular()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.072"/>
+  <testcase name="permiso depende del rol activo y token de seleccion no sirve()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.034"/>
+  <testcase name="presenta con cupo agotado y registra identidad numero y auditoria()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.039"/>
+  <testcase name="request rechaza campos internos y payloads invalidos()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.102"/>
+  <testcase name="[1] status = SCHEDULED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.025"/>
+  <testcase name="[2] status = SUSPENDED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.026"/>
+  <testcase name="[3] status = CLOSED" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.027"/>
+  <testcase name="mismo administrativo puede usar misma clave para titulares diferentes()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.076"/>
+  <testcase name="asistencia admite usuario existente sin snapshot identidad externa o credenciales locales()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.052"/>
+  <testcase name="asistida guarda al titular y registrante por separado sin consumir cupo ni asignar trabajador()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.053"/>
+  <testcase name="secuencia global es unica en presentaciones concurrentes de distintos usuarios()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.106"/>
+  <testcase name="valida fechas inclusivas()" classname="com.uade.dda2.server.feature.application.ApplicationFlowTest" time="0.057"/>
+  <system-out><![CDATA[2026-11-15T18:59:27.699-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.application.ApplicationFlowTest]: ApplicationFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:59:27.705-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.application.ApplicationFlowTest
+2026-11-15T18:59:27.706-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.application.ApplicationFlowTest]: ApplicationFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:59:27.709-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.application.ApplicationFlowTest
+2026-11-15T18:59:27.762-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:59:27.762-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-11-15T18:59:27.762-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T18:59:27.826-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ApplicationFlowTest          : Starting ApplicationFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T18:59:27.827-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ApplicationFlowTest          : The following 1 profile is active: "docs"
+2026-11-15T18:59:29.345-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T18:59:29.758-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 410 ms. Found 43 JPA repository interfaces.
+2026-11-15T18:59:30.205-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T18:59:30.320-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T18:59:30.324-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Starting...
+2026-11-15T18:59:30.324-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-9 - Added connection conn80: url=jdbc:h2:mem:applications user=SA
+2026-11-15T18:59:30.324-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Start completed.
+2026-11-15T18:59:30.331-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T18:59:30.332-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:applications]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: APPLICATIONS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T18:59:30.899-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T18:59:30.976-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:59:33.579-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T18:59:33.580-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T18:59:33.592-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T18:59:33.599-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 19 ms
+2026-11-15T18:59:33.648-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ApplicationFlowTest          : Started ApplicationFlowTest in 5.871 seconds (process running for 139.007)
+2026-11-15T18:59:36.817-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T18:59:36.817-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_APPLICATION_TEST_AUDIT_FAILURE: "
+Check constraint violation: "CK_APPLICATION_TEST_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+2026-11-15T18:59:36.945-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23505, SQLState: 23505
+2026-11-15T18:59:36.945-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de indice de Unicidad ó Clave primaria: "PUBLIC.UK_APPLICATION_USER_PERIOD INDEX PUBLIC.UK_APPLICATION_USER_PERIOD_INDEX_D ON PUBLIC.APPLICATION(USER_ID NULLS FIRST, ENROLLMENT_PERIOD_ID NULLS FIRST) VALUES ( /* key:25 */ CAST(38 AS BIGINT), UUID 'b59ea5a0-75cc-40b0-aad6-0e101a1b59b6')"
+Unique index or primary key violation: "PUBLIC.UK_APPLICATION_USER_PERIOD INDEX PUBLIC.UK_APPLICATION_USER_PERIOD_INDEX_D ON PUBLIC.APPLICATION(USER_ID NULLS FIRST, ENROLLMENT_PERIOD_ID NULLS FIRST) VALUES ( /* key:25 */ CAST(38 AS BIGINT), UUID 'b59ea5a0-75cc-40b0-aad6-0e101a1b59b6')"; SQL statement:
+insert into application (application_number,assigned_worker_user_id,closed_at,closed_by_event_id,closed_reason,created_at,enrollment_period_id,idempotency_key,origin_ticket_id,program_edition_id,registered_by_user_id,request_hash,resolution_reason,resolved_at,resolved_by_user_id,status,submitted_at,updated_at,user_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) [23505-240]
+2026-11-15T18:59:36.951-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23505, SQLState: 23505
+2026-11-15T18:59:36.951-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de indice de Unicidad ó Clave primaria: "PUBLIC.UK_APPLICATION_USER_IDEMPOTENCY INDEX PUBLIC.UK_APPLICATION_USER_IDEMPOTENCY_INDEX_D ON PUBLIC.APPLICATION(USER_ID NULLS FIRST, IDEMPOTENCY_KEY NULLS FIRST) VALUES ( /* key:25 */ CAST(38 AS BIGINT), 'db-key')"
+Unique index or primary key violation: "PUBLIC.UK_APPLICATION_USER_IDEMPOTENCY INDEX PUBLIC.UK_APPLICATION_USER_IDEMPOTENCY_INDEX_D ON PUBLIC.APPLICATION(USER_ID NULLS FIRST, IDEMPOTENCY_KEY NULLS FIRST) VALUES ( /* key:25 */ CAST(38 AS BIGINT), 'db-key')"; SQL statement:
+insert into application (application_number,assigned_worker_user_id,closed_at,closed_by_event_id,closed_reason,created_at,enrollment_period_id,idempotency_key,origin_ticket_id,program_edition_id,registered_by_user_id,request_hash,resolution_reason,resolved_at,resolved_by_user_id,status,submitted_at,updated_at,user_id,id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) [23505-240]
+2026-11-15T18:59:38.294-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T18:59:38.303-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_ASSISTED_TEST_AUDIT_FAILURE: "
+Check constraint violation: "CK_ASSISTED_TEST_AUDIT_FAILURE: "; SQL statement:
+insert into logs (action,created_at,entity_id,entity_type,new_values,old_values,user_id,id) values (?,?,?,?,?::jsonb,?::jsonb,?,default) [23513-240]
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

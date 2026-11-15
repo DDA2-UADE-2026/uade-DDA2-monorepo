@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" tests="19" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:09.292Z" hostname="DESKTOP-OL92NPA" time="8.882">
+  <properties/>
+  <testcase name="evaluacion automatica y endpoint anterior de resolucion actualizan el ticket vinculado()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.336"/>
+  <testcase name="ciudadano desconocido no crea usuarios y bloqueo no suspende beneficios()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.093"/>
+  <testcase name="exencion ambigua requiere seleccion administrativa de beneficio del mismo titular()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.075"/>
+  <testcase name="documentacion COMPLETED exige revision y verifica pertenencia y causalidad()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.145"/>
+  <testcase name="broadcast ajeno ignora contenido y el reloj evita cierres o reaperturas por mensajes atrasados()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.049"/>
+  <testcase name="la presentacion y el pedido documental son atomicos y requieren vinculacion M1()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.073"/>
+  <testcase name="domicilio tiene reloj independiente y un REGISTERED atrasado no lo pisa()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.044"/>
+  <testcase name="ticket anonimo gestiona sin usuario y STARTED sale una vez por ciclo de derivacion()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.078"/>
+  <testcase name="informacion adicional escalamiento y reapertura respetan la causa y no repiten STARTED()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.181"/>
+  <testcase name="reclasificacion no crea gestion ni conserva datos administrativos()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.031"/>
+  <testcase name="un rollback local nunca deja eventos huerfanos()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.035"/>
+  <testcase name="otorgamiento suspension renovacion y finalizacion publican un evento por cambio del mismo beneficio()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.14"/>
+  <testcase name="reclasificacion a otra area cierra la gestion local sin aceptar eventos atrasados()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.098"/>
+  <testcase name="solicitud vinculada emite inicio visita reprogramacion y resolucion sin duplicar gestion()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.068"/>
+  <testcase name="contratos invalidos fallan sin reservar inbox y Core puede reintentarlos()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.039"/>
+  <testcase name="fallecimiento finaliza activos y suspendidos cierra solicitudes cancela visitas y conserva causa()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.07"/>
+  <testcase name="nuevos endpoints exigen autenticacion y permiso del rol activo()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.111"/>
+  <testcase name="fallecimiento y respuestas se revierten juntos si falla la transaccion()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.063"/>
+  <testcase name="Rentas registra contexto sin cambiar elegibilidad y resuelve exenciones fuera de orden()" classname="com.uade.dda2.server.feature.integration.M8BusinessFlowTest" time="0.062"/>
+  <system-out><![CDATA[2026-11-15T19:04:09.295-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.M8BusinessFlowTest]: M8BusinessFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:04:09.301-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.M8BusinessFlowTest
+2026-11-15T19:04:09.301-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.M8BusinessFlowTest]: M8BusinessFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:04:09.303-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.M8BusinessFlowTest
+2026-11-15T19:04:09.309-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+Hibernate: drop table if exists activity cascade 
+Hibernate: drop table if exists activity_enrollment cascade 
+Hibernate: drop table if exists application cascade 
+Hibernate: drop table if exists application_document cascade 
+Hibernate: drop table if exists application_evaluation cascade 
+Hibernate: drop table if exists application_resolution cascade 
+Hibernate: drop table if exists application_resolution_requirement cascade 
+Hibernate: drop table if exists application_visit cascade 
+Hibernate: drop table if exists application_visit_reschedule_request cascade 
+Hibernate: drop table if exists appointment cascade 
+Hibernate: drop table if exists benefit_grant cascade 
+Hibernate: drop table if exists benefit_grant_change cascade 
+Hibernate: drop table if exists benefit_grant_change_requirement cascade 
+Hibernate: drop table if exists center_opening_hour cascade 
+Hibernate: drop table if exists center_service cascade 
+Hibernate: drop table if exists citizen_snapshot cascade 
+Hibernate: drop table if exists community_attention cascade 
+Hibernate: drop table if exists core_inbox cascade 
+Hibernate: drop table if exists core_outbox cascade 
+Hibernate: drop table if exists document cascade 
+Hibernate: drop table if exists enrollment_period cascade 
+Hibernate: drop table if exists intervention_action cascade 
+Hibernate: drop table if exists intervention_follow_up cascade 
+Hibernate: drop table if exists intervention_follow_up_publication cascade 
+Hibernate: drop table if exists intervention_objective cascade 
+Hibernate: drop table if exists intervention_plan cascade 
+Hibernate: drop table if exists logs cascade 
+Hibernate: drop table if exists municipal_center cascade 
+Hibernate: drop table if exists municipal_service cascade 
+Hibernate: drop table if exists permissions cascade 
+Hibernate: drop table if exists professional_assignment cascade 
+Hibernate: drop table if exists professional_availability cascade 
+Hibernate: drop table if exists program cascade 
+Hibernate: drop table if exists program_benefit cascade 
+Hibernate: drop table if exists program_document_requirement cascade 
+Hibernate: drop table if exists program_edition cascade 
+Hibernate: drop table if exists program_image cascade 
+Hibernate: drop table if exists program_incompatibility cascade 
+Hibernate: drop table if exists program_requirement cascade 
+Hibernate: drop table if exists role_permissions cascade 
+Hibernate: drop table if exists roles cascade 
+Hibernate: drop table if exists social_exemption_request cascade 
+Hibernate: drop table if exists social_external_documentation cascade 
+Hibernate: drop table if exists social_revenue_debt cascade 
+Hibernate: drop table if exists social_ticket cascade 
+Hibernate: drop table if exists social_ticket_cursor cascade 
+Hibernate: drop table if exists user_roles cascade 
+Hibernate: drop table if exists users cascade 
+Hibernate: drop sequence if exists application_number_seq
+2026-11-15T19:04:09.325-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-23 - Shutdown initiated...
+2026-11-15T19:04:09.325-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-23 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:04:09.374-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.M8BusinessFlowTest           : Starting M8BusinessFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:04:09.374-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.M8BusinessFlowTest           : The following 1 profile is active: "docs"
+2026-11-15T19:04:10.570-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:04:10.896-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 323 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:04:11.237-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:04:11.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:04:11.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-31 - Starting...
+2026-11-15T19:04:11.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-31 - Added connection conn300: url=jdbc:h2:mem:m8-business user=SA
+2026-11-15T19:04:11.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-31 - Start completed.
+2026-11-15T19:04:11.273-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:04:11.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:m8-business]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: M8-BUSINESS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:04:11.628-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:04:11.702-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:04:14.435-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:04:14.435-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:04:14.437-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:04:14.461-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 26 ms
+2026-11-15T19:04:14.533-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.M8BusinessFlowTest           : Started M8BusinessFlowTest in 5.204 seconds (process running for 419.893)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
