@@ -42,7 +42,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: client
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Run frontend tests and generate LCOV coverage
         working-directory: client
