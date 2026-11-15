@@ -119,8 +119,10 @@ class OpenApiConfig {
                     }
                     if (path == "/api/admin/programs/{id}") {
                         if (method == PathItem.HttpMethod.GET || method == PathItem.HttpMethod.PUT) {
-                            operation.responses[if (method == PathItem.HttpMethod.GET) "200" else "200"]
-                                ?.headers?.put("ETag", Header().description("Etiqueta fuerte de la representación actual."))
+                            operation.responses["200"]?.headers?.put(
+                                "ETag",
+                                Header().description("Etiqueta fuerte de la representación actual."),
+                            )
                         }
                         if (method == PathItem.HttpMethod.PUT || method == PathItem.HttpMethod.DELETE) {
                             operation.addParametersItem(
