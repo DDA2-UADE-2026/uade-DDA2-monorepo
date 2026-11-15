@@ -3,7 +3,7 @@ FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
 
 COPY gradle gradle
-COPY gradlew build.gradle.kts settings.gradle.kts ./
+COPY gradlew build.gradle.kts settings.gradle.kts gradle.lockfile ./
 RUN chmod +x gradlew
 
 COPY src src

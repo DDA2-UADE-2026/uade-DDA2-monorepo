@@ -20,6 +20,10 @@ repositories {
     mavenCentral()
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 dependencies {
     // ─────────────────────────────────────────────
     // Spring Boot - Web / API REST
