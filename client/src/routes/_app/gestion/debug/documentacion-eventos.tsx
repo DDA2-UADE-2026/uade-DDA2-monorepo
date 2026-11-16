@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_app/gestion/debug/documentacion-eventos"
 
 const CORE_VIEW_PERMISSION = "integrations:core:view"
 // Springwolf publica el contrato AsyncAPI del backend (solo lectura, GET público).
-const ASYNCAPI_UI_URL = `${import.meta.env.VITE_SERVER_URL}/springwolf/asyncapi-ui.html`
+const ASYNCAPI_UI_URL = `${import.meta.env.VITE_SERVER_URL?.replace(/\/+$/, "") ?? ""}/springwolf/asyncapi-ui.html`
 
 function RouteComponent() {
   const { user } = Route.useRouteContext()
