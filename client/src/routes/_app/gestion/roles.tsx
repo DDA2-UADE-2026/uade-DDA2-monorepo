@@ -23,14 +23,14 @@ import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import {
   Field,
   FieldDescription,
@@ -200,7 +200,7 @@ function RouteComponent() {
       </SidebarShellContent>
 
       {dialogState && (
-        <RoleFormDialog
+        <RoleFormSheet
           role={dialogState.role}
           onOpenChange={(open) => {
             if (!open) setDialogState(null)
@@ -211,7 +211,7 @@ function RouteComponent() {
   )
 }
 
-function RoleFormDialog({
+function RoleFormSheet({
   role,
   onOpenChange,
 }: {
@@ -258,16 +258,17 @@ function RoleFormDialog({
   })
 
   return (
-    <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? "Editar rol" : "Nuevo rol"}</DialogTitle>
-          <DialogDescription>
+    <Sheet open onOpenChange={onOpenChange}>
+      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-2xl">
+        <SheetHeader className="border-b">
+          <SheetTitle>{isEditing ? "Editar rol" : "Nuevo rol"}</SheetTitle>
+          <SheetDescription>
             {isEditing
               ? "Modificá el nombre y los permisos asignados a este rol."
               : "Definí el nombre y los permisos del nuevo rol."}
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
         {isError && (
           <Alert variant="destructive">
             <IconAlertTriangle />
@@ -336,7 +337,7 @@ function RoleFormDialog({
                       No hay permisos configurados.
                     </p>
                   ) : (
-                    <div className="grid max-h-72 grid-cols-2 gap-x-4 gap-y-2 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
                       {permissions.data.map((permission) => {
                         const permissionName = permission.name ?? ""
                         const checked =
@@ -382,10 +383,11 @@ function RoleFormDialog({
             />
           </FieldGroup>
         </form>
-        <DialogFooter>
-          <DialogClose render={<Button variant="outline" type="button" />}>
+        </div>
+        <SheetFooter className="flex-row justify-end border-t">
+          <SheetClose render={<Button variant="outline" type="button" />}>
             Cancelar
-          </DialogClose>
+          </SheetClose>
           <Button type="submit" form="role-form" disabled={isPending}>
             {isPending
               ? "Guardando…"
@@ -393,8 +395,8 @@ function RoleFormDialog({
                 ? "Guardar cambios"
                 : "Crear rol"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }
