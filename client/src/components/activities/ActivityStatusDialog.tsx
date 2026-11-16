@@ -17,9 +17,9 @@ import {
   get1QueryKey,
   list7QueryKey,
   publish1Mutation,
-  list10QueryKey,
+  list13QueryKey,
   listActivitiesQueryKey,
-  get5QueryKey,
+  get6QueryKey,
   getProfessionalActivityQueryKey,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ActivityResponse } from "@/generated/types.gen"
@@ -50,10 +50,10 @@ export function ActivityStatusDialog({ activity, action, onOpenChange, onDone }:
   const queryClient = useQueryClient()
   const onSuccess = (saved: ActivityResponse) => {
     void queryClient.invalidateQueries({ queryKey: list7QueryKey() })
-    void queryClient.invalidateQueries({ queryKey: list10QueryKey() })
+    void queryClient.invalidateQueries({ queryKey: list13QueryKey() })
     void queryClient.invalidateQueries({ queryKey: listActivitiesQueryKey() })
     if (saved.id) {
-      void queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: saved.id } }) })
+      void queryClient.invalidateQueries({ queryKey: get6QueryKey({ path: { id: saved.id } }) })
       void queryClient.invalidateQueries({ queryKey: getProfessionalActivityQueryKey({ path: { activityId: saved.id } }) })
     }
     if (saved.id) void queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })

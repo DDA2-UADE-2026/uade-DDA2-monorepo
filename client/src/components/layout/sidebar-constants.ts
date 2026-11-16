@@ -17,6 +17,7 @@ import {
   IconShieldCheck,
   IconShieldLock,
   IconSpeakerphone,
+  IconTicket,
   IconTimelineEventText,
   IconUsers,
 } from "@tabler/icons-react"
@@ -91,6 +92,7 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
       { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart, requiredPermissions: ["applications:interventions:view", "applications:interventions:create", "applications:interventions:follow-ups:create", "applications:interventions:follow-ups:publish"] },
     ]
   },
+  { title: "Tickets", url: "/gestion/tickets", icon: IconTicket, requiredPermissions: ["tickets:management:view"] },
 ]
 
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [

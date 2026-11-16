@@ -20,7 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea"
 import {
   followUpMutation,
-  get4QueryKey,
+  get5QueryKey,
   historyOptions,
   historyQueryKey,
   publishMutation,
@@ -72,7 +72,7 @@ export function InterventionFollowUps({ applicationId, action, canCreate, canPub
         <DialogFooter><DialogClose render={<Button variant="outline" />}>Cerrar</DialogClose></DialogFooter>
       </DialogContent>
     </Dialog>
-    {showForm && <FollowUpForm applicationId={applicationId} action={action} onClose={() => setShowForm(false)} onSuccess={() => { setShowForm(false); void refresh(); void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) }) }} />}
+    {showForm && <FollowUpForm applicationId={applicationId} action={action} onClose={() => setShowForm(false)} onSuccess={() => { setShowForm(false); void refresh(); void queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: applicationId } }) }) }} />}
     {publication && <PublicationForm applicationId={applicationId} actionId={action.id!} followUp={publication} onClose={() => setPublication(null)} onSuccess={() => { setPublication(null); void refresh() }} />}
   </>
 }

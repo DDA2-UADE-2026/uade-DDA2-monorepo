@@ -11,7 +11,7 @@ import { UserChip, UserInline } from "@/components/UserChip"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { get3Options, get4Options } from "@/generated/@tanstack/react-query.gen"
+import { get4Options, get5Options } from "@/generated/@tanstack/react-query.gen"
 import type { InterventionActionResponse } from "@/generated/types.gen"
 
 export const Route = createFileRoute("/_app/gestion/intervenciones/$planId")({ component: RouteComponent })
@@ -20,8 +20,8 @@ function RouteComponent() {
   const { planId: applicationId } = Route.useParams()
   const { user } = Route.useRouteContext()
   const [selectedAction, setSelectedAction] = useState<InterventionActionResponse | null>(null)
-  const application = useQuery(get3Options({ path: { id: applicationId } }))
-  const plan = useQuery({ ...get4Options({ path: { id: applicationId } }), retry: false })
+  const application = useQuery(get4Options({ path: { id: applicationId } }))
+  const plan = useQuery({ ...get5Options({ path: { id: applicationId } }), retry: false })
   const permissions = user.permissions ?? []
   const canCreatePlan = permissions.includes("applications:interventions:create")
   const canCreateFollowUp = permissions.includes("applications:interventions:follow-ups:create")

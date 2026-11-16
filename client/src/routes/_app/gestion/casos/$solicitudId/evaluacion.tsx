@@ -3,7 +3,7 @@ import { IconClipboardHeart } from "@tabler/icons-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { toast } from "sonner"
-import { get3Options } from "@/generated/@tanstack/react-query.gen"
+import { get4Options } from "@/generated/@tanstack/react-query.gen"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { OutletNavSidebarTrigger, OutletNavSticky, SidebarShell, SidebarShellContent } from "@/components/layout/OutletNav"
 import { ApplicationProgramContext } from "@/components/applications/ApplicationProgramContext"
@@ -31,7 +31,7 @@ function RouteComponent() {
   const canView = user.permissions?.includes("applications:evaluations:view")
   const canCreate = user.permissions?.includes("applications:evaluations:create")
   const canAccessInterventions = user.permissions?.some((permission) => permission.startsWith("applications:interventions:"))
-  const application = useQuery(get3Options({ path: { id: solicitudId } }))
+  const application = useQuery(get4Options({ path: { id: solicitudId } }))
   const evaluations = useQuery({ ...socialQueries.evaluations({ applicationId: solicitudId, page: 0, size: 1 }), enabled: !!canView })
   const existingId = evaluations.data?.content[0]?.id
   const detail = useQuery({ ...socialQueries.evaluation(existingId ?? ""), enabled: !!existingId })
@@ -41,7 +41,7 @@ function RouteComponent() {
   const [recommendation, setRecommendation] = useState("")
   const mutation = useMutation({
     mutationFn: () => socialManagement.createEvaluation(solicitudId, { vulnerability, priority, recommendation: recommendation.trim() }),
-    onSuccess: async () => { toast.success("Evaluación registrada"); await queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations")); await queryClient.invalidateQueries({ queryKey: get3Options({ path: { id: solicitudId } }).queryKey }) },
+    onSuccess: async () => { toast.success("Evaluación registrada"); await queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations")); await queryClient.invalidateQueries({ queryKey: get4Options({ path: { id: solicitudId } }).queryKey }) },
     onError: error => toast.error(apiErrorMessage(error)),
   })
   const evaluation = detail.data

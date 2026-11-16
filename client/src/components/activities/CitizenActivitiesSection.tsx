@@ -16,7 +16,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { list10Options } from "@/generated/@tanstack/react-query.gen"
+import { list13Options } from "@/generated/@tanstack/react-query.gen"
 import type { CitizenActivityResponse } from "@/generated/types.gen"
 import { cn } from "@/lib/utils"
 
@@ -27,7 +27,7 @@ export function CitizenActivitiesSection({ className, canEnroll }: { className?:
   // Mantiene el estado confirmado mientras se actualiza el listado.
   const [justEnrolled, setJustEnrolled] = useState<ReadonlySet<string>>(new Set())
 
-  const query = useQuery(list10Options({ query: { page: 0, size: PREVIEW_COUNT } }))
+  const query = useQuery(list13Options({ query: { page: 0, size: PREVIEW_COUNT } }))
   const activities = query.data?.content ?? []
 
   if (query.isError) return null

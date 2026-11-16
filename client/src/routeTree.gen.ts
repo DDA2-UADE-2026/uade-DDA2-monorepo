@@ -54,6 +54,7 @@ import { Route as AppGestionProgramasProgramaIdRouteRouteImport } from "./routes
 import { Route as AppGestionSolicitudesIndexRouteImport } from "./routes/_app/gestion/solicitudes/index"
 import { Route as AppGestionSolicitudesSolicitudIdRouteImport } from "./routes/_app/gestion/solicitudes/$solicitudId"
 import { Route as AppGestionSolicitudesAsistidaRouteImport } from "./routes/_app/gestion/solicitudes/asistida"
+import { Route as AppGestionTicketsIndexRouteImport } from "./routes/_app/gestion/tickets/index"
 import { Route as AppGestionTurnosIndexRouteImport } from "./routes/_app/gestion/turnos/index"
 import { Route as AppGestionTurnosTurnoIdRouteImport } from "./routes/_app/gestion/turnos/$turnoId"
 import { Route as AppGestionTurnosAgendaRouteImport } from "./routes/_app/gestion/turnos/agenda"
@@ -340,6 +341,11 @@ const AppGestionSolicitudesAsistidaRoute =
     path: "/solicitudes/asistida",
     getParentRoute: () => AppGestionRouteRoute,
   } as any)
+const AppGestionTicketsIndexRoute = AppGestionTicketsIndexRouteImport.update({
+  id: "/tickets/",
+  path: "/tickets/",
+  getParentRoute: () => AppGestionRouteRoute,
+} as any)
 const AppGestionTurnosIndexRoute = AppGestionTurnosIndexRouteImport.update({
   id: "/turnos/",
   path: "/turnos/",
@@ -646,6 +652,7 @@ export interface FileRoutesByFullPath {
   "/gestion/mis-turnos/": typeof AppGestionMisTurnosIndexRoute
   "/gestion/programas/": typeof AppGestionProgramasIndexRoute
   "/gestion/solicitudes/": typeof AppGestionSolicitudesIndexRoute
+  "/gestion/tickets/": typeof AppGestionTicketsIndexRoute
   "/gestion/turnos/": typeof AppGestionTurnosIndexRoute
   "/gestion/usuarios/": typeof AppGestionUsuariosIndexRoute
   "/gestion/visitas/": typeof AppGestionVisitasIndexRoute
@@ -726,6 +733,7 @@ export interface FileRoutesByTo {
   "/gestion/mis-turnos": typeof AppGestionMisTurnosIndexRoute
   "/gestion/programas": typeof AppGestionProgramasIndexRoute
   "/gestion/solicitudes": typeof AppGestionSolicitudesIndexRoute
+  "/gestion/tickets": typeof AppGestionTicketsIndexRoute
   "/gestion/turnos": typeof AppGestionTurnosIndexRoute
   "/gestion/usuarios": typeof AppGestionUsuariosIndexRoute
   "/gestion/visitas": typeof AppGestionVisitasIndexRoute
@@ -815,6 +823,7 @@ export interface FileRoutesById {
   "/_app/gestion/mis-turnos/": typeof AppGestionMisTurnosIndexRoute
   "/_app/gestion/programas/": typeof AppGestionProgramasIndexRoute
   "/_app/gestion/solicitudes/": typeof AppGestionSolicitudesIndexRoute
+  "/_app/gestion/tickets/": typeof AppGestionTicketsIndexRoute
   "/_app/gestion/turnos/": typeof AppGestionTurnosIndexRoute
   "/_app/gestion/usuarios/": typeof AppGestionUsuariosIndexRoute
   "/_app/gestion/visitas/": typeof AppGestionVisitasIndexRoute
@@ -903,6 +912,7 @@ export interface FileRouteTypes {
     | "/gestion/mis-turnos/"
     | "/gestion/programas/"
     | "/gestion/solicitudes/"
+    | "/gestion/tickets/"
     | "/gestion/turnos/"
     | "/gestion/usuarios/"
     | "/gestion/visitas/"
@@ -983,6 +993,7 @@ export interface FileRouteTypes {
     | "/gestion/mis-turnos"
     | "/gestion/programas"
     | "/gestion/solicitudes"
+    | "/gestion/tickets"
     | "/gestion/turnos"
     | "/gestion/usuarios"
     | "/gestion/visitas"
@@ -1071,6 +1082,7 @@ export interface FileRouteTypes {
     | "/_app/gestion/mis-turnos/"
     | "/_app/gestion/programas/"
     | "/_app/gestion/solicitudes/"
+    | "/_app/gestion/tickets/"
     | "/_app/gestion/turnos/"
     | "/_app/gestion/usuarios/"
     | "/_app/gestion/visitas/"
@@ -1429,6 +1441,13 @@ declare module "@tanstack/react-router" {
       path: "/solicitudes/asistida"
       fullPath: "/gestion/solicitudes/asistida"
       preLoaderRoute: typeof AppGestionSolicitudesAsistidaRouteImport
+      parentRoute: typeof AppGestionRouteRoute
+    }
+    "/_app/gestion/tickets/": {
+      id: "/_app/gestion/tickets/"
+      path: "/tickets"
+      fullPath: "/gestion/tickets/"
+      preLoaderRoute: typeof AppGestionTicketsIndexRouteImport
       parentRoute: typeof AppGestionRouteRoute
     }
     "/_app/gestion/turnos/": {
@@ -1870,6 +1889,7 @@ interface AppGestionRouteRouteChildren {
   AppGestionMisTurnosIndexRoute: typeof AppGestionMisTurnosIndexRoute
   AppGestionProgramasIndexRoute: typeof AppGestionProgramasIndexRoute
   AppGestionSolicitudesIndexRoute: typeof AppGestionSolicitudesIndexRoute
+  AppGestionTicketsIndexRoute: typeof AppGestionTicketsIndexRoute
   AppGestionTurnosIndexRoute: typeof AppGestionTurnosIndexRoute
   AppGestionUsuariosIndexRoute: typeof AppGestionUsuariosIndexRoute
   AppGestionVisitasIndexRoute: typeof AppGestionVisitasIndexRoute
@@ -1915,6 +1935,7 @@ const AppGestionRouteRouteChildren: AppGestionRouteRouteChildren = {
   AppGestionMisTurnosIndexRoute: AppGestionMisTurnosIndexRoute,
   AppGestionProgramasIndexRoute: AppGestionProgramasIndexRoute,
   AppGestionSolicitudesIndexRoute: AppGestionSolicitudesIndexRoute,
+  AppGestionTicketsIndexRoute: AppGestionTicketsIndexRoute,
   AppGestionTurnosIndexRoute: AppGestionTurnosIndexRoute,
   AppGestionUsuariosIndexRoute: AppGestionUsuariosIndexRoute,
   AppGestionVisitasIndexRoute: AppGestionVisitasIndexRoute,

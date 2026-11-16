@@ -8,7 +8,7 @@ import { UserChip } from "@/components/UserChip"
 import { UserSelectionDialog } from "@/components/users/UserSelectionDialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { assignApplicationWorkerMutation, get3QueryKey, unassignApplicationWorkerMutation } from "@/generated/@tanstack/react-query.gen"
+import { assignApplicationWorkerMutation, get4QueryKey, unassignApplicationWorkerMutation } from "@/generated/@tanstack/react-query.gen"
 import type { AdminApplicationResponse } from "@/generated/types.gen"
 import { invalidateSocialQueries } from "@/lib/social-management"
 
@@ -25,7 +25,7 @@ export function AssignedWorkerCard({ application, permissions, evaluated }: { ap
   // Antes de la evaluación se puede volver a que quede asignado quien evalúe; después las visitas necesitan un asignado.
   const canUnassign = allowed && !!assignedId && !evaluated
   const onAssigned = async (data: AdminApplicationResponse, message: string) => {
-    queryClient.setQueryData(get3QueryKey({ path: { id: application.id! } }), data)
+    queryClient.setQueryData(get4QueryKey({ path: { id: application.id! } }), data)
     await queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations"))
     setOpen(false)
     toast.success(message)

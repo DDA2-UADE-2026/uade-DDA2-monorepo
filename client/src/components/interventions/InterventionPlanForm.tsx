@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import { create2Mutation, get4QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create2Mutation, get5QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { CreateInterventionPlanRequest, InterventionActionRequest, InterventionPlanResponse } from "@/generated/types.gen"
 
 type DraftAction = InterventionActionRequest & { key: string }
@@ -27,8 +27,8 @@ export function InterventionPlanForm({ applicationId, onCreated }: { application
   const create = useMutation({
     ...create2Mutation(),
     onSuccess: (plan) => {
-      queryClient.setQueryData(get4QueryKey({ path: { id: applicationId } }), plan)
-      void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) })
+      queryClient.setQueryData(get5QueryKey({ path: { id: applicationId } }), plan)
+      void queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: applicationId } }) })
       onCreated?.(plan)
     },
   })

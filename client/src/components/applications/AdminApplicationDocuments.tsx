@@ -26,9 +26,9 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import {
   content1Options,
-  get3QueryKey,
-  list9QueryKey,
-  reviewMutation,
+  get4QueryKey,
+  list12QueryKey,
+  review1Mutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse } from "@/generated/types.gen"
 import { formatApplicationDateTime, formatDocumentFileSize } from "@/lib/application-flow"
@@ -261,12 +261,12 @@ export function AdminDocumentReviewDialog({
   const [submitted, setSubmitted] = useState(false)
   const observationMissing = decision === "OBSERVED" && observation.trim().length === 0
   const review = useMutation({
-    ...reviewMutation(),
+    ...review1Mutation(),
     onSuccess: async () => {
       // La revisión cambia la documentación pendiente que expone el detalle administrativo.
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: list9QueryKey({ path: { applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list12QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) }),
       ])
       onOpenChange(false)
     },

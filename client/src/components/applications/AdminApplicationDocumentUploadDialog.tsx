@@ -26,9 +26,9 @@ import {
 } from "@/components/ui/dialog"
 import {
   content1QueryKey,
-  get3QueryKey,
+  get4QueryKey,
   list4QueryKey,
-  list9QueryKey,
+  list12QueryKey,
   put1Mutation,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ApplicationDocumentResponse, AvailableProgramDocumentRequirementResponse } from "@/generated/types.gen"
@@ -58,8 +58,8 @@ export function AdminApplicationDocumentUploadDialog({ applicationId, requiremen
     retry: false,
     onSuccess: async () => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: list9QueryKey({ path: { applicationId } }) }),
-        queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: list12QueryKey({ path: { applicationId } }) }),
+        queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) }),
         queryClient.invalidateQueries({ queryKey: list4QueryKey() }),
         ...(existing?.id
           ? [queryClient.invalidateQueries({ queryKey: content1QueryKey({ path: { applicationId, applicationDocumentId: existing.id } }) })]
@@ -70,7 +70,7 @@ export function AdminApplicationDocumentUploadDialog({ applicationId, requiremen
     },
     onError: (error) => {
       // Una solicitud resuelta deja de admitir cambios: se refresca el detalle para reflejarlo.
-      if (error.status === 409) void queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) })
+      if (error.status === 409) void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) })
     },
   })
 
