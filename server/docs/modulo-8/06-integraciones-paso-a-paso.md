@@ -6,7 +6,7 @@
 
 | Contraparte funcional | Qué recibe M8 | Qué envía M8 | Medio implementado |
 | --- | --- | --- | --- |
-| M1 Ciudadanos, organizaciones y expedientes | Datos/estado de ciudadanos vinculados; referencias de expedientes y documentación pedida. | Pedido de requisitos documentales de una solicitud. | Eventos mediante Core. Login y acceso a contenido documental requieren acuerdo adicional. |
+| M1 Ciudadanos, organizaciones y expedientes | Datos/estado de ciudadanos vinculados; referencias de expedientes y documentación pedida. | Pedido de requisitos documentales de una solicitud. | Eventos mediante Core. Login de servidor a servidor confirmado, con detalles e implementación pendientes. Acceso al archivo pendiente de acuerdo. |
 | M2 Atención Ciudadana | Tickets derivados, respuestas, cambios de prioridad/escalamiento, reaperturas y cierres. | Hechos de inicio, avance, información requerida, devolución, resolución o rechazo operativo. | Eventos mediante Core. |
 | M5 Rentas | Deudas vencidas/canceladas, pedidos y resultados de exención. | Alta y cambios de cada beneficio otorgado. | Eventos mediante Core. |
 | M9 Core | Entrega de eventos y respuestas de diagnóstico/registro. | Eventos producidos y consultas técnicas autenticadas. | AMQPS para mensajes; HTTPS para API de máquina. |
@@ -27,9 +27,11 @@ flowchart LR
 
 ## 2. M1: vinculación e identidad
 
+El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint confirmado, el uso de `citizenId` UUID, la sesión propia de M8 y los ejemplos documentados de éxito `200` y error `401`. El contrato mínimo permite implementar el cliente y sus pruebas locales. Quedan variantes y cuenta de prueba por confirmar; el cliente y el endpoint proxy todavía no están implementados.
+
 | Paso | Entrada o acción | Datos que utiliza M8 | Resultado local | Salida |
 | --- | --- | --- | --- | --- |
-| 1 | Vincular cuenta por un procedimiento verificado. | UUID canónico de M1 y cuenta local. | `users.external_citizen_id`. El procedimiento de autenticación/vinculación sigue pendiente de acuerdo e implementación. | No hay un evento de vinculación implementado. |
+| 1 | Vincular cuenta por un procedimiento verificado. | UUID canónico de M1 y cuenta local. | `users.external_citizen_id`. Login remoto confirmado; detalles de respuesta y procedimiento de autenticación/vinculación pendientes de cierre e implementación. | No hay un evento de vinculación implementado. |
 | 2 | Recibir `citizenUpdated`. | `citizenId`, `updateType`, `details`, actor y fecha del sobre. | Busca usuario vinculado; si no existe, confirma e ignora sin aprovisionarlo. | Ninguna por desconocido. |
 | 3a | `REGISTERED`. | DNI, nombre/apellido y domicilio del payload. | Actualiza snapshot de nombre/DNI y domicilio con sus relojes. No crea una cuenta ni copia todo `details` al modelo local. | Ninguna. |
 | 3b | `ADDRESS_UPDATED`. | `previousAddress`, `newAddress`; usa la nueva calle/número. | Actualiza domicilio si la fecha no es anterior al último cambio aplicado. | Ninguna. |

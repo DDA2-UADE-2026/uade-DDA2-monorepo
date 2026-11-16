@@ -1,0 +1,14 @@
+{
+  "user_id": 8452,
+  "uuid": "b63f5a2e-4b71-46e7-8b01-381c85d88f62",
+  "citizenId": "b63f5a2e-4b71-46e7-8b01-381c85d88f62",
+  "actorId": "b63f5a2e-4b71-46e7-8b01-381c85d88f62",
+  "actorType": "CIUDADANO",
+  "dni": 34567890,
+  "nombre": "Marcos",
+  "apellido": "Ferreyra",
+  "cuit": 20345678901,
+  "role": "CIUDADANO",
+  "auth": true,
+  "contactos": []
+}

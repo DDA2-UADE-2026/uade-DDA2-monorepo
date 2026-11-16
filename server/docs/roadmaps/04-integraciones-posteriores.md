@@ -21,7 +21,12 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [x] Referencias de expedientes/documentos separadas de archivos locales; COMPLETED no equivale a VALID.
 - [x] Revisión administrativa protegida y estados documentales compartidos con evaluación/renovación.
 - [x] Eventos por otorgamiento, renovación, suspensión, finalización y vencimiento; beneficio estable y amount presente aunque sea null.
-- [ ] Coordinar con M1 la vinculación verificada de cuentas y la obtención autorizada del contenido documental.
+- [x] Registrar el [contrato mínimo de login M1](../technical/m1-auth-contract.md), las diferencias con la guía 2.1 y el uso de una sesión propia de M8; sin implementación ni prueba remota de login.
+- [x] Incorporar las capturas de M1 de HTTP `200` y `401`: campos en la raíz, UUID de ciudadano, perfil y headers. Ejemplos documentados, sin prueba remota.
+- [x] Definir el contrato mínimo y los datos de perfil para implementar el cliente y sus pruebas locales.
+- [ ] Completar variantes de errores, nulabilidad, contactos y cuenta de prueba privada con M1.
+- [ ] Implementar el cliente y el login proxy M8, con vinculación verificada y permisos locales de ciudadano.
+- [ ] Acordar e implementar la obtención autorizada del contenido documental por UUID.
 
 ## Etapa B3 Atención Ciudadana
 

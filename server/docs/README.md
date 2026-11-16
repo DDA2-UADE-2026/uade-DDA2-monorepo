@@ -41,6 +41,7 @@ Recursos principales:
 - [Implementación técnica y operación de Core](technical/core-integration.md)
 - [Dashboard y prueba HTTP de Core](technical/core-dashboard.md)
 - [Autenticación con cookies y Bearer](technical/cookie-auth.md)
+- [Contrato de login integrado con M1 y confirmaciones pendientes](technical/m1-auth-contract.md)
 - [Contrato técnico de solicitudes y documentos](technical/solicitudes-beneficios.md)
 - [Análisis de seguridad y preparación para Ciudadanos](technical/seguridad-ciudadanos-analisis.md)
 - [Diagrama de entidades del seguimiento social](database/social-development-entity-diagram.md)
