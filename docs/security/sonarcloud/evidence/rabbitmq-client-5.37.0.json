@@ -1,0 +1,234 @@
+{
+  "base": "48152a03cd8860118219c0210385e389bdd5270a",
+  "dependency": "com.rabbitmq:amqp-client",
+  "from": "5.27.1",
+  "to": "5.37.0",
+  "mechanism": "Boot rabbit-amqp-client.version via Kotlin DSL extra; no force",
+  "lock_delta": "One generated line, identical seven scopes; no transitive delta. Existing Boot-managed Netty 4.2.19.Final retained.",
+  "baseline": {
+    "tests": 617,
+    "passed": 612,
+    "skipped": 5
+  },
+  "candidate": {
+    "tests": 617,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 5,
+    "passed": 612,
+    "reports": 57
+  },
+  "testContainers": {
+    "status": "NOT_RUN",
+    "reason": "Local Docker socket missing and docker info contains daemon errors; no disposable services started",
+    "user_decision": "Explicit authorization to push and validate integration in dev before merge"
+  },
+  "bootjar": {
+    "server-0.0.1-SNAPSHOT-plain.jar": {
+      "sha256": "9d188906ad598a4b37727b95b13635c8100aee47f32e3b4365e3ea6cf1f8dcdd",
+      "rabbit_libraries": [],
+      "bouncycastle_libraries": []
+    },
+    "server-0.0.1-SNAPSHOT.jar": {
+      "sha256": "061f1955e4d045026b8b18b15dc420586b3e2e89b09688327874fc54d646fd94",
+      "rabbit_libraries": [
+        "BOOT-INF/lib/amqp-client-5.37.0.jar"
+      ],
+      "bouncycastle_libraries": []
+    }
+  },
+  "hashes": {
+    "server/build.gradle.kts": "848b5bd4137814892df4e81b16a5b678e116978d0ef8ae30b30f45aba4d24513",
+    "server/gradle.lockfile": "712517bfef1907b10e22ba9c3c19183d69a2440397d82782c7ab9bb301875c69"
+  },
+  "limits": [
+    "No remote Core or shared database",
+    "Two background build captures interrupted without exit; authoritative build: 02c-build-final.log exit 0",
+    "Testcontainers preflight stopped: authorized local Unix socket not detected by is_socket; no fixture executed yet",
+    "Real broker, TLS handshake, reconnection and DLQ tests pending in authorized dev environment"
+  ],
+  "configuration_regressions": {
+    "result": "PASS",
+    "counts": {
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "hashes": {
+      "server/src/test/kotlin/com/uade/dda2/server/feature/integration/CoreAmqpConfigurationTest.kt": "e3c5b73f3d97208bc07eb519526944347c5fb84389c59d8e8a8521b006f23243",
+      "artifacts/security-preparation/rabbit-client-config-tests/focused-test-corrected.log": "21c49ac18a349b55a9353b86aa625bec1d24a6afeddc1960b84f76fffe64fe24",
+      "artifacts/security-preparation/rabbit-client-config-tests/checkout/server/build/test-results/test/TEST-com.uade.dda2.server.feature.integration.CoreAmqpConfigurationTest.xml": "e82212e74b3300798ed0b00bfe1b36f7a5185082f6c704608ab74a72037108ad"
+    },
+    "coverage": [
+      "remote TLS required",
+      "unsafe certificate/hostname flags rejected",
+      "timeouts/heartbeat/Spring recovery/confirm returns",
+      "mandatory",
+      "manual ACK/prefetch/no autoDeclare/no autoStartup",
+      "unconnected SSL socket endpoint identification HTTPS"
+    ],
+    "no_connections_or_handshakes": true
+  },
+  "accepted_commands": [
+    {
+      "label": "01-lock",
+      "exit_code": 0,
+      "seconds": 10.47,
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--update-locks",
+        "com.rabbitmq:amqp-client",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-compileClasspath",
+      "exit_code": 0,
+      "seconds": 10.79,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "compileClasspath",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-implementationDependenciesMetadata",
+      "exit_code": 0,
+      "seconds": 5.52,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "implementationDependenciesMetadata",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-productionRuntimeClasspath",
+      "exit_code": 0,
+      "seconds": 5.94,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "productionRuntimeClasspath",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-runtimeClasspath",
+      "exit_code": 0,
+      "seconds": 5.91,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "runtimeClasspath",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-testCompileClasspath",
+      "exit_code": 0,
+      "seconds": 6.07,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "testCompileClasspath",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-testImplementationDependenciesMetadata",
+      "exit_code": 0,
+      "seconds": 5.87,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "testImplementationDependenciesMetadata",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "scope-testRuntimeClasspath",
+      "exit_code": 0,
+      "seconds": 6.22,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "testRuntimeClasspath",
+        "--dependency",
+        "com.rabbitmq:amqp-client",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    },
+    {
+      "label": "02c-build-final",
+      "exit_code": 0,
+      "seconds": 108.97,
+      "argv": [
+        "./gradlew",
+        "build",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/rabbit-client-results/home"
+      ]
+    }
+  ],
+  "publication": {
+    "url": "https://repo.maven.apache.org/maven2/com/rabbitmq/amqp-client/5.37.0/amqp-client-5.37.0.pom",
+    "http_status": 200,
+    "sha256": "47e11487e18d65685b267c7b6ad2add3198a8bfa42f214466d8c49c91c1764ee"
+  },
+  "runtime_library_count": 131,
+  "application_classfile_majors": [
+    61
+  ],
+  "sonar_risks_before_reported_by_user": 29,
+  "sonar_reanalyzed_here": false,
+  "execution_note": "Main build and focused 7 regression tests ran separately against identical build/lock; do not claim a combined 624-case full build",
+  "delivery": "Push requested by user; user opens PR to develop; no merge/deploy",
+  "background_captures": "Two interrupted build logs excluded from successful evidence"
+}

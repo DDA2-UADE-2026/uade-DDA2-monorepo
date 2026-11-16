@@ -1,6 +1,6 @@
 # SonarCloud: preparación del saneamiento de dependencias
 
-Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparación no actualizó dependencias ni estados Sonar. La [actualización Spring Boot 4.0.9](<actualizacion-springboot-4.0.9.md>) ya está mergeada en `develop`; el usuario confirmó tests aprobados y **63 riesgos** en Sonar. La siguiente tanda es [Bouncy Castle 1.87 sólo para tooling Kotlin](<actualizacion-bouncycastle-1.87.md>), con validación local y PR/reanálisis posteriores independientes.
+Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparación no actualizó dependencias ni estados Sonar. La [actualización Spring Boot 4.0.9](<actualizacion-springboot-4.0.9.md>) ya está mergeada en `develop`; el usuario confirmó tests aprobados y **63 riesgos** en Sonar. [Bouncy Castle 1.87 sólo para tooling Kotlin](<actualizacion-bouncycastle-1.87.md>) también está mergeado; el usuario confirmó **29 riesgos** restantes. La siguiente tanda en curso es el cliente Java RabbitMQ, separada de la versión del broker. Los resultados nuevos deberán confirmarse con CI y Sonar del próximo PR.
 
 ## Lectura recomendada
 
@@ -10,6 +10,7 @@ Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparació
 4. [Checklist para las actualizaciones posteriores](<checklist-actualizaciones.md>).
 5. [Spring Boot 4.0.9: cambios, pruebas y estado de la feature](<actualizacion-springboot-4.0.9.md>).
 6. [Bouncy Castle 1.87: override acotado y pruebas PGP locales](<actualizacion-bouncycastle-1.87.md>).
+7. [RabbitMQ Java client 5.37.0: actualización y regresiones; integración pendiente en dev](<actualizacion-rabbitmq-client-5.37.0.md>).
 
 ## Evidencia versionable
 
