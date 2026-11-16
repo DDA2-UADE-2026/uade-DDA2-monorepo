@@ -76,13 +76,13 @@ export const Route = createFileRoute("/_app/gestion/roles")({
 
 const PAGE_SIZE = 10
 
-type DialogState = { role: RoleResponse | null } | null
+type SheetState = { open: boolean; role: RoleResponse | null }
 
 function RouteComponent() {
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } =
     useQuery(findAll1Options())
   const [page, setPage] = useState(1)
-  const [dialogState, setDialogState] = useState<DialogState>(null)
+  const [sheetState, setSheetState] = useState<SheetState>({ open: false, role: null })
 
   const totalItems = data?.length ?? 0
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -98,7 +98,7 @@ function RouteComponent() {
         <OutletNavRightButton className="gap-1.5">
           <Button
             size="sm"
-            onClick={() => setDialogState({ role: null })}
+            onClick={() => setSheetState({ open: true, role: null })}
           >
             <IconPlus />
             Nuevo rol
@@ -181,7 +181,7 @@ function RouteComponent() {
                           size="icon-sm"
                           variant="ghost"
                           aria-label={`Editar ${role.name ?? "rol"}`}
-                          onClick={() => setDialogState({ role })}
+                          onClick={() => setSheetState({ open: true, role })}
                         >
                           <IconPencil />
                         </Button>
@@ -199,24 +199,41 @@ function RouteComponent() {
         )}
       </SidebarShellContent>
 
-      {dialogState && (
-        <RoleFormSheet
-          role={dialogState.role}
-          onOpenChange={(open) => {
-            if (!open) setDialogState(null)
-          }}
-        />
-      )}
+      <RoleFormSheet
+        open={sheetState.open}
+        role={sheetState.role}
+        onOpenChange={(open) => setSheetState((prev) => ({ ...prev, open }))}
+      />
     </SidebarShell>
   )
 }
 
+// El Sheet queda siempre montado para que Base UI pueda animar la entrada y la salida;
+// el contenido se desmonta al cerrar, así que el formulario arranca limpio en cada apertura.
 function RoleFormSheet({
+  open,
   role,
   onOpenChange,
 }: {
+  open: boolean
   role: RoleResponse | null
   onOpenChange: (open: boolean) => void
+}) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-2xl">
+        <RoleFormSheetBody role={role} onClose={() => onOpenChange(false)} />
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+function RoleFormSheetBody({
+  role,
+  onClose,
+}: {
+  role: RoleResponse | null
+  onClose: () => void
 }) {
   const queryClient = useQueryClient()
   const permissions = useQuery(findAll4Options())
@@ -226,14 +243,14 @@ function RoleFormSheet({
     ...create1Mutation(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: findAll1QueryKey() })
-      onOpenChange(false)
+      onClose()
     },
   })
   const updateRole = useMutation({
     ...update1Mutation(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: findAll1QueryKey() })
-      onOpenChange(false)
+      onClose()
     },
   })
 
@@ -258,8 +275,7 @@ function RoleFormSheet({
   })
 
   return (
-    <Sheet open onOpenChange={onOpenChange}>
-      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-2xl">
+    <>
         <SheetHeader className="border-b">
           <SheetTitle>{isEditing ? "Editar rol" : "Nuevo rol"}</SheetTitle>
           <SheetDescription>
@@ -396,7 +412,6 @@ function RoleFormSheet({
                 : "Crear rol"}
           </Button>
         </SheetFooter>
-      </SheetContent>
-    </Sheet>
+    </>
   )
 }

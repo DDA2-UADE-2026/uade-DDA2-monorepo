@@ -131,10 +131,9 @@ export function EvaluationHeatmap({ data }: { data: Indicators }) {
                   <span
                     key={priority}
                     role="cell"
-                    tabIndex={0}
                     title={`${levelLabel[vulnerability]} · prioridad ${priorityLabel[priority].toLowerCase()}: ${count}`}
                     aria-label={`Vulnerabilidad ${levelLabel[vulnerability].toLowerCase()}, prioridad ${priorityLabel[priority].toLowerCase()}: ${count} evaluaciones`}
-                    className="flex h-12 items-center justify-center rounded-md font-medium tabular-nums outline-offset-2 transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-ring"
+                    className="flex h-12 items-center justify-center rounded-md font-medium tabular-nums transition-[filter] hover:brightness-110"
                     style={step === 0
                       ? { backgroundColor: "var(--muted)", color: "var(--muted-foreground)" }
                       : { backgroundColor: `var(--viz-seq-${step})`, color: step <= 3 ? "var(--viz-seq-ink-light)" : "var(--viz-seq-ink-dark)" }}

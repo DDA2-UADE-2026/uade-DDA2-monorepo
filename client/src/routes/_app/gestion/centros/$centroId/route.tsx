@@ -10,6 +10,7 @@ import {
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { Badge } from "@/components/ui/badge"
 import { getMunicipalCenterOptions } from "@/generated/@tanstack/react-query.gen"
+import { trimTrailingSlashes } from "@/lib/utils"
 import { cn } from "@/lib/utils"
 
 export const Route = createFileRoute("/_app/gestion/centros/$centroId")({
@@ -25,9 +26,9 @@ function RouteComponent() {
     { label: "Servicios y profesionales", to: base },
     { label: "Agenda", to: `${base}/agenda` },
   ]
-  const currentPath = pathname.replace(/\/+$/, "") || "/"
+  const currentPath = trimTrailingSlashes(pathname) || "/"
   const activePath = tabs
-    .map((item) => item.to.replace(/\/+$/, "") || "/")
+    .map((item) => trimTrailingSlashes(item.to) || "/")
     .filter((itemPath) => currentPath === itemPath || currentPath.startsWith(`${itemPath}/`))
     .sort((left, right) => right.length - left.length)[0]
 
@@ -52,7 +53,7 @@ function RouteComponent() {
       <SidebarShellContent>
         <nav className="flex gap-6 overflow-x-auto border-b px-4 lg:px-6">
           {tabs.map((item) => {
-            const itemPath = item.to.replace(/\/+$/, "") || "/"
+            const itemPath = trimTrailingSlashes(item.to) || "/"
             return (
               <Link
                 key={item.to}
