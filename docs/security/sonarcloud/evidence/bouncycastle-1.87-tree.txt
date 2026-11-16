@@ -1,0 +1,34 @@
+COMMAND ["./gradlew", "dependencies", "--configuration", "kotlinBouncyCastleConfiguration", "--offline", "--no-daemon", "--console=plain", "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"]
+Picked up JAVA_TOOL_OPTIONS: -Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home -Djava.io.tmpdir=<workspace>/artifacts/security-preparation/bc187-results/tmp
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Task :dependencies
+
+------------------------------------------------------------
+Root project 'server'
+------------------------------------------------------------
+
+kotlinBouncyCastleConfiguration - Bouncy Castle dependencies used internally for library publishing validation tasks. Not used during compilation.
++--- org.bouncycastle:bcpkix-jdk18on:1.80 -> 1.87
+|    \--- org.bouncycastle:bcutil-jdk18on:1.87
+|         \--- org.bouncycastle:bcprov-jdk18on:1.87
++--- org.bouncycastle:bcpg-jdk18on:1.80 -> 1.87
+|    +--- org.bouncycastle:bcprov-jdk18on:1.87
+|    \--- org.bouncycastle:bcutil-jdk18on:1.87 (*)
++--- org.bouncycastle:bcpkix-jdk18on:{strictly 1.87} -> 1.87 (c)
++--- org.bouncycastle:bcpg-jdk18on:{strictly 1.87} -> 1.87 (c)
++--- org.bouncycastle:bcutil-jdk18on:{strictly 1.87} -> 1.87 (c)
+\--- org.bouncycastle:bcprov-jdk18on:{strictly 1.87} -> 1.87 (c)
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 3s
+1 actionable task: 1 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.1/userguide/configuration_cache_enabling.html
+
+CAPTURE_EXIT_CODE=0
+CAPTURE_SECONDS=4.118

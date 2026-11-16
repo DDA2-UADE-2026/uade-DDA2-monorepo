@@ -24,6 +24,20 @@ dependencyLocking {
     lockAllConfigurations()
 }
 
+// Sólo el classpath de los helpers PGP de Kotlin: BC no se agrega al runtime de la aplicación.
+// dependency-management restaura las versiones explícitas de las defaults del plugin;
+// esta regla local las alinea sin agregar dependencias ni cambiar la gestión global.
+configurations.named("kotlinBouncyCastleConfiguration") {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.bouncycastle" && requested.name in setOf(
+                "bcpg-jdk18on", "bcpkix-jdk18on", "bcprov-jdk18on", "bcutil-jdk18on"
+            )) {
+            useVersion("1.87")
+            because("Corrige vulnerabilidades del tooling Kotlin manteniendo los cuatro módulos BC alineados.")
+        }
+    }
+}
+
 dependencies {
     // ─────────────────────────────────────────────
     // Spring Boot - Web / API REST

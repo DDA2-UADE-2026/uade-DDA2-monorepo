@@ -1,6 +1,6 @@
 # SonarCloud: preparación del saneamiento de dependencias
 
-Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparación no actualizó dependencias ni estados Sonar. La [actualización posterior de Spring Boot a 4.0.9](<actualizacion-springboot-4.0.9.md>) está implementada y validada localmente en su feature, lista para solicitar PR hacia `develop`; CI y el reanálisis Sonar del PR quedan por confirmar.
+Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparación no actualizó dependencias ni estados Sonar. La [actualización Spring Boot 4.0.9](<actualizacion-springboot-4.0.9.md>) ya está mergeada en `develop`; el usuario confirmó tests aprobados y **63 riesgos** en Sonar. La siguiente tanda es [Bouncy Castle 1.87 sólo para tooling Kotlin](<actualizacion-bouncycastle-1.87.md>), con validación local y PR/reanálisis posteriores independientes.
 
 ## Lectura recomendada
 
@@ -9,6 +9,7 @@ Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparació
 3. [Excepciones, falsos positivos candidatos y mitigaciones](<excepciones.md>).
 4. [Checklist para las actualizaciones posteriores](<checklist-actualizaciones.md>).
 5. [Spring Boot 4.0.9: cambios, pruebas y estado de la feature](<actualizacion-springboot-4.0.9.md>).
+6. [Bouncy Castle 1.87: override acotado y pruebas PGP locales](<actualizacion-bouncycastle-1.87.md>).
 
 ## Evidencia versionable
 
