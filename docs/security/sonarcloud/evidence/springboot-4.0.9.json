@@ -1,0 +1,3494 @@
+{
+  "captured_at": "2026-11-16T17:48:33.157727+00:00",
+  "base_commit": "55b41c3cb37d5836302a845a207ac39201017ca4",
+  "branch": "feature/security-boot-4-0-9",
+  "baseline_boot": "4.0.7",
+  "candidate_boot": "4.0.9",
+  "baseline": {
+    "schema_version": 1,
+    "commit": "55b41c3cb37d5836302a845a207ac39201017ca4",
+    "spring_boot": "4.0.7",
+    "status": "passed",
+    "started_at": "2026-11-16T17:44:03.374316+00:00",
+    "finished_at": "2026-11-16T17:46:22.881069+00:00",
+    "attempts": [
+      {
+        "name": "build-offline",
+        "command": [
+          "./gradlew",
+          "build",
+          "--no-daemon",
+          "--offline",
+          "--console=plain"
+        ],
+        "started_at": "2026-11-16T17:44:04.088173+00:00",
+        "finished_at": "2026-11-16T17:46:22.483285+00:00",
+        "elapsed_seconds": 138.395,
+        "exit_code": 0,
+        "log": "artifacts/security-preparation/boot409-baseline-results/build-offline.log"
+      }
+    ],
+    "junit": {
+      "suites": 57,
+      "tests": 617,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "passed": 612,
+      "time_seconds": 100.597
+    },
+    "failures": [],
+    "archive_sha256": "f37b9540d20c9be9cb4d2fc473fb8d93cfc154534714b071fb9c9e75bc5cd038",
+    "archive_input_identity_before": true,
+    "archive_input_identity_after": true,
+    "root_tracked_inputs_unchanged": false,
+    "root_integrity_note": "Expected root candidate update: lead confirmed intentionally integrating Gradle-generated Boot 4.0.9 root lockfile during baseline. Root build manifest changed before the baseline root snapshot; root lock changed afterward. Baseline runner never wrote or restored root. Isolated archive inputs, including its original Boot 4.0.7 lockfile and all manifests, remained identical to commit 55b41c3cb37d5836302a845a207ac39201017ca4. See postflight.json for hashes.",
+    "manifests_and_locks_scope": "isolated archive checkout",
+    "manifests_and_locks_unchanged": true,
+    "paths": {
+      "checkout": "artifacts/security-preparation/boot409-baseline",
+      "results": "artifacts/security-preparation/boot409-baseline-results",
+      "junit": "artifacts/security-preparation/boot409-baseline-results/junit-summary.json",
+      "integrity": "artifacts/security-preparation/boot409-baseline-results/integrity.json",
+      "preflight": "artifacts/security-preparation/boot409-baseline-results/preflight.json",
+      "postflight": "artifacts/security-preparation/boot409-baseline-results/postflight.json"
+    },
+    "scope": {
+      "default_build": true,
+      "testcontainers_executed": false,
+      "core_smoke_executed": false,
+      "boot_run_executed": false,
+      "shared_databases_configured": false,
+      "environment_allowlisted": true,
+      "java": "Amazon Corretto 17.0.15",
+      "cache_reused": true,
+      "private_dotenv_loaded": false,
+      "network_isolation_claimed": false
+    }
+  },
+  "candidate": {
+    "base_commit": "55b41c3cb37d5836302a845a207ac39201017ca4",
+    "branch": "feature/security-boot-4-0-9",
+    "java": "Corretto 17.0.15",
+    "gradle": "9.5.1",
+    "platform": "macOS arm64",
+    "tests": {
+      "tests": 617,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "passed": 612
+    },
+    "suite_count": 57,
+    "suites": [
+      {
+        "name": "com.uade.dda2.server.AsyncApiDocsGenerationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.OpenApiDocsGenerationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.ServerApplicationTests",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.error.GlobalExceptionHandlerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.ActivityAttendanceFlowTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.ActivityFlowTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationAssignmentFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationDocumentFlowTest",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationEvaluationFlowTest",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationFlowTest",
+        "tests": 59,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest",
+        "tests": 48,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "skipped_cases": [
+          "migracion PostgreSQL puede repetirse sin fabricar historial o ajustar cupos()"
+        ]
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationVisitFlowTest",
+        "tests": 42,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.appointment.AppointmentConcurrencyFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.appointment.AppointmentFlowTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.appointment.AppointmentSlotGeneratorTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.AdminUserInitializerTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.AuthFlowTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.CitizenModelTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.CookieAuthFlowTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest",
+        "tests": 115,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "skipped_cases": [
+          "permiso ciudadano se migra repetidamente sin tocar otorgamientos ni dar acceso a otros roles()",
+          "migracion de ciclo PostgreSQL conserva asignaciones y elimina restricciones de estado anteriores()",
+          "migracion PostgreSQL es repetible y no fabrica otorgamientos ni cupos()"
+        ]
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.validator.BenefitGrantValidatorTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterCatalogFlowTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterConcurrencyFlowTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterLifecycleFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterOpeningHourFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterPersistenceTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterServiceFlowTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.ProfessionalAssignmentFlowTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.ProfessionalAvailabilityFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.entity.MunicipalNameNormalizerTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.enrollmentperiod.service.EnrollmentPeriodExpirationServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.indicator.IndicatorFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreBrokerClientTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreDashboardFlowTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreDisabledConfigurationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreHttpClientTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreMessageListenerTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CorePersistenceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.M8BusinessFlowTest",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.M8ContractCodecTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest",
+        "tests": 51,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1,
+        "skipped_cases": [
+          "migracion PostgreSQL repetible sin planes fabricados y con restricciones completas()"
+        ]
+      },
+      {
+        "name": "com.uade.dda2.server.feature.intervention.mapper.InterventionProgressTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.feature.program.ProgramImageFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.security.JwtServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      },
+      {
+        "name": "com.uade.dda2.server.security.LoginRateLimitFilterTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "skipped_cases": []
+      }
+    ],
+    "lock_scope_count": 29,
+    "lock_scopes": [
+      {
+        "configuration": "annotationProcessor",
+        "components": 2,
+        "unresolved": 0
+      },
+      {
+        "configuration": "apiDependenciesMetadata",
+        "components": 2,
+        "unresolved": 0
+      },
+      {
+        "configuration": "compileClasspath",
+        "components": 133,
+        "unresolved": 0
+      },
+      {
+        "configuration": "compileOnlyDependenciesMetadata",
+        "components": 2,
+        "unresolved": 0
+      },
+      {
+        "configuration": "developmentOnly",
+        "components": 14,
+        "unresolved": 0
+      },
+      {
+        "configuration": "implementationDependenciesMetadata",
+        "components": 131,
+        "unresolved": 0
+      },
+      {
+        "configuration": "intransitiveDependenciesMetadata",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinBouncyCastleConfiguration",
+        "components": 5,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinBuildToolsApiClasspath",
+        "components": 16,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinCompilerClasspath",
+        "components": 8,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinCompilerPluginClasspath",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinCompilerPluginClasspathMain",
+        "components": 11,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinCompilerPluginClasspathTest",
+        "components": 11,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinInternalAbiValidation",
+        "components": 12,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinKlibCommonizerClasspath",
+        "components": 9,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinNativeCompilerPluginClasspath",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "kotlinScriptDefExtensions",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "productionRuntimeClasspath",
+        "components": 147,
+        "unresolved": 0
+      },
+      {
+        "configuration": "runtimeClasspath",
+        "components": 149,
+        "unresolved": 0
+      },
+      {
+        "configuration": "swiftExportClasspathResolvable",
+        "components": 19,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testAndDevelopmentOnly",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testAnnotationProcessor",
+        "components": 2,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testApiDependenciesMetadata",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testCompileClasspath",
+        "components": 192,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testCompileOnlyDependenciesMetadata",
+        "components": 2,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testImplementationDependenciesMetadata",
+        "components": 191,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testIntransitiveDependenciesMetadata",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testKotlinScriptDefExtensions",
+        "components": 1,
+        "unresolved": 0
+      },
+      {
+        "configuration": "testRuntimeClasspath",
+        "components": 209,
+        "unresolved": 0
+      }
+    ],
+    "lock_sha256": "3661ea5effa1c32fedbb7943fef289bdb536b5807afef52237e823b3c8163665",
+    "lock_unchanged_by_verification": true,
+    "jar_sha256": "b686031472fff0d182aa21a61699940727089c8d8ef405a9335e985a4f8b7be4",
+    "runtime_library_count": 131,
+    "runtime_libraries": [
+      "springwolf-amqp-2.5.0.jar",
+      "springwolf-amqp-binding-2.5.0.jar",
+      "springwolf-core-2.5.0.jar",
+      "springdoc-openapi-starter-webmvc-ui-3.0.2.jar",
+      "springdoc-openapi-starter-webmvc-api-3.0.2.jar",
+      "springdoc-openapi-starter-common-3.0.2.jar",
+      "spring-boot-jackson-4.0.9.jar",
+      "jackson-databind-3.1.7.jar",
+      "jackson-core-3.1.7.jar",
+      "jackson-module-kotlin-3.1.7.jar",
+      "kotlin-reflect-2.2.21.jar",
+      "kotlin-stdlib-2.2.21.jar",
+      "jjwt-impl-0.13.0.jar",
+      "jjwt-gson-0.13.0.jar",
+      "jjwt-api-0.13.0.jar",
+      "springwolf-ui-2.5.0.jar",
+      "postgresql-42.7.14.jar",
+      "spring-boot-amqp-4.0.9.jar",
+      "spring-rabbit-4.0.6.jar",
+      "amqp-client-5.27.1.jar",
+      "netty-codec-4.2.19.Final.jar",
+      "netty-codec-protobuf-4.2.19.Final.jar",
+      "spring-boot-data-jpa-4.0.9.jar",
+      "spring-boot-hibernate-4.0.9.jar",
+      "hibernate-core-7.2.25.Final.jar",
+      "jaxb-runtime-4.0.9.jar",
+      "spring-boot-data-commons-4.0.9.jar",
+      "springwolf-asyncapi-2.5.0.jar",
+      "swagger-core-jakarta-2.2.52.jar",
+      "spring-boot-jackson2-4.0.9.jar",
+      "jackson-datatype-jdk8-2.21.7.jar",
+      "jackson-datatype-jsr310-2.21.7.jar",
+      "jackson-module-parameter-names-2.21.7.jar",
+      "jackson-databind-2.21.7.jar",
+      "jackson-core-2.21.7.jar",
+      "jackson-dataformat-yaml-2.21.7.jar",
+      "logback-classic-1.5.38.jar",
+      "logback-core-1.5.38.jar",
+      "gson-2.13.2.jar",
+      "spring-boot-actuator-autoconfigure-4.0.9.jar",
+      "spring-boot-actuator-4.0.9.jar",
+      "spring-aspects-7.0.10.jar",
+      "aspectjweaver-1.9.25.1.jar",
+      "spring-messaging-7.0.10.jar",
+      "micrometer-jakarta9-1.16.8.jar",
+      "spring-boot-micrometer-metrics-4.0.9.jar",
+      "micrometer-core-1.16.8.jar",
+      "netty-codec-compression-4.2.19.Final.jar",
+      "spring-boot-validation-4.0.9.jar",
+      "hibernate-validator-9.0.2.Final.jar",
+      "jakarta.validation-api-3.1.1.jar",
+      "error_prone_annotations-2.41.0.jar",
+      "spring-boot-webmvc-4.0.9.jar",
+      "tomcat-embed-el-11.0.27.jar",
+      "netty-handler-4.2.19.Final.jar",
+      "netty-codec-marshalling-4.2.19.Final.jar",
+      "netty-codec-base-4.2.19.Final.jar",
+      "netty-transport-native-unix-common-4.2.19.Final.jar",
+      "netty-transport-4.2.19.Final.jar",
+      "HikariCP-7.0.2.jar",
+      "spring-data-jpa-4.0.8.jar",
+      "log4j-to-slf4j-2.25.5.jar",
+      "jul-to-slf4j-2.0.20.jar",
+      "spring-data-commons-4.0.8.jar",
+      "slf4j-api-2.0.20.jar",
+      "spring-boot-autoconfigure-4.0.9.jar",
+      "spring-boot-http-converter-4.0.9.jar",
+      "spring-boot-security-4.0.9.jar",
+      "spring-boot-jpa-4.0.9.jar",
+      "spring-boot-jdbc-4.0.9.jar",
+      "spring-boot-health-4.0.9.jar",
+      "spring-boot-servlet-4.0.9.jar",
+      "spring-boot-transaction-4.0.9.jar",
+      "spring-boot-sql-4.0.9.jar",
+      "spring-boot-tomcat-4.0.9.jar",
+      "spring-boot-web-server-4.0.9.jar",
+      "spring-boot-persistence-4.0.9.jar",
+      "spring-boot-micrometer-observation-4.0.9.jar",
+      "spring-boot-4.0.9.jar",
+      "spring-webmvc-7.0.10.jar",
+      "spring-security-config-7.0.8.jar",
+      "spring-security-web-7.0.8.jar",
+      "spring-security-core-7.0.8.jar",
+      "spring-context-7.0.10.jar",
+      "spring-web-7.0.10.jar",
+      "spring-amqp-4.0.6.jar",
+      "spring-aop-7.0.10.jar",
+      "spring-orm-7.0.10.jar",
+      "spring-jdbc-7.0.10.jar",
+      "spring-tx-7.0.10.jar",
+      "spring-beans-7.0.10.jar",
+      "spring-expression-7.0.10.jar",
+      "spring-core-7.0.10.jar",
+      "webjars-locator-lite-1.1.5.jar",
+      "micrometer-observation-1.16.8.jar",
+      "micrometer-commons-1.16.8.jar",
+      "jspecify-1.0.1.jar",
+      "antlr4-runtime-4.13.2.jar",
+      "LatencyUtils-2.0.3.jar",
+      "commons-lang3-3.19.0.jar",
+      "hibernate-models-1.0.1.jar",
+      "jaxb-core-4.0.9.jar",
+      "txw2-4.0.9.jar",
+      "jakarta.xml.bind-api-4.0.5.jar",
+      "angus-activation-2.0.3.jar",
+      "jakarta.activation-api-2.1.4.jar",
+      "jakarta.persistence-api-3.2.0.jar",
+      "HdrHistogram-2.2.2.jar",
+      "commons-logging-1.3.6.jar",
+      "netty-buffer-4.2.19.Final.jar",
+      "netty-resolver-4.2.19.Final.jar",
+      "netty-common-4.2.19.Final.jar",
+      "istack-commons-runtime-4.1.2.jar",
+      "classmate-1.7.3.jar",
+      "tomcat-embed-websocket-11.0.27.jar",
+      "tomcat-embed-core-11.0.27.jar",
+      "swagger-models-jakarta-2.2.52.jar",
+      "jboss-logging-3.6.3.Final.jar",
+      "swagger-annotations-jakarta-2.2.52.jar",
+      "jakarta.inject-api-2.0.1.jar",
+      "swagger-ui-5.32.0.jar",
+      "checker-qual-3.55.1.jar",
+      "annotations-13.0.jar",
+      "byte-buddy-1.17.8.jar",
+      "snakeyaml-2.5.jar",
+      "log4j-api-2.25.5.jar",
+      "spring-security-crypto-7.0.8.jar",
+      "jackson-annotations-2.21.jar",
+      "jakarta.transaction-api-2.0.1.jar",
+      "jakarta.annotation-api-3.0.0.jar",
+      "spring-boot-jarmode-tools-4.0.9.jar"
+    ],
+    "application_classfile_majors": [
+      61
+    ],
+    "not_executed": [
+      "testContainers",
+      "testCoreConnectivity",
+      "test*Postgres",
+      "remote Core",
+      "shared databases",
+      "Sonar analysis",
+      "push",
+      "merge"
+    ]
+  },
+  "commands": [
+    {
+      "label": "01-regenerate-lock",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--update-locks",
+        "org.springframework*:*,com.fasterxml.jackson*:*,tools.jackson*:*,org.apache.tomcat.embed:*,io.netty:*,io.micrometer:*,ch.qos.logback:*,org.apache.logging.log4j:*,org.postgresql:postgresql,org.hibernate*:*,org.projectlombok:lombok,org.slf4j:*,org.jspecify:jspecify,org.webjars:webjars-locator-lite",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/boot409-results/home"
+      ],
+      "started_at": "2026-11-16T17:43:30.468530+00:00",
+      "duration_seconds": 24.01,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/boot409-results/01-regenerate-lock.log"
+    },
+    {
+      "label": "02b-candidate-build-online",
+      "argv": [
+        "./gradlew",
+        "build",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/boot409-results/home"
+      ],
+      "started_at": "2026-11-16T17:44:58.006739+00:00",
+      "duration_seconds": 130.717,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/boot409-results/02b-candidate-build-online.log"
+    },
+    {
+      "label": "03-verify-all-lock-scopes",
+      "argv": [
+        "./gradlew",
+        "-I",
+        "<workspace>/artifacts/security-preparation/boot409-results/verify-lock-coverage.init.gradle",
+        "verifySecurityLockCoverage",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/boot409-results/home"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 10.061,
+      "log": "artifacts/security-preparation/boot409-results/03-verify-all-lock-scopes.log"
+    }
+  ],
+  "lock_delta": [
+    {
+      "package": "ch.qos.logback:logback-classic",
+      "before": {
+        "compileClasspath": "1.5.34",
+        "implementationDependenciesMetadata": "1.5.34",
+        "productionRuntimeClasspath": "1.5.34",
+        "runtimeClasspath": "1.5.34",
+        "testCompileClasspath": "1.5.34",
+        "testImplementationDependenciesMetadata": "1.5.34",
+        "testRuntimeClasspath": "1.5.34"
+      },
+      "after": {
+        "compileClasspath": "1.5.38",
+        "implementationDependenciesMetadata": "1.5.38",
+        "productionRuntimeClasspath": "1.5.38",
+        "runtimeClasspath": "1.5.38",
+        "testCompileClasspath": "1.5.38",
+        "testImplementationDependenciesMetadata": "1.5.38",
+        "testRuntimeClasspath": "1.5.38"
+      }
+    },
+    {
+      "package": "ch.qos.logback:logback-core",
+      "before": {
+        "compileClasspath": "1.5.34",
+        "implementationDependenciesMetadata": "1.5.34",
+        "productionRuntimeClasspath": "1.5.34",
+        "runtimeClasspath": "1.5.34",
+        "testCompileClasspath": "1.5.34",
+        "testImplementationDependenciesMetadata": "1.5.34",
+        "testRuntimeClasspath": "1.5.34"
+      },
+      "after": {
+        "compileClasspath": "1.5.38",
+        "implementationDependenciesMetadata": "1.5.38",
+        "productionRuntimeClasspath": "1.5.38",
+        "runtimeClasspath": "1.5.38",
+        "testCompileClasspath": "1.5.38",
+        "testImplementationDependenciesMetadata": "1.5.38",
+        "testRuntimeClasspath": "1.5.38"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson.core:jackson-core",
+      "before": {
+        "compileClasspath": "2.21.4",
+        "implementationDependenciesMetadata": "2.21.4",
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testCompileClasspath": "2.21.4",
+        "testImplementationDependenciesMetadata": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "compileClasspath": "2.21.7",
+        "implementationDependenciesMetadata": "2.21.7",
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testCompileClasspath": "2.21.7",
+        "testImplementationDependenciesMetadata": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson.core:jackson-databind",
+      "before": {
+        "compileClasspath": "2.21.4",
+        "implementationDependenciesMetadata": "2.21.4",
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testCompileClasspath": "2.21.4",
+        "testImplementationDependenciesMetadata": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "compileClasspath": "2.21.7",
+        "implementationDependenciesMetadata": "2.21.7",
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testCompileClasspath": "2.21.7",
+        "testImplementationDependenciesMetadata": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml",
+      "before": {
+        "compileClasspath": "2.21.4",
+        "implementationDependenciesMetadata": "2.21.4",
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testCompileClasspath": "2.21.4",
+        "testImplementationDependenciesMetadata": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "compileClasspath": "2.21.7",
+        "implementationDependenciesMetadata": "2.21.7",
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testCompileClasspath": "2.21.7",
+        "testImplementationDependenciesMetadata": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+      "before": {
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
+      "before": {
+        "compileClasspath": "2.21.4",
+        "implementationDependenciesMetadata": "2.21.4",
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testCompileClasspath": "2.21.4",
+        "testImplementationDependenciesMetadata": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "compileClasspath": "2.21.7",
+        "implementationDependenciesMetadata": "2.21.7",
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testCompileClasspath": "2.21.7",
+        "testImplementationDependenciesMetadata": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson.module:jackson-module-parameter-names",
+      "before": {
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.fasterxml.jackson:jackson-bom",
+      "before": {
+        "compileClasspath": "2.21.4",
+        "implementationDependenciesMetadata": "2.21.4",
+        "productionRuntimeClasspath": "2.21.4",
+        "runtimeClasspath": "2.21.4",
+        "testCompileClasspath": "2.21.4",
+        "testImplementationDependenciesMetadata": "2.21.4",
+        "testRuntimeClasspath": "2.21.4"
+      },
+      "after": {
+        "compileClasspath": "2.21.7",
+        "implementationDependenciesMetadata": "2.21.7",
+        "productionRuntimeClasspath": "2.21.7",
+        "runtimeClasspath": "2.21.7",
+        "testCompileClasspath": "2.21.7",
+        "testImplementationDependenciesMetadata": "2.21.7",
+        "testRuntimeClasspath": "2.21.7"
+      }
+    },
+    {
+      "package": "com.github.docker-java:docker-java-api",
+      "before": {
+        "testCompileClasspath": "3.7.1",
+        "testRuntimeClasspath": "3.7.1"
+      },
+      "after": {
+        "testCompileClasspath": "3.7.1",
+        "testImplementationDependenciesMetadata": "3.7.1",
+        "testRuntimeClasspath": "3.7.1"
+      }
+    },
+    {
+      "package": "com.github.docker-java:docker-java-transport",
+      "before": {
+        "testCompileClasspath": "3.7.1",
+        "testRuntimeClasspath": "3.7.1"
+      },
+      "after": {
+        "testCompileClasspath": "3.7.1",
+        "testImplementationDependenciesMetadata": "3.7.1",
+        "testRuntimeClasspath": "3.7.1"
+      }
+    },
+    {
+      "package": "com.github.docker-java:docker-java-transport-zerodep",
+      "before": {
+        "testCompileClasspath": "3.7.1",
+        "testRuntimeClasspath": "3.7.1"
+      },
+      "after": {
+        "testCompileClasspath": "3.7.1",
+        "testImplementationDependenciesMetadata": "3.7.1",
+        "testRuntimeClasspath": "3.7.1"
+      }
+    },
+    {
+      "package": "commons-codec:commons-codec",
+      "before": {
+        "testCompileClasspath": "1.19.0",
+        "testRuntimeClasspath": "1.19.0"
+      },
+      "after": {
+        "testCompileClasspath": "1.19.0",
+        "testImplementationDependenciesMetadata": "1.19.0",
+        "testRuntimeClasspath": "1.19.0"
+      }
+    },
+    {
+      "package": "commons-io:commons-io",
+      "before": {
+        "testCompileClasspath": "2.20.0",
+        "testRuntimeClasspath": "2.20.0"
+      },
+      "after": {
+        "testCompileClasspath": "2.20.0",
+        "testImplementationDependenciesMetadata": "2.20.0",
+        "testRuntimeClasspath": "2.20.0"
+      }
+    },
+    {
+      "package": "io.micrometer:micrometer-commons",
+      "before": {
+        "compileClasspath": "1.16.6",
+        "developmentOnly": "1.16.6",
+        "implementationDependenciesMetadata": "1.16.6",
+        "productionRuntimeClasspath": "1.16.6",
+        "runtimeClasspath": "1.16.6",
+        "testCompileClasspath": "1.16.6",
+        "testImplementationDependenciesMetadata": "1.16.6",
+        "testRuntimeClasspath": "1.16.6"
+      },
+      "after": {
+        "compileClasspath": "1.16.8",
+        "developmentOnly": "1.16.8",
+        "implementationDependenciesMetadata": "1.16.8",
+        "productionRuntimeClasspath": "1.16.8",
+        "runtimeClasspath": "1.16.8",
+        "testCompileClasspath": "1.16.8",
+        "testImplementationDependenciesMetadata": "1.16.8",
+        "testRuntimeClasspath": "1.16.8"
+      }
+    },
+    {
+      "package": "io.micrometer:micrometer-core",
+      "before": {
+        "compileClasspath": "1.16.6",
+        "implementationDependenciesMetadata": "1.16.6",
+        "productionRuntimeClasspath": "1.16.6",
+        "runtimeClasspath": "1.16.6",
+        "testCompileClasspath": "1.16.6",
+        "testImplementationDependenciesMetadata": "1.16.6",
+        "testRuntimeClasspath": "1.16.6"
+      },
+      "after": {
+        "compileClasspath": "1.16.8",
+        "implementationDependenciesMetadata": "1.16.8",
+        "productionRuntimeClasspath": "1.16.8",
+        "runtimeClasspath": "1.16.8",
+        "testCompileClasspath": "1.16.8",
+        "testImplementationDependenciesMetadata": "1.16.8",
+        "testRuntimeClasspath": "1.16.8"
+      }
+    },
+    {
+      "package": "io.micrometer:micrometer-jakarta9",
+      "before": {
+        "compileClasspath": "1.16.6",
+        "implementationDependenciesMetadata": "1.16.6",
+        "productionRuntimeClasspath": "1.16.6",
+        "runtimeClasspath": "1.16.6",
+        "testCompileClasspath": "1.16.6",
+        "testImplementationDependenciesMetadata": "1.16.6",
+        "testRuntimeClasspath": "1.16.6"
+      },
+      "after": {
+        "compileClasspath": "1.16.8",
+        "implementationDependenciesMetadata": "1.16.8",
+        "productionRuntimeClasspath": "1.16.8",
+        "runtimeClasspath": "1.16.8",
+        "testCompileClasspath": "1.16.8",
+        "testImplementationDependenciesMetadata": "1.16.8",
+        "testRuntimeClasspath": "1.16.8"
+      }
+    },
+    {
+      "package": "io.micrometer:micrometer-observation",
+      "before": {
+        "compileClasspath": "1.16.6",
+        "developmentOnly": "1.16.6",
+        "implementationDependenciesMetadata": "1.16.6",
+        "productionRuntimeClasspath": "1.16.6",
+        "runtimeClasspath": "1.16.6",
+        "testCompileClasspath": "1.16.6",
+        "testImplementationDependenciesMetadata": "1.16.6",
+        "testRuntimeClasspath": "1.16.6"
+      },
+      "after": {
+        "compileClasspath": "1.16.8",
+        "developmentOnly": "1.16.8",
+        "implementationDependenciesMetadata": "1.16.8",
+        "productionRuntimeClasspath": "1.16.8",
+        "runtimeClasspath": "1.16.8",
+        "testCompileClasspath": "1.16.8",
+        "testImplementationDependenciesMetadata": "1.16.8",
+        "testRuntimeClasspath": "1.16.8"
+      }
+    },
+    {
+      "package": "io.micrometer:micrometer-observation-test",
+      "before": {
+        "testCompileClasspath": "1.16.6",
+        "testImplementationDependenciesMetadata": "1.16.6",
+        "testRuntimeClasspath": "1.16.6"
+      },
+      "after": {
+        "testCompileClasspath": "1.16.8",
+        "testImplementationDependenciesMetadata": "1.16.8",
+        "testRuntimeClasspath": "1.16.8"
+      }
+    },
+    {
+      "package": "io.netty:netty-buffer",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-codec",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-codec-base",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-codec-compression",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-codec-marshalling",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-codec-protobuf",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-common",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-handler",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-resolver",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-transport",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "io.netty:netty-transport-native-unix-common",
+      "before": {
+        "compileClasspath": "4.2.15.Final",
+        "implementationDependenciesMetadata": "4.2.15.Final",
+        "productionRuntimeClasspath": "4.2.15.Final",
+        "runtimeClasspath": "4.2.15.Final",
+        "testCompileClasspath": "4.2.15.Final",
+        "testImplementationDependenciesMetadata": "4.2.15.Final",
+        "testRuntimeClasspath": "4.2.15.Final"
+      },
+      "after": {
+        "compileClasspath": "4.2.19.Final",
+        "implementationDependenciesMetadata": "4.2.19.Final",
+        "productionRuntimeClasspath": "4.2.19.Final",
+        "runtimeClasspath": "4.2.19.Final",
+        "testCompileClasspath": "4.2.19.Final",
+        "testImplementationDependenciesMetadata": "4.2.19.Final",
+        "testRuntimeClasspath": "4.2.19.Final"
+      }
+    },
+    {
+      "package": "net.java.dev.jna:jna",
+      "before": {
+        "testCompileClasspath": "5.18.1",
+        "testRuntimeClasspath": "5.18.1"
+      },
+      "after": {
+        "testCompileClasspath": "5.18.1",
+        "testImplementationDependenciesMetadata": "5.18.1",
+        "testRuntimeClasspath": "5.18.1"
+      }
+    },
+    {
+      "package": "org.apache.commons:commons-compress",
+      "before": {
+        "testCompileClasspath": "1.28.0",
+        "testRuntimeClasspath": "1.28.0"
+      },
+      "after": {
+        "testCompileClasspath": "1.28.0",
+        "testImplementationDependenciesMetadata": "1.28.0",
+        "testRuntimeClasspath": "1.28.0"
+      }
+    },
+    {
+      "package": "org.apache.logging.log4j:log4j-api",
+      "before": {
+        "compileClasspath": "2.25.4",
+        "implementationDependenciesMetadata": "2.25.4",
+        "productionRuntimeClasspath": "2.25.4",
+        "runtimeClasspath": "2.25.4",
+        "testCompileClasspath": "2.25.4",
+        "testImplementationDependenciesMetadata": "2.25.4",
+        "testRuntimeClasspath": "2.25.4"
+      },
+      "after": {
+        "compileClasspath": "2.25.5",
+        "implementationDependenciesMetadata": "2.25.5",
+        "productionRuntimeClasspath": "2.25.5",
+        "runtimeClasspath": "2.25.5",
+        "testCompileClasspath": "2.25.5",
+        "testImplementationDependenciesMetadata": "2.25.5",
+        "testRuntimeClasspath": "2.25.5"
+      }
+    },
+    {
+      "package": "org.apache.logging.log4j:log4j-to-slf4j",
+      "before": {
+        "compileClasspath": "2.25.4",
+        "implementationDependenciesMetadata": "2.25.4",
+        "productionRuntimeClasspath": "2.25.4",
+        "runtimeClasspath": "2.25.4",
+        "testCompileClasspath": "2.25.4",
+        "testImplementationDependenciesMetadata": "2.25.4",
+        "testRuntimeClasspath": "2.25.4"
+      },
+      "after": {
+        "compileClasspath": "2.25.5",
+        "implementationDependenciesMetadata": "2.25.5",
+        "productionRuntimeClasspath": "2.25.5",
+        "runtimeClasspath": "2.25.5",
+        "testCompileClasspath": "2.25.5",
+        "testImplementationDependenciesMetadata": "2.25.5",
+        "testRuntimeClasspath": "2.25.5"
+      }
+    },
+    {
+      "package": "org.apache.tomcat.embed:tomcat-embed-core",
+      "before": {
+        "compileClasspath": "11.0.22",
+        "implementationDependenciesMetadata": "11.0.22",
+        "productionRuntimeClasspath": "11.0.22",
+        "runtimeClasspath": "11.0.22",
+        "testCompileClasspath": "11.0.22",
+        "testImplementationDependenciesMetadata": "11.0.22",
+        "testRuntimeClasspath": "11.0.22"
+      },
+      "after": {
+        "compileClasspath": "11.0.27",
+        "implementationDependenciesMetadata": "11.0.27",
+        "productionRuntimeClasspath": "11.0.27",
+        "runtimeClasspath": "11.0.27",
+        "testCompileClasspath": "11.0.27",
+        "testImplementationDependenciesMetadata": "11.0.27",
+        "testRuntimeClasspath": "11.0.27"
+      }
+    },
+    {
+      "package": "org.apache.tomcat.embed:tomcat-embed-el",
+      "before": {
+        "compileClasspath": "11.0.22",
+        "implementationDependenciesMetadata": "11.0.22",
+        "productionRuntimeClasspath": "11.0.22",
+        "runtimeClasspath": "11.0.22",
+        "testCompileClasspath": "11.0.22",
+        "testImplementationDependenciesMetadata": "11.0.22",
+        "testRuntimeClasspath": "11.0.22"
+      },
+      "after": {
+        "compileClasspath": "11.0.27",
+        "implementationDependenciesMetadata": "11.0.27",
+        "productionRuntimeClasspath": "11.0.27",
+        "runtimeClasspath": "11.0.27",
+        "testCompileClasspath": "11.0.27",
+        "testImplementationDependenciesMetadata": "11.0.27",
+        "testRuntimeClasspath": "11.0.27"
+      }
+    },
+    {
+      "package": "org.apache.tomcat.embed:tomcat-embed-websocket",
+      "before": {
+        "compileClasspath": "11.0.22",
+        "implementationDependenciesMetadata": "11.0.22",
+        "productionRuntimeClasspath": "11.0.22",
+        "runtimeClasspath": "11.0.22",
+        "testCompileClasspath": "11.0.22",
+        "testImplementationDependenciesMetadata": "11.0.22",
+        "testRuntimeClasspath": "11.0.22"
+      },
+      "after": {
+        "compileClasspath": "11.0.27",
+        "implementationDependenciesMetadata": "11.0.27",
+        "productionRuntimeClasspath": "11.0.27",
+        "runtimeClasspath": "11.0.27",
+        "testCompileClasspath": "11.0.27",
+        "testImplementationDependenciesMetadata": "11.0.27",
+        "testRuntimeClasspath": "11.0.27"
+      }
+    },
+    {
+      "package": "org.checkerframework:checker-qual",
+      "before": {
+        "swiftExportClasspathResolvable": "3.43.0"
+      },
+      "after": {
+        "swiftExportClasspathResolvable": "3.43.0",
+        "productionRuntimeClasspath": "3.55.1",
+        "runtimeClasspath": "3.55.1",
+        "testRuntimeClasspath": "3.55.1"
+      }
+    },
+    {
+      "package": "org.hibernate.orm:hibernate-core",
+      "before": {
+        "compileClasspath": "7.2.19.Final",
+        "implementationDependenciesMetadata": "7.2.19.Final",
+        "productionRuntimeClasspath": "7.2.19.Final",
+        "runtimeClasspath": "7.2.19.Final",
+        "testCompileClasspath": "7.2.19.Final",
+        "testImplementationDependenciesMetadata": "7.2.19.Final",
+        "testRuntimeClasspath": "7.2.19.Final"
+      },
+      "after": {
+        "compileClasspath": "7.2.25.Final",
+        "implementationDependenciesMetadata": "7.2.25.Final",
+        "productionRuntimeClasspath": "7.2.25.Final",
+        "runtimeClasspath": "7.2.25.Final",
+        "testCompileClasspath": "7.2.25.Final",
+        "testImplementationDependenciesMetadata": "7.2.25.Final",
+        "testRuntimeClasspath": "7.2.25.Final"
+      }
+    },
+    {
+      "package": "org.hibernate.validator:hibernate-validator",
+      "before": {
+        "compileClasspath": "9.0.1.Final",
+        "implementationDependenciesMetadata": "9.0.1.Final",
+        "productionRuntimeClasspath": "9.0.1.Final",
+        "runtimeClasspath": "9.0.1.Final",
+        "testCompileClasspath": "9.0.1.Final",
+        "testImplementationDependenciesMetadata": "9.0.1.Final",
+        "testRuntimeClasspath": "9.0.1.Final"
+      },
+      "after": {
+        "compileClasspath": "9.0.2.Final",
+        "implementationDependenciesMetadata": "9.0.2.Final",
+        "productionRuntimeClasspath": "9.0.2.Final",
+        "runtimeClasspath": "9.0.2.Final",
+        "testCompileClasspath": "9.0.2.Final",
+        "testImplementationDependenciesMetadata": "9.0.2.Final",
+        "testRuntimeClasspath": "9.0.2.Final"
+      }
+    },
+    {
+      "package": "org.jetbrains:annotations",
+      "before": {
+        "compileClasspath": "13.0",
+        "kotlinBuildToolsApiClasspath": "13.0",
+        "kotlinCompilerClasspath": "13.0",
+        "kotlinCompilerPluginClasspathMain": "13.0",
+        "kotlinCompilerPluginClasspathTest": "13.0",
+        "kotlinInternalAbiValidation": "13.0",
+        "kotlinKlibCommonizerClasspath": "13.0",
+        "productionRuntimeClasspath": "13.0",
+        "runtimeClasspath": "13.0",
+        "swiftExportClasspathResolvable": "13.0",
+        "testCompileClasspath": "17.0.0",
+        "testRuntimeClasspath": "17.0.0"
+      },
+      "after": {
+        "compileClasspath": "13.0",
+        "kotlinBuildToolsApiClasspath": "13.0",
+        "kotlinCompilerClasspath": "13.0",
+        "kotlinCompilerPluginClasspathMain": "13.0",
+        "kotlinCompilerPluginClasspathTest": "13.0",
+        "kotlinInternalAbiValidation": "13.0",
+        "kotlinKlibCommonizerClasspath": "13.0",
+        "productionRuntimeClasspath": "13.0",
+        "runtimeClasspath": "13.0",
+        "swiftExportClasspathResolvable": "13.0",
+        "testCompileClasspath": "17.0.0",
+        "testImplementationDependenciesMetadata": "17.0.0",
+        "testRuntimeClasspath": "17.0.0"
+      }
+    },
+    {
+      "package": "org.jspecify:jspecify",
+      "before": {
+        "compileClasspath": "1.0.0",
+        "developmentOnly": "1.0.0",
+        "implementationDependenciesMetadata": "1.0.0",
+        "productionRuntimeClasspath": "1.0.0",
+        "runtimeClasspath": "1.0.0",
+        "swiftExportClasspathResolvable": "1.0.0",
+        "testCompileClasspath": "1.0.0",
+        "testImplementationDependenciesMetadata": "1.0.0",
+        "testRuntimeClasspath": "1.0.0"
+      },
+      "after": {
+        "compileClasspath": "1.0.1",
+        "developmentOnly": "1.0.1",
+        "implementationDependenciesMetadata": "1.0.1",
+        "productionRuntimeClasspath": "1.0.1",
+        "runtimeClasspath": "1.0.1",
+        "swiftExportClasspathResolvable": "1.0.1",
+        "testCompileClasspath": "1.0.1",
+        "testImplementationDependenciesMetadata": "1.0.1",
+        "testRuntimeClasspath": "1.0.1"
+      }
+    },
+    {
+      "package": "org.postgresql:postgresql",
+      "before": {
+        "productionRuntimeClasspath": "42.7.11",
+        "runtimeClasspath": "42.7.11",
+        "testRuntimeClasspath": "42.7.11"
+      },
+      "after": {
+        "productionRuntimeClasspath": "42.7.14",
+        "runtimeClasspath": "42.7.14",
+        "testRuntimeClasspath": "42.7.14"
+      }
+    },
+    {
+      "package": "org.projectlombok:lombok",
+      "before": {
+        "annotationProcessor": "1.18.46",
+        "compileClasspath": "1.18.46",
+        "compileOnlyDependenciesMetadata": "1.18.46",
+        "testAnnotationProcessor": "1.18.46",
+        "testCompileClasspath": "1.18.46",
+        "testCompileOnlyDependenciesMetadata": "1.18.46"
+      },
+      "after": {
+        "annotationProcessor": "1.18.48",
+        "compileClasspath": "1.18.48",
+        "compileOnlyDependenciesMetadata": "1.18.48",
+        "testAnnotationProcessor": "1.18.48",
+        "testCompileClasspath": "1.18.48",
+        "testCompileOnlyDependenciesMetadata": "1.18.48"
+      }
+    },
+    {
+      "package": "org.rnorth.duct-tape:duct-tape",
+      "before": {
+        "testCompileClasspath": "1.0.8",
+        "testRuntimeClasspath": "1.0.8"
+      },
+      "after": {
+        "testCompileClasspath": "1.0.8",
+        "testImplementationDependenciesMetadata": "1.0.8",
+        "testRuntimeClasspath": "1.0.8"
+      }
+    },
+    {
+      "package": "org.slf4j:jul-to-slf4j",
+      "before": {
+        "compileClasspath": "2.0.18",
+        "implementationDependenciesMetadata": "2.0.18",
+        "productionRuntimeClasspath": "2.0.18",
+        "runtimeClasspath": "2.0.18",
+        "testCompileClasspath": "2.0.18",
+        "testImplementationDependenciesMetadata": "2.0.18",
+        "testRuntimeClasspath": "2.0.18"
+      },
+      "after": {
+        "compileClasspath": "2.0.20",
+        "implementationDependenciesMetadata": "2.0.20",
+        "productionRuntimeClasspath": "2.0.20",
+        "runtimeClasspath": "2.0.20",
+        "testCompileClasspath": "2.0.20",
+        "testImplementationDependenciesMetadata": "2.0.20",
+        "testRuntimeClasspath": "2.0.20"
+      }
+    },
+    {
+      "package": "org.slf4j:slf4j-api",
+      "before": {
+        "compileClasspath": "2.0.18",
+        "implementationDependenciesMetadata": "2.0.18",
+        "productionRuntimeClasspath": "2.0.18",
+        "runtimeClasspath": "2.0.18",
+        "testCompileClasspath": "2.0.18",
+        "testImplementationDependenciesMetadata": "2.0.18",
+        "testRuntimeClasspath": "2.0.18"
+      },
+      "after": {
+        "compileClasspath": "2.0.20",
+        "implementationDependenciesMetadata": "2.0.20",
+        "productionRuntimeClasspath": "2.0.20",
+        "runtimeClasspath": "2.0.20",
+        "testCompileClasspath": "2.0.20",
+        "testImplementationDependenciesMetadata": "2.0.20",
+        "testRuntimeClasspath": "2.0.20"
+      }
+    },
+    {
+      "package": "org.springframework.amqp:spring-amqp",
+      "before": {
+        "compileClasspath": "4.0.4",
+        "implementationDependenciesMetadata": "4.0.4",
+        "productionRuntimeClasspath": "4.0.4",
+        "runtimeClasspath": "4.0.4",
+        "testCompileClasspath": "4.0.4",
+        "testImplementationDependenciesMetadata": "4.0.4",
+        "testRuntimeClasspath": "4.0.4"
+      },
+      "after": {
+        "compileClasspath": "4.0.6",
+        "implementationDependenciesMetadata": "4.0.6",
+        "productionRuntimeClasspath": "4.0.6",
+        "runtimeClasspath": "4.0.6",
+        "testCompileClasspath": "4.0.6",
+        "testImplementationDependenciesMetadata": "4.0.6",
+        "testRuntimeClasspath": "4.0.6"
+      }
+    },
+    {
+      "package": "org.springframework.amqp:spring-rabbit",
+      "before": {
+        "compileClasspath": "4.0.4",
+        "implementationDependenciesMetadata": "4.0.4",
+        "productionRuntimeClasspath": "4.0.4",
+        "runtimeClasspath": "4.0.4",
+        "testCompileClasspath": "4.0.4",
+        "testImplementationDependenciesMetadata": "4.0.4",
+        "testRuntimeClasspath": "4.0.4"
+      },
+      "after": {
+        "compileClasspath": "4.0.6",
+        "implementationDependenciesMetadata": "4.0.6",
+        "productionRuntimeClasspath": "4.0.6",
+        "runtimeClasspath": "4.0.6",
+        "testCompileClasspath": "4.0.6",
+        "testImplementationDependenciesMetadata": "4.0.6",
+        "testRuntimeClasspath": "4.0.6"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "developmentOnly": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "developmentOnly": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-actuator",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-actuator-autoconfigure",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-amqp",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-autoconfigure",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "developmentOnly": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "developmentOnly": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-data-commons",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-data-jpa",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-data-jpa-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-devtools",
+      "before": {
+        "developmentOnly": "4.0.7",
+        "runtimeClasspath": "4.0.7"
+      },
+      "after": {
+        "developmentOnly": "4.0.9",
+        "runtimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-health",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-hibernate",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-http-converter",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-jackson",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-jackson2",
+      "before": {
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-jdbc",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-jdbc-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-jpa",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-jpa-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-micrometer-metrics",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-micrometer-metrics-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-micrometer-observation",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-persistence",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-resttestclient",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-security",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-security-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-servlet",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-sql",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-actuator",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-actuator-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-amqp",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-data-jpa",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-data-jpa-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-jackson",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-jackson-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-jdbc",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-jdbc-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-logging",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-micrometer-metrics",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-micrometer-metrics-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-security",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-security-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-tomcat",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-tomcat-runtime",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-validation",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-validation-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-webmvc",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-starter-webmvc-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-test-autoconfigure",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-tomcat",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-transaction",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-validation",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-web-server",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-webmvc",
+      "before": {
+        "compileClasspath": "4.0.7",
+        "implementationDependenciesMetadata": "4.0.7",
+        "productionRuntimeClasspath": "4.0.7",
+        "runtimeClasspath": "4.0.7",
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "compileClasspath": "4.0.9",
+        "implementationDependenciesMetadata": "4.0.9",
+        "productionRuntimeClasspath": "4.0.9",
+        "runtimeClasspath": "4.0.9",
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.boot:spring-boot-webmvc-test",
+      "before": {
+        "testCompileClasspath": "4.0.7",
+        "testImplementationDependenciesMetadata": "4.0.7",
+        "testRuntimeClasspath": "4.0.7"
+      },
+      "after": {
+        "testCompileClasspath": "4.0.9",
+        "testImplementationDependenciesMetadata": "4.0.9",
+        "testRuntimeClasspath": "4.0.9"
+      }
+    },
+    {
+      "package": "org.springframework.data:spring-data-commons",
+      "before": {
+        "compileClasspath": "4.0.6",
+        "implementationDependenciesMetadata": "4.0.6",
+        "productionRuntimeClasspath": "4.0.6",
+        "runtimeClasspath": "4.0.6",
+        "testCompileClasspath": "4.0.6",
+        "testImplementationDependenciesMetadata": "4.0.6",
+        "testRuntimeClasspath": "4.0.6"
+      },
+      "after": {
+        "compileClasspath": "4.0.8",
+        "implementationDependenciesMetadata": "4.0.8",
+        "productionRuntimeClasspath": "4.0.8",
+        "runtimeClasspath": "4.0.8",
+        "testCompileClasspath": "4.0.8",
+        "testImplementationDependenciesMetadata": "4.0.8",
+        "testRuntimeClasspath": "4.0.8"
+      }
+    },
+    {
+      "package": "org.springframework.data:spring-data-jpa",
+      "before": {
+        "compileClasspath": "4.0.6",
+        "implementationDependenciesMetadata": "4.0.6",
+        "productionRuntimeClasspath": "4.0.6",
+        "runtimeClasspath": "4.0.6",
+        "testCompileClasspath": "4.0.6",
+        "testImplementationDependenciesMetadata": "4.0.6",
+        "testRuntimeClasspath": "4.0.6"
+      },
+      "after": {
+        "compileClasspath": "4.0.8",
+        "implementationDependenciesMetadata": "4.0.8",
+        "productionRuntimeClasspath": "4.0.8",
+        "runtimeClasspath": "4.0.8",
+        "testCompileClasspath": "4.0.8",
+        "testImplementationDependenciesMetadata": "4.0.8",
+        "testRuntimeClasspath": "4.0.8"
+      }
+    },
+    {
+      "package": "org.springframework.security:spring-security-config",
+      "before": {
+        "compileClasspath": "7.0.6",
+        "implementationDependenciesMetadata": "7.0.6",
+        "productionRuntimeClasspath": "7.0.6",
+        "runtimeClasspath": "7.0.6",
+        "testCompileClasspath": "7.0.6",
+        "testImplementationDependenciesMetadata": "7.0.6",
+        "testRuntimeClasspath": "7.0.6"
+      },
+      "after": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      }
+    },
+    {
+      "package": "org.springframework.security:spring-security-core",
+      "before": {
+        "compileClasspath": "7.0.6",
+        "implementationDependenciesMetadata": "7.0.6",
+        "productionRuntimeClasspath": "7.0.6",
+        "runtimeClasspath": "7.0.6",
+        "testCompileClasspath": "7.0.6",
+        "testImplementationDependenciesMetadata": "7.0.6",
+        "testRuntimeClasspath": "7.0.6"
+      },
+      "after": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      }
+    },
+    {
+      "package": "org.springframework.security:spring-security-crypto",
+      "before": {
+        "compileClasspath": "7.0.6",
+        "implementationDependenciesMetadata": "7.0.6",
+        "productionRuntimeClasspath": "7.0.6",
+        "runtimeClasspath": "7.0.6",
+        "testCompileClasspath": "7.0.6",
+        "testImplementationDependenciesMetadata": "7.0.6",
+        "testRuntimeClasspath": "7.0.6"
+      },
+      "after": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      }
+    },
+    {
+      "package": "org.springframework.security:spring-security-test",
+      "before": {
+        "testCompileClasspath": "7.0.6",
+        "testImplementationDependenciesMetadata": "7.0.6",
+        "testRuntimeClasspath": "7.0.6"
+      },
+      "after": {
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      }
+    },
+    {
+      "package": "org.springframework.security:spring-security-web",
+      "before": {
+        "compileClasspath": "7.0.6",
+        "implementationDependenciesMetadata": "7.0.6",
+        "productionRuntimeClasspath": "7.0.6",
+        "runtimeClasspath": "7.0.6",
+        "testCompileClasspath": "7.0.6",
+        "testImplementationDependenciesMetadata": "7.0.6",
+        "testRuntimeClasspath": "7.0.6"
+      },
+      "after": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      }
+    },
+    {
+      "package": "org.springframework:spring-aop",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "developmentOnly": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "developmentOnly": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-aspects",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-beans",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "developmentOnly": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "developmentOnly": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-context",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "developmentOnly": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "developmentOnly": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-core",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "developmentOnly": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "developmentOnly": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-expression",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "developmentOnly": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "developmentOnly": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-jdbc",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-messaging",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-orm",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-test",
+      "before": {
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-tx",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-web",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.springframework:spring-webmvc",
+      "before": {
+        "compileClasspath": "7.0.8",
+        "implementationDependenciesMetadata": "7.0.8",
+        "productionRuntimeClasspath": "7.0.8",
+        "runtimeClasspath": "7.0.8",
+        "testCompileClasspath": "7.0.8",
+        "testImplementationDependenciesMetadata": "7.0.8",
+        "testRuntimeClasspath": "7.0.8"
+      },
+      "after": {
+        "compileClasspath": "7.0.10",
+        "implementationDependenciesMetadata": "7.0.10",
+        "productionRuntimeClasspath": "7.0.10",
+        "runtimeClasspath": "7.0.10",
+        "testCompileClasspath": "7.0.10",
+        "testImplementationDependenciesMetadata": "7.0.10",
+        "testRuntimeClasspath": "7.0.10"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers-bom",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers-database-commons",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers-jdbc",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers-junit-jupiter",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers-postgresql",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.testcontainers:testcontainers-rabbitmq",
+      "before": {
+        "testCompileClasspath": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      },
+      "after": {
+        "testCompileClasspath": "2.0.5",
+        "testImplementationDependenciesMetadata": "2.0.5",
+        "testRuntimeClasspath": "2.0.5"
+      }
+    },
+    {
+      "package": "org.webjars:webjars-locator-lite",
+      "before": {
+        "compileClasspath": "1.1.3",
+        "implementationDependenciesMetadata": "1.1.3",
+        "productionRuntimeClasspath": "1.1.3",
+        "runtimeClasspath": "1.1.3",
+        "testCompileClasspath": "1.1.3",
+        "testImplementationDependenciesMetadata": "1.1.3",
+        "testRuntimeClasspath": "1.1.3"
+      },
+      "after": {
+        "compileClasspath": "1.1.5",
+        "implementationDependenciesMetadata": "1.1.5",
+        "productionRuntimeClasspath": "1.1.5",
+        "runtimeClasspath": "1.1.5",
+        "testCompileClasspath": "1.1.5",
+        "testImplementationDependenciesMetadata": "1.1.5",
+        "testRuntimeClasspath": "1.1.5"
+      }
+    },
+    {
+      "package": "tools.jackson.core:jackson-core",
+      "before": {
+        "compileClasspath": "3.1.4",
+        "implementationDependenciesMetadata": "3.1.4",
+        "productionRuntimeClasspath": "3.1.4",
+        "runtimeClasspath": "3.1.4",
+        "testCompileClasspath": "3.1.4",
+        "testImplementationDependenciesMetadata": "3.1.4",
+        "testRuntimeClasspath": "3.1.4"
+      },
+      "after": {
+        "compileClasspath": "3.1.7",
+        "implementationDependenciesMetadata": "3.1.7",
+        "productionRuntimeClasspath": "3.1.7",
+        "runtimeClasspath": "3.1.7",
+        "testCompileClasspath": "3.1.7",
+        "testImplementationDependenciesMetadata": "3.1.7",
+        "testRuntimeClasspath": "3.1.7"
+      }
+    },
+    {
+      "package": "tools.jackson.core:jackson-databind",
+      "before": {
+        "compileClasspath": "3.1.4",
+        "implementationDependenciesMetadata": "3.1.4",
+        "productionRuntimeClasspath": "3.1.4",
+        "runtimeClasspath": "3.1.4",
+        "testCompileClasspath": "3.1.4",
+        "testImplementationDependenciesMetadata": "3.1.4",
+        "testRuntimeClasspath": "3.1.4"
+      },
+      "after": {
+        "compileClasspath": "3.1.7",
+        "implementationDependenciesMetadata": "3.1.7",
+        "productionRuntimeClasspath": "3.1.7",
+        "runtimeClasspath": "3.1.7",
+        "testCompileClasspath": "3.1.7",
+        "testImplementationDependenciesMetadata": "3.1.7",
+        "testRuntimeClasspath": "3.1.7"
+      }
+    },
+    {
+      "package": "tools.jackson.module:jackson-module-kotlin",
+      "before": {
+        "compileClasspath": "3.1.4",
+        "implementationDependenciesMetadata": "3.1.4",
+        "productionRuntimeClasspath": "3.1.4",
+        "runtimeClasspath": "3.1.4",
+        "testCompileClasspath": "3.1.4",
+        "testImplementationDependenciesMetadata": "3.1.4",
+        "testRuntimeClasspath": "3.1.4"
+      },
+      "after": {
+        "compileClasspath": "3.1.7",
+        "implementationDependenciesMetadata": "3.1.7",
+        "productionRuntimeClasspath": "3.1.7",
+        "runtimeClasspath": "3.1.7",
+        "testCompileClasspath": "3.1.7",
+        "testImplementationDependenciesMetadata": "3.1.7",
+        "testRuntimeClasspath": "3.1.7"
+      }
+    },
+    {
+      "package": "tools.jackson:jackson-bom",
+      "before": {
+        "compileClasspath": "3.1.4",
+        "implementationDependenciesMetadata": "3.1.4",
+        "productionRuntimeClasspath": "3.1.4",
+        "runtimeClasspath": "3.1.4",
+        "testCompileClasspath": "3.1.4",
+        "testImplementationDependenciesMetadata": "3.1.4",
+        "testRuntimeClasspath": "3.1.4"
+      },
+      "after": {
+        "compileClasspath": "3.1.7",
+        "implementationDependenciesMetadata": "3.1.7",
+        "productionRuntimeClasspath": "3.1.7",
+        "runtimeClasspath": "3.1.7",
+        "testCompileClasspath": "3.1.7",
+        "testImplementationDependenciesMetadata": "3.1.7",
+        "testRuntimeClasspath": "3.1.7"
+      }
+    }
+  ],
+  "source_changes_in_tested_archive": [
+    "server/build.gradle.kts",
+    "server/gradle.lockfile"
+  ],
+  "frontend_manifests_unchanged": true,
+  "protected_families_unchanged": [
+    "org.bouncycastle:",
+    "org.jetbrains.kotlin:",
+    "org.jetbrains.kotlinx:",
+    "io.opentelemetry:",
+    "io.github.springwolf:",
+    "org.springdoc:",
+    "io.swagger.core.v3:",
+    "io.jsonwebtoken:",
+    "com.rabbitmq:"
+  ],
+  "root_matches_tested_build_and_lock": true,
+  "published": false,
+  "sonar_reanalyzed": false
+}
