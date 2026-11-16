@@ -10,6 +10,9 @@ plugins {
 group = "com.uade.dda2"
 version = "0.0.1-SNAPSHOT"
 
+// Override oficial del BOM de Boot, aplicado a todos los classpaths administrados.
+extra["rabbit-amqp-client.version"] = "5.37.0"
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
