@@ -68,4 +68,21 @@ openssl rand 4 > /tmp/salt
 password_hash=$(cat /tmp/salt /tmp/digest | openssl base64 -A)
 sed "s|GENERATED_PASSWORD_HASH|$password_hash|" /definitions.json > /rabbit/definitions.json
 chmod 644 /rabbit/definitions.json
+
+# Also migrate existing volumes; umask alone cannot fix older files or owners.
+# Keep the CA private to init and touch only each consumer's explicit paths.
+private_volume() {
+    owner="$1"
+    directory="$2"
+    shift 2
+    chmod 700 "$directory"
+    chmod 600 "$@"
+    chown "$owner" "$directory" "$@"
+}
+private_volume 10001:10001 /server \
+    /server/JWT_SECRET /server/BOOTSTRAP_ADMIN_PASSWORD /server/DB_PASSWORD \
+    /server/CORE_AMQP_PASSWORD /server/CORE_MACHINE_SECRET /server/ca.crt
+private_volume 10002:10002 /core \
+    /core/machine-secret /core/tls.key /core/tls.crt /core/ca.crt
+
 echo 'Preparación local completada. Secretos conservados en volúmenes privados de Docker.'

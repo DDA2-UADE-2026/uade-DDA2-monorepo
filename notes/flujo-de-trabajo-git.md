@@ -217,6 +217,8 @@ El repositorio de GitHub debe tener estos Actions secrets:
 
 Los repositorios `uade-dda2-client` y `uade-dda2-server` deben existir en Docker Hub. En Dokploy, configurar las aplicaciones de desarrollo con el tag `develop` y las de producción con el tag `latest`. Para el despliegue automático, conectar el webhook de cada repositorio de Docker Hub con la aplicación correspondiente de Dokploy.
 
+**Puerto del frontend:** la imagen Nginx sin privilegios escucha en el **8080 interno**, no en el 80. Antes de desplegarla, actualizar a `8080` el puerto de destino del dominio/proxy y cualquier healthcheck interno configurado en Dokploy, tanto para desarrollo como para producción. No cambia el dominio, el HTTPS externo ni la URL pública. El backend mantiene su puerto `8080`; son contenedores independientes. Localmente Compose sigue publicando el frontend en `localhost:5173`.
+
 ## Resumen del flujo
 
 ```text

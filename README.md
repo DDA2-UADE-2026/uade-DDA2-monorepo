@@ -61,13 +61,17 @@ La primera ejecución descarga dependencias y compila. El límite de espera de 3
 | PostgreSQL | Solo red interna, `db:5432` | Base `dda2`, sin puerto publicado |
 | Core simulado | Solo red interna, `https://core-mock:8443` | API de diagnóstico local |
 
-Los puertos publicados escuchan únicamente en `127.0.0.1`. Abrir la aplicación usando `localhost`, desde la misma máquina.
+Los puertos publicados escuchan únicamente en `127.0.0.1`. Abrir la aplicación usando `localhost`, desde la misma máquina. Nginx se ejecuta sin privilegios y escucha en el **8080 interno** del contenedor; Compose lo publica en el **5173 del host**, por lo que la URL del frontend no cambia.
 
 ### Preparación automática y credenciales
 
 `local-init` recibe las credenciales de `.env` y las entrega en archivos dentro de volúmenes de Docker separados por servicio. Genera únicamente la CA y los certificados locales de Core/RabbitMQ. No muestra contraseñas ni tokens. El contenedor de preparación termina con código 0: es el resultado esperado.
 
 PostgreSQL y RabbitMQ arrancan con esas credenciales. El backend confía en la CA local y conecta a Core por HTTPS y al broker por AMQPS, manteniendo la verificación de certificado y hostname. Hibernate prepara las tablas y el inicializador crea el administrador y sus permisos. No se ejecuta el seed SQL de cuentas con contraseñas fijas.
+
+El backend usa UID/GID `10001:10001` y el mock `10002:10002`, sin privilegios de root. `local-init` conserva root para asignar los propietarios de sus volúmenes privados, incluidos los ya existentes, con directorios `0700` y archivos `0600`; los consumidores los montan en modo de solo lectura. No hace falta borrar volúmenes ni regenerar credenciales para adoptar estos permisos. La clave privada de la CA queda separada y no se entrega a los consumidores. El backend crea un truststore privado temporal para importar la CA local, sin modificar el truststore del JDK.
+
+Las justificaciones de los avisos intencionales de Sonar y el cambio de puerto para Dokploy están en la [revisión de seguridad de contenedores](notes/sonar-contenedores.md).
 
 | Acceso | Usuario | Contraseña |
 |---|---|---|
