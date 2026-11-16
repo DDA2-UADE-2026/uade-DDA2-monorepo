@@ -5,7 +5,7 @@ export const Route = createFileRoute("/_app/gestion/debug/documentacion-local")(
   component: RouteComponent,
 })
 
-const SWAGGER_URL = `${import.meta.env.VITE_SERVER_URL}/swagger-ui/index.html`
+const SWAGGER_URL = `${import.meta.env.VITE_SERVER_URL?.replace(/\/+$/, "") ?? ""}/swagger-ui/index.html`
 
 function RouteComponent() {
   return (

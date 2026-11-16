@@ -1,6 +1,10 @@
 # MODIFICA LAS REGLAS BOLUDO
 server:
   port: ${SERVER_PORT:8080}
+  # Detrás de Cloudflare/proxy: usar X-Forwarded-Proto/Host para conocer el origen público.
+  # Sin esto Spring ve http://host:8080, trata los requests same-origin (módulos JS, fuentes
+  # de Springwolf/Swagger) como CORS y los rechaza con 403.
+  forward-headers-strategy: ${SERVER_FORWARD_HEADERS_STRATEGY:framework}
 
 spring:
   application:
