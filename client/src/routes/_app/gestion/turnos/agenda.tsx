@@ -92,7 +92,7 @@ function RouteComponent() {
 
   const pending = turnos.isPending || libres.isPending
   const failed = turnos.isError || libres.isError
-  const refetch = () => { turnos.refetch(); libres.refetch() }
+  const refetch = () => { void turnos.refetch(); void libres.refetch() }
 
   return (
     <SidebarShell>

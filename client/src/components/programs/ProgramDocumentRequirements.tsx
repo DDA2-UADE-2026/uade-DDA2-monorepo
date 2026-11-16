@@ -190,7 +190,7 @@ function DocumentRequirementDialog({ editionId, requirement, disabled, onError, 
   const queryClient = useQueryClient()
   const isEditing = requirement !== null
   const onSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: list2QueryKey({ path: { editionId } }) })
+    void queryClient.invalidateQueries({ queryKey: list2QueryKey({ path: { editionId } }) })
     onOpenChange(false)
   }
   const create = useMutation({ ...create6Mutation(), onSuccess, onError })
@@ -244,7 +244,7 @@ function DocumentRequirementDialog({ editionId, requirement, disabled, onError, 
         <form id="document-requirement-form" className="grid gap-5" noValidate onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}>
           <form.Field name="code" children={(field) => {
             const invalid = field.state.meta.isTouched && !field.state.meta.isValid

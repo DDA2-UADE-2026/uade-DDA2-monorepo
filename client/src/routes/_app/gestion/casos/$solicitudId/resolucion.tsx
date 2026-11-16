@@ -28,7 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { UserChip } from "@/components/UserChip"
-import { create9Mutation, findAll2Options, get3Options, get3QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create9Mutation, findAll2Options, get4Options, get4QueryKey } from "@/generated/@tanstack/react-query.gen"
 import type { AdminApplicationResponse } from "@/generated/types.gen"
 import { formatApplicationDateTime } from "@/lib/application-flow"
 import { invalidateSocialQueries, levelLabel, priorityLabel, socialQueries } from "@/lib/social-management"
@@ -66,7 +66,7 @@ function RouteComponent() {
   const { solicitudId } = Route.useParams()
   const { user } = Route.useRouteContext()
   const permissions = user.permissions ?? []
-  const application = useQuery(get3Options({ path: { id: solicitudId } }))
+  const application = useQuery(get4Options({ path: { id: solicitudId } }))
   const app = application.data
 
   return <SidebarShell>
@@ -127,7 +127,7 @@ function ResolutionPanel({ application, permissions }: { application: AdminAppli
       setDecision(null)
       setReason("")
       setChecks({})
-      await Promise.all([queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id } }) }), queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations"))])
+      await Promise.all([queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id } }) }), queryClient.invalidateQueries(invalidateSocialQueries("social-evaluations"))])
       toast.success(`Solicitud ${RESOLVED_LABELS[data.decision as Decision] ?? "resuelta"}`)
     },
     onError: (error) => { setConfirming(false); showApiErrorToast(error) },

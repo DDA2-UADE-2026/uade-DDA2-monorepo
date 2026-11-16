@@ -17,6 +17,7 @@ import {
   IconShieldCheck,
   IconShieldLock,
   IconSpeakerphone,
+  IconTicket,
   IconTimelineEventText,
   IconUsers,
 } from "@tabler/icons-react"
@@ -91,14 +92,15 @@ export const OPERACION_NAV: readonly SidebarNavItem[] = [
       { title: "Intervenciones", url: "/gestion/intervenciones", icon: IconClipboardHeart, requiredPermissions: ["applications:interventions:view", "applications:interventions:create", "applications:interventions:follow-ups:create", "applications:interventions:follow-ups:publish"] },
     ]
   },
+  { title: "Tickets", url: "/gestion/tickets", icon: IconTicket, requiredPermissions: ["tickets:management:view"] },
+  { title: "Indicadores", url: "/gestion/indicadores", icon: IconChartBar, requiredPermissions: ["indicators:view"] },
 ]
 
 export const ANALISIS_NAV: readonly SidebarNavItem[] = [
   { title: "Usuarios", url: "/gestion/usuarios", icon: IconUsers, requiredPermissions: ["users:view"] },
   { title: "Roles y permisos", url: "/gestion/roles", icon: IconShieldLock, requiredPermissions: ["roles:view"] },
-  { title: "Indicadores", url: "/gestion/indicadores", icon: IconChartBar, requiredPermissions: ["indicators:view"] },
   { title: "Auditoría", url: "/gestion/auditoria", icon: IconShieldCheck, requiredPermissions: ["logs:view"] },
-  { title: "Eventos", url: "/gestion/auditoria/eventos", icon: IconTimelineEventText, requiredPermissions: ["integrations:core:view"] },
+  { title: "Eventos", url: "/gestion/eventos", icon: IconTimelineEventText, requiredPermissions: ["integrations:core:view"] },
 ]
 
 export const DEBUG_NAV: readonly SidebarNavItem[] = [

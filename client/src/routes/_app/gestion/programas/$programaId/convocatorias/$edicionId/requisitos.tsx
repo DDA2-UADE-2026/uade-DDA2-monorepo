@@ -285,14 +285,14 @@ function RequirementDialog({
   const create = useMutation({
     ...create5Mutation(),
     onSuccess: () => {
-      refresh()
+      void refresh()
       onOpenChange(false)
     },
   })
   const update = useMutation({
     ...update4Mutation(),
     onSuccess: () => {
-      refresh()
+      void refresh()
       onOpenChange(false)
     },
   })
@@ -351,7 +351,7 @@ function RequirementDialog({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Field name="type" listeners={{

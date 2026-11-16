@@ -1,4 +1,4 @@
-import { IconAlertTriangle, IconApi, IconArrowDownLeft, IconArrowUpRight, IconHeartbeat, IconRefresh, IconServer } from "@tabler/icons-react"
+import { IconAlertTriangle, IconApi, IconHeartbeat, IconRefresh, IconServer } from "@tabler/icons-react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import type { ReactNode } from "react"
@@ -20,8 +20,6 @@ import {
   getCoreConnectionStatusOptions,
   getCoreDashboardOptions,
   getCoreLocalMetricsOptions,
-  listCorePublicationsOptions,
-  listCoreSubscriptionsOptions,
 } from "@/generated/@tanstack/react-query.gen"
 import type { CoreConnectionStatusResponse, CoreLocalMetrics, CoreModuleDashboard } from "@/generated/types.gen"
 import { formatDateTime } from "@/lib/core-events"
@@ -39,7 +37,7 @@ const searchSchema = z.object({
   ventana: z.enum(Object.keys(WINDOWS) as [WindowKey, ...WindowKey[]]).optional().catch(undefined),
 })
 
-export const Route = createFileRoute("/_app/gestion/auditoria/eventos")({
+export const Route = createFileRoute("/_app/gestion/eventos")({
   validateSearch: searchSchema,
   component: RouteComponent,
 })
@@ -78,14 +76,10 @@ function RouteComponent() {
   })
   // /metrics solo consulta nuestra base: mantiene visibles outbox/inbox aunque Core no responda.
   const localFallback = useQuery({ ...getCoreLocalMetricsOptions(), enabled: canView && dashboard.isError })
-  const publications = useQuery({ ...listCorePublicationsOptions(), enabled: canView })
-  const subscriptions = useQuery({ ...listCoreSubscriptionsOptions(), enabled: canView })
 
   const refreshAll = () => {
     void status.refetch()
     void dashboard.refetch()
-    void publications.refetch()
-    void subscriptions.refetch()
   }
   const fetching = status.isFetching || dashboard.isFetching
   const local = dashboard.data?.local ?? localFallback.data
@@ -95,7 +89,7 @@ function RouteComponent() {
     <SidebarShell>
       <OutletNavSticky>
         <OutletNavSidebarTrigger withSeparator />
-        <OutletNavBreadcrumbs items={[{ label: "Auditoría" }, { label: "Eventos" }]} />
+        <OutletNavBreadcrumbs items={[{ label: "Eventos" }]} />
       </OutletNavSticky>
       <SidebarShellContent>
         <div className="min-h-0 flex-1 overflow-auto">
@@ -169,35 +163,6 @@ function RouteComponent() {
                   {local && <LocalMetrics local={local} checkedAt={dashboard.dataUpdatedAt} />}
                 </div>
               )}
-
-              <SectionTitle title="Contrato con Core" description="Lo que declaramos publicar y los eventos a los que estamos suscriptos." />
-              <div className="grid gap-4 lg:grid-cols-2">
-                <ContractCard
-                  title="Publicaciones"
-                  icon={<IconArrowUpRight className="size-4 text-sky-600 dark:text-sky-400" />}
-                  pending={publications.isPending}
-                  error={publications.isError ? publications.error.message : undefined}
-                  empty="No hay publicaciones declaradas."
-                  items={(publications.data ?? []).map((publication) => ({
-                    key: publication.id ?? publication.eventType ?? "",
-                    title: publication.eventType ?? "—",
-                    active: publication.active,
-                  }))}
-                />
-                <ContractCard
-                  title="Suscripciones"
-                  icon={<IconArrowDownLeft className="size-4 text-violet-600 dark:text-violet-400" />}
-                  pending={subscriptions.isPending}
-                  error={subscriptions.isError ? subscriptions.error.message : undefined}
-                  empty="No hay suscripciones registradas."
-                  items={(subscriptions.data ?? []).map((subscription) => ({
-                    key: subscription.id ?? subscription.eventType ?? "",
-                    title: subscription.eventType ?? "—",
-                    detail: `${subscription.queueName ?? "—"} · hasta ${subscription.maxAttempts ?? "?"} intentos`,
-                    active: subscription.active,
-                  }))}
-                />
-              </div>
 
               <CoreEventsTable module={module} />
             </>}
@@ -348,43 +313,6 @@ function LocalMetrics({ local, checkedAt }: { local: CoreLocalMetrics; checkedAt
       />
     </section>
   </>
-}
-
-function ContractCard({ title, icon, pending, error, empty, items }: {
-  title: string
-  icon: ReactNode
-  pending: boolean
-  error?: string
-  empty: string
-  items: Array<{ key: string; title: string; detail?: string; active?: boolean }>
-}) {
-  return (
-    <Card className="min-w-0">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">{icon}{title}</CardTitle>
-        <CardDescription>{pending ? "Cargando…" : `${items.filter((item) => item.active).length} activas de ${items.length}.`}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {pending ? <Skeleton className="h-32 rounded-lg" /> : error ? (
-          <p className="text-sm text-destructive">{error}</p>
-        ) : items.length === 0 ? <p className="text-sm text-muted-foreground">{empty}</p> : (
-          <ul className="max-h-72 divide-y overflow-y-auto rounded-lg border">
-            {items.map((item) => (
-              <li key={item.key} className="flex items-center justify-between gap-3 px-3 py-2">
-                <div className="min-w-0">
-                  <p className="truncate font-mono text-sm">{item.title}</p>
-                  {item.detail && <p className="truncate text-xs text-muted-foreground">{item.detail}</p>}
-                </div>
-                <Badge variant="outline" className={item.active ? stateStyles.UP.badge : stateStyles.DISABLED.badge}>
-                  {item.active ? "Activa" : "Inactiva"}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        )}
-      </CardContent>
-    </Card>
-  )
 }
 
 function DashboardSkeleton() {

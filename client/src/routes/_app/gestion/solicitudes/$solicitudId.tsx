@@ -34,7 +34,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Skeleton } from "@/components/ui/skeleton"
-import { get3Options, list9Options } from "@/generated/@tanstack/react-query.gen"
+import { get4Options, list12Options } from "@/generated/@tanstack/react-query.gen"
 import type {
   AdminApplicationResponse,
   ApplicationDocumentResponse,
@@ -55,7 +55,7 @@ export const Route = createFileRoute("/_app/gestion/solicitudes/$solicitudId")({
 function RouteComponent() {
   const { solicitudId } = Route.useParams()
   const { user } = Route.useRouteContext()
-  const query = useQuery(get3Options({ path: { id: solicitudId } }))
+  const query = useQuery(get4Options({ path: { id: solicitudId } }))
   const application = query.data
   const heading = application?.applicationNumber != null
     ? `Solicitud N.º ${application.applicationNumber}`
@@ -231,7 +231,7 @@ function RouteComponent() {
 
 function ApplicationDocumentsSection({ application }: { application: AdminApplicationResponse & { id: string } }) {
   const applicationId = application.id
-  const documents = useQuery(list9Options({ path: { applicationId } }))
+  const documents = useQuery(list12Options({ path: { applicationId } }))
   const [uploadTarget, setUploadTarget] = useState<
     { requirement: AvailableProgramDocumentRequirementResponse & { id: string }; existing?: ApplicationDocumentResponse } | null
   >(null)

@@ -30,8 +30,8 @@ function RouteComponent() {
   const client = useQueryClient()
   const [imageDialogOpen, setImageDialogOpen] = useState(false)
   const query = useQuery(findById2Options({ path: { id: programaId } }))
-  const update = useMutation({ ...update2Mutation(), onSuccess: () => { client.invalidateQueries({ queryKey: findById2QueryKey({ path: { id: programaId } }) }); client.invalidateQueries({ queryKey: list1QueryKey() }) }, onError: showApiErrorToast })
-  const remove = useMutation({ ...delete2Mutation(), onSuccess: () => { client.invalidateQueries({ queryKey: list1QueryKey() }); navigate({ to: "/gestion/programas", search: { page: 1 } }) }, onError: showApiErrorToast })
+  const update = useMutation({ ...update2Mutation(), onSuccess: () => { void client.invalidateQueries({ queryKey: findById2QueryKey({ path: { id: programaId } }) }); void client.invalidateQueries({ queryKey: list1QueryKey() }) }, onError: showApiErrorToast })
+  const remove = useMutation({ ...delete2Mutation(), onSuccess: () => { void client.invalidateQueries({ queryKey: list1QueryKey() }); void navigate({ to: "/gestion/programas", search: { page: 1 } }) }, onError: showApiErrorToast })
   const removeImage = useMutation({
     ...deleteProgramImageMutation(),
     onSuccess: async () => {
@@ -110,7 +110,7 @@ function RouteComponent() {
         </CardContent>
       </Card>
 
-      <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
+      <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); void form.handleSubmit() }}>
       <form.Field name="name" children={(field) => {
         const invalid = field.state.meta.isTouched && !field.state.meta.isValid
         return <FormField label="Nombre" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} value={field.state.value} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value)} aria-invalid={invalid} /></FormField>

@@ -1,16 +1,16 @@
-import { useMemo, useState } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import { IconArrowsDiff } from "@tabler/icons-react"
 import { diff } from "jsondiffpatch"
 
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import type { LogResponse } from "@/generated/types.gen"
 import { cn } from "@/lib/utils"
 
@@ -139,10 +139,13 @@ function buildDiffLines(oldValue: unknown, newValue: unknown): DiffLine[] {
   return lines
 }
 
-export function AuditDiffDialog({
+export function AuditDiffSheet({
   log,
+  details,
 }: {
   log: Pick<LogResponse, "entityId" | "oldValues" | "newValues">
+  /** Metadatos del registro (fecha, acción, usuario…) mostrados sobre el diff. */
+  details?: ReactNode
 }) {
   const [open, setOpen] = useState(false)
 
@@ -153,26 +156,28 @@ export function AuditDiffDialog({
   }, [log.oldValues, log.newValues])
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="xs" />}>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger render={<Button size="xs" />}>
         <IconArrowsDiff />
         Ver diff
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle>Diferencias del cambio</DialogTitle>
-          <DialogDescription>
+      </SheetTrigger>
+      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-3xl">
+        <SheetHeader className="border-b">
+          <SheetTitle className="pr-8">Diferencias del cambio</SheetTitle>
+          <SheetDescription>
             Comparación entre el estado anterior y posterior de la entidad{" "}
-            <span className="font-mono">{log.entityId ?? "—"}</span>.
-          </DialogDescription>
-        </DialogHeader>
+            <span className="font-mono break-all">{log.entityId ?? "—"}</span>.
+          </SheetDescription>
+        </SheetHeader>
 
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4">
+        {details}
         {diffLines.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No hay diferencias entre los valores registrados.
           </p>
         ) : (
-          <pre className="m-0 max-h-[60vh] overflow-auto rounded-2xl border bg-muted/20 p-3 font-mono text-xs leading-relaxed">
+          <pre className="m-0 overflow-auto rounded-2xl border bg-muted/20 p-3 font-mono text-xs leading-relaxed">
             {diffLines.map((line, index) => (
               <span
                 key={index}
@@ -191,7 +196,8 @@ export function AuditDiffDialog({
             ))}
           </pre>
         )}
-      </DialogContent>
-    </Dialog>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }

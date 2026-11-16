@@ -18,7 +18,7 @@ function RouteComponent() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigate({ to: "/seleccionar-rol" })
+      void navigate({ to: "/seleccionar-rol" })
     }, REDIRECT_DELAY_MS)
     return () => clearTimeout(timeout)
   }, [navigate])

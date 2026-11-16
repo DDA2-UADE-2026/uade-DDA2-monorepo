@@ -2,7 +2,7 @@
 
 import { type Client, type ClientMeta, formDataBodySerializer, type Options as Options2, type RequestResult, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignApplicationWorkerData, AssignApplicationWorkerErrors, AssignApplicationWorkerResponses, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, CancelAdminAppointmentData, CancelAdminAppointmentErrors, CancelAdminAppointmentResponses, CancelApplicationVisitData, CancelApplicationVisitErrors, CancelApplicationVisitResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, CorrectCommunityAttentionData, CorrectCommunityAttentionErrors, CorrectCommunityAttentionResponses, Create10Data, Create10Errors, Create10Responses, Create11Data, Create11Errors, Create11Responses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, Create9Data, Create9Errors, Create9Responses, CreateApplicationEvaluationData, CreateApplicationEvaluationErrors, CreateApplicationEvaluationResponses, CreateApplicationVisitData, CreateApplicationVisitErrors, CreateApplicationVisitResponses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchErrors, CreateCenterOpeningHoursBatchResponses, CreateCitizenAppointmentData, CreateCitizenAppointmentErrors, CreateCitizenAppointmentResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateOwnApplicationVisitRescheduleRequestData, CreateOwnApplicationVisitRescheduleRequestErrors, CreateOwnApplicationVisitRescheduleRequestResponses, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchErrors, CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, FinalizeData, FinalizeErrors, FinalizeResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, FollowUpData, FollowUpErrors, FollowUpResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, Get5Data, Get5Errors, Get5Responses, GetAdminAppointmentData, GetAdminAppointmentErrors, GetAdminAppointmentResponses, GetApplicationEvaluationData, GetApplicationEvaluationErrors, GetApplicationEvaluationResponses, GetApplicationVisitData, GetApplicationVisitErrors, GetApplicationVisitRescheduleRequestData, GetApplicationVisitRescheduleRequestErrors, GetApplicationVisitRescheduleRequestResponses, GetApplicationVisitResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetCitizenAppointmentData, GetCitizenAppointmentErrors, GetCoreConnectionStatusData, GetCoreConnectionStatusErrors, GetCoreConnectionStatusResponses, GetCoreDashboardData, GetCoreDashboardErrors, GetCoreDashboardResponses, GetCoreEventData, GetCoreEventErrors, GetCoreEventResponses, GetCoreLocalMetricsData, GetCoreLocalMetricsErrors, GetCoreLocalMetricsResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetIndicatorsData, GetIndicatorsErrors, GetIndicatorsResponses, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetOwnApplicationVisitData, GetOwnApplicationVisitErrors, GetOwnApplicationVisitRescheduleRequestData, GetOwnApplicationVisitRescheduleRequestErrors, GetOwnApplicationVisitRescheduleRequestResponses, GetOwnApplicationVisitResponses, GetOwnInterventionPlanData, GetOwnInterventionPlanErrors, GetOwnInterventionPlanResponses, GetProfessionalActivityData, GetProfessionalActivityErrors, GetProfessionalActivityResponses, GetProfessionalAppointmentData, GetProfessionalAppointmentErrors, GetProfessionalAppointmentResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, HealthData, HealthErrors, HealthResponses, History1Data, History1Errors, History1Responses, HistoryData, HistoryErrors, HistoryResponses, InfoData, InfoErrors, InfoResponses, LinksData, LinksErrors, LinksResponses, List10Data, List10Errors, List10Responses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, List9Data, List9Errors, List9Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityErrors, ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryErrors, ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentsData, ListAdminAppointmentsErrors, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsErrors, ListAdminAppointmentSlotsResponses, ListAdminAppointmentsResponses, ListAdminBenefitGrantsData, ListAdminBenefitGrantsErrors, ListAdminBenefitGrantsResponses, ListAllOwnVisitsData, ListAllOwnVisitsErrors, ListAllOwnVisitsResponses, ListApplicationEvaluationsData, ListApplicationEvaluationsErrors, ListApplicationEvaluationsResponses, ListApplicationVisitRescheduleRequestsData, ListApplicationVisitRescheduleRequestsErrors, ListApplicationVisitRescheduleRequestsResponses, ListApplicationVisitsData, ListApplicationVisitsErrors, ListApplicationVisitsResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersErrors, ListCitizenAppointmentCentersResponses, ListCitizenAppointmentsData, ListCitizenAppointmentsErrors, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesErrors, ListCitizenAppointmentServicesResponses, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsErrors, ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentsResponses, ListCoreEventsData, ListCoreEventsErrors, ListCoreEventsResponses, ListCorePublicationsData, ListCorePublicationsErrors, ListCorePublicationsResponses, ListCoreSubscriptionsData, ListCoreSubscriptionsErrors, ListCoreSubscriptionsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListOwnApplicationVisitRescheduleRequestsData, ListOwnApplicationVisitRescheduleRequestsErrors, ListOwnApplicationVisitRescheduleRequestsResponses, ListOwnApplicationVisitsData, ListOwnApplicationVisitsErrors, ListOwnApplicationVisitsResponses, ListOwnBenefitGrantsData, ListOwnBenefitGrantsErrors, ListOwnBenefitGrantsResponses, ListOwnInterventionPlansData, ListOwnInterventionPlansErrors, ListOwnInterventionPlansResponses, ListOwnPublishedInterventionFollowUpsData, ListOwnPublishedInterventionFollowUpsErrors, ListOwnPublishedInterventionFollowUpsResponses, ListProfessionalAppointmentsData, ListProfessionalAppointmentsErrors, ListProfessionalAppointmentsResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, Publish1Data, Publish1Errors, Publish1Responses, PublishData, PublishErrors, PublishResponses, Put1Data, Put1Errors, Put1Responses, PutData, PutErrors, PutResponses, RecordApplicationVisitResultData, RecordApplicationVisitResultErrors, RecordApplicationVisitResultResponses, RegisterCommunityAttentionData, RegisterCommunityAttentionErrors, RegisterCommunityAttentionResponses, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotErrors, ReleaseAdminAppointmentSlotResponses, RenewData, RenewErrors, RenewResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, RescheduleAdminAppointmentData, RescheduleAdminAppointmentErrors, RescheduleAdminAppointmentResponses, RescheduleApplicationVisitData, RescheduleApplicationVisitErrors, RescheduleApplicationVisitResponses, ResolveApplicationData, ResolveApplicationErrors, ResolveApplicationResponses, ReviewApplicationVisitRescheduleRequestData, ReviewApplicationVisitRescheduleRequestErrors, ReviewApplicationVisitRescheduleRequestResponses, ReviewData, ReviewErrors, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SessionCsrfData, SessionCsrfErrors, SessionCsrfResponses, SessionLoginData, SessionLoginErrors, SessionLoginResponses, SessionLogoutData, SessionLogoutErrors, SessionLogoutResponses, SessionRoleSelectionData, SessionRoleSelectionErrors, SessionRoleSelectionResponses, SessionSelectRoleData, SessionSelectRoleErrors, SessionSelectRoleResponses, SessionSwitchRoleData, SessionSwitchRoleErrors, SessionSwitchRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, Suspend1Data, Suspend1Errors, Suspend1Responses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, UnassignApplicationWorkerData, UnassignApplicationWorkerErrors, UnassignApplicationWorkerResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses, WithdrawData, WithdrawErrors, WithdrawResponses } from './types.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourErrors, ActivateCenterOpeningHourResponses, ActivateCenterServiceData, ActivateCenterServiceErrors, ActivateCenterServiceResponses, ActivateData, ActivateErrors, ActivateMunicipalCenterData, ActivateMunicipalCenterErrors, ActivateMunicipalCenterResponses, ActivateMunicipalServiceData, ActivateMunicipalServiceErrors, ActivateMunicipalServiceResponses, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentErrors, ActivateProfessionalAssignmentResponses, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityErrors, ActivateProfessionalAvailabilityResponses, ActivateResponses, AssignApplicationWorkerData, AssignApplicationWorkerErrors, AssignApplicationWorkerResponses, AssignData, AssignErrors, AssignProfessionalData, AssignProfessionalErrors, AssignProfessionalResponses, AssignResponses, AssignServiceToCenterData, AssignServiceToCenterErrors, AssignServiceToCenterResponses, AsyncApiYaml1Data, AsyncApiYaml1Errors, AsyncApiYaml1Responses, AsyncApiYamlData, AsyncApiYamlErrors, AsyncApiYamlResponses, CancelAdminAppointmentData, CancelAdminAppointmentErrors, CancelAdminAppointmentResponses, CancelApplicationVisitData, CancelApplicationVisitErrors, CancelApplicationVisitResponses, Close1Data, Close1Errors, Close1Responses, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodErrors, CloseEnrollmentPeriodResponses, CloseErrors, CloseResponses, Content1Data, Content1Errors, Content1Responses, ContentData, ContentErrors, ContentResponses, CorrectCommunityAttentionData, CorrectCommunityAttentionErrors, CorrectCommunityAttentionResponses, Create10Data, Create10Errors, Create10Responses, Create11Data, Create11Errors, Create11Responses, Create1Data, Create1Errors, Create1Responses, Create2Data, Create2Errors, Create2Responses, Create3Data, Create3Errors, Create3Responses, Create4Data, Create4Errors, Create4Responses, Create5Data, Create5Errors, Create5Responses, Create6Data, Create6Errors, Create6Responses, Create7Data, Create7Errors, Create7Responses, Create8Data, Create8Errors, Create8Responses, Create9Data, Create9Errors, Create9Responses, CreateApplicationEvaluationData, CreateApplicationEvaluationErrors, CreateApplicationEvaluationResponses, CreateApplicationVisitData, CreateApplicationVisitErrors, CreateApplicationVisitResponses, CreateCenterOpeningHourData, CreateCenterOpeningHourErrors, CreateCenterOpeningHourResponses, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchErrors, CreateCenterOpeningHoursBatchResponses, CreateCitizenAppointmentData, CreateCitizenAppointmentErrors, CreateCitizenAppointmentResponses, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodErrors, CreateEnrollmentPeriodResponses, CreateErrors, CreateMunicipalCenterData, CreateMunicipalCenterErrors, CreateMunicipalCenterResponses, CreateMunicipalServiceData, CreateMunicipalServiceErrors, CreateMunicipalServiceResponses, CreateOwnApplicationVisitRescheduleRequestData, CreateOwnApplicationVisitRescheduleRequestErrors, CreateOwnApplicationVisitRescheduleRequestResponses, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchErrors, CreateProfessionalAvailabilitiesBatchResponses, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityErrors, CreateProfessionalAvailabilityResponses, CreateProgramImageData, CreateProgramImageErrors, CreateProgramImageResponses, CreateResponses, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourErrors, DeactivateCenterOpeningHourResponses, DeactivateCenterServiceData, DeactivateCenterServiceErrors, DeactivateCenterServiceResponses, DeactivateMunicipalCenterData, DeactivateMunicipalCenterErrors, DeactivateMunicipalCenterResponses, DeactivateMunicipalServiceData, DeactivateMunicipalServiceErrors, DeactivateMunicipalServiceResponses, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentErrors, DeactivateProfessionalAssignmentResponses, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityErrors, DeactivateProfessionalAvailabilityResponses, DebtsData, DebtsErrors, DebtsResponses, Delete1Data, Delete1Errors, Delete1Responses, Delete2Data, Delete2Errors, Delete2Responses, Delete3Data, Delete3Errors, Delete3Responses, Delete4Data, Delete4Errors, Delete4Responses, Delete5Data, Delete5Errors, Delete5Responses, Delete6Data, Delete6Errors, Delete6Responses, Delete7Data, Delete7Errors, Delete7Responses, Delete8Data, Delete8Errors, Delete8Responses, DeleteData, DeleteErrors, DeleteProgramImageData, DeleteProgramImageErrors, DeleteProgramImageResponses, DeleteResponses, EnrollData, EnrollErrors, EnrollResponses, ExemptionsData, ExemptionsErrors, ExemptionsResponses, FinalizeData, FinalizeErrors, FinalizeResponses, FindAll1Data, FindAll1Errors, FindAll1Responses, FindAll2Data, FindAll2Errors, FindAll2Responses, FindAll3Data, FindAll3Errors, FindAll3Responses, FindAll4Data, FindAll4Errors, FindAll4Responses, FindAll5Data, FindAll5Errors, FindAll5Responses, FindAllData, FindAllErrors, FindAllResponses, FindById1Data, FindById1Errors, FindById1Responses, FindById2Data, FindById2Errors, FindById2Responses, FindById3Data, FindById3Errors, FindById3Responses, FindById4Data, FindById4Errors, FindById4Responses, FindById5Data, FindById5Errors, FindById5Responses, FindByIdData, FindByIdErrors, FindByIdResponses, FollowUpData, FollowUpErrors, FollowUpResponses, Get1Data, Get1Errors, Get1Responses, Get2Data, Get2Errors, Get2Responses, Get3Data, Get3Errors, Get3Responses, Get4Data, Get4Errors, Get4Responses, Get5Data, Get5Errors, Get5Responses, Get6Data, Get6Errors, Get6Responses, GetAdminAppointmentData, GetAdminAppointmentErrors, GetAdminAppointmentResponses, GetApplicationEvaluationData, GetApplicationEvaluationErrors, GetApplicationEvaluationResponses, GetApplicationVisitData, GetApplicationVisitErrors, GetApplicationVisitRescheduleRequestData, GetApplicationVisitRescheduleRequestErrors, GetApplicationVisitRescheduleRequestResponses, GetApplicationVisitResponses, GetAvailableProgramData, GetAvailableProgramErrors, GetAvailableProgramResponses, GetCitizenAppointmentData, GetCitizenAppointmentErrors, GetCoreConnectionStatusData, GetCoreConnectionStatusErrors, GetCoreConnectionStatusResponses, GetCoreDashboardData, GetCoreDashboardErrors, GetCoreDashboardResponses, GetCoreEventData, GetCoreEventErrors, GetCoreEventResponses, GetCoreLocalMetricsData, GetCoreLocalMetricsErrors, GetCoreLocalMetricsResponses, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodErrors, GetEnrollmentPeriodResponses, GetErrors, GetIndicatorsData, GetIndicatorsErrors, GetIndicatorsResponses, GetMunicipalCenterData, GetMunicipalCenterErrors, GetMunicipalCenterResponses, GetMunicipalServiceData, GetMunicipalServiceErrors, GetMunicipalServiceResponses, GetOwnApplicationVisitData, GetOwnApplicationVisitErrors, GetOwnApplicationVisitRescheduleRequestData, GetOwnApplicationVisitRescheduleRequestErrors, GetOwnApplicationVisitRescheduleRequestResponses, GetOwnApplicationVisitResponses, GetOwnInterventionPlanData, GetOwnInterventionPlanErrors, GetOwnInterventionPlanResponses, GetProfessionalActivityData, GetProfessionalActivityErrors, GetProfessionalActivityResponses, GetProfessionalAppointmentData, GetProfessionalAppointmentErrors, GetProfessionalAppointmentResponses, GetPublicImageData, GetPublicImageErrors, GetPublicImageResponses, GetResponses, GetUiConfigData, GetUiConfigErrors, GetUiConfigResponses, HealthData, HealthErrors, HealthResponses, History1Data, History1Errors, History1Responses, HistoryData, HistoryErrors, HistoryResponses, InfoData, InfoErrors, InfoResponses, LinkApplicationData, LinkApplicationErrors, LinkApplicationResponses, LinkData, LinkErrors, LinkResponses, LinksData, LinksErrors, LinksResponses, List10Data, List10Errors, List10Responses, List11Data, List11Errors, List11Responses, List12Data, List12Errors, List12Responses, List13Data, List13Errors, List13Responses, List1Data, List1Errors, List1Responses, List2Data, List2Errors, List2Responses, List3Data, List3Errors, List3Responses, List4Data, List4Errors, List4Responses, List5Data, List5Errors, List5Responses, List6Data, List6Errors, List6Responses, List7Data, List7Errors, List7Responses, List8Data, List8Errors, List8Responses, List9Data, List9Errors, List9Responses, ListActivitiesData, ListActivitiesErrors, ListActivitiesResponses, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityErrors, ListAdminAppointmentDayAvailabilityResponses, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryErrors, ListAdminAppointmentMonthlySummaryResponses, ListAdminAppointmentsData, ListAdminAppointmentsErrors, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsErrors, ListAdminAppointmentSlotsResponses, ListAdminAppointmentsResponses, ListAdminBenefitGrantsData, ListAdminBenefitGrantsErrors, ListAdminBenefitGrantsResponses, ListAllOwnVisitsData, ListAllOwnVisitsErrors, ListAllOwnVisitsResponses, ListApplicationEvaluationsData, ListApplicationEvaluationsErrors, ListApplicationEvaluationsResponses, ListApplicationVisitRescheduleRequestsData, ListApplicationVisitRescheduleRequestsErrors, ListApplicationVisitRescheduleRequestsResponses, ListApplicationVisitsData, ListApplicationVisitsErrors, ListApplicationVisitsResponses, ListAvailableProgramsData, ListAvailableProgramsErrors, ListAvailableProgramsResponses, ListCenterOpeningHoursData, ListCenterOpeningHoursErrors, ListCenterOpeningHoursResponses, ListCenterServicesData, ListCenterServicesErrors, ListCenterServicesResponses, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersErrors, ListCitizenAppointmentCentersResponses, ListCitizenAppointmentsData, ListCitizenAppointmentsErrors, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesErrors, ListCitizenAppointmentServicesResponses, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsErrors, ListCitizenAppointmentSlotsResponses, ListCitizenAppointmentsResponses, ListCoreEventsData, ListCoreEventsErrors, ListCoreEventsResponses, ListCorePublicationsData, ListCorePublicationsErrors, ListCorePublicationsResponses, ListCoreSubscriptionsData, ListCoreSubscriptionsErrors, ListCoreSubscriptionsResponses, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsErrors, ListEnrollmentPeriodsResponses, ListEnrollmentsData, ListEnrollmentsErrors, ListEnrollmentsResponses, ListErrors, ListLogsByEntityData, ListLogsByEntityErrors, ListLogsByEntityResponses, ListLogsByUserData, ListLogsByUserErrors, ListLogsByUserResponses, ListLogsData, ListLogsErrors, ListLogsResponses, ListMunicipalCentersData, ListMunicipalCentersErrors, ListMunicipalCentersResponses, ListMunicipalServicesData, ListMunicipalServicesErrors, ListMunicipalServicesResponses, ListOwnApplicationVisitRescheduleRequestsData, ListOwnApplicationVisitRescheduleRequestsErrors, ListOwnApplicationVisitRescheduleRequestsResponses, ListOwnApplicationVisitsData, ListOwnApplicationVisitsErrors, ListOwnApplicationVisitsResponses, ListOwnBenefitGrantsData, ListOwnBenefitGrantsErrors, ListOwnBenefitGrantsResponses, ListOwnInterventionPlansData, ListOwnInterventionPlansErrors, ListOwnInterventionPlansResponses, ListOwnPublishedInterventionFollowUpsData, ListOwnPublishedInterventionFollowUpsErrors, ListOwnPublishedInterventionFollowUpsResponses, ListProfessionalAppointmentsData, ListProfessionalAppointmentsErrors, ListProfessionalAppointmentsResponses, ListProfessionalAssignmentsData, ListProfessionalAssignmentsErrors, ListProfessionalAssignmentsResponses, ListProfessionalAvailabilityData, ListProfessionalAvailabilityErrors, ListProfessionalAvailabilityResponses, ListProgramEditionOptionsData, ListProgramEditionOptionsErrors, ListProgramEditionOptionsResponses, ListProgramOptionsData, ListProgramOptionsErrors, ListProgramOptionsResponses, ListResponses, LoginData, LoginErrors, LoginResponses, MeData, MeErrors, MeResponses, OpenEnrollmentPeriodData, OpenEnrollmentPeriodErrors, OpenEnrollmentPeriodResponses, Publish1Data, Publish1Errors, Publish1Responses, PublishData, PublishErrors, PublishResponses, Put1Data, Put1Errors, Put1Responses, PutData, PutErrors, PutResponses, RecordApplicationVisitResultData, RecordApplicationVisitResultErrors, RecordApplicationVisitResultResponses, RegisterCommunityAttentionData, RegisterCommunityAttentionErrors, RegisterCommunityAttentionResponses, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotErrors, ReleaseAdminAppointmentSlotResponses, RenewData, RenewErrors, RenewResponses, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodErrors, ReopenEnrollmentPeriodResponses, RescheduleAdminAppointmentData, RescheduleAdminAppointmentErrors, RescheduleAdminAppointmentResponses, RescheduleApplicationVisitData, RescheduleApplicationVisitErrors, RescheduleApplicationVisitResponses, ResolveApplicationData, ResolveApplicationErrors, ResolveApplicationResponses, Review1Data, Review1Errors, ReviewApplicationVisitRescheduleRequestData, ReviewApplicationVisitRescheduleRequestErrors, ReviewApplicationVisitRescheduleRequestResponses, ReviewData, ReviewErrors, ReviewResponses, SelectRoleData, SelectRoleErrors, SelectRoleResponses, SessionCsrfData, SessionCsrfErrors, SessionCsrfResponses, SessionLoginData, SessionLoginErrors, SessionLoginResponses, SessionLogoutData, SessionLogoutErrors, SessionLogoutResponses, SessionRoleSelectionData, SessionRoleSelectionErrors, SessionRoleSelectionResponses, SessionSelectRoleData, SessionSelectRoleErrors, SessionSelectRoleResponses, SessionSwitchRoleData, SessionSwitchRoleErrors, SessionSwitchRoleResponses, Submit1Data, Submit1Errors, Submit1Responses, SubmitData, SubmitErrors, SubmitResponses, Suspend1Data, Suspend1Errors, Suspend1Responses, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodErrors, SuspendEnrollmentPeriodResponses, SuspendErrors, SuspendResponses, SwitchRoleData, SwitchRoleErrors, SwitchRoleResponses, UnassignApplicationWorkerData, UnassignApplicationWorkerErrors, UnassignApplicationWorkerResponses, Update1Data, Update1Errors, Update1Responses, Update2Data, Update2Errors, Update2Responses, Update3Data, Update3Errors, Update3Responses, Update4Data, Update4Errors, Update4Responses, Update5Data, Update5Errors, Update5Responses, Update6Data, Update6Errors, Update6Responses, Update7Data, Update7Errors, Update7Responses, Update8Data, Update8Errors, Update8Responses, UpdateAttendanceData, UpdateAttendanceErrors, UpdateAttendanceResponses, UpdateCenterOpeningHourData, UpdateCenterOpeningHourErrors, UpdateCenterOpeningHourResponses, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodErrors, UpdateEnrollmentPeriodResponses, UpdateErrors, UpdateMunicipalCenterData, UpdateMunicipalCenterErrors, UpdateMunicipalCenterResponses, UpdateMunicipalServiceData, UpdateMunicipalServiceErrors, UpdateMunicipalServiceResponses, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityErrors, UpdateProfessionalAvailabilityResponses, UpdateProgramImageData, UpdateProgramImageErrors, UpdateProgramImageResponses, UpdateResponses, WithdrawData, WithdrawErrors, WithdrawResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -619,6 +619,61 @@ export const updateMunicipalCenter = <ThrowOnError extends boolean = false>(opti
             type: 'apiKey'
         }],
     url: '/api/admin/municipal-centers/{id}',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Asignar un administrativo
+ *
+ * Encola STARTED una sola vez por derivación ROUTED.
+ */
+export const assign = <ThrowOnError extends boolean = false>(options: Options<AssignData, ThrowOnError>): RequestResult<AssignResponses, AssignErrors, ThrowOnError> => (options.client ?? client).put<AssignResponses, AssignErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/tickets/{ticketId}/assignee',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Vincular la solicitud social del mismo ciudadano
+ */
+export const linkApplication = <ThrowOnError extends boolean = false>(options: Options<LinkApplicationData, ThrowOnError>): RequestResult<LinkApplicationResponses, LinkApplicationErrors, ThrowOnError> => (options.client ?? client).put<LinkApplicationResponses, LinkApplicationErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/tickets/{ticketId}/application',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Vincular una exención a un beneficio
+ *
+ * Permite resolver coincidencias ambiguas entre beneficios TAX_EXEMPTION activos del mismo ciudadano.
+ */
+export const link = <ThrowOnError extends boolean = false>(options: Options<LinkData, ThrowOnError>): RequestResult<LinkResponses, LinkErrors, ThrowOnError> => (options.client ?? client).put<LinkResponses, LinkErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/revenue/exemptions/{requestId}/benefit',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1592,6 +1647,25 @@ export const createCenterOpeningHoursBatch = <ThrowOnError extends boolean = fal
 });
 
 /**
+ * Encolar una actualización operativa
+ *
+ * Respuesta 202: guardada en outbox, pendiente de confirmación del broker. El backend genera actor, fecha, evento y causalidad. Ver las reglas por updateType en AsyncAPI.
+ */
+export const update8 = <ThrowOnError extends boolean = false>(options: Options<Update8Data, ThrowOnError>): RequestResult<Update8Responses, Update8Errors, ThrowOnError> => (options.client ?? client).post<Update8Responses, Update8Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/tickets/{ticketId}/updates',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Listar profesionales de un servicio del centro
  */
 export const listProfessionalAssignments = <ThrowOnError extends boolean = false>(options: Options<ListProfessionalAssignmentsData, ThrowOnError>): RequestResult<ListProfessionalAssignmentsResponses, ListProfessionalAssignmentsErrors, ThrowOnError> => (options.client ?? client).get<ListProfessionalAssignmentsResponses, ListProfessionalAssignmentsErrors, ThrowOnError>({
@@ -2131,11 +2205,30 @@ export const cancelAdminAppointment = <ThrowOnError extends boolean = false>(opt
 });
 
 /**
+ * Revisar una entrega externa
+ *
+ * VALID sin observación u OBSERVED con observación. No descarga documentos ni valida automáticamente su contenido.
+ */
+export const review = <ThrowOnError extends boolean = false>(options: Options<ReviewData, ThrowOnError>): RequestResult<ReviewResponses, ReviewErrors, ThrowOnError> => (options.client ?? client).patch<ReviewResponses, ReviewErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/applications/{applicationId}/external-documents/{requestId}/review',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * Revisar un documento pendiente
  *
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
  */
-export const review = <ThrowOnError extends boolean = false>(options: Options<ReviewData, ThrowOnError>): RequestResult<unknown, ReviewErrors, ThrowOnError> => (options.client ?? client).patch<unknown, ReviewErrors, ThrowOnError>({
+export const review1 = <ThrowOnError extends boolean = false>(options: Options<Review1Data, ThrowOnError>): RequestResult<unknown, Review1Errors, ThrowOnError> => (options.client ?? client).patch<unknown, Review1Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
             in: 'cookie',
             name: 'uade_session',
@@ -2176,6 +2269,36 @@ export const close1 = <ThrowOnError extends boolean = false>(options: Options<Cl
             type: 'apiKey'
         }],
     url: '/api/admin/activities/{id}/close',
+    ...options
+});
+
+export const getUiConfig = <ThrowOnError extends boolean = false>(options?: Options<GetUiConfigData, ThrowOnError>): RequestResult<GetUiConfigResponses, GetUiConfigErrors, ThrowOnError> => (options?.client ?? client).get<GetUiConfigResponses, GetUiConfigErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/springwolf/ui-config',
+    ...options
+});
+
+export const asyncApiYaml = <ThrowOnError extends boolean = false>(options?: Options<AsyncApiYamlData, ThrowOnError>): RequestResult<AsyncApiYamlResponses, AsyncApiYamlErrors, ThrowOnError> => (options?.client ?? client).get<AsyncApiYamlResponses, AsyncApiYamlErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/springwolf/docs',
+    ...options
+});
+
+export const asyncApiYaml1 = <ThrowOnError extends boolean = false>(options: Options<AsyncApiYaml1Data, ThrowOnError>): RequestResult<AsyncApiYaml1Responses, AsyncApiYaml1Errors, ThrowOnError> => (options.client ?? client).get<AsyncApiYaml1Responses, AsyncApiYaml1Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/springwolf/docs/{group}',
     ...options
 });
 
@@ -2618,6 +2741,32 @@ export const listProgramEditionOptions = <ThrowOnError extends boolean = false>(
 });
 
 /**
+ * Listar tickets de M8
+ */
+export const list9 = <ThrowOnError extends boolean = false>(options?: Options<List9Data, ThrowOnError>): RequestResult<List9Responses, List9Errors, ThrowOnError> => (options?.client ?? client).get<List9Responses, List9Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/tickets',
+    ...options
+});
+
+/**
+ * Consultar el ticket y su snapshot operativo
+ */
+export const get3 = <ThrowOnError extends boolean = false>(options: Options<Get3Data, ThrowOnError>): RequestResult<Get3Responses, Get3Errors, ThrowOnError> => (options.client ?? client).get<Get3Responses, Get3Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/tickets/{ticketId}',
+    ...options
+});
+
+/**
  * Consultar nuestras suscripciones
  *
  * Devuelve solo las suscripciones de desarrollo-social, su cola, estado y maxAttempts. No las modifica.
@@ -2644,6 +2793,32 @@ export const getCoreConnectionStatus = <ThrowOnError extends boolean = false>(op
             type: 'apiKey'
         }],
     url: '/api/admin/integrations/core/status',
+    ...options
+});
+
+/**
+ * Consultar solicitudes de exención y resoluciones
+ */
+export const exemptions = <ThrowOnError extends boolean = false>(options?: Options<ExemptionsData, ThrowOnError>): RequestResult<ExemptionsResponses, ExemptionsErrors, ThrowOnError> => (options?.client ?? client).get<ExemptionsResponses, ExemptionsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/revenue/exemptions',
+    ...options
+});
+
+/**
+ * Consultar deudas recibidas de Rentas
+ */
+export const debts = <ThrowOnError extends boolean = false>(options?: Options<DebtsData, ThrowOnError>): RequestResult<DebtsResponses, DebtsErrors, ThrowOnError> => (options?.client ?? client).get<DebtsResponses, DebtsErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/revenue/debts',
     ...options
 });
 
@@ -2719,6 +2894,19 @@ export const getCoreDashboard = <ThrowOnError extends boolean = false>(options?:
             type: 'apiKey'
         }],
     url: '/api/admin/integrations/core/dashboard',
+    ...options
+});
+
+/**
+ * Consultar titulares bloqueados o fallecidos
+ */
+export const list10 = <ThrowOnError extends boolean = false>(options?: Options<List10Data, ThrowOnError>): RequestResult<List10Responses, List10Errors, ThrowOnError> => (options?.client ?? client).get<List10Responses, List10Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/integrations/core/citizen-alerts',
     ...options
 });
 
@@ -2820,7 +3008,7 @@ export const listAdminAppointmentDayAvailability = <ThrowOnError extends boolean
  *
  * Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.
  */
-export const get3 = <ThrowOnError extends boolean = false>(options: Options<Get3Data, ThrowOnError>): RequestResult<Get3Responses, Get3Errors, ThrowOnError> => (options.client ?? client).get<Get3Responses, Get3Errors, ThrowOnError>({
+export const get4 = <ThrowOnError extends boolean = false>(options: Options<Get4Data, ThrowOnError>): RequestResult<Get4Responses, Get4Errors, ThrowOnError> => (options.client ?? client).get<Get4Responses, Get4Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
             in: 'cookie',
             name: 'uade_session',
@@ -2835,7 +3023,7 @@ export const get3 = <ThrowOnError extends boolean = false>(options: Options<Get3
  *
  * Lectura profesional completa por permiso; no exige ser el trabajador asignado. Conserva orden de objetivos y acciones. Incluye ciudadano del caso, responsable y fecha UTC. La consulta ciudadana usa DTO propios y rutas separadas.
  */
-export const get4 = <ThrowOnError extends boolean = false>(options: Options<Get4Data, ThrowOnError>): RequestResult<Get4Responses, Get4Errors, ThrowOnError> => (options.client ?? client).get<Get4Responses, Get4Errors, ThrowOnError>({
+export const get5 = <ThrowOnError extends boolean = false>(options: Options<Get5Data, ThrowOnError>): RequestResult<Get5Responses, Get5Errors, ThrowOnError> => (options.client ?? client).get<Get5Responses, Get5Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
             in: 'cookie',
             name: 'uade_session',
@@ -2876,9 +3064,22 @@ export const history1 = <ThrowOnError extends boolean = false>(options: Options<
 });
 
 /**
+ * Consultar entregas documentales de M1
+ */
+export const list11 = <ThrowOnError extends boolean = false>(options: Options<List11Data, ThrowOnError>): RequestResult<List11Responses, List11Errors, ThrowOnError> => (options.client ?? client).get<List11Responses, List11Errors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }, {
+            in: 'cookie',
+            name: 'uade_session',
+            type: 'apiKey'
+        }],
+    url: '/api/admin/applications/{applicationId}/external-documents',
+    ...options
+});
+
+/**
  * Listar documentos de cualquier solicitud
  */
-export const list9 = <ThrowOnError extends boolean = false>(options: Options<List9Data, ThrowOnError>): RequestResult<List9Responses, List9Errors, ThrowOnError> => (options.client ?? client).get<List9Responses, List9Errors, ThrowOnError>({
+export const list12 = <ThrowOnError extends boolean = false>(options: Options<List12Data, ThrowOnError>): RequestResult<List12Responses, List12Errors, ThrowOnError> => (options.client ?? client).get<List12Responses, List12Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
             in: 'cookie',
             name: 'uade_session',
@@ -2996,7 +3197,7 @@ export const getApplicationEvaluation = <ThrowOnError extends boolean = false>(o
 /**
  * Listar actividades abiertas o inscripciones propias
  */
-export const list10 = <ThrowOnError extends boolean = false>(options?: Options<List10Data, ThrowOnError>): RequestResult<List10Responses, List10Errors, ThrowOnError> => (options?.client ?? client).get<List10Responses, List10Errors, ThrowOnError>({
+export const list13 = <ThrowOnError extends boolean = false>(options?: Options<List13Data, ThrowOnError>): RequestResult<List13Responses, List13Errors, ThrowOnError> => (options?.client ?? client).get<List13Responses, List13Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
             in: 'cookie',
             name: 'uade_session',
@@ -3009,7 +3210,7 @@ export const list10 = <ThrowOnError extends boolean = false>(options?: Options<L
 /**
  * Consultar una actividad abierta o una actividad cerrada con inscripción propia
  */
-export const get5 = <ThrowOnError extends boolean = false>(options: Options<Get5Data, ThrowOnError>): RequestResult<Get5Responses, Get5Errors, ThrowOnError> => (options.client ?? client).get<Get5Responses, Get5Errors, ThrowOnError>({
+export const get6 = <ThrowOnError extends boolean = false>(options: Options<Get6Data, ThrowOnError>): RequestResult<Get6Responses, Get6Errors, ThrowOnError> => (options.client ?? client).get<Get6Responses, Get6Errors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }, {
             in: 'cookie',
             name: 'uade_session',

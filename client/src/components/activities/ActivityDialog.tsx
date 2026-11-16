@@ -124,8 +124,8 @@ function ActivityForm({ activity, onOpenChange, onSaved }: {
   const [selectedCenterId, setSelectedCenterId] = useState("")
 
   const onSuccess = (saved: ActivityResponse) => {
-    queryClient.invalidateQueries({ queryKey: list7QueryKey() })
-    if (saved.id) queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
+    void queryClient.invalidateQueries({ queryKey: list7QueryKey() })
+    if (saved.id) void queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
     onSaved?.(saved)
     onOpenChange(false)
   }
@@ -188,7 +188,7 @@ function ActivityForm({ activity, onOpenChange, onSaved }: {
         onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
       >
         <FieldGroup>

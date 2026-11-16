@@ -57,8 +57,8 @@ function RouteComponent() {
     navigate({ search: { ...search, estado, page: 1 } })
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
-  const activate = useMutation({ ...activateMunicipalCenterMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
-  const deactivate = useMutation({ ...deactivateMunicipalCenterMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
+  const activate = useMutation({ ...activateMunicipalCenterMutation(), onSuccess: () => { void invalidate(); setStatusChange(null) } })
+  const deactivate = useMutation({ ...deactivateMunicipalCenterMutation(), onSuccess: () => { void invalidate(); setStatusChange(null) } })
   const statusPending = activate.isPending || deactivate.isPending
   const statusError = activate.error ?? deactivate.error
 
@@ -97,7 +97,7 @@ function RouteComponent() {
                 <InputGroupInput
                   value={searchInput}
                   onChange={(event) => setSearchInput(event.target.value)}
-                  onKeyDown={(event) => { if (event.key === "Enter") applySearch() }}
+                  onKeyDown={(event) => { if (event.key === "Enter") void applySearch() }}
                   placeholder="Buscar por nombre o dirección…"
                   aria-label="Buscar centros"
                 />

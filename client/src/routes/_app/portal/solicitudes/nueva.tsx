@@ -76,7 +76,7 @@ export function ApplicationConfirmation({ program, edition, period, userId }: {
       if (application.id) {
         queryClient.setQueryData(get2QueryKey({ path: { id: application.id } }), application)
         clearSubmissionKey(userId, period.id)
-        queryClient.invalidateQueries({ queryKey: listQueryKey() })
+        void queryClient.invalidateQueries({ queryKey: listQueryKey() })
         await navigate({ to: "/portal/solicitudes/$solicitudId", params: { solicitudId: application.id }, replace: true })
       }
     } catch {

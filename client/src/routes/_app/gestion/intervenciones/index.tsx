@@ -39,7 +39,7 @@ function RouteComponent() {
     <InterventionHeading title="Intervenciones" description="Gestioná planes y seguimientos de casos con evaluación social registrada." action={<Button variant="outline" size="sm" disabled={evaluations.isFetching} onClick={() => evaluations.refetch()}><IconRefresh className={evaluations.isFetching ? "animate-spin" : undefined} />Refrescar</Button>} />
     <FilterBar label="Filtrar casos" onSubmit={() => {
       const raw = number.trim()
-      navigate({ search: { ...search, page: 1, numero: raw ? Number(raw) : undefined } })
+      void navigate({ search: { ...search, page: 1, numero: raw ? Number(raw) : undefined } })
     }}>
       <FilterField label="N.º de solicitud" htmlFor="intervention-number"><Input id="intervention-number" type="number" min={1} value={number} onChange={(event) => setNumber(event.target.value)} placeholder="Ej. 121" /></FilterField>
       <FilterField label="Prioridad" htmlFor="intervention-priority"><Select value={search.prioridad ?? null} onValueChange={(value) => navigate({ search: { ...search, page: 1, prioridad: (value || undefined) as Priority | undefined } })}><SelectTrigger id="intervention-priority" className="w-full"><SelectValue placeholder="Todas" /></SelectTrigger><SelectContent><SelectItem value={null}>Todas</SelectItem>{(["LOW", "MEDIUM", "HIGH", "URGENT"] as const).map((value) => <SelectItem key={value} value={value}>{priorityLabel[value]}</SelectItem>)}</SelectContent></Select></FilterField>

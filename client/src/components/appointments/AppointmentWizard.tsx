@@ -197,7 +197,7 @@ export function AppointmentWizard({ userId }: { userId: number }) {
           onStaleSlot={() => {
             setSlot(null)
             setStaleNotice(true)
-            slots.refetch()
+            void slots.refetch()
           }}
         />
       )}

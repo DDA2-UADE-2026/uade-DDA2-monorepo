@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-import { finalizeMutation, findAll2Options, get3Options, history1Options, list6Options, renewMutation, suspendMutation } from "@/generated/@tanstack/react-query.gen"
+import { finalizeMutation, findAll2Options, get4Options, history1Options, list6Options, renewMutation, suspendMutation } from "@/generated/@tanstack/react-query.gen"
 import type { BenefitGrantResponse } from "@/generated/types.gen"
 
 export const Route = createFileRoute("/_app/gestion/beneficios/$beneficioId")({ validateSearch: z.object({ solicitud: z.string().catch("").default("") }), component: BenefitDetail })
@@ -24,7 +24,7 @@ function BenefitDetail() {
   const { user } = Route.useRouteContext()
   const [action, setAction] = useState<"renew" | "suspend" | "finalize" | null>(null)
   const grants = useQuery({ ...list6Options({ path: { id: solicitud } }), enabled: !!solicitud })
-  const application = useQuery({ ...get3Options({ path: { id: solicitud } }), enabled: !!solicitud })
+  const application = useQuery({ ...get4Options({ path: { id: solicitud } }), enabled: !!solicitud })
   const history = useQuery({ ...history1Options({ path: { id: solicitud, grantId: beneficioId } }), enabled: !!solicitud })
   const grant = grants.data?.find((item) => item.id === beneficioId)
   const canManage = user.permissions?.includes("applications:management:benefits:manage") && application.data?.status === "APPROVED"
