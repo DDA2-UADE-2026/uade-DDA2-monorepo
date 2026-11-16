@@ -1,0 +1,310 @@
+{
+  "capturedAt": "2026-11-16T12:05:29.065307+00:00",
+  "project": "DDA2-UADE-2026_uade-DDA2-monorepo",
+  "branch": "develop",
+  "local_commit": "05333b1957c8a842c294e568c4da9a86d49e88d4",
+  "checkout_method": "git archive HEAD; only tracked files; no private dotenv, node_modules or build directories copied",
+  "comparison": {
+    "capturedAt": "2026-11-16T12:05:29.065307+00:00",
+    "same_risk_id_cve_version_status": true,
+    "count_current": 122,
+    "count_prior": 122,
+    "latest_project_analysis": {
+      "key": "a7ffc2d7-60ca-466d-a2f7-1cf8b448f1d8",
+      "date": "2026-11-16T04:22:36+0000",
+      "events": [
+        {
+          "key": "AaHimehrNNMwyHb_vZgW",
+          "category": "VERSION",
+          "name": "not provided"
+        },
+        {
+          "key": "AaHimehnNNMwyHb_vZgV",
+          "category": "QUALITY_GATE",
+          "name": "Green (was Red)",
+          "description": ""
+        }
+      ],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": false,
+      "revision": "05bf96030433a16e1c31802d7aaaeda0563f7a39"
+    },
+    "local_commit_analysis": {
+      "key": "e9c77e24-d0fc-4d93-9e58-16233b57ab62",
+      "date": "2026-11-16T03:39:25+0000",
+      "events": [],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": false,
+      "revision": "05333b1957c8a842c294e568c4da9a86d49e88d4"
+    },
+    "sca_analysis": {
+      "status": "COMPLETED",
+      "failedReason": null,
+      "errors": [],
+      "parsedFiles": [
+        "server/gradle-dependencies-q.txt",
+        "server/build.gradle.kts",
+        "client/package-lock.json",
+        "client/package.json"
+      ],
+      "updatedAt": "2026-11-16T04:24:56.409Z"
+    },
+    "dependency_count": {
+      "pageIndex": 1,
+      "pageSize": 1,
+      "total": 1005
+    }
+  },
+  "revision_comparison": {
+    "capturedAt": "2026-11-16T12:02:54.906933+00:00",
+    "url": "https://api.github.com/repos/DDA2-UADE-2026/uade-DDA2-monorepo/compare/05333b1957c8a842c294e568c4da9a86d49e88d4...05bf96030433a16e1c31802d7aaaeda0563f7a39",
+    "status": "ahead",
+    "ahead_by": 3,
+    "behind_by": 0,
+    "total_commits": 3,
+    "merge_base": "05333b1957c8a842c294e568c4da9a86d49e88d4",
+    "local": "05333b1957c8a842c294e568c4da9a86d49e88d4",
+    "sonar": "05bf96030433a16e1c31802d7aaaeda0563f7a39",
+    "changed_files": [
+      {
+        "filename": "client/src/components/activities/ActivityDialog.test.tsx",
+        "status": "modified",
+        "additions": 26,
+        "deletions": 1,
+        "changes": 27
+      },
+      {
+        "filename": "client/src/components/activities/ActivityStatusDialog.test.tsx",
+        "status": "added",
+        "additions": 74,
+        "deletions": 0,
+        "changes": 74
+      },
+      {
+        "filename": "client/src/components/activities/CitizenActivitiesSection.test.tsx",
+        "status": "added",
+        "additions": 65,
+        "deletions": 0,
+        "changes": 65
+      },
+      {
+        "filename": "client/src/components/auth/RoleSwitcher.test.tsx",
+        "status": "added",
+        "additions": 66,
+        "deletions": 0,
+        "changes": 66
+      },
+      {
+        "filename": "client/src/components/centros/CenterDialog.test.tsx",
+        "status": "added",
+        "additions": 75,
+        "deletions": 0,
+        "changes": 75
+      },
+      {
+        "filename": "client/src/components/centros/ServiceCatalogRoute.test.tsx",
+        "status": "added",
+        "additions": 116,
+        "deletions": 0,
+        "changes": 116
+      },
+      {
+        "filename": "client/src/components/centros/TimeRangeDialog.test.tsx",
+        "status": "added",
+        "additions": 47,
+        "deletions": 0,
+        "changes": 47
+      },
+      {
+        "filename": "client/src/components/core-events/CoreContract.test.tsx",
+        "status": "added",
+        "additions": 80,
+        "deletions": 0,
+        "changes": 80
+      },
+      {
+        "filename": "client/src/components/core-events/CoreEventRoutes.test.tsx",
+        "status": "added",
+        "additions": 67,
+        "deletions": 0,
+        "changes": 67
+      },
+      {
+        "filename": "client/src/components/interventions/InterventionPlanForm.test.tsx",
+        "status": "added",
+        "additions": 58,
+        "deletions": 0,
+        "changes": 58
+      },
+      {
+        "filename": "client/src/components/interventions/InterventionPlanRoute.test.tsx",
+        "status": "added",
+        "additions": 64,
+        "deletions": 0,
+        "changes": 64
+      },
+      {
+        "filename": "client/src/components/programs/ProgramsRoute.test.tsx",
+        "status": "added",
+        "additions": 60,
+        "deletions": 0,
+        "changes": 60
+      },
+      {
+        "filename": "client/src/components/tickets/TicketSheet.test.tsx",
+        "status": "added",
+        "additions": 232,
+        "deletions": 0,
+        "changes": 232
+      },
+      {
+        "filename": "client/src/components/tickets/TicketsRoute.test.tsx",
+        "status": "added",
+        "additions": 159,
+        "deletions": 0,
+        "changes": 159
+      },
+      {
+        "filename": "client/src/components/users/RolesRoute.test.tsx",
+        "status": "added",
+        "additions": 62,
+        "deletions": 0,
+        "changes": 62
+      },
+      {
+        "filename": "client/src/lib/tickets.test.ts",
+        "status": "added",
+        "additions": 54,
+        "deletions": 0,
+        "changes": 54
+      },
+      {
+        "filename": "client/src/routes/_app/gestion/debug/documentacion-eventos.tsx",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1,
+        "changes": 2
+      },
+      {
+        "filename": "client/src/routes/_app/gestion/debug/documentacion-local.tsx",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1,
+        "changes": 2
+      },
+      {
+        "filename": "client/src/test/route-harness.tsx",
+        "status": "added",
+        "additions": 68,
+        "deletions": 0,
+        "changes": 68
+      },
+      {
+        "filename": "server/src/main/resources/application.yml",
+        "status": "modified",
+        "additions": 4,
+        "deletions": 0,
+        "changes": 4
+      },
+      {
+        "filename": "server/src/test/kotlin/com/uade/dda2/server/error/GlobalExceptionHandlerTest.kt",
+        "status": "added",
+        "additions": 34,
+        "deletions": 0,
+        "changes": 34
+      },
+      {
+        "filename": "server/src/test/kotlin/com/uade/dda2/server/security/LoginRateLimitFilterTest.kt",
+        "status": "added",
+        "additions": 76,
+        "deletions": 0,
+        "changes": 76
+      },
+      {
+        "filename": "sonar-project.properties",
+        "status": "modified",
+        "additions": 3,
+        "deletions": 2,
+        "changes": 5
+      }
+    ],
+    "dependency_files": [
+      {
+        "path": "client/package.json",
+        "sha256": "c45e75ca62d301603f2e24aab38c8590bffcb2013f61ef6bf936c00f7c1f2584",
+        "changed_in_sonar_revision": false
+      },
+      {
+        "path": "client/package-lock.json",
+        "sha256": "80b51cc40082e7cae09a0fe5820adacaf9dec759fe354f7de10d468acad5f0e3",
+        "changed_in_sonar_revision": false
+      },
+      {
+        "path": "server/build.gradle.kts",
+        "sha256": "483cb2aa3d4b872f854dd957cb48040042362ec13187e850b25040ba8909a4df",
+        "changed_in_sonar_revision": false
+      },
+      {
+        "path": "server/gradle.lockfile",
+        "sha256": "abd6769dd64c85fe60872ab134b40bc567c8a48cdb06ae3cd238c6f3b44df238",
+        "changed_in_sonar_revision": false
+      },
+      {
+        "path": "server/settings.gradle.kts",
+        "sha256": "e7ccb3287fac3794439526cddde486400df1889d60b2ae0a3cc19a56c417add6",
+        "changed_in_sonar_revision": false
+      },
+      {
+        "path": "server/gradle/wrapper/gradle-wrapper.properties",
+        "sha256": "e0846bd420bf1543f500e0c9b35c01d84611b0f1afe01e24a82d0eca53c33ccb",
+        "changed_in_sonar_revision": false
+      }
+    ]
+  },
+  "counts": {
+    "total": 122,
+    "cves_unicos": 109,
+    "paquetes_unicos": 40,
+    "paquete_version": 41,
+    "severidad_sonar": {
+      "MEDIUM": 43,
+      "LOW": 78,
+      "INFO": 1
+    },
+    "grupos": {
+      "A · Boot 4.0.9": 59,
+      "B · Tooling Kotlin": 34,
+      "C · Cliente RabbitMQ": 10,
+      "D · Frontend compatible": 3,
+      "E · Actualización condicionada": 5,
+      "F · Sin parche forward identificado": 11
+    },
+    "ambitos": {
+      "Runtime (presencia, no explotación probada)": 73,
+      "Solo build/tooling": 36,
+      "Tooling frontend / build / CI": 10,
+      "Solo tests": 2,
+      "Runtime frontend (diff)": 1
+    },
+    "discrepancias": 2
+  },
+  "sonar_production_records": 117,
+  "sonar_reachability_analyzed": 0,
+  "prior_evidence_sha256": "bb9e3c227dd858e18755e18b7fc2be4d4b9103ff5f8e88772c53371d26cf6cbd",
+  "unchanged_risk_ids_cve_versions_status": true,
+  "sonar_scope_summary_counts": {
+    "mainSourceElements": 73,
+    "kotlinBouncyCastleConfiguration": 34,
+    "runtime": 8,
+    "swiftExportClasspathResolvable": 2,
+    "development": 3,
+    "testCompileClasspath": 2
+  },
+  "scope_review_difference": {
+    "sonar_production": 117,
+    "reviewed_runtime": 74,
+    "kotlin_plugin_records_production_flag_true": 36,
+    "npm_tooling_records_runtime_scope": 7,
+    "test_only_records_already_nonproduction_in_sonar": 2
+  }
+}
