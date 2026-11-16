@@ -1,0 +1,228 @@
+COMMAND ["./gradlew", "dependencyInsight", "--configuration", "runtimeClasspath", "--dependency", "jackson-databind", "--no-daemon", "--offline", "--console=plain", "-Duser.home=<workspace>/artifacts/security-preparation/backend-state/home"]
+CWD <workspace>/artifacts/security-preparation/baseline-05333b1/server
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Task :dependencyInsight
+com.fasterxml.jackson.core:jackson-databind:2.21.4
+  Variant runtimeElements:
+    | Attribute Name                     | Provided     | Requested    |
+    |------------------------------------|--------------|--------------|
+    | org.gradle.status                  | release      |              |
+    | org.gradle.category                | library      | library      |
+    | org.gradle.dependency.bundling     | external     | external     |
+    | org.gradle.libraryelements         | jar          | jar          |
+    | org.gradle.usage                   | java-runtime | java-runtime |
+    | org.gradle.jvm.environment         |              | standard-jvm |
+    | org.gradle.jvm.version             |              | 17           |
+    | org.jetbrains.kotlin.platform.type |              | jvm          |
+   Selection reasons:
+      - Selected by rule
+      - By constraint
+      - By constraint: Dependency version enforced by Dependency Locking
+
+com.fasterxml.jackson.core:jackson-databind:{strictly 2.21.4} -> 2.21.4
+\--- runtimeClasspath
+
+com.fasterxml.jackson.core:jackson-databind:2.21.4
++--- com.fasterxml.jackson:jackson-bom:2.21.4
+|    +--- runtimeClasspath (requested com.fasterxml.jackson:jackson-bom:{strictly 2.21.4})
+|    +--- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.4
+|    |    +--- runtimeClasspath (requested com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:{strictly 2.21.4})
+|    |    +--- io.github.springwolf:springwolf-core:2.5.0 (requested com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.22.0)
+|    |    |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+|    |    |    +--- io.github.springwolf:springwolf-amqp:2.5.0
+|    |    |    |    \--- runtimeClasspath
+|    |    |    \--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+|    |    |         +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+|    |    |         \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    |    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.2)
+|    |    |    +--- runtimeClasspath (requested org.springframework.boot:spring-boot-dependencies:{strictly 4.0.6})
+|    |    |    +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    |    |    +--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+|    |    |    \--- io.github.springwolf:springwolf-core:2.5.0 (*)
+|    |    +--- io.github.springwolf:springwolf-asyncapi:2.5.0 (requested com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.22.0)
+|    |    |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-asyncapi:{strictly 2.5.0})
+|    |    |    +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    |    |    +--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+|    |    |    \--- io.github.springwolf:springwolf-core:2.5.0 (*)
+|    |    +--- io.swagger.core.v3:swagger-core-jakarta:2.2.52 (requested com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.22.0)
+|    |    |    +--- runtimeClasspath (requested io.swagger.core.v3:swagger-core-jakarta:{strictly 2.2.52})
+|    |    |    +--- io.github.springwolf:springwolf-core:2.5.0 (*)
+|    |    |    +--- org.springdoc:springdoc-openapi-starter-common:3.0.2 (requested io.swagger.core.v3:swagger-core-jakarta:2.2.43)
+|    |    |    |    +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-common:{strictly 3.0.2})
+|    |    |    |    \--- org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.2
+|    |    |    |         +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-webmvc-api:{strictly 3.0.2})
+|    |    |    |         \--- org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2
+|    |    |    |              \--- runtimeClasspath
+|    |    |    \--- io.github.springwolf:springwolf-asyncapi:2.5.0 (*)
+|    |    \--- com.fasterxml.jackson:jackson-bom:2.21.4 (*)
+|    +--- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.4
+|    |    +--- runtimeClasspath (requested com.fasterxml.jackson.datatype:jackson-datatype-jdk8:{strictly 2.21.4})
+|    |    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.2) (*)
+|    |    +--- org.springframework.boot:spring-boot-jackson2:4.0.7
+|    |    |    +--- runtimeClasspath (requested org.springframework.boot:spring-boot-jackson2:{strictly 4.0.7})
+|    |    |    +--- io.github.springwolf:springwolf-core:2.5.0 (requested org.springframework.boot:spring-boot-jackson2:4.0.6) (*)
+|    |    |    \--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested org.springframework.boot:spring-boot-jackson2:4.0.6) (*)
+|    |    \--- com.fasterxml.jackson:jackson-bom:2.21.4 (*)
+|    +--- com.fasterxml.jackson.module:jackson-module-parameter-names:2.21.4
+|    |    +--- runtimeClasspath (requested com.fasterxml.jackson.module:jackson-module-parameter-names:{strictly 2.21.4})
+|    |    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested com.fasterxml.jackson.module:jackson-module-parameter-names:2.21.2) (*)
+|    |    +--- org.springframework.boot:spring-boot-jackson2:4.0.7 (*)
+|    |    \--- com.fasterxml.jackson:jackson-bom:2.21.4 (*)
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.21.4 (*)
+|    +--- com.fasterxml.jackson.core:jackson-core:2.21.4
+|    |    +--- runtimeClasspath (requested com.fasterxml.jackson.core:jackson-core:{strictly 2.21.4})
+|    |    +--- io.github.springwolf:springwolf-core:2.5.0 (requested com.fasterxml.jackson.core:jackson-core:2.22.0) (*)
+|    |    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested com.fasterxml.jackson.core:jackson-core:2.21.2) (*)
+|    |    +--- io.github.springwolf:springwolf-asyncapi:2.5.0 (requested com.fasterxml.jackson.core:jackson-core:2.22.0) (*)
+|    |    +--- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.4 (*)
+|    |    +--- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.4 (*)
+|    |    +--- com.fasterxml.jackson.module:jackson-module-parameter-names:2.21.4 (*)
+|    |    +--- com.fasterxml.jackson.core:jackson-databind:2.21.4 (*)
+|    |    +--- com.fasterxml.jackson:jackson-bom:2.21.4 (*)
+|    |    \--- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.4
+|    |         +--- runtimeClasspath (requested com.fasterxml.jackson.datatype:jackson-datatype-jsr310:{strictly 2.21.4})
+|    |         +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.2) (*)
+|    |         +--- org.springframework.boot:spring-boot-jackson2:4.0.7 (*)
+|    |         +--- io.swagger.core.v3:swagger-core-jakarta:2.2.52 (requested com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.0) (*)
+|    |         \--- com.fasterxml.jackson:jackson-bom:2.21.4 (*)
+|    \--- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.4 (*)
++--- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.21.4 (*)
++--- com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.21.4 (*)
++--- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.21.4 (*)
++--- com.fasterxml.jackson.module:jackson-module-parameter-names:2.21.4 (*)
+\--- org.springframework.boot:spring-boot-jackson2:4.0.7 (*)
+
+com.fasterxml.jackson.core:jackson-databind:2.21.1 -> 2.21.4
+\--- io.swagger.core.v3:swagger-core-jakarta:2.2.52
+     +--- runtimeClasspath (requested io.swagger.core.v3:swagger-core-jakarta:{strictly 2.2.52})
+     +--- io.github.springwolf:springwolf-core:2.5.0
+     |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+     |    +--- io.github.springwolf:springwolf-amqp:2.5.0
+     |    |    \--- runtimeClasspath
+     |    \--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+     |         +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+     |         \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+     +--- org.springdoc:springdoc-openapi-starter-common:3.0.2 (requested io.swagger.core.v3:swagger-core-jakarta:2.2.43)
+     |    +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-common:{strictly 3.0.2})
+     |    \--- org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.2
+     |         +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-webmvc-api:{strictly 3.0.2})
+     |         \--- org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2
+     |              \--- runtimeClasspath
+     \--- io.github.springwolf:springwolf-asyncapi:2.5.0
+          +--- runtimeClasspath (requested io.github.springwolf:springwolf-asyncapi:{strictly 2.5.0})
+          +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+          +--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+          \--- io.github.springwolf:springwolf-core:2.5.0 (*)
+
+com.fasterxml.jackson.core:jackson-databind:2.21.2 -> 2.21.4
+\--- org.springframework.boot:spring-boot-dependencies:4.0.6
+     +--- runtimeClasspath (requested org.springframework.boot:spring-boot-dependencies:{strictly 4.0.6})
+     +--- io.github.springwolf:springwolf-amqp:2.5.0
+     |    \--- runtimeClasspath
+     +--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+     |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+     |    \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+     \--- io.github.springwolf:springwolf-core:2.5.0
+          +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+          +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+          \--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+
+com.fasterxml.jackson.core:jackson-databind:2.22.0 -> 2.21.4
++--- io.github.springwolf:springwolf-asyncapi:2.5.0
+|    +--- runtimeClasspath (requested io.github.springwolf:springwolf-asyncapi:{strictly 2.5.0})
+|    +--- io.github.springwolf:springwolf-amqp:2.5.0
+|    |    \--- runtimeClasspath
+|    +--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+|    |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+|    |    \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    \--- io.github.springwolf:springwolf-core:2.5.0
+|         +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+|         +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|         \--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+\--- io.github.springwolf:springwolf-core:2.5.0 (*)
+
+tools.jackson.core:jackson-databind:3.1.4
+  Variant runtimeElements:
+    | Attribute Name                     | Provided     | Requested    |
+    |------------------------------------|--------------|--------------|
+    | org.gradle.status                  | release      |              |
+    | org.gradle.category                | library      | library      |
+    | org.gradle.dependency.bundling     | external     | external     |
+    | org.gradle.libraryelements         | jar          | jar          |
+    | org.gradle.usage                   | java-runtime | java-runtime |
+    | org.gradle.jvm.environment         |              | standard-jvm |
+    | org.gradle.jvm.version             |              | 17           |
+    | org.jetbrains.kotlin.platform.type |              | jvm          |
+   Selection reasons:
+      - Selected by rule
+      - By constraint: Dependency version enforced by Dependency Locking
+      - By constraint
+
+tools.jackson.core:jackson-databind:{strictly 3.1.4} -> 3.1.4
+\--- runtimeClasspath
+
+tools.jackson.core:jackson-databind:3.1.4
++--- org.springframework.boot:spring-boot-jackson:4.0.7
+|    +--- runtimeClasspath (requested org.springframework.boot:spring-boot-jackson:{strictly 4.0.7})
+|    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested org.springframework.boot:spring-boot-jackson:4.0.6)
+|    |    +--- runtimeClasspath (requested org.springframework.boot:spring-boot-dependencies:{strictly 4.0.6})
+|    |    +--- io.github.springwolf:springwolf-amqp:2.5.0
+|    |    |    \--- runtimeClasspath
+|    |    +--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+|    |    |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+|    |    |    \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    |    \--- io.github.springwolf:springwolf-core:2.5.0
+|    |         +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+|    |         +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    |         \--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+|    +--- org.springframework.boot:spring-boot-starter-jackson:4.0.7
+|    |    +--- runtimeClasspath (requested org.springframework.boot:spring-boot-starter-jackson:{strictly 4.0.7})
+|    |    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested org.springframework.boot:spring-boot-starter-jackson:4.0.6) (*)
+|    |    \--- org.springframework.boot:spring-boot-starter-webmvc:4.0.7
+|    |         +--- runtimeClasspath (requested org.springframework.boot:spring-boot-starter-webmvc)
+|    |         \--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested org.springframework.boot:spring-boot-starter-webmvc:4.0.6) (*)
+|    \--- org.springdoc:springdoc-openapi-starter-common:3.0.2 (requested org.springframework.boot:spring-boot-jackson:4.0.3)
+|         +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-common:{strictly 3.0.2})
+|         \--- org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.2
+|              +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-webmvc-api:{strictly 3.0.2})
+|              \--- org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2
+|                   \--- runtimeClasspath
++--- tools.jackson:jackson-bom:3.1.4
+|    +--- runtimeClasspath (requested tools.jackson:jackson-bom:{strictly 3.1.4})
+|    +--- tools.jackson.core:jackson-databind:3.1.4 (*)
+|    +--- tools.jackson.core:jackson-core:3.1.4
+|    |    +--- runtimeClasspath (requested tools.jackson.core:jackson-core:{strictly 3.1.4})
+|    |    +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested tools.jackson.core:jackson-core:3.1.2) (*)
+|    |    +--- tools.jackson.core:jackson-databind:3.1.4 (*)
+|    |    \--- tools.jackson:jackson-bom:3.1.4 (*)
+|    \--- tools.jackson.module:jackson-module-kotlin:3.1.4
+|         +--- runtimeClasspath (requested tools.jackson.module:jackson-module-kotlin)
+|         +--- org.springframework.boot:spring-boot-dependencies:4.0.6 (requested tools.jackson.module:jackson-module-kotlin:3.1.2) (*)
+|         \--- tools.jackson:jackson-bom:3.1.4 (*)
+\--- tools.jackson.module:jackson-module-kotlin:3.1.4 (*)
+
+tools.jackson.core:jackson-databind:3.1.2 -> 3.1.4
+\--- org.springframework.boot:spring-boot-dependencies:4.0.6
+     +--- runtimeClasspath (requested org.springframework.boot:spring-boot-dependencies:{strictly 4.0.6})
+     +--- io.github.springwolf:springwolf-amqp:2.5.0
+     |    \--- runtimeClasspath
+     +--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+     |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+     |    \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+     \--- io.github.springwolf:springwolf-core:2.5.0
+          +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+          +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+          \--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 4s
+1 actionable task: 1 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.1/userguide/configuration_cache_enabling.html
+
+CAPTURE_EXIT_CODE=0
+CAPTURE_ELAPSED_SECONDS=4.378

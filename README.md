@@ -152,5 +152,7 @@ La suite habitual del backend usa H2 y adaptadores locales. Las tareas opt-in de
 
 ## Documentación
 
+- [Seguridad de dependencias: preparación y baseline SonarCloud](docs/security/sonarcloud/README.md) — inventario de 122 riesgos, pruebas reproducibles, scopes revisados y criterios para futuras actualizaciones.
+
 - [`TPO - Desarollo de Apps II - Gestión de municipalidad.pdf`](./TPO%20-%20Desarolo%20de%20Apps%20II%20-%20Gestión%20de%20municipalidad.pdf) — enunciado original del TP
 - [`TPO - Modulo Desarrollo Social.md`](./TPO%20-%20Modulo%20Desarrollo%20Social.md) — resumen del TP y detalle del módulo asignado

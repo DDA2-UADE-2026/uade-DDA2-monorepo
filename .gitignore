@@ -6,3 +6,7 @@
 !.env.example
 .DS_Store
 **/__pycache__/
+
+# Local security audit workspaces, caches and raw logs (curated evidence lives in docs/)
+/artifacts/security-audit/
+/artifacts/security-preparation/
