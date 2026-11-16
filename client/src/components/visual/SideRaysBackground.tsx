@@ -242,7 +242,7 @@ void main() {
       };
     };
 
-    initializeWebGL();
+    void initializeWebGL();
 
     return () => {
       if (cleanupFunctionRef.current) {

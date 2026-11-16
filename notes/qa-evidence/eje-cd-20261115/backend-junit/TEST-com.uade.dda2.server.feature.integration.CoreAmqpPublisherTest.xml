@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:41.542Z" hostname="DESKTOP-OL92NPA" time="0.015">
+  <properties/>
+  <testcase name="publica JSON persistente con UUID y routing key vacia()" classname="com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest" time="0.012"/>
+  <testcase name="un confirm positivo con retorno no es un envio correcto()" classname="com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

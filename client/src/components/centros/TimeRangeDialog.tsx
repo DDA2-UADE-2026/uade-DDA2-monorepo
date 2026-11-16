@@ -88,7 +88,7 @@ export function TimeRangeDialog({ title, description, initial, allowMultipleDays
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>

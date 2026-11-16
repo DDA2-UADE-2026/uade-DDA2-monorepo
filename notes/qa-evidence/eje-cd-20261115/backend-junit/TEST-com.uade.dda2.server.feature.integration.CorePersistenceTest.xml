@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CorePersistenceTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:02.192Z" hostname="DESKTOP-OL92NPA" time="7.098">
+  <properties/>
+  <testcase name="rollback del llamador revierte tambien la outbox()" classname="com.uade.dda2.server.feature.integration.CorePersistenceTest" time="0.091"/>
+  <testcase name="inbox deduplica y rechaza UUID reutilizado con otro contenido()" classname="com.uade.dda2.server.feature.integration.CorePersistenceTest" time="0.025"/>
+  <testcase name="reserva vencida conserva evento y callback viejo no confirma intento nuevo()" classname="com.uade.dda2.server.feature.integration.CorePersistenceTest" time="0.088"/>
+  <testcase name="fallo del handler revierte la reserva de inbox y permite reintento()" classname="com.uade.dda2.server.feature.integration.CorePersistenceTest" time="0.013"/>
+  <testcase name="dos publicadores solo reservan una vez la misma fila()" classname="com.uade.dda2.server.feature.integration.CorePersistenceTest" time="0.019"/>
+  <system-out><![CDATA[2026-11-15T19:04:02.195-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.CorePersistenceTest]: CorePersistenceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:04:02.197-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.CorePersistenceTest
+2026-11-15T19:04:02.197-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.integration.CorePersistenceTest]: CorePersistenceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:04:02.202-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.integration.CorePersistenceTest
+2026-11-15T19:04:02.222-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:04:02.227-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-22 - Shutdown initiated...
+2026-11-15T19:04:02.227-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-22 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:04:02.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.CorePersistenceTest          : Starting CorePersistenceTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:04:02.273-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.CorePersistenceTest          : The following 1 profile is active: "docs"
+2026-11-15T19:04:03.543-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:04:03.933-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 388 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:04:04.381-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:04:04.430-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:04:04.446-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-30 - Starting...
+2026-11-15T19:04:04.447-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-30 - Added connection conn290: url=jdbc:h2:mem:core-technical user=SA
+2026-11-15T19:04:04.448-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-30 - Start completed.
+2026-11-15T19:04:04.448-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:04:04.449-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:core-technical]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: CORE-TECHNICAL/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:04:04.809-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:04:04.855-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:04:07.637-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:04:07.665-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.CorePersistenceTest          : Started CorePersistenceTest in 5.438 seconds (process running for 413.023)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

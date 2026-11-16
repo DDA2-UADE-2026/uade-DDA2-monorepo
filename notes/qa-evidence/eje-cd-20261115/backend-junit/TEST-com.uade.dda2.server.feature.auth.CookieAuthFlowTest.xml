@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:01:14.077Z" hostname="DESKTOP-OL92NPA" time="21.718">
+  <properties/>
+  <testcase name="login requires csrf even without session or with Bearer()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.364"/>
+  <testcase name="multi role cookie cannot authenticate until role selected and pending survives reload()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.712"/>
+  <testcase name="logout clears all cookies including broken session and requires csrf()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.266"/>
+  <testcase name="cookie writes reject missing and wrong csrf and accept matching token()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.284"/>
+  <testcase name="each deployed API allows its frontend credentials and rejects the other environment()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="1.215"/>
+  <testcase name="missing invalid and operational selection cookies are rejected()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.278"/>
+  <testcase name="Bearer stays compatible and wins over cookie without falling back on invalid header()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.317"/>
+  <testcase name="login issues HttpOnly cookie without exposing JWT and me survives reload()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.457"/>
+  <testcase name="expired access and selection JWTs cannot authenticate but allow csrf and logout()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.186"/>
+  <testcase name="CORS permits configured credentialed origin and csrf header but rejects foreign origin()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.179"/>
+  <testcase name="broken previous cookie does not prevent login and bad credentials do not issue access()" classname="com.uade.dda2.server.feature.auth.CookieAuthFlowTest" time="0.633"/>
+  <system-out><![CDATA[2026-11-15T19:01:14.082-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.CookieAuthFlowTest]: CookieAuthFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:01:14.098-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.CookieAuthFlowTest
+2026-11-15T19:01:14.102-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.CookieAuthFlowTest]: CookieAuthFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:01:14.111-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.CookieAuthFlowTest
+2026-11-15T19:01:14.175-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:01:14.211-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown initiated...
+2026-11-15T19:01:14.213-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:01:14.329-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.feature.auth.CookieAuthFlowTest  : Starting CookieAuthFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:01:14.330-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.feature.auth.CookieAuthFlowTest  : The following 1 profile is active: "docs"
+2026-11-15T19:01:17.416-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:01:18.069-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 647 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:01:19.481-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:01:19.556-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:01:19.561-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Starting...
+2026-11-15T19:01:19.563-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-17 - Added connection conn160: url=jdbc:h2:mem:docsdb user=SA
+2026-11-15T19:01:19.564-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Start completed.
+2026-11-15T19:01:19.565-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:01:19.565-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:docsdb]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: DOCSDB/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:01:20.487-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:01:20.490-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:01:27.268-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:01:27.268-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:01:27.299-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:01:27.316-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 48 ms
+2026-11-15T19:01:27.421-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.feature.auth.CookieAuthFlowTest  : Started CookieAuthFlowTest in 13.201 seconds (process running for 252.783)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

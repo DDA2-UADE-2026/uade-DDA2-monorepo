@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreHttpClientTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:00.101Z" hostname="DESKTOP-OL92NPA" time="1.781">
+  <properties/>
+  <testcase name="403 no renueva y no filtra mensajes del servidor en excepciones()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.313"/>
+  <testcase name="sin secret HTTP falla antes de enviar una solicitud()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.002"/>
+  <testcase name="listado de eventos codifica filtros una sola vez y no expone campos extra()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.037"/>
+  <testcase name="renovacion concurrente comparte token y no consulta red en constructor()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.014"/>
+  <testcase name="transporte HTTP aplica timeout de lectura configurado()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.835"/>
+  <testcase name="dashboard rechaza una respuesta perteneciente a otro modulo()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.032"/>
+  <testcase name="renueva solo una vez ante 401 y filtra publicaciones globales()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.035"/>
+  <testcase name="dashboard utiliza Bearer cacheado y deserializa metricas camelCase del modulo()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.042"/>
+  <testcase name="readiness consulta la raiz y conserva degraded aunque HTTP sea 200()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.013"/>
+  <testcase name="dashboard acepta la lista de motivos de Core vacia o con resultados()" classname="com.uade.dda2.server.feature.integration.CoreHttpClientTest" time="0.064"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

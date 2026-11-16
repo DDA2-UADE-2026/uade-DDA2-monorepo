@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.activity.ActivityFlowTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-15T21:58:48.218Z" hostname="DESKTOP-OL92NPA" time="8.447">
+  <properties/>
+  <testcase name="lista consulta y actualiza una actividad en borrador()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.165"/>
+  <testcase name="rechaza cierre de borrador y recursos inexistentes()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.069"/>
+  <testcase name="impide eliminar al usuario que creo una actividad()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.122"/>
+  <testcase name="publica y cierra siguiendo transiciones unidireccionales()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.148"/>
+  <testcase name="valida campos capacidad y rango de fechas()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.105"/>
+  <testcase name="valida parametros de paginacion()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.03"/>
+  <testcase name="crea actividad en borrador con actor y auditoria()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.036"/>
+  <testcase name="requiere autenticacion y permisos especificos()" classname="com.uade.dda2.server.feature.activity.ActivityFlowTest" time="0.047"/>
+  <system-out><![CDATA[2026-11-15T18:58:48.229-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.activity.ActivityFlowTest]: ActivityFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:58:48.232-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.activity.ActivityFlowTest
+2026-11-15T18:58:48.237-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.activity.ActivityFlowTest]: ActivityFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:58:48.237-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.activity.ActivityFlowTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T18:58:48.315-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.activity.ActivityFlowTest      : Starting ActivityFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T18:58:48.316-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.activity.ActivityFlowTest      : The following 1 profile is active: "docs"
+2026-11-15T18:58:49.714-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T18:58:50.138-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 421 ms. Found 43 JPA repository interfaces.
+2026-11-15T18:58:50.519-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T18:58:50.581-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T18:58:50.581-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-11-15T18:58:50.581-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection conn40: url=jdbc:h2:mem:activities user=SA
+2026-11-15T18:58:50.581-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-11-15T18:58:50.581-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T18:58:50.581-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:activities]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: ACTIVITIES/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T18:58:51.229-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T18:58:51.378-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:58:54.144-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T18:58:54.144-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T18:58:54.157-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T18:58:54.180-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 35 ms
+2026-11-15T18:58:54.250-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.activity.ActivityFlowTest      : Started ActivityFlowTest in 5.998 seconds (process running for 99.609)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

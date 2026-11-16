@@ -17,6 +17,11 @@ import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.enrollmentperiod.entity.EnrollmentPeriod
 import com.uade.dda2.server.feature.enrollmentperiod.entity.EnrollmentPeriodStatus
 import com.uade.dda2.server.feature.enrollmentperiod.repository.EnrollmentPeriodRepository
+import com.uade.dda2.server.feature.intervention.entity.InterventionAction
+import com.uade.dda2.server.feature.intervention.entity.InterventionActionStatus
+import com.uade.dda2.server.feature.intervention.entity.InterventionObjective
+import com.uade.dda2.server.feature.intervention.entity.InterventionPlan
+import com.uade.dda2.server.feature.intervention.repository.InterventionPlanRepository
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
@@ -44,6 +49,7 @@ import tools.jackson.databind.JsonNode
 import tools.jackson.databind.json.JsonMapper
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
@@ -79,6 +85,7 @@ class ApplicationEvaluationFlowTest {
     @Autowired lateinit var periods: EnrollmentPeriodRepository
     @Autowired lateinit var applications: ApplicationRepository
     @Autowired lateinit var evaluations: ApplicationEvaluationRepository
+    @Autowired lateinit var interventionPlans: InterventionPlanRepository
     @Autowired lateinit var transactions: PlatformTransactionManager
     @Autowired lateinit var jdbc: JdbcTemplate
 
@@ -270,6 +277,35 @@ class ApplicationEvaluationFlowTest {
         val createdResult = create()
         expect(createdResult, 201)
         val created = json.readValue(createdResult.response.contentAsString, ApplicationEvaluationResponse::class.java)
+        val interventionPlanId = tx {
+            val plan = InterventionPlan(
+                application = applications.findById(fixture.applicationId).orElseThrow(),
+                responsible = users.findById(fixture.actorId).orElseThrow(),
+                createdAt = OffsetDateTime.now(ZoneOffset.UTC),
+            )
+            val objective = InterventionObjective(plan = plan, position = 0, description = "Acompañamiento")
+            objective.actions.add(
+                InterventionAction(
+                    objective = objective,
+                    position = 0,
+                    description = "Acción completada",
+                    startDate = LocalDate.now().minusDays(2),
+                    dueDate = LocalDate.now(),
+                    status = InterventionActionStatus.COMPLETED,
+                ),
+            )
+            objective.actions.add(
+                InterventionAction(
+                    objective = objective,
+                    position = 1,
+                    description = "Acción pendiente",
+                    startDate = LocalDate.now(),
+                    dueDate = LocalDate.now().plusDays(2),
+                ),
+            )
+            plan.objectives.add(objective)
+            requireNotNull(interventionPlans.saveAndFlush(plan).id)
+        }
         val (applicationNumber, applicantUserId) = tx {
             val application = applications.findById(fixture.applicationId).orElseThrow()
             requireNotNull(application.applicationNumber) to requireNotNull(application.user.id)
@@ -299,6 +335,9 @@ class ApplicationEvaluationFlowTest {
         assertEquals("IN_EVALUATION", item.get("applicationStatus").stringValue())
         assertEquals("HIGH", item.get("vulnerability").stringValue())
         assertEquals("URGENT", item.get("priority").stringValue())
+        assertEquals(interventionPlanId.toString(), item.get("interventionPlanId").stringValue())
+        assertEquals(2L, item.get("interventionActionCount").longValue())
+        assertEquals(1L, item.get("interventionCompletedActionCount").longValue())
         assertFalse(item.has("recommendation"))
 
         val withoutMatches = mvc.perform(

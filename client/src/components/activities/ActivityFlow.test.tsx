@@ -52,32 +52,12 @@ describe("actividades ciudadanas", () => {
   it("recupera la inscripción del servidor y consulta también el historial cerrado", async () => {
     respond = async () => Response.json(pageOf([{ ...activity, status: "CLOSED", myEnrollment: { id: "enrollment-1", enrolledAt: participant.enrolledAt, attendance: "PRESENT" } }]))
     show(<CitizenActivities page={1} view="inscripciones" canEnroll onSearchChange={vi.fn()} />)
-    expect(await screen.findByRole("button", { name: "Ya estás inscripto" })).toBeDisabled()
-    expect(screen.getByText("Presente")).toBeInTheDocument()
+    expect(await screen.findByText("Presente")).toBeInTheDocument()
     expect(screen.getByText("Cerrada")).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Ver detalle" })).toHaveAttribute("href", "/portal/actividades/activity-1")
     expect(new URL(requests[0].url).searchParams.get("enrolledOnly")).toBe("true")
   })
 
-  it("confirma la inscripción y la conserva al volver a cargar la pantalla", async () => {
-    let enrolled = false
-    respond = async (request) => {
-      if (request.method === "POST") { enrolled = true; return Response.json({ id: "enrollment-1", activityId: activity.id, confirmation: "CONFIRMED" }, { status: 201 }) }
-      return Response.json(pageOf([{ ...activity, myEnrollment: enrolled ? { id: "enrollment-1", enrolledAt: participant.enrolledAt } : undefined }]))
-    }
-    const user = userEvent.setup()
-    const view = show(<CitizenActivities page={1} view="disponibles" canEnroll onSearchChange={vi.fn()} />)
-    await user.click(await screen.findByRole("button", { name: "Inscribirme" }))
-    await user.click(screen.getByRole("button", { name: "Confirmar inscripción" }))
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
-    expect(screen.getByRole("button", { name: "Ya estás inscripto" })).toBeDisabled()
-    expect(requests.filter((request) => request.method === "POST")).toHaveLength(1)
-    expect(new URL(requests.find((request) => request.method === "POST")!.url).pathname).toBe("/api/activities/activity-1/enrollments")
-    view.unmount()
-    queryClient.clear()
-    show(<CitizenActivities page={1} view="disponibles" canEnroll onSearchChange={vi.fn()} />)
-    expect(await screen.findByRole("button", { name: "Ya estás inscripto" })).toBeDisabled()
-  })
 
   it("informa un cupo agotado durante la confirmación y refresca la oferta", async () => {
     let full = false

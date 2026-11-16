@@ -91,7 +91,7 @@ function CenterServicesSection({ centroId }: { centroId: string }) {
   const [selectedServiceId, setSelectedServiceId] = useState<string>("")
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: listCenterServicesQueryKey({ path: { centerId: centroId } }) })
-  const assign = useMutation({ ...assignServiceToCenterMutation(), onSuccess: () => { invalidate(); setSelectedServiceId("") } })
+  const assign = useMutation({ ...assignServiceToCenterMutation(), onSuccess: () => { void invalidate(); setSelectedServiceId("") } })
   const activate = useMutation({ ...activateCenterServiceMutation(), onSuccess: invalidate })
   const deactivate = useMutation({ ...deactivateCenterServiceMutation(), onSuccess: invalidate })
   const mutationError = assign.error ?? activate.error ?? deactivate.error
@@ -212,7 +212,7 @@ function ServiceProfessionals({ centerServiceId, serviceActive }: {
   const invalidate = () => queryClient.invalidateQueries({
     queryKey: listProfessionalAssignmentsQueryKey({ path: { centerServiceId } }),
   })
-  const assign = useMutation({ ...assignProfessionalMutation(), onSuccess: () => { invalidate(); setSelectedProfessionalId("") } })
+  const assign = useMutation({ ...assignProfessionalMutation(), onSuccess: () => { void invalidate(); setSelectedProfessionalId("") } })
   const mutationError = assign.error
 
   const eligible = (users.data ?? []).filter(

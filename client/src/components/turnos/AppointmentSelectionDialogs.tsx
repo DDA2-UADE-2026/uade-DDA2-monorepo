@@ -10,6 +10,7 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { listCenterServicesOptions, listMunicipalCentersOptions } from "@/generated/@tanstack/react-query.gen"
+import type { MunicipalCenterResponse } from "@/generated/types.gen"
 import { isUuid } from "@/lib/appointment-flow"
 
 const PAGE_SIZE = 8
@@ -20,7 +21,7 @@ type PickerProps = {
   onSelect: (id: string) => void
 }
 
-export function AppointmentCenterSelectionDialog({ open, onOpenChange, onSelect, selectedCenterId }: PickerProps & { selectedCenterId: string }) {
+export function AppointmentCenterSelectionDialog({ open, onOpenChange, onSelect, selectedCenterId, description = "Buscá un centro activo para consultar su calendario de turnos." }: Omit<PickerProps, "onSelect"> & { selectedCenterId: string; onSelect: (id: string, center: MunicipalCenterResponse) => void; description?: string }) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const query = useQuery({
@@ -31,8 +32,9 @@ export function AppointmentCenterSelectionDialog({ open, onOpenChange, onSelect,
   const totalItems = query.data?.totalElements ?? 0
   const totalPages = Math.max(1, query.data?.totalPages ?? 1)
 
-  const select = (id: string) => {
-    onSelect(id)
+  const select = (center: MunicipalCenterResponse) => {
+    if (!center.id) return
+    onSelect(center.id, center)
     onOpenChange(false)
   }
 
@@ -41,7 +43,7 @@ export function AppointmentCenterSelectionDialog({ open, onOpenChange, onSelect,
       <DialogContent className="max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Seleccionar centro</DialogTitle>
-          <DialogDescription>Buscá un centro activo para consultar su calendario de turnos.</DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <InputGroup>
           <InputGroupAddon><IconSearch /></InputGroupAddon>
@@ -79,7 +81,7 @@ export function AppointmentCenterSelectionDialog({ open, onOpenChange, onSelect,
                     <TableCell className="font-medium">{center.name || "Centro sin nombre"}</TableCell>
                     <TableCell className="text-muted-foreground">{center.address || "—"}</TableCell>
                     <TableCell className="text-right">
-                      <Button type="button" size="sm" variant={selected ? "secondary" : "outline"} disabled={!center.id} onClick={() => center.id && select(center.id)}>
+                      <Button type="button" size="sm" variant={selected ? "secondary" : "outline"} disabled={!center.id || !center.name} onClick={() => select(center)}>
                         {selected && <IconCheck />}{selected ? "Seleccionado" : "Seleccionar"}
                       </Button>
                     </TableCell>

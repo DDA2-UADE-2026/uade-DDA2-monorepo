@@ -5,6 +5,7 @@ import com.uade.dda2.server.feature.application.dto.response.ApplicationEvaluati
 import com.uade.dda2.server.feature.application.dto.response.ApplicationEvaluationListItemResponse
 import com.uade.dda2.server.feature.application.entity.ApplicationEvaluation
 import com.uade.dda2.server.feature.application.entity.ApplicationStatus
+import java.util.UUID
 
 fun ApplicationEvaluation.toResponse(): ApplicationEvaluationResponse = ApplicationEvaluationResponse(
     id = requireNotNull(id),
@@ -17,7 +18,11 @@ fun ApplicationEvaluation.toResponse(): ApplicationEvaluationResponse = Applicat
     evaluatedAt = evaluatedAt,
 )
 
-fun ApplicationEvaluation.toListItemResponse(): ApplicationEvaluationListItemResponse = ApplicationEvaluationListItemResponse(
+fun ApplicationEvaluation.toListItemResponse(
+    interventionPlanId: UUID? = null,
+    interventionActionCount: Long = 0,
+    interventionCompletedActionCount: Long = 0,
+): ApplicationEvaluationListItemResponse = ApplicationEvaluationListItemResponse(
     id = requireNotNull(id),
     applicationId = requireNotNull(application.id),
     applicationNumber = requireNotNull(application.applicationNumber),
@@ -33,6 +38,9 @@ fun ApplicationEvaluation.toListItemResponse(): ApplicationEvaluationListItemRes
     professionalId = requireNotNull(professional.id),
     professionalName = professional.name,
     evaluatedAt = evaluatedAt,
+    interventionPlanId = interventionPlanId,
+    interventionActionCount = interventionActionCount,
+    interventionCompletedActionCount = interventionCompletedActionCount,
 )
 
 fun ApplicationEvaluation.toDetailResponse(): ApplicationEvaluationDetailResponse = ApplicationEvaluationDetailResponse(

@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.benefit.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.error.ApplicationErrors
 import com.uade.dda2.server.feature.application.repository.ApplicationRepository
@@ -51,6 +52,7 @@ class BenefitGrantService(
     private val json: JsonMapper,
     private val timeProperties: EnrollmentPeriodExpirationProperties,
     private val clock: Clock,
+    private val businessEvents: org.springframework.context.ApplicationEventPublisher,
 ) {
     @Transactional
     fun create(applicationId: UUID, request: CreateBenefitGrantRequest): BenefitGrantResponse {
@@ -79,9 +81,10 @@ class BenefitGrantService(
             benefitType = benefit.benefitType, description = benefit.description, amount = benefit.amount,
             startDate = data.startDate, endDate = data.endDate, assignedBy = actor, assignedAt = assignedAt))
         application.updatedAt = localTime
-        changes.save(BenefitGrantChange(grant = grant, sequenceNumber = 1, action = BenefitGrantChangeAction.ASSIGNED,
+        val assignedChange = changes.save(BenefitGrantChange(grant = grant, sequenceNumber = 1, action = BenefitGrantChangeAction.ASSIGNED,
             previousStatus = null, status = grant.status, previousStartDate = null, previousEndDate = null,
             startDate = grant.startDate, endDate = grant.endDate, reason = null, responsible = actor, changedAt = assignedAt))
+        businessEvents.publishEvent(M8BusinessFact.BenefitChanged(assignedChange))
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.BENEFIT_GRANT,
             entityId = requireNotNull(grant.id).toString(), newValues = json.writeValueAsString(grant.toAuditSnapshot()))
         return grant.toResponse()

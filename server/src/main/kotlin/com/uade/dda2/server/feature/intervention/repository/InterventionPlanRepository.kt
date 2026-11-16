@@ -9,6 +9,12 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface InterventionPlanRepository : JpaRepository<InterventionPlan, UUID> {
+    @Query("""select p.id as planId, p.application.id as applicationId from InterventionPlan p
+        where p.application.id in :applicationIds""")
+    fun findIdsByApplicationIds(
+        @Param("applicationIds") applicationIds: Collection<UUID>,
+    ): List<InterventionPlanApplicationRow>
+
     @Query(value = PUBLIC_PLAN_SELECT + " where p.application.user.id = :userId",
         countQuery = "select count(p) from InterventionPlan p where p.application.user.id = :userId")
     fun findPublicPlansByUserId(@Param("userId") userId: Long, pageable: Pageable): Page<CitizenInterventionPlanRow>

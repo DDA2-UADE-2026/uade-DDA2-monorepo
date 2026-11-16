@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:02:03.341Z" hostname="DESKTOP-OL92NPA" time="0.261">
+  <properties/>
+  <testcase name="permiso retirado del rol activo bloquea lectura aunque siga en JWT()" classname="com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest" time="0.004"/>
+  <testcase name="permiso nuevo requiere token renovado aunque el rol ya lo tenga()" classname="com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest" time="0.002"/>
+  <testcase name="usuario inactivo no puede leer sus otorgamientos()" classname="com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest" time="0.001"/>
+  <testcase name="consulta por titular autenticado y distingue ausencia total de pagina fuera de rango()" classname="com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

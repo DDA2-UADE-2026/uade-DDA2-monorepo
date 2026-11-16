@@ -9,6 +9,7 @@ import {
   IconRefresh,
   IconUser,
   IconUserPlus,
+  IconUserCheck,
 } from "@tabler/icons-react"
 import { useForm } from "@tanstack/react-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -25,6 +26,7 @@ import {
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
 import { DataPagination } from "@/components/DataPagination"
 import { UserAvatar } from "@/components/UserAvatar"
+import { ActivateUserDialog } from "@/components/users/ActivateUserDialog"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -58,6 +60,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
 import {
   Table,
@@ -93,11 +104,14 @@ export const Route = createFileRoute("/_app/gestion/usuarios/")({
 const PAGE_SIZE = 10
 
 function RouteComponent() {
+  const { user: currentUser } = Route.useRouteContext()
+  const canEditUsers = currentUser.permissions?.includes("users:edit") ?? false
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } =
     useQuery(findAllOptions())
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
   const [rolesUser, setRolesUser] = useState<UserManagementResponse | null>(null)
+  const [activationUser, setActivationUser] = useState<(UserManagementResponse & { id: number }) | null>(null)
 
   const totalItems = data?.length ?? 0
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE))
@@ -217,7 +231,8 @@ function RouteComponent() {
                           : "—"}
                       </TableCell>
                       <TableCell>
-                        {user.id && (
+                        {user.id != null && canEditUsers && <div className="flex items-center gap-1">
+                          {user.active === false && <Button type="button" size="sm" variant="outline" onClick={() => setActivationUser({ ...user, id: user.id! })}><IconUserCheck />Habilitar</Button>}
                           <Button
                             type="button"
                             size="icon-sm"
@@ -227,7 +242,7 @@ function RouteComponent() {
                           >
                             <IconPencil />
                           </Button>
-                        )}
+                        </div>}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -246,18 +261,19 @@ function RouteComponent() {
         <CreateUserDialog onOpenChange={(open) => !open && setCreateOpen(false)} />
       )}
       {rolesUser && (
-        <UserRolesDialog
+        <UserRolesSheet
           user={rolesUser}
           onOpenChange={(open) => {
             if (!open) setRolesUser(null)
           }}
         />
       )}
+      {activationUser && <ActivateUserDialog user={activationUser} onClose={() => setActivationUser(null)} />}
     </SidebarShell>
   )
 }
 
-function UserRolesDialog({
+function UserRolesSheet({
   user,
   onOpenChange,
 }: {
@@ -271,7 +287,7 @@ function UserRolesDialog({
   const updateUser = useMutation({
     ...updateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
       onOpenChange(false)
     },
   })
@@ -295,19 +311,20 @@ function UserRolesDialog({
   })
 
   return (
-    <Dialog
+    <Sheet
       open
       onOpenChange={(open) => {
         if (!updateUser.isPending) onOpenChange(open)
       }}
     >
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Asignar roles</DialogTitle>
-          <DialogDescription>
+      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-lg">
+        <SheetHeader className="border-b">
+          <SheetTitle>Asignar roles</SheetTitle>
+          <SheetDescription>
             Seleccioná los roles que conservará {user.name ?? user.username ?? "el usuario"}.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-4">
 
         {updateUser.isError && (
           <Alert variant="destructive">
@@ -325,7 +342,7 @@ function UserRolesDialog({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Field
@@ -387,10 +404,11 @@ function UserRolesDialog({
           />
         </form>
 
-        <DialogFooter>
-          <DialogClose render={<Button type="button" variant="outline" disabled={updateUser.isPending} />}>
+        </div>
+        <SheetFooter className="flex-row justify-end border-t">
+          <SheetClose render={<Button type="button" variant="outline" disabled={updateUser.isPending} />}>
             Cancelar
-          </DialogClose>
+          </SheetClose>
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
@@ -403,9 +421,9 @@ function UserRolesDialog({
               </Button>
             )}
           />
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }
 
@@ -421,7 +439,7 @@ function CreateUserDialog({
   const createUser = useMutation({
     ...createMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
       onOpenChange(false)
     },
   })
@@ -468,7 +486,7 @@ function CreateUserDialog({
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Subscribe

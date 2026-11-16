@@ -55,6 +55,15 @@ class OpenApiDocsGenerationTest {
         val parameters = json.readTree(spec).get("paths").get("/api/benefit-grants").get("get").get("parameters")
         assertEquals(setOf("page", "size"), (0 until parameters.size()).map { parameters[it].get("name").stringValue() }.toSet())
         val paths = json.readTree(spec).get("paths")
+        for (suffix in listOf("status", "dashboard", "metrics", "publications", "subscriptions", "events", "events/{eventId}")) {
+            val operation = paths.get("/api/admin/integrations/core/$suffix").get("get")
+            for (code in listOf("200", "401", "403", "502", "503")) assertTrue(operation.get("responses").has(code), "Core $suffix $code")
+            assertTrue(operation.get("security").size() > 0)
+        }
+        val coreConnectionProperties = schemas.get("CoreConnectionStatusResponse").get("properties")
+        assertTrue(coreConnectionProperties.has("http"))
+        assertTrue(coreConnectionProperties.has("amqp"))
+        assertTrue(!coreConnectionProperties.has("accessToken") && !coreConnectionProperties.has("machineSecret"))
         for (path in listOf("/api/intervention-plans", "/api/intervention-plans/{planId}",
             "/api/intervention-plans/{planId}/actions/{actionId}/follow-ups")) {
             for (code in listOf("200", "400", "401", "403")) assertTrue(paths.get(path).get("get").get("responses").has(code))

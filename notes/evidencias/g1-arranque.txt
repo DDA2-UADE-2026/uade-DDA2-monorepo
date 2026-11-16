@@ -1,0 +1,38 @@
+Ejecución local 2026-11-02, Docker arm64
+{
+  "command": "docker compose -p dda2-g1-validation up --build --wait --wait-timeout 300",
+  "elapsedSeconds": 202.84,
+  "exitCode": 0,
+  "builder": "dda2-g1-cold",
+  "source": "/tmp/dda2-g1-candidate",
+  "log": "/tmp/dda2-g1-cold-build.log"
+}
+
+Extracto del log de construcción y arranque:
+#2 [internal] booting buildkit
+#39 85.61 added 749 packages, and audited 750 packages in 1m
+#47 0.288 > tsc -b && vite build
+#45 127.7 BUILD SUCCESSFUL in 2m 7s
+#47 55.58 ✓ built in 25.61s
+ Container dda2-g1-validation-local-init-1  Exited
+ Container dda2-g1-validation-local-init-1  Exited
+ Container dda2-g1-validation-local-init-1  Exited
+ Container dda2-g1-validation-db-1  Healthy
+ Container dda2-g1-validation-core-mock-1  Healthy
+ Container dda2-g1-validation-rabbitmq-1  Healthy
+ Container dda2-g1-validation-server-1  Healthy
+ Container dda2-g1-validation-rabbitmq-1  Healthy
+ Container dda2-g1-validation-server-1  Healthy
+ Container dda2-g1-validation-core-mock-1  Healthy
+ Container dda2-g1-validation-db-1  Healthy
+ Container dda2-g1-validation-local-init-1  Exited
+ Container dda2-g1-validation-client-1  Healthy
+
+Reinicio con volúmenes conservados:
+{
+  "restartSeconds": 48.94,
+  "credentialsPreserved": true,
+  "smokeAfterRestart": "passed"
+}
+
+G1 smoke OK: frontend, health, login con cookies/CSRF, rol ADMIN, Core HTTPS, RabbitMQ TLS y dashboard.

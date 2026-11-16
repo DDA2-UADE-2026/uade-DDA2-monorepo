@@ -10,6 +10,7 @@ import {
   SidebarShellContent,
 } from "@/components/layout/OutletNav"
 import { OutletNavBreadcrumbs } from "@/components/layout/OutletNavBreadcrumbs"
+import { PortalOverview } from "@/components/layout/PortalOverview"
 import { ProgramTicker } from "@/components/programs/ProgramTicker"
 import { UserAvatar } from "@/components/UserAvatar"
 import { useMe } from "@/hooks/use-auth"
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/_app/portal/")({
 function RouteComponent() {
   const { data } = useMe()
   const displayName = data?.user?.name || data?.user?.username || "Usuario"
+  const permissions = data?.user?.permissions ?? []
 
   return (
     <SidebarShell>
@@ -45,7 +47,7 @@ function RouteComponent() {
                   Hola, {displayName}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Desde acá podés consultar los programas disponibles y seguir el estado de tus solicitudes.
+                  Encontrá programas y actividades, y seguí tus solicitudes, turnos y acompañamientos.
                 </p>
               </div>
             </header>
@@ -54,9 +56,11 @@ function RouteComponent() {
 
             <UpcomingVisits />
 
-            <RecentApplications />
+            <PortalOverview permissions={permissions} />
 
-            <CitizenActivitiesSection />
+            {permissions.includes("applications:own:view") && <RecentApplications />}
+
+            {permissions.includes("activities:own:view") && <CitizenActivitiesSection canEnroll={permissions.includes("activities:own:enroll")} />}
           </main>
         </div>
       </SidebarShellContent>

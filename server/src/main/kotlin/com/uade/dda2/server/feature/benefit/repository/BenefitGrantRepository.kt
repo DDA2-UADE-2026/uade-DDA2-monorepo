@@ -14,6 +14,14 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface BenefitGrantRepository : JpaRepository<BenefitGrant, UUID> {
+    @Query("select g from BenefitGrant g where lower(g.application.user.externalCitizenId) = lower(:citizenId) " +
+        "and g.status = com.uade.dda2.server.feature.benefit.entity.BenefitGrantStatus.ACTIVE " +
+        "and g.benefitType = com.uade.dda2.server.feature.program.entity.enums.ProgramBenefitType.TAX_EXEMPTION order by g.id")
+    fun findActiveTaxExemptions(citizenId: String): List<BenefitGrant>
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select g from BenefitGrant g where g.application.id = :applicationId and g.status in :statuses order by g.id")
+    fun lockByApplicationAndStatuses(applicationId: UUID, statuses: Collection<BenefitGrantStatus>): List<BenefitGrant>
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select g from BenefitGrant g where g.id = :id and g.application.id = :applicationId")
     fun findByIdAndApplicationIdForUpdate(@Param("id") id: UUID, @Param("applicationId") applicationId: UUID): BenefitGrant?
@@ -25,6 +33,9 @@ interface BenefitGrantRepository : JpaRepository<BenefitGrant, UUID> {
     // Fetch only the case/program context. Catalog values, actors and history are not needed by the citizen mapper.
     @EntityGraph(attributePaths = ["application.programEdition.program"])
     fun findAllByApplicationUserId(userId: Long, pageable: Pageable): Page<BenefitGrant>
+    @EntityGraph(attributePaths = ["application.user", "application.programEdition.program", "assignedBy"])
+    @Query("select g from BenefitGrant g where (:status is null or g.status = :status) and (:number is null or g.application.applicationNumber = :number)")
+    fun findAdminPage(@Param("status") status: BenefitGrantStatus?, @Param("number") number: Long?, pageable: Pageable): Page<BenefitGrant>
     fun existsByApplicationIdAndProgramBenefitId(applicationId: UUID, programBenefitId: UUID): Boolean
     fun existsByProgramBenefitId(programBenefitId: UUID): Boolean
     fun existsByAssignedById(userId: Long): Boolean

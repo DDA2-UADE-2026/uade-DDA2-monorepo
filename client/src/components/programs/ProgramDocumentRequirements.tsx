@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  create5Mutation,
+  create6Mutation,
   delete5Mutation,
   list2Options,
   list2QueryKey,
@@ -190,10 +190,10 @@ function DocumentRequirementDialog({ editionId, requirement, disabled, onError, 
   const queryClient = useQueryClient()
   const isEditing = requirement !== null
   const onSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: list2QueryKey({ path: { editionId } }) })
+    void queryClient.invalidateQueries({ queryKey: list2QueryKey({ path: { editionId } }) })
     onOpenChange(false)
   }
-  const create = useMutation({ ...create5Mutation(), onSuccess, onError })
+  const create = useMutation({ ...create6Mutation(), onSuccess, onError })
   const update = useMutation({ ...update5Mutation(), onSuccess, onError })
   const isPending = create.isPending || update.isPending
   const mutationError = create.error ?? update.error
@@ -244,7 +244,7 @@ function DocumentRequirementDialog({ editionId, requirement, disabled, onError, 
         <form id="document-requirement-form" className="grid gap-5" noValidate onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}>
           <form.Field name="code" children={(field) => {
             const invalid = field.state.meta.isTouched && !field.state.meta.isValid

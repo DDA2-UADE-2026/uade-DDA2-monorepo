@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.integration.CoreMessageListenerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:04:01.884Z" hostname="DESKTOP-OL92NPA" time="0.307">
+  <properties/>
+  <testcase name="confirma despues del retorno del servicio y admite duplicados()" classname="com.uade.dda2.server.feature.integration.CoreMessageListenerTest" time="0.027"/>
+  <testcase name="un fallo de ack no rechaza un resultado ya confirmado()" classname="com.uade.dda2.server.feature.integration.CoreMessageListenerTest" time="0.005"/>
+  <testcase name="rechaza sin requeue un fallo del procesamiento()" classname="com.uade.dda2.server.feature.integration.CoreMessageListenerTest" time="0.003"/>
+  <system-out><![CDATA[2026-11-15T19:04:02.170-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.m.CoreMessageListener        : core_message_processed eventId=null result=DUPLICATE
+2026-11-15T19:04:02.190-03:00  WARN 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.i.m.CoreMessageListener        : core_message_rejected eventId=null error=CORE_UNSUPPORTED_EVENT
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

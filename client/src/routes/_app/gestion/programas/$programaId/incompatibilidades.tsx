@@ -6,7 +6,7 @@ import { ProgramPickerDialog } from "@/components/programs/ProgramPickerDialog"
 import { LoadingOrError, RoutePanel } from "@/components/programs/ProgramRouteUi"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { create3Mutation, delete7Mutation, findAll5Options, findAll5QueryKey } from "@/generated/@tanstack/react-query.gen"
+import { create4Mutation, delete7Mutation, findAll5Options, findAll5QueryKey } from "@/generated/@tanstack/react-query.gen"
 
 export const Route = createFileRoute(
   "/_app/gestion/programas/$programaId/incompatibilidades",
@@ -20,7 +20,7 @@ function RouteComponent() {
   const query = useQuery(findAll5Options({ path: { programId: programaId } }))
   const [pickerOpen, setPickerOpen] = useState(false)
   const refresh = () => client.invalidateQueries({ queryKey: findAll5QueryKey({ path: { programId: programaId } }) })
-  const create = useMutation({ ...create3Mutation(), onSuccess: refresh })
+  const create = useMutation({ ...create4Mutation(), onSuccess: refresh })
   const remove = useMutation({ ...delete7Mutation(), onSuccess: refresh })
   const selectedIds = new Set((query.data ?? []).map((item) => item.incompatibleWithProgramId).filter((id): id is string => !!id))
   const excludeIds = new Set([programaId])

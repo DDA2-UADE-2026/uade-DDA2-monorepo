@@ -20,6 +20,10 @@ repositories {
     mavenCentral()
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 dependencies {
     // ─────────────────────────────────────────────
     // Spring Boot - Web / API REST
@@ -27,6 +31,13 @@ dependencies {
 
     // Spring MVC: controllers REST, HTTP, JSON, Tomcat, etc.
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
+
+    // Core: RabbitMQ con confirms y ack manual; versión administrada por Spring Boot.
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+
+    // AsyncAPI desde tipos/anotaciones AMQP y visor; 2.5.x mantiene la línea Boot 4.0.x.
+    implementation("io.github.springwolf:springwolf-amqp:2.5.0")
+    runtimeOnly("io.github.springwolf:springwolf-ui:2.5.0")
 
     // Validaciones con Jakarta Validation:
     // @NotNull, @NotBlank, @Size, @Positive, etc.
@@ -182,6 +193,12 @@ dependencies {
     developmentOnly("com.h2database:h2")
     testRuntimeOnly("com.h2database:h2")
     testImplementation(kotlin("test"))
+
+    // Real disposable PostgreSQL and RabbitMQ services for integration tests.
+    testImplementation(platform("org.testcontainers:testcontainers-bom:2.0.5"))
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter")
+    testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation("org.testcontainers:testcontainers-rabbitmq")
 }
 
 kotlin {
@@ -198,9 +215,38 @@ allOpen {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    // Test content stays UTF-8 even when the Windows launcher needs a native-encoded classpath file.
+    defaultCharacterEncoding = "UTF-8"
     // Bound retained Hibernate contexts across the full flow suite instead of exhausting the default test heap.
     maxHeapSize = "1g"
     systemProperty("spring.test.context.cache.maxSize", "8")
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform { excludeTags("core-smoke", "testcontainers") }
+}
+
+tasks.register<Test>("testContainers") {
+    group = "verification"
+    description = "Integration tests against disposable PostgreSQL and RabbitMQ containers."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { includeTags("testcontainers") }
+    maxHeapSize = "1g"
+}
+
+tasks.register<Test>("testCoreConnectivity") {
+    group = "verification"
+    description = "Prueba opt-in contra Core; requiere accesos e IP habilitada y una base técnica desechable."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { includeTags("core-smoke") }
+    doNotTrackState("La prueba usa estado remoto y UUIDs de una ejecución deliberada; no puede reutilizar resultados en caché.")
+    doFirst {
+        require(System.getenv("CORE_SMOKE_ENABLED") == "true") {
+            "La prueba remota requiere CORE_SMOKE_ENABLED=true y configuración privada explícita."
+        }
+    }
 }
 
 tasks.register<Test>("generateOpenApiDocs") {
@@ -303,4 +349,13 @@ tasks.register<Test>("testAppointmentsPostgres") {
         "appointment.test.postgres-password",
         providers.environmentVariable("APPOINTMENT_TEST_POSTGRES_PASSWORD").orElse("").get()
     )
+}
+
+tasks.register<Test>("generateAsyncApiDocs") {
+    group = "documentation"
+    description = "Genera AsyncAPI desde los adaptadores y data classes M8 en build/asyncapi/asyncapi.json, sin Core remoto."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    filter { includeTestsMatching("com.uade.dda2.server.AsyncApiDocsGenerationTest") }
+    outputs.dir(layout.buildDirectory.dir("asyncapi"))
 }

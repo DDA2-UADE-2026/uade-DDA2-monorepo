@@ -20,6 +20,7 @@ class AdminUserInitializer(
     private val roles: RoleRepository,
     private val permissions: PermissionRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val properties: BootstrapAdminProperties,
 ) : ApplicationRunner {
     @Transactional
     override fun run(args: ApplicationArguments) {
@@ -37,9 +38,12 @@ class AdminUserInitializer(
         // Preserve credentials and status of existing accounts. An ADMIN account
         // also receives CIUDADANO so the role selector can issue a citizen JWT.
         if (!users.existsByUsernameIgnoreCase("admin")) {
+            require(properties.password.length >= 12) {
+                "BOOTSTRAP_ADMIN_PASSWORD debe tener al menos 12 caracteres para crear el administrador inicial."
+            }
             users.save(User(
                 username = "admin",
-                passwordHash = requireNotNull(passwordEncoder.encode("admin123")),
+                passwordHash = requireNotNull(passwordEncoder.encode(properties.password)),
                 name = "Administrator",
                 email = "admin@example.com",
                 roles = mutableSetOf(adminRole, citizenRole),
@@ -53,21 +57,21 @@ class AdminUserInitializer(
     companion object {
         // Keep in sync with the permission catalog in docs/database/init.sql.
         private val CITIZEN_PERMISSIONS = setOf(
-            "applications:own:interventions:view",
-            "applications:own:benefits:view",
             "activities:own:view", "activities:own:enroll",
             "applications:own:create", "applications:own:view",
+            "applications:own:benefits:view", "applications:own:interventions:view",
             "applications:own:documents:view", "applications:own:documents:manage",
+            "applications:own:visits:view", "applications:own:visits:reschedule-requests:create",
             "appointments:own:view", "appointments:own:create",
         )
 
         private val DEFAULT_PERMISSIONS = setOf(
-            "applications:own:interventions:view", "applications:interventions:follow-ups:publish",
-            "applications:own:benefits:view",
             "permissions:view",
             "roles:view", "roles:create", "roles:edit", "roles:delete",
             "users:view", "users:create", "users:edit", "users:delete",
-            "logs:view",
+            "logs:view", "indicators:view", "integrations:core:view",
+            "tickets:management:view", "tickets:management:manage",
+            "revenue:management:view", "revenue:management:manage",
             "activities:management:view", "activities:management:create",
             "activities:management:edit", "activities:management:change-status",
             "activities:own:view", "activities:own:enroll",
@@ -76,11 +80,21 @@ class AdminUserInitializer(
             "enrollment-periods:management:view", "enrollment-periods:management:create",
             "enrollment-periods:management:edit", "enrollment-periods:management:change-status",
             "applications:own:create", "applications:own:view",
+            "applications:own:benefits:view", "applications:own:interventions:view",
             "applications:own:documents:view", "applications:own:documents:manage",
+            "applications:own:visits:view", "applications:own:visits:reschedule-requests:create",
             "appointments:own:view", "appointments:own:create",
             "appointments:management:view", "appointments:management:manage",
             "appointments:professional:view", "appointments:professional:manage",
             "applications:management:create", "applications:management:view",
+            "applications:management:resolve",
+            "applications:management:benefits:assign", "applications:management:benefits:manage",
+            "applications:evaluations:create", "applications:evaluations:view",
+            "applications:interventions:create", "applications:interventions:view",
+            "applications:interventions:follow-ups:create", "applications:interventions:follow-ups:publish",
+            "applications:visits:create", "applications:visits:view", "applications:visits:manage",
+            "applications:visits:results:create",
+            "applications:visits:reschedule-requests:view", "applications:visits:reschedule-requests:review",
             "applications:management:documents:view", "applications:management:documents:review",
             "applications:management:documents:manage",
             "centers:management:view", "centers:management:create", "centers:management:edit",

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.auth.CitizenModelTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:01:04.493Z" hostname="DESKTOP-OL92NPA" time="9.573">
+  <properties/>
+  <testcase name="vinculo externo es unico e independiente de snapshot()" classname="com.uade.dda2.server.feature.auth.CitizenModelTest" time="0.955"/>
+  <testcase name="usuarios sin credenciales locales ni snapshot tienen identidad propia()" classname="com.uade.dda2.server.feature.auth.CitizenModelTest" time="0.048"/>
+  <testcase name="base rechaza credenciales locales incompletas()" classname="com.uade.dda2.server.feature.auth.CitizenModelTest" time="0.048"/>
+  <testcase name="snapshot usa la PK del usuario y se elimina con el usuario()" classname="com.uade.dda2.server.feature.auth.CitizenModelTest" time="0.066"/>
+  <system-out><![CDATA[2026-11-15T19:01:04.509-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.CitizenModelTest]: CitizenModelTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:01:04.575-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.CitizenModelTest
+2026-11-15T19:01:04.581-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.auth.CitizenModelTest]: CitizenModelTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:01:04.622-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.auth.CitizenModelTest
+2026-11-15T19:01:04.678-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:01:04.772-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown initiated...
+2026-11-15T19:01:04.772-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:01:04.951-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.feature.auth.CitizenModelTest    : Starting CitizenModelTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:01:04.952-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.feature.auth.CitizenModelTest    : The following 1 profile is active: "docs"
+2026-11-15T19:01:07.264-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:01:07.942-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 674 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:01:08.340-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:01:08.459-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:01:08.463-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Starting...
+2026-11-15T19:01:08.467-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-16 - Added connection conn150: url=jdbc:h2:mem:citizen-model user=SA
+2026-11-15T19:01:08.467-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Start completed.
+2026-11-15T19:01:08.469-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:01:08.471-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:citizen-model]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: CITIZEN-MODEL/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:01:09.512-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: drop table if exists activity cascade 
+Hibernate: drop table if exists activity_enrollment cascade 
+Hibernate: drop table if exists application cascade 
+Hibernate: drop table if exists application_document cascade 
+Hibernate: drop table if exists application_evaluation cascade 
+Hibernate: drop table if exists application_resolution cascade 
+Hibernate: drop table if exists application_resolution_requirement cascade 
+Hibernate: drop table if exists application_visit cascade 
+Hibernate: drop table if exists application_visit_reschedule_request cascade 
+Hibernate: drop table if exists appointment cascade 
+Hibernate: drop table if exists benefit_grant cascade 
+Hibernate: drop table if exists benefit_grant_change cascade 
+Hibernate: drop table if exists benefit_grant_change_requirement cascade 
+Hibernate: drop table if exists center_opening_hour cascade 
+Hibernate: drop table if exists center_service cascade 
+Hibernate: drop table if exists citizen_snapshot cascade 
+Hibernate: drop table if exists community_attention cascade 
+Hibernate: drop table if exists core_inbox cascade 
+Hibernate: drop table if exists core_outbox cascade 
+Hibernate: drop table if exists document cascade 
+Hibernate: drop table if exists enrollment_period cascade 
+Hibernate: drop table if exists intervention_action cascade 
+Hibernate: drop table if exists intervention_follow_up cascade 
+Hibernate: drop table if exists intervention_follow_up_publication cascade 
+Hibernate: drop table if exists intervention_objective cascade 
+Hibernate: drop table if exists intervention_plan cascade 
+Hibernate: drop table if exists logs cascade 
+Hibernate: drop table if exists municipal_center cascade 
+Hibernate: drop table if exists municipal_service cascade 
+Hibernate: drop table if exists permissions cascade 
+Hibernate: drop table if exists professional_assignment cascade 
+Hibernate: drop table if exists professional_availability cascade 
+Hibernate: drop table if exists program cascade 
+Hibernate: drop table if exists program_benefit cascade 
+Hibernate: drop table if exists program_document_requirement cascade 
+Hibernate: drop table if exists program_edition cascade 
+Hibernate: drop table if exists program_image cascade 
+Hibernate: drop table if exists program_incompatibility cascade 
+Hibernate: drop table if exists program_requirement cascade 
+Hibernate: drop table if exists role_permissions cascade 
+Hibernate: drop table if exists roles cascade 
+Hibernate: drop table if exists social_exemption_request cascade 
+Hibernate: drop table if exists social_external_documentation cascade 
+Hibernate: drop table if exists social_revenue_debt cascade 
+Hibernate: drop table if exists social_ticket cascade 
+Hibernate: drop table if exists social_ticket_cursor cascade 
+Hibernate: drop table if exists user_roles cascade 
+Hibernate: drop table if exists users cascade 
+Hibernate: drop sequence if exists application_number_seq
+Hibernate: create sequence application_number_seq start with 1 increment by 1
+Hibernate: create table activity (capacity integer not null, end_date date not null, start_date date not null, created_at timestamp(6) with time zone not null, created_by bigint not null, updated_at timestamp(6) with time zone not null, id uuid not null, name varchar(200) not null, location varchar(300) not null, description TEXT not null, status enum ('CLOSED','DRAFT','OPEN') not null, primary key (id), constraint ck_activity_positive_capacity check (capacity > 0), constraint ck_activity_date_range check (start_date <= end_date))
+Hibernate: create table activity_enrollment (attendance_recorded_at timestamp(6) with time zone, attendance_recorded_by bigint, citizen_id bigint not null, enrolled_at timestamp(6) with time zone not null, activity_id uuid not null, id uuid not null, attendance enum ('ABSENT','PRESENT'), primary key (id), constraint uk_activity_enrollment_activity_citizen unique (activity_id, citizen_id), constraint ck_activity_enrollment_attendance_audit check ((attendance is null and attendance_recorded_by is null and attendance_recorded_at is null) or (attendance is not null and attendance_recorded_by is not null and attendance_recorded_at is not null)))
+Hibernate: create table application (application_number bigint not null unique, assigned_worker_user_id bigint, closed_at timestamp(6) with time zone, created_at timestamp(6) not null, registered_by_user_id bigint not null, resolved_at timestamp(6), resolved_by_user_id bigint, submitted_at timestamp(6), updated_at timestamp(6) not null, user_id bigint not null, closed_by_event_id uuid, enrollment_period_id uuid not null, id uuid not null, program_edition_id uuid not null, request_hash varchar(64), idempotency_key varchar(128), closed_reason varchar(1000), resolution_reason varchar(1000), origin_ticket_id varchar(255), status enum ('APPROVED','CLOSED','DRAFT','IN_EVALUATION','IN_VALIDATION','IN_VISIT','PENDING_DOCUMENTATION','REJECTED','SUBMITTED','WAITLISTED') not null, primary key (id), constraint uk_application_user_period unique (user_id, enrollment_period_id), constraint uk_application_user_idempotency unique (user_id, idempotency_key), constraint ck_application_idempotency check ((idempotency_key is null and request_hash is null) or (idempotency_key is not null and request_hash is not null)))
+Hibernate: create table application_document (reviewed_at timestamp(6), reviewed_by_user_id bigint, uploaded_at timestamp(6) not null, application_id uuid not null, document_id uuid not null unique, id uuid not null, requirement_id uuid not null, observation varchar(1000), status enum ('OBSERVED','PENDING','VALID') not null, primary key (id), constraint uk_application_document_application_requirement unique (application_id, requirement_id), constraint ck_application_document_review check ((status = 'PENDING' and observation is null and reviewed_by_user_id is null and reviewed_at is null) or (status = 'VALID' and observation is null and reviewed_by_user_id is not null and reviewed_at is not null) or (status = 'OBSERVED' and observation is not null and reviewed_by_user_id is not null and reviewed_at is not null)))
+Hibernate: create table application_evaluation (evaluated_at timestamp(6) with time zone not null, professional_user_id bigint not null, application_id uuid not null unique, id uuid not null, recommendation varchar(1000) not null, priority enum ('HIGH','LOW','MEDIUM','URGENT') not null, vulnerability enum ('CRITICAL','HIGH','LOW','MEDIUM') not null, primary key (id), constraint ck_application_evaluation_vulnerability check (vulnerability in ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL')), constraint ck_application_evaluation_priority check (priority in ('LOW', 'MEDIUM', 'HIGH', 'URGENT')))
+Hibernate: create table application_resolution (resolved_at timestamp(6) with time zone not null, resolved_by_user_id bigint not null, application_id uuid not null, id uuid not null, reason varchar(1000) not null, decision enum ('APPROVED','REJECTED','WAITLISTED') not null, previous_status enum ('APPROVED','CLOSED','DRAFT','IN_EVALUATION','IN_VALIDATION','IN_VISIT','PENDING_DOCUMENTATION','REJECTED','SUBMITTED','WAITLISTED') not null, primary key (id), constraint uk_application_resolution_stage unique (application_id, previous_status), constraint ck_application_resolution_transition check ((previous_status = 'IN_EVALUATION' and decision in ('APPROVED', 'REJECTED', 'WAITLISTED')) or (previous_status = 'WAITLISTED' and decision in ('APPROVED', 'REJECTED'))), constraint ck_application_resolution_reason check (length(trim(reason)) > 0))
+Hibernate: create table application_resolution_requirement (fulfilled boolean not null, id uuid not null, requirement_id uuid not null, resolution_id uuid not null, description varchar(500), requirement_value varchar(255) not null, type enum ('HAS_CHILDREN','MAX_INCOME','MIN_AGE','RESIDENCY_YEARS') not null, primary key (id), constraint uk_application_resolution_requirement unique (resolution_id, requirement_id), constraint ck_application_resolution_requirement_type check (type in ('MIN_AGE', 'MAX_INCOME', 'RESIDENCY_YEARS', 'HAS_CHILDREN')))
+Hibernate: create table application_visit (cancelled_at timestamp(6) with time zone, cancelled_by_user_id bigint, ends_at timestamp(6) with time zone not null, last_rescheduled_at timestamp(6) with time zone, responsible_user_id bigint not null, result_recorded_at timestamp(6) with time zone, result_recorded_by_user_id bigint, scheduled_at timestamp(6) with time zone not null, starts_at timestamp(6) with time zone not null, application_id uuid not null, cancelled_by_event_id uuid, id uuid not null, location varchar(300) not null, cancellation_reason varchar(1000), result_conclusions varchar(2000), result_observations varchar(2000), status enum ('CANCELLED','NOT_REALIZED','REALIZED','SCHEDULED') not null, type enum ('INTERVIEW','VISIT') not null, primary key (id), constraint ck_application_visit_type check (type in ('VISIT', 'INTERVIEW')), constraint ck_application_visit_status check (status in ('SCHEDULED', 'CANCELLED', 'REALIZED', 'NOT_REALIZED')), constraint ck_application_visit_time_range check (starts_at < ends_at), constraint ck_application_visit_reschedule_data check (last_rescheduled_at is null or (last_rescheduled_at >= scheduled_at and last_rescheduled_at < starts_at)), constraint ck_application_visit_lifecycle_data check ((status = 'SCHEDULED' and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status = 'CANCELLED' and cancellation_reason is not null and length(trim(cancellation_reason)) between 1 and 1000 and cancelled_at is not null and (cancelled_by_user_id is not null or cancelled_by_event_id is not null) and result_observations is null and result_conclusions is null and result_recorded_at is null and result_recorded_by_user_id is null) or (status in ('REALIZED', 'NOT_REALIZED') and cancellation_reason is null and cancelled_at is null and cancelled_by_user_id is null and result_recorded_at is not null and result_recorded_by_user_id = responsible_user_id and result_recorded_at >= ends_at and (result_observations is null or length(trim(result_observations)) between 1 and 2000) and (result_conclusions is null or length(trim(result_conclusions)) between 1 and 2000))))
+Hibernate: create table application_visit_reschedule_request (approved_ends_at timestamp(6) with time zone, approved_starts_at timestamp(6) with time zone, original_ends_at timestamp(6) with time zone not null, original_starts_at timestamp(6) with time zone not null, requested_at timestamp(6) with time zone not null, requested_by_user_id bigint not null, reviewed_at timestamp(6) with time zone, reviewed_by_user_id bigint, id uuid not null, visit_id uuid not null, approved_location varchar(300), original_location varchar(300) not null, reason varchar(1000) not null, review_comment varchar(1000), status enum ('APPROVED','PENDING','REJECTED') not null, primary key (id), constraint ck_visit_reschedule_request_status check (status in ('PENDING', 'APPROVED', 'REJECTED')), constraint ck_visit_reschedule_request_reason check (length(trim(reason)) between 1 and 1000), constraint ck_visit_reschedule_request_original_schedule check (original_starts_at < original_ends_at and length(trim(original_location)) between 1 and 300), constraint ck_visit_reschedule_request_lifecycle check ((status = 'PENDING' and reviewed_by_user_id is null and reviewed_at is null and review_comment is null and approved_starts_at is null and approved_ends_at is null and approved_location is null) or (status = 'APPROVED' and reviewed_by_user_id is not null and reviewed_at is not null and reviewed_at >= requested_at and approved_starts_at is not null and approved_ends_at is not null and approved_starts_at < approved_ends_at and approved_location is not null and length(trim(approved_location)) between 1 and 300 and (review_comment is null or length(trim(review_comment)) between 1 and 1000)) or (status = 'REJECTED' and reviewed_by_user_id is not null and reviewed_at is not null and reviewed_at >= requested_at and review_comment is not null and length(trim(review_comment)) between 1 and 1000 and approved_starts_at is null and approved_ends_at is null and approved_location is null)))
+Hibernate: create table appointment (citizen_id bigint not null, created_at timestamp(6) with time zone not null, ends_at timestamp(6) with time zone not null, slot_released_at timestamp(6) with time zone, starts_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, id uuid not null, professional_assignment_id uuid not null, request_hash varchar(64) not null, idempotency_key varchar(128) not null, status enum ('CANCELLED','CONFIRMED') not null, primary key (id), constraint uk_appointment_citizen_idempotency unique (citizen_id, idempotency_key), constraint ck_appointment_time_range check (starts_at < ends_at))
+Hibernate: create table benefit_grant (amount numeric(19,2), end_date date not null, start_date date not null, assigned_at timestamp(6) with time zone not null, assigned_by_user_id bigint not null, application_id uuid not null, id uuid not null, program_benefit_id uuid not null, description varchar(500), benefit_type enum ('FOOD_ASSISTANCE','HOUSING_SUBSIDY','TAX_EXEMPTION','UTILITY_SUBSIDY') not null, status enum ('ACTIVE','EXPIRED','FINALIZED','SUSPENDED') not null, primary key (id), constraint uk_benefit_grant_application_benefit unique (application_id, program_benefit_id), constraint ck_benefit_grant_dates check (start_date <= end_date), constraint ck_benefit_grant_status check (status in ('ACTIVE', 'SUSPENDED', 'FINALIZED', 'EXPIRED')), constraint ck_benefit_grant_amount check (amount is null or amount >= 0), constraint ck_benefit_grant_type check (benefit_type in ('TAX_EXEMPTION', 'HOUSING_SUBSIDY', 'FOOD_ASSISTANCE', 'UTILITY_SUBSIDY')))
+Hibernate: create table benefit_grant_change (effective_end_date date, end_date date not null, previous_end_date date, previous_start_date date, sequence_number integer not null, start_date date not null, changed_at timestamp(6) with time zone not null, responsible_user_id bigint, causation_event_id uuid, grant_id uuid not null, id uuid not null, reason varchar(1000), action enum ('ASSIGNED','EXPIRED','FINALIZED','RENEWED','SUSPENDED') not null, previous_status enum ('ACTIVE','EXPIRED','FINALIZED','SUSPENDED'), status enum ('ACTIVE','EXPIRED','FINALIZED','SUSPENDED') not null, primary key (id), constraint uk_benefit_grant_change_sequence unique (grant_id, sequence_number), constraint ck_benefit_grant_change_reason check ((action = 'ASSIGNED' and reason is null) or (action <> 'ASSIGNED' and reason is not null and length(trim(reason)) > 0)), constraint ck_benefit_grant_change_transition check ((action = 'ASSIGNED' and sequence_number = 1 and previous_status is null and status = 'ACTIVE' and previous_start_date is null and previous_end_date is null) or (sequence_number > 1 and previous_status is not null and previous_start_date is not null and previous_end_date is not null and start_date = previous_start_date and ((action = 'RENEWED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'ACTIVE' and end_date > previous_end_date) or (action = 'SUSPENDED' and previous_status = 'ACTIVE' and status = 'SUSPENDED' and end_date = previous_end_date) or (action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date) or (action = 'EXPIRED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'EXPIRED' and end_date = previous_end_date)))), constraint ck_benefit_grant_change_responsible check ((action = 'EXPIRED' and responsible_user_id is null) or (action = 'FINALIZED' and responsible_user_id is null and causation_event_id is not null) or (action <> 'EXPIRED' and responsible_user_id is not null)), constraint ck_benefit_grant_change_dates check (start_date <= end_date))
+Hibernate: create table benefit_grant_change_requirement (fulfilled boolean not null, change_id uuid not null, id uuid not null, requirement_id uuid not null, description varchar(500), requirement_value varchar(255) not null, type enum ('HAS_CHILDREN','MAX_INCOME','MIN_AGE','RESIDENCY_YEARS') not null, primary key (id), constraint uk_benefit_grant_change_requirement unique (change_id, requirement_id), constraint ck_benefit_grant_change_requirement_type check (type in ('MIN_AGE', 'MAX_INCOME', 'RESIDENCY_YEARS', 'HAS_CHILDREN')))
+Hibernate: create table center_opening_hour (active boolean not null, end_time time(0) not null, start_time time(0) not null, created_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, center_id uuid not null, id uuid not null, day_of_week enum ('FRIDAY','MONDAY','SATURDAY','SUNDAY','THURSDAY','TUESDAY','WEDNESDAY') not null, primary key (id), constraint ck_center_opening_hour_time_range check (start_time < end_time))
+Hibernate: create table center_service (active boolean not null, created_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, center_id uuid not null, id uuid not null, service_id uuid not null, primary key (id), constraint uk_center_service_center_service unique (center_id, service_id))
+Hibernate: create table citizen_snapshot (blocked boolean not null, deceased_at date, review_required boolean not null, created_at timestamp(6) with time zone not null, last_address_at timestamp(6) with time zone, last_registered_at timestamp(6) with time zone, last_state_at timestamp(6) with time zone, updated_at timestamp(6) with time zone not null, user_id bigint not null, dni varchar(50), phone varchar(50), full_name varchar(150), email varchar(180), address varchar(500), block_reason varchar(2000), primary key (user_id))
+Hibernate: create table community_attention (attended_on date, created_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, version bigint not null, appointment_id uuid not null unique, id uuid not null, description varchar(500), result enum ('ATENDIDO','AUSENTE') not null, primary key (id), constraint ck_community_attention_result_data check ((result = 'ATENDIDO' and attended_on is not null and description is not null) or (result = 'AUSENTE' and attended_on is null and description is null)))
+Hibernate: create table core_inbox (delivery_attempt integer, occurred_at timestamp(6) with time zone not null, processed_at timestamp(6) with time zone not null, received_at timestamp(6) with time zone not null, correlation_id uuid, event_id uuid not null, event_version varchar(20) not null, source_module varchar(60) not null, target_module varchar(60), payload_hash varchar(64) not null, message_id varchar(100), trace_id varchar(100), event_type varchar(120) not null, primary key (event_id))
+Hibernate: create table core_outbox (attempts integer not null, confirmed_at timestamp(6) with time zone, created_at timestamp(6) with time zone not null, lease_until timestamp(6) with time zone, next_attempt_at timestamp(6) with time zone not null, occurred_at timestamp(6) with time zone not null, correlation_id uuid, event_id uuid not null, lease_token uuid, event_version varchar(20) not null, payload_hash varchar(64) not null, last_error varchar(100), trace_id varchar(100) not null, event_type varchar(120) not null, payload_json text not null, status enum ('BROKER_CONFIRMED','IN_FLIGHT','PENDING') not null, primary key (event_id))
+Hibernate: create table document (created_at timestamp(6) not null, size_bytes bigint not null, uploaded_by_user_id bigint not null, id uuid not null, content_type varchar(100) not null, content bytea not null, original_name varchar(255) not null, primary key (id))
+Hibernate: create table enrollment_period (close_date date not null, open_date date not null, created_at timestamp(6) not null, updated_at timestamp(6) not null, id uuid not null, program_edition_id uuid not null, notes varchar(1000), status enum ('CLOSED','OPEN','SCHEDULED','SUSPENDED') not null, primary key (id), constraint ck_enrollment_period_date_range check (open_date <= close_date))
+Hibernate: create table intervention_action (due_date date not null, position integer not null, start_date date not null, id uuid not null, objective_id uuid not null, description varchar(1000) not null, status enum ('COMPLETED','IN_PROGRESS','PENDING') not null, primary key (id), constraint uk_intervention_action_position unique (objective_id, position), constraint ck_intervention_action_position check (position >= 0), constraint ck_intervention_action_description check (length(trim(description)) > 0), constraint ck_intervention_action_dates check (start_date <= due_date), constraint ck_intervention_action_status check (status in ('PENDING', 'IN_PROGRESS', 'COMPLETED')))
+Hibernate: create table intervention_follow_up (occurred_on date not null, sequence_number integer not null, author_user_id bigint not null, recorded_at timestamp(6) with time zone not null, action_id uuid not null, id uuid not null, notes varchar(2000) not null, result varchar(2000), previous_status enum ('COMPLETED','IN_PROGRESS','PENDING') not null, status enum ('COMPLETED','IN_PROGRESS','PENDING') not null, primary key (id), constraint uk_intervention_follow_up_sequence unique (action_id, sequence_number), constraint ck_intervention_follow_up_sequence check (sequence_number > 0), constraint ck_intervention_follow_up_notes check (length(trim(notes)) > 0), constraint ck_intervention_follow_up_result check ((result is null or length(trim(result)) > 0) and (status <> 'COMPLETED' or result is not null)), constraint ck_intervention_follow_up_transition check (previous_status in ('PENDING', 'IN_PROGRESS') and status in ('IN_PROGRESS', 'COMPLETED')))
+Hibernate: create table intervention_follow_up_publication (visible boolean not null, published_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, updated_by_user_id bigint not null, follow_up_id uuid not null unique, id uuid not null, summary varchar(2000) not null, primary key (id), constraint ck_intervention_publication_summary check (length(trim(summary)) > 0), constraint ck_intervention_publication_dates check (published_at <= updated_at))
+Hibernate: create table intervention_objective (position integer not null, id uuid not null, plan_id uuid not null, description varchar(1000) not null, primary key (id), constraint uk_intervention_objective_position unique (plan_id, position), constraint ck_intervention_objective_position check (position >= 0), constraint ck_intervention_objective_description check (length(trim(description)) > 0))
+Hibernate: create table intervention_plan (created_at timestamp(6) with time zone not null, responsible_user_id bigint not null, application_id uuid not null unique, id uuid not null, primary key (id))
+Hibernate: create table logs (created_at timestamp(6) with time zone not null, id bigint generated by default as identity, user_id bigint, entity_type varchar(100) not null check ((entity_type in ('social_external_documentation','program_document_requirement','activity','roles','appointment','program','citizen_snapshot','program_incompatibility','permissions','application_visit','benefit_grant','municipal_center','application_resolution','program_edition','benefit_grant_change','social_ticket','social_exemption_request','professional_assignment','intervention_follow_up','application_document','users','program_image','application_evaluation','intervention_plan','application_visit_reschedule_request','municipal_service','professional_availability','application','activity_enrollment','center_service','social_revenue_debt','enrollment_period','program_requirement','center_opening_hour','program_benefit'))), entity_id varchar(255) not null, new_values jsonb, old_values jsonb, action enum ('CREATE','DELETE','LOGIN','UPDATE') not null, primary key (id))
+Hibernate: create table municipal_center (active boolean not null, created_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, id uuid not null, phone varchar(30), name varchar(150) not null, normalized_name varchar(150) not null, email varchar(180), address varchar(255) not null, primary key (id), constraint uk_municipal_center_normalized_name unique (normalized_name))
+Hibernate: create table municipal_service (active boolean not null, duration_minutes integer not null, created_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, id uuid not null, name varchar(150) not null, normalized_name varchar(150) not null, description TEXT not null, primary key (id), constraint uk_municipal_service_normalized_name unique (normalized_name), constraint ck_municipal_service_positive_duration check (duration_minutes > 0))
+Hibernate: create table permissions (id bigint generated by default as identity, name varchar(100) not null unique, primary key (id))
+Hibernate: create table professional_assignment (active boolean not null, created_at timestamp(6) with time zone not null, professional_id bigint not null, updated_at timestamp(6) with time zone not null, center_service_id uuid not null, id uuid not null, primary key (id), constraint uk_professional_assignment_professional_center_service unique (professional_id, center_service_id))
+Hibernate: create table professional_availability (active boolean not null, end_time time(0) not null, start_time time(0) not null, created_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, assignment_id uuid not null, id uuid not null, day_of_week enum ('FRIDAY','MONDAY','SATURDAY','SUNDAY','THURSDAY','TUESDAY','WEDNESDAY') not null, primary key (id), constraint ck_professional_availability_time_range check (start_time < end_time))
+Hibernate: create table program (created_at timestamp(6) not null, created_by bigint not null, updated_at timestamp(6) not null, id uuid not null, name varchar(200) not null, normalized_name varchar(200) not null, objective TEXT, primary key (id), constraint uk_program_normalized_name unique (normalized_name))
+Hibernate: create table program_benefit (amount numeric(19,2), id uuid not null, program_edition_id uuid not null, description varchar(500), benefit_type enum ('FOOD_ASSISTANCE','HOUSING_SUBSIDY','TAX_EXEMPTION','UTILITY_SUBSIDY') not null, primary key (id))
+Hibernate: create table program_document_requirement (is_required boolean not null, id uuid not null, program_edition_id uuid not null, code varchar(50) not null, name varchar(150) not null, description varchar(500), primary key (id), constraint uk_program_document_requirement_edition_code unique (program_edition_id, code))
+Hibernate: create table program_edition (current_enrollment integer not null, end_date date not null, max_capacity integer not null, start_date date not null, created_at timestamp(6) not null, created_by bigint not null, updated_at timestamp(6) not null, id uuid not null, program_id uuid not null, name varchar(200) not null, normalized_name varchar(200) not null, status enum ('ACTIVE','CLOSED','DRAFT','SUSPENDED') not null, primary key (id), constraint uk_program_edition_program_normalized_name unique (program_id, normalized_name))
+Hibernate: create table program_image (created_at timestamp(6) not null, size_bytes bigint not null, updated_at timestamp(6) not null, id uuid not null, program_id uuid not null unique, content_type varchar(100) not null, content bytea not null, original_name varchar(255) not null, primary key (id))
+Hibernate: create table program_incompatibility (incompatible_with_program_id uuid not null, program_id uuid not null, primary key (incompatible_with_program_id, program_id))
+Hibernate: create table program_requirement (id uuid not null, program_edition_id uuid not null, description varchar(500), value varchar(255) not null, type enum ('HAS_CHILDREN','MAX_INCOME','MIN_AGE','RESIDENCY_YEARS') not null, primary key (id))
+Hibernate: create table role_permissions (permission_id bigint not null, role_id bigint not null, primary key (permission_id, role_id))
+Hibernate: create table roles (id bigint generated by default as identity, name varchar(50) not null unique, primary key (id))
+Hibernate: create table social_exemption_request (ambiguous_benefit boolean not null, percentage numeric(7,2), requested_from date, requested_percentage numeric(7,2), requested_until date, valid_from date, valid_until date, requested_event_at timestamp(6) with time zone, resolution_event_at timestamp(6) with time zone, benefit_grant_id uuid, citizen_id uuid not null, exemption_id uuid, id uuid not null, last_event_id uuid not null, status varchar(30) not null, concept_code varchar(120) not null, request_reason varchar(2000), resolution_reason varchar(2000), primary key (id))
+Hibernate: create table social_external_documentation (reviewed_at timestamp(6) with time zone, reviewed_by_user_id bigint, source_updated_at timestamp(6) with time zone not null, application_id uuid not null, document_id uuid, file_id uuid not null, last_event_id uuid not null, request_id uuid not null, requirement_id uuid not null, status varchar(30) not null, file_number varchar(120) not null, observation varchar(1000), review_status enum ('OBSERVED','PENDING','VALID') not null, primary key (request_id))
+Hibernate: create table social_revenue_debt (due_date date not null, outstanding_amount numeric(19,2) not null, outstanding_balance numeric(19,2), remaining_balance numeric(19,2), settled boolean not null, settled_at timestamp(6) with time zone, source_updated_at timestamp(6) with time zone not null, citizen_id uuid not null, id uuid not null, last_event_id uuid not null, concept_code varchar(120) not null, primary key (id))
+Hibernate: create table social_ticket (information_pending boolean not null, is_anonymous boolean not null, requires_attention boolean not null, assigned_worker_user_id bigint, created_at timestamp(6) with time zone not null, information_required_by timestamp(6) with time zone, source_updated_at timestamp(6) with time zone not null, updated_at timestamp(6) with time zone not null, application_id uuid, citizen_id uuid, correlation_id uuid, id uuid not null, last_event_id uuid not null, response_causation_id uuid not null, route_event_id uuid not null, started_route_event_id uuid, current_priority varchar(60) not null, current_status varchar(60) not null, response_trigger varchar(60) not null, responsible_area_id varchar(60) not null, public_id varchar(120) not null, closed_reason varchar(1000), reopen_reason varchar(2000), attachments_json text not null, information_response_json text, snapshot_json text not null, state enum ('CLOSED','IN_PROGRESS','RECEIVED','RESOLVED','RETURNED','WAITING_INFORMATION') not null, primary key (id))
+Hibernate: create table social_ticket_cursor (source_updated_at timestamp(6) with time zone not null, id uuid not null, last_event_id uuid not null, primary key (id))
+Hibernate: create table user_roles (role_id bigint not null, user_id bigint not null, primary key (role_id, user_id))
+Hibernate: create table users (active boolean not null, created_at timestamp(6) with time zone not null, id bigint generated by default as identity, updated_at timestamp(6) with time zone, username varchar(80) unique, password_hash varchar(100), name varchar(150) not null, email varchar(180) not null, external_citizen_id varchar(255) unique, primary key (id), constraint ck_users_local_credentials check ((username is null and password_hash is null) or (username is not null and password_hash is not null)))
+Hibernate: create index ix_activity_enrollment_activity on activity_enrollment (activity_id)
+Hibernate: create index ix_activity_enrollment_citizen on activity_enrollment (citizen_id)
+Hibernate: create index ix_application_user_number on application (user_id, application_number)
+Hibernate: create index ix_application_user_edition_status on application (user_id, program_edition_id, status)
+Hibernate: create index ix_application_period on application (enrollment_period_id)
+Hibernate: create index ix_application_edition on application (program_edition_id)
+Hibernate: create index ix_application_worker on application (assigned_worker_user_id)
+Hibernate: create index ix_application_registered_by on application (registered_by_user_id)
+Hibernate: create index ix_application_resolved_by on application (resolved_by_user_id)
+Hibernate: create index ix_application_document_application on application_document (application_id)
+Hibernate: create index ix_application_document_requirement on application_document (requirement_id)
+Hibernate: create index ix_application_document_reviewer on application_document (reviewed_by_user_id)
+Hibernate: create index ix_application_evaluation_professional on application_evaluation (professional_user_id)
+Hibernate: create index ix_application_evaluation_evaluated_at on application_evaluation (evaluated_at)
+Hibernate: create index ix_application_resolution_application on application_resolution (application_id, resolved_at)
+Hibernate: create index ix_application_resolution_responsible on application_resolution (resolved_by_user_id)
+Hibernate: create index ix_application_visit_application on application_visit (application_id)
+Hibernate: create index ix_application_visit_application_status on application_visit (application_id, status)
+Hibernate: create index ix_application_visit_responsible_time on application_visit (responsible_user_id, starts_at, ends_at, status)
+Hibernate: create index ix_application_visit_result_recorded_by on application_visit (result_recorded_by_user_id)
+Hibernate: create index ix_application_visit_starts_at on application_visit (starts_at)
+Hibernate: create index ix_visit_reschedule_request_visit_time on application_visit_reschedule_request (visit_id, requested_at)
+Hibernate: create index ix_visit_reschedule_request_status_time on application_visit_reschedule_request (status, requested_at)
+Hibernate: create index ix_visit_reschedule_request_requested_by on application_visit_reschedule_request (requested_by_user_id)
+Hibernate: create index ix_visit_reschedule_request_reviewed_by on application_visit_reschedule_request (reviewed_by_user_id)
+Hibernate: create index ix_appointment_citizen_time on appointment (citizen_id, starts_at, ends_at, status)
+Hibernate: create index ix_appointment_assignment_time on appointment (professional_assignment_id, starts_at, ends_at, status)
+Hibernate: create index ix_benefit_grant_application_date on benefit_grant (application_id, assigned_at, id)
+Hibernate: create index ix_benefit_grant_benefit on benefit_grant (program_benefit_id)
+Hibernate: create index ix_benefit_grant_assigned_by on benefit_grant (assigned_by_user_id)
+Hibernate: create index ix_benefit_grant_expiration on benefit_grant (status, end_date, application_id)
+Hibernate: create index ix_benefit_grant_change_responsible on benefit_grant_change (responsible_user_id)
+Hibernate: create index ix_center_opening_hour_center_day_active on center_opening_hour (center_id, day_of_week, active)
+Hibernate: create index ix_center_service_center_active on center_service (center_id, active)
+Hibernate: create index ix_center_service_service on center_service (service_id)
+Hibernate: create index ix_core_outbox_pending on core_outbox (status, next_attempt_at)
+Hibernate: create index ix_document_uploaded_by on document (uploaded_by_user_id)
+Hibernate: create index ix_enrollment_period_edition_dates on enrollment_period (program_edition_id, open_date, close_date)
+Hibernate: create index ix_enrollment_period_status_dates on enrollment_period (status, open_date, close_date)
+Hibernate: create index ix_enrollment_period_edition_status on enrollment_period (program_edition_id, status)
+Hibernate: create index ix_intervention_follow_up_author on intervention_follow_up (author_user_id)
+Hibernate: create index ix_intervention_publication_updated_by on intervention_follow_up_publication (updated_by_user_id)
+Hibernate: create index ix_intervention_plan_responsible on intervention_plan (responsible_user_id)
+Hibernate: create index ix_logs_entity on logs (entity_type, entity_id)
+Hibernate: create index ix_logs_user_id on logs (user_id)
+Hibernate: create index ix_logs_created_at on logs (created_at)
+Hibernate: create index ix_municipal_center_active on municipal_center (active)
+Hibernate: create index ix_municipal_service_active on municipal_service (active)
+Hibernate: create index ix_professional_assignment_professional_active on professional_assignment (professional_id, active)
+Hibernate: create index ix_professional_assignment_center_service on professional_assignment (center_service_id)
+Hibernate: create index ix_professional_availability_assignment_day_active on professional_availability (assignment_id, day_of_week, active)
+Hibernate: create index ix_program_document_requirement_edition on program_document_requirement (program_edition_id)
+Hibernate: create index ix_social_exemption_citizen on social_exemption_request (citizen_id)
+Hibernate: create index ix_social_external_docs_application on social_external_documentation (application_id)
+Hibernate: create index ix_social_debt_citizen on social_revenue_debt (citizen_id)
+Hibernate: create index ix_social_ticket_state_updated on social_ticket (state, updated_at)
+Hibernate: create index ix_social_ticket_application on social_ticket (application_id)
+Hibernate: create index ix_social_ticket_citizen on social_ticket (citizen_id)
+Hibernate: alter table if exists activity add constraint FKjl2l037106rgpmoachn6ubkma foreign key (created_by) references users
+Hibernate: alter table if exists activity_enrollment add constraint FKn3ot6xexr19fh645eapl85j1n foreign key (activity_id) references activity
+Hibernate: alter table if exists activity_enrollment add constraint FKk4kcrq1k2ch26cwggqjjl3ct3 foreign key (attendance_recorded_by) references users
+Hibernate: alter table if exists activity_enrollment add constraint FKigvql1w15sch2oj5e37y2db6k foreign key (citizen_id) references users
+Hibernate: alter table if exists application add constraint FK15704g32mh8k0e1f37rckoumn foreign key (assigned_worker_user_id) references users
+Hibernate: alter table if exists application add constraint FKrgexsrfbvcuo6ym5a5g8oe7js foreign key (enrollment_period_id) references enrollment_period
+Hibernate: alter table if exists application add constraint FK7dlqhrstg5yrbqdohfydqa6fm foreign key (program_edition_id) references program_edition
+Hibernate: alter table if exists application add constraint FK6v923wf7d57kgqyve5b09umi1 foreign key (registered_by_user_id) references users
+Hibernate: alter table if exists application add constraint FKsausvj5718ff56b8axwcbmug2 foreign key (resolved_by_user_id) references users
+Hibernate: alter table if exists application add constraint FKawte0mbtubellxed1dvpoxhdj foreign key (user_id) references users
+Hibernate: alter table if exists application_document add constraint FK949sx1qkharvq1jcw1em3me1s foreign key (application_id) references application
+Hibernate: alter table if exists application_document add constraint FKd1ccfvs2jclqeb4b76qcrval7 foreign key (document_id) references document
+Hibernate: alter table if exists application_document add constraint FKs3xv5e7vridk5eii482m6r0yh foreign key (requirement_id) references program_document_requirement
+Hibernate: alter table if exists application_document add constraint FKioo29k1a04nn3lqy5wiofqecs foreign key (reviewed_by_user_id) references users
+Hibernate: alter table if exists application_evaluation add constraint FKfhdu5x5h9l0v71xgumc1qvj80 foreign key (application_id) references application
+Hibernate: alter table if exists application_evaluation add constraint FKs3vb3db8kly9pvu1t7eov2e8 foreign key (professional_user_id) references users
+Hibernate: alter table if exists application_resolution add constraint FKn3m8gau6s91mpcacwrh4410se foreign key (application_id) references application
+Hibernate: alter table if exists application_resolution add constraint FKq90euh6bysk7lv1ny9224sle foreign key (resolved_by_user_id) references users
+Hibernate: alter table if exists application_resolution_requirement add constraint FKtlji15l3hcmnx9kbegjs94de6 foreign key (resolution_id) references application_resolution
+Hibernate: alter table if exists application_visit add constraint FKpjly9k26i5rna97c4xo9x4oif foreign key (application_id) references application
+Hibernate: alter table if exists application_visit add constraint FKbrk43vfq8ulvtq732pfsl4w0g foreign key (cancelled_by_user_id) references users
+Hibernate: alter table if exists application_visit add constraint FKhe7sa3go0ics3pxw5nxrwaq4m foreign key (responsible_user_id) references users
+Hibernate: alter table if exists application_visit add constraint FKlwopgp3isqbpt98iu81fb78i foreign key (result_recorded_by_user_id) references users
+Hibernate: alter table if exists application_visit_reschedule_request add constraint FKeou7t8j97f38a1romojyxmuog foreign key (requested_by_user_id) references users
+Hibernate: alter table if exists application_visit_reschedule_request add constraint FKbkx7lr067s7gocqk5hk791qcc foreign key (reviewed_by_user_id) references users
+Hibernate: alter table if exists application_visit_reschedule_request add constraint FKkntdk45ti0bi6svj0ik3ntpsn foreign key (visit_id) references application_visit
+Hibernate: alter table if exists appointment add constraint FKtpi8ibvp88pr475nqcgyvy2qr foreign key (citizen_id) references users
+Hibernate: alter table if exists appointment add constraint FKqrke9ier1nwhw9yhko94v92m2 foreign key (professional_assignment_id) references professional_assignment
+Hibernate: alter table if exists benefit_grant add constraint FKrarhs7awg2x4hdg7t75u9bo30 foreign key (application_id) references application
+Hibernate: alter table if exists benefit_grant add constraint FK1wpf5qpcgc92b2vyk7rrklggg foreign key (assigned_by_user_id) references users
+Hibernate: alter table if exists benefit_grant add constraint FK473q9hbviso6ejkhsyomdvma9 foreign key (program_benefit_id) references program_benefit
+Hibernate: alter table if exists benefit_grant_change add constraint FKnk78iq1w9airkk4xsdd509sqp foreign key (grant_id) references benefit_grant
+Hibernate: alter table if exists benefit_grant_change add constraint FKt0i9lrb6xigwjqurg94qcja8w foreign key (responsible_user_id) references users
+Hibernate: alter table if exists benefit_grant_change_requirement add constraint FKptk0q33ttcgtjqc89otib2l7a foreign key (change_id) references benefit_grant_change
+Hibernate: alter table if exists center_opening_hour add constraint FK4qbqufiyriw6smct36mgvtmaa foreign key (center_id) references municipal_center
+Hibernate: alter table if exists center_service add constraint FKr5kpkmtapc51444c9v549hljt foreign key (center_id) references municipal_center
+Hibernate: alter table if exists center_service add constraint FK5rjmntem934vsq379c8omlevj foreign key (service_id) references municipal_service
+Hibernate: alter table if exists citizen_snapshot add constraint FKc5k5fa59jf94dwdbp6anbh5o6 foreign key (user_id) references users on delete cascade
+Hibernate: alter table if exists community_attention add constraint FK6iumwpxtgygjmoaphpt3ur1ut foreign key (appointment_id) references appointment
+Hibernate: alter table if exists document add constraint FK3icberlfa63y3ladt0kfj5aff foreign key (uploaded_by_user_id) references users
+Hibernate: alter table if exists enrollment_period add constraint FKbbl59nyjp16pnp0ifodhtw9y3 foreign key (program_edition_id) references program_edition
+Hibernate: alter table if exists intervention_action add constraint FKgohw2yap8ieuhsw32jxj98kh4 foreign key (objective_id) references intervention_objective
+Hibernate: alter table if exists intervention_follow_up add constraint FK3u6h7klf8stdriwknxb23e584 foreign key (action_id) references intervention_action
+Hibernate: alter table if exists intervention_follow_up add constraint FKtowlmovqrqp2c63lbe1slwojq foreign key (author_user_id) references users
+Hibernate: alter table if exists intervention_follow_up_publication add constraint FKi8oj9jnmsy8s3jbqpn3m575g2 foreign key (follow_up_id) references intervention_follow_up
+Hibernate: alter table if exists intervention_follow_up_publication add constraint FK74qlqjx4y4ctsjluxk2udmbo0 foreign key (updated_by_user_id) references users
+Hibernate: alter table if exists intervention_objective add constraint FKrcidcb467w9vmuu6asawk2bal foreign key (plan_id) references intervention_plan
+Hibernate: alter table if exists intervention_plan add constraint FK7mhq096xijfcqic8j49f2bjbe foreign key (application_id) references application
+Hibernate: alter table if exists intervention_plan add constraint FKpdppeo70eihx11r8dw7vkf8b0 foreign key (responsible_user_id) references users
+Hibernate: alter table if exists logs add constraint FKgqy8beil5y4almtq1tiyofije foreign key (user_id) references users
+Hibernate: alter table if exists professional_assignment add constraint FK24y7vd1dt916476ccswnb5uu8 foreign key (center_service_id) references center_service
+Hibernate: alter table if exists professional_assignment add constraint FKh93im10bibl3ngjctcmuqahog foreign key (professional_id) references users
+Hibernate: alter table if exists professional_availability add constraint FK5qmyt9gw901l7gxvxib5kivmu foreign key (assignment_id) references professional_assignment
+Hibernate: alter table if exists program add constraint FKn8vu9lf9okaov14gg274lv6h6 foreign key (created_by) references users
+Hibernate: alter table if exists program_benefit add constraint FK8avmht0fp4h76ry30onunrdeu foreign key (program_edition_id) references program_edition
+Hibernate: alter table if exists program_document_requirement add constraint FKer20ealal4ahsoiq9jp71d9x3 foreign key (program_edition_id) references program_edition
+Hibernate: alter table if exists program_edition add constraint FK43sdhxi4ys25j9hp2dagpc37n foreign key (created_by) references users
+Hibernate: alter table if exists program_edition add constraint FKtqoub5ewwfiimrdu2g3pcunj7 foreign key (program_id) references program
+Hibernate: alter table if exists program_image add constraint FKoiludu6fdu4ne4xbviuuq40co foreign key (program_id) references program
+Hibernate: alter table if exists program_incompatibility add constraint FK40gk1990kjoy72twbqndladj5 foreign key (incompatible_with_program_id) references program
+Hibernate: alter table if exists program_incompatibility add constraint FKcqv1a8u9bu7l6p055dm9kggkm foreign key (program_id) references program
+Hibernate: alter table if exists program_requirement add constraint FK2nvhhf0cwhhn515h582jy369f foreign key (program_edition_id) references program_edition
+Hibernate: alter table if exists role_permissions add constraint FKegdk29eiy7mdtefy5c7eirr6e foreign key (permission_id) references permissions
+Hibernate: alter table if exists role_permissions add constraint FKn5fotdgk8d1xvo8nav9uv3muc foreign key (role_id) references roles
+Hibernate: alter table if exists social_external_documentation add constraint FK3sxpqofgse6rwbagp9n4tcdi0 foreign key (reviewed_by_user_id) references users
+Hibernate: alter table if exists social_ticket add constraint FKo3l2bxq5o85vdbue6ftgdco3c foreign key (assigned_worker_user_id) references users
+Hibernate: alter table if exists user_roles add constraint FKh8ciramu9cc9q3qcqiv4ue8a6 foreign key (role_id) references roles
+Hibernate: alter table if exists user_roles add constraint FKhfh9dx7w3ubf1co1vdev94g3f foreign key (user_id) references users
+2026-11-15T19:01:09.888-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:01:12.828-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.feature.auth.CitizenModelTest    : Started CitizenModelTest in 8.039 seconds (process running for 238.188)
+Hibernate: insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default)
+Hibernate: select u1_0.id,u1_0.active,u1_0.created_at,u1_0.email,u1_0.external_citizen_id,u1_0.name,u1_0.password_hash,r1_0.user_id,r1_1.id,r1_1.name,p1_0.role_id,p1_1.id,p1_1.name,u1_0.updated_at,u1_0.username from users u1_0 left join user_roles r1_0 on u1_0.id=r1_0.user_id left join roles r1_1 on r1_1.id=r1_0.role_id left join role_permissions p1_0 on r1_1.id=p1_0.role_id left join permissions p1_1 on p1_1.id=p1_0.permission_id where u1_0.external_citizen_id=?
+Hibernate: select count(*) from citizen_snapshot cs1_0 where cs1_0.user_id=?
+Hibernate: insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default)
+2026-11-15T19:01:13.846-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23505, SQLState: 23505
+2026-11-15T19:01:13.846-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de indice de Unicidad ó Clave primaria: "PUBLIC.CONSTRAINT_4D4 INDEX PUBLIC.CONSTRAINT_INDEX_4D4 ON PUBLIC.USERS(EXTERNAL_CITIZEN_ID NULLS FIRST) VALUES ( /* 1 */ 'citizen-1' )"
+Unique index or primary key violation: "PUBLIC.CONSTRAINT_4D4 INDEX PUBLIC.CONSTRAINT_INDEX_4D4 ON PUBLIC.USERS(EXTERNAL_CITIZEN_ID NULLS FIRST) VALUES ( /* 1 */ 'citizen-1' )"; SQL statement:
+insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default) [23505-240]
+Hibernate: insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default)
+Hibernate: insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default)
+Hibernate: select count(*) from citizen_snapshot cs1_0 where cs1_0.user_id=?
+Hibernate: insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default)
+2026-11-15T19:01:13.965-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : HHH000247: ErrorCode: 23513, SQLState: 23513
+2026-11-15T19:01:13.966-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jdbc.error             : Violación de Check constraint: "CK_USERS_LOCAL_CREDENTIALS: "
+Check constraint violation: "CK_USERS_LOCAL_CREDENTIALS: "; SQL statement:
+insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default) [23513-240]
+Hibernate: insert into users (active,created_at,email,external_citizen_id,name,password_hash,updated_at,username,id) values (?,?,?,?,?,?,?,?,default)
+Hibernate: insert into citizen_snapshot (address,block_reason,blocked,created_at,deceased_at,dni,email,full_name,last_address_at,last_registered_at,last_state_at,phone,review_required,updated_at,user_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+Hibernate: select cs1_0.user_id,cs1_0.address,cs1_0.block_reason,cs1_0.blocked,cs1_0.created_at,cs1_0.deceased_at,cs1_0.dni,cs1_0.email,cs1_0.full_name,cs1_0.last_address_at,cs1_0.last_registered_at,cs1_0.last_state_at,cs1_0.phone,cs1_0.review_required,cs1_0.updated_at from citizen_snapshot cs1_0 where cs1_0.user_id=?
+Hibernate: select u1_0.id,u1_0.active,u1_0.created_at,u1_0.email,u1_0.external_citizen_id,u1_0.name,u1_0.password_hash,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.id=?
+Hibernate: delete from user_roles where user_id=?
+Hibernate: delete from users where id=?
+Hibernate: select count(*) from citizen_snapshot cs1_0 where cs1_0.user_id=?
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

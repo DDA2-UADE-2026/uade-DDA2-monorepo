@@ -1,0 +1,29 @@
+import org.gradle.testing.jacoco.tasks.JacocoReport
+import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
+import org.gradle.api.tasks.SourceSetContainer
+
+// Configuracion externa: solo se aplica al invocar Gradle con -I.
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    p.pluginManager.apply('jacoco')
+    p.extensions.getByType(JacocoPluginExtension).toolVersion = '0.8.14'
+    def main = p.extensions.getByType(SourceSetContainer).getByName('main')
+    def tests = p.tasks.named('test')
+    tests.configure { outputs.upToDateWhen { false } }
+    p.tasks.register('qaCoverageReport', JacocoReport) {
+        group = 'verification'
+        description = 'Cobertura del backend: todas las clases de main, sin clases de test.'
+        dependsOn(tests)
+        executionData(p.layout.buildDirectory.file('jacoco/test.exec'))
+        classDirectories.setFrom(main.output.classesDirs)
+        sourceDirectories.setFrom(main.allSource.srcDirs)
+        reports {
+            html.required = true
+            xml.required = true
+            csv.required = true
+            html.outputLocation = p.layout.buildDirectory.dir('reports/qa-coverage/html')
+            xml.outputLocation = p.layout.buildDirectory.file('reports/qa-coverage/coverage.xml')
+            csv.outputLocation = p.layout.buildDirectory.file('reports/qa-coverage/coverage.csv')
+        }
+    }
+}

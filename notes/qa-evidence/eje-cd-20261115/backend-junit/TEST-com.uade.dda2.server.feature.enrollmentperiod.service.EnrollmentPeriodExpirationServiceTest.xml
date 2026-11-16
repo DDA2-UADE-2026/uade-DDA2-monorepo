@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.enrollmentperiod.service.EnrollmentPeriodExpirationServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:31.400Z" hostname="DESKTOP-OL92NPA" time="0.873">
+  <properties/>
+  <testcase name="cierra períodos vencidos una sola vez y los audita como sistema()" classname="com.uade.dda2.server.feature.enrollmentperiod.service.EnrollmentPeriodExpirationServiceTest" time="0.872"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

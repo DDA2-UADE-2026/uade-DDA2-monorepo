@@ -53,7 +53,7 @@ function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
         : await switchRole.mutateAsync({ body: { role } })
 
       if (data.user?.activeRole) {
-        navigate({ to: getRoleHome(data.user.activeRole), replace: true })
+        void navigate({ to: getRoleHome(data.user.activeRole), replace: true })
       }
     } catch {
       // TanStack Query exposes the API error below and keeps this screen active.
@@ -69,7 +69,7 @@ function RoleSwitcher({ roleChoice }: RoleSwitcherProps) {
       return
     }
 
-    navigate({ to: getRoleHome(activeRole!), replace: true })
+    void navigate({ to: getRoleHome(activeRole!), replace: true })
   }
 
   return (

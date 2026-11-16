@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val loginRateLimitFilter: LoginRateLimitFilter,
     private val securityErrorResponseWriter: SecurityErrorResponseWriter,
     private val corsProperties: CorsProperties,
     private val csrfTokenRepository: CsrfTokenRepository,
@@ -79,9 +80,12 @@ class SecurityConfig(
                 it.requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()
                 it.requestMatchers("/actuator/health", "/error").permitAll()
                 it.requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/springwolf/**").denyAll()
+                it.requestMatchers(HttpMethod.GET, "/springwolf/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(loginRateLimitFilter, JwtAuthenticationFilter::class.java)
             .build()
 
     @Bean
@@ -92,8 +96,8 @@ class SecurityConfig(
         val configuration = CorsConfiguration().apply {
             allowedOrigins = corsProperties.nonBlankOrigins
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-            allowedHeaders = listOf("Authorization", "Content-Type", "Idempotency-Key", "X-XSRF-TOKEN")
-            exposedHeaders = listOf("Authorization", "Location", "Idempotency-Replayed")
+            allowedHeaders = listOf("Authorization", "Content-Type", "Idempotency-Key", "If-Match", "X-XSRF-TOKEN")
+            exposedHeaders = listOf("Authorization", "Location", "Idempotency-Replayed", "ETag", "Retry-After")
             allowCredentials = true
         }
 

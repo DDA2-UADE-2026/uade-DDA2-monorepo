@@ -9,6 +9,7 @@ import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.program.entity.Program
 import com.uade.dda2.server.feature.program.entity.ProgramEdition
 import com.uade.dda2.server.feature.program.entity.enums.ProgramEditionStatus
+import com.uade.dda2.server.feature.program.dto.admin.request.UpdateProgramRequest
 import com.uade.dda2.server.feature.program.repository.ProgramEditionRepository
 import com.uade.dda2.server.feature.program.repository.ProgramImageRepository
 import com.uade.dda2.server.feature.program.repository.ProgramRepository
@@ -26,6 +27,10 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import tools.jackson.databind.JsonNode
@@ -163,6 +168,35 @@ class ProgramImageFlowTest {
         val availableList = body(mvc.perform(get("/api/programs?page=0&size=100")).andReturn(), 200)
         assertEquals(imageUrl, findProgram(availableList.get("content")).get("imageUrl").asString())
         assertEquals(imageUrl, body(mvc.perform(get("/api/programs/${fixture.programId}")).andReturn(), 200).get("imageUrl").asString())
+    }
+
+    @Test
+    fun `etag protege las actualizaciones de programa contra escrituras obsoletas`() {
+        val firstGet = mvc.perform(get("/api/admin/programs/${fixture.programId}")
+            .header("Authorization", authorization(fixture.adminToken)))
+            .andExpect(status().isOk)
+            .andReturn()
+        val firstTag = requireNotNull(firstGet.response.getHeader("ETag"))
+
+        val updated = mvc.perform(put("/api/admin/programs/${fixture.programId}")
+            .header("Authorization", authorization(fixture.adminToken))
+            .header("If-Match", firstTag)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.writeValueAsString(UpdateProgramRequest("Programa actualizado ${UUID.randomUUID()}", "Objetivo actualizado"))))
+            .andExpect(status().isOk)
+            .andReturn()
+        val newTag = requireNotNull(updated.response.getHeader("ETag"))
+        assertFalse(firstTag == newTag)
+
+        mvc.perform(put("/api/admin/programs/${fixture.programId}")
+            .header("Authorization", authorization(fixture.adminToken))
+            .header("If-Match", firstTag)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json.writeValueAsString(UpdateProgramRequest("Escritura obsoleta", "No debe guardarse"))))
+            .andExpect(status().isPreconditionFailed)
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.code").value("PROGRAM_ETAG_MISMATCH"))
+            .andExpect(jsonPath("$.status").value(412))
     }
 
     @Test

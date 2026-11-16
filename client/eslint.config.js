@@ -26,6 +26,14 @@ export default defineConfig([
     ],
     languageOptions: {
       globals: globals.browser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      // Mirrors Sonar typescript:S9383 — promises must be awaited, caught or marked with `void`.
+      '@typescript-eslint/no-floating-promises': 'error',
     },
   },
   {

@@ -48,6 +48,7 @@ fun Application.toAdminResponse(
     createdAt = createdAt, updatedAt = updatedAt,
     idempotencyKey = idempotencyKey, requestHash = requestHash,
     pendingDocuments = pendingDocuments, documentRequirements = documentRequirements,
+    closedReason = closedReason, closedAt = closedAt, closedByEventId = closedByEventId,
 )
 
 fun Application.toAuditSnapshot(): Map<String, Any?> = mapOf(

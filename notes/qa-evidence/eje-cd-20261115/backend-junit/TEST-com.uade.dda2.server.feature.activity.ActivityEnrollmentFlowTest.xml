@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-15T21:58:38.494Z" hostname="DESKTOP-OL92NPA" time="9.722">
+  <properties/>
+  <testcase name="recorre alta edicion publicacion inscripcion asistencia correccion y cierre()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.529"/>
+  <testcase name="recupera la inscripcion propia y no revela la de otro ciudadano()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.141"/>
+  <testcase name="dos inscripciones concurrentes no superan el ultimo cupo()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.133"/>
+  <testcase name="conserva el historial cerrado solo para su titular y pagina sus inscripciones()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.181"/>
+  <testcase name="exige actividad abierta y cupo disponible()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.094"/>
+  <testcase name="lista y consulta solamente actividades abiertas con cupos disponibles()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.105"/>
+  <testcase name="confirma la inscripcion y rechaza duplicados()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.083"/>
+  <testcase name="requiere autenticacion y permisos ciudadanos()" classname="com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest" time="0.061"/>
+  <system-out><![CDATA[2026-11-15T18:58:38.500-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest]: ActivityEnrollmentFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:58:38.505-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest
+2026-11-15T18:58:38.508-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest]: ActivityEnrollmentFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:58:38.512-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T18:58:38.585-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ActivityEnrollmentFlowTest   : Starting ActivityEnrollmentFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T18:58:38.585-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ActivityEnrollmentFlowTest   : The following 1 profile is active: "docs"
+2026-11-15T18:58:40.260-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T18:58:40.780-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 517 ms. Found 43 JPA repository interfaces.
+2026-11-15T18:58:41.204-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T18:58:41.278-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T18:58:41.280-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-11-15T18:58:41.286-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection conn30: url=jdbc:h2:mem:activity-enrollments user=SA
+2026-11-15T18:58:41.287-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-11-15T18:58:41.288-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T18:58:41.290-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:activity-enrollments]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: ACTIVITY-ENROLLMENTS/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T18:58:41.896-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T18:58:42.107-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T18:58:44.893-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T18:58:44.893-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T18:58:44.915-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T18:58:44.926-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 33 ms
+2026-11-15T18:58:45.012-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.a.ActivityEnrollmentFlowTest   : Started ActivityEnrollmentFlowTest in 6.493 seconds (process running for 90.371)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

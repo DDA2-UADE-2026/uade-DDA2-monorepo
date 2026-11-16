@@ -346,26 +346,26 @@ function EnrollmentPeriodDialog({
   })
   const invalidatePeriod = () => {
     if (!enrollmentPeriodId) return
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({
       queryKey: getEnrollmentPeriodQueryKey({ path: periodPath }),
     })
   }
   const refresh = () => {
     invalidatePeriod()
-    invalidateList()
+    void invalidateList()
   }
   const syncPeriod = (data: EnrollmentPeriodResponse) => {
     queryClient.setQueryData(
       getEnrollmentPeriodQueryKey({ path: periodPath }),
       data,
     )
-    invalidateList()
+    void invalidateList()
   }
 
   const createPeriod = useMutation({
     ...createEnrollmentPeriodMutation(),
     onSuccess: () => {
-      invalidateList()
+      void invalidateList()
       onOpenChange(false)
     },
     onError: showApiErrorToast,
@@ -518,7 +518,7 @@ function EnrollmentPeriodDialog({
               onSubmit={(event) => {
                 event.preventDefault()
                 event.stopPropagation()
-                form.handleSubmit()
+                void form.handleSubmit()
               }}
             >
               <div className="grid gap-4 sm:grid-cols-2">

@@ -15,11 +15,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   close1Mutation,
   get1QueryKey,
-  list5QueryKey,
-  publishMutation,
-  list8QueryKey,
+  list7QueryKey,
+  publish1Mutation,
+  list13QueryKey,
   listActivitiesQueryKey,
-  get4QueryKey,
+  get6QueryKey,
   getProfessionalActivityQueryKey,
 } from "@/generated/@tanstack/react-query.gen"
 import type { ActivityResponse } from "@/generated/types.gen"
@@ -49,18 +49,18 @@ export function ActivityStatusDialog({ activity, action, onOpenChange, onDone }:
 }) {
   const queryClient = useQueryClient()
   const onSuccess = (saved: ActivityResponse) => {
-    queryClient.invalidateQueries({ queryKey: list5QueryKey() })
-    queryClient.invalidateQueries({ queryKey: list8QueryKey() })
-    queryClient.invalidateQueries({ queryKey: listActivitiesQueryKey() })
+    void queryClient.invalidateQueries({ queryKey: list7QueryKey() })
+    void queryClient.invalidateQueries({ queryKey: list13QueryKey() })
+    void queryClient.invalidateQueries({ queryKey: listActivitiesQueryKey() })
     if (saved.id) {
-      queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: saved.id } }) })
-      queryClient.invalidateQueries({ queryKey: getProfessionalActivityQueryKey({ path: { activityId: saved.id } }) })
+      void queryClient.invalidateQueries({ queryKey: get6QueryKey({ path: { id: saved.id } }) })
+      void queryClient.invalidateQueries({ queryKey: getProfessionalActivityQueryKey({ path: { activityId: saved.id } }) })
     }
-    if (saved.id) queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
+    if (saved.id) void queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
     onDone?.(saved)
     onOpenChange(false)
   }
-  const publish = useMutation({ ...publishMutation(), onSuccess })
+  const publish = useMutation({ ...publish1Mutation(), onSuccess })
   const close = useMutation({ ...close1Mutation(), onSuccess })
 
   const mutation = action === "publish" ? publish : close

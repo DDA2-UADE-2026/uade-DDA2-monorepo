@@ -12,7 +12,7 @@ import { formatProgramDate } from "@/lib/program-dates"
 import { cn } from "@/lib/utils"
 
 const TICKER_SIZE = 12
-const SECONDS_PER_PROGRAM = 7
+const SECONDS_PER_PROGRAM = 9
 const PROGRAM_DESCRIPTION_FALLBACK = "El objetivo de este programa se informará próximamente."
 // Con pocos programas el track queda más angosto que la pantalla y el bucle
 // mostraría un hueco, así que se repite la tanda hasta cubrirla.
@@ -122,15 +122,15 @@ function ProgramTickerCard({
       to="/portal/programas/$programaId"
       params={{ programaId: program.id ?? "" }}
       tabIndex={tabIndex}
-      className="relative overflow-hidden flex w-80 items-center gap-3 rounded-2xl bg-card p-2 ring-1 ring-foreground/10 transition-shadow hover:shadow-md hover:ring-primary/30"
+      className="relative flex w-[min(25rem,85vw)] items-center gap-4 overflow-hidden rounded-2xl bg-card p-3 ring-1 ring-foreground/10 transition-shadow hover:shadow-md hover:ring-primary/30"
     >
-      <ProgramThumbnail imageUrl={program.imageUrl} className="size-16" />
+      <ProgramThumbnail imageUrl={program.imageUrl} className="size-20 sm:size-24" />
       <div className="min-w-0 flex-1 pr-1 flex flex-col h-full">
         <span className="flex-1 flex-col flex">
-          <p className="truncate font-heading text-sm font-medium capitalize">
+          <p className="truncate font-heading text-base font-medium capitalize">
             {program.name || "Programa sin nombre"}
           </p>
-          <p className="line-clamp-1 text-xs text-muted-foreground">
+          <p className="line-clamp-2 text-sm text-muted-foreground">
             {program.objective || PROGRAM_DESCRIPTION_FALLBACK}
           </p>
         </span>
@@ -157,9 +157,9 @@ function ProgramTickerSkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
-          className="flex w-80 shrink-0 items-center gap-3 rounded-2xl bg-card p-2 ring-1 ring-foreground/10"
+          className="flex w-[min(25rem,85vw)] shrink-0 items-center gap-4 rounded-2xl bg-card p-3 ring-1 ring-foreground/10"
         >
-          <Skeleton className="size-16 shrink-0 rounded-xl" />
+          <Skeleton className="size-20 shrink-0 rounded-xl sm:size-24" />
           <div className="min-w-0 flex-1 space-y-2 pr-1">
             <Skeleton className="h-4 w-2/3" />
             <Skeleton className="h-3 w-full" />

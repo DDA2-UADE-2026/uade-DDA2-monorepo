@@ -70,6 +70,12 @@ echo location of your Java installation. 1>&2
 :execute
 @rem Setup the command line
 
+@rem Gradle writes worker @argfiles using its default charset, while the Java 17
+@rem launcher reads them using the Windows native charset. Match those charsets
+@rem so project paths containing non-ASCII characters remain valid with JDK 18+.
+set "GRADLE_NATIVE_ENCODING="
+for /f "tokens=1,3" %%A in ('""%JAVA_EXE%" -XshowSettings:properties -version 2>&1"') do if "%%A"=="native.encoding" set "GRADLE_NATIVE_ENCODING=%%B"
+if defined GRADLE_NATIVE_ENCODING set DEFAULT_JVM_OPTS=%DEFAULT_JVM_OPTS% "-Dfile.encoding=%GRADLE_NATIVE_ENCODING%"
 
 
 @rem Execute Gradle

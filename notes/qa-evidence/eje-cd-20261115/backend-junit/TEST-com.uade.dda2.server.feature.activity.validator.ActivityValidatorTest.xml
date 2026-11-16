@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-15T21:58:56.668Z" hostname="DESKTOP-OL92NPA" time="0.007">
+  <properties/>
+  <testcase name="solo permite publicar borradores()" classname="com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest" time="0.004"/>
+  <testcase name="solo permite cerrar actividades abiertas()" classname="com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest" time="0.001"/>
+  <testcase name="rechaza fecha final anterior a la inicial()" classname="com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest" time="0.0"/>
+  <testcase name="solo permite editar borradores()" classname="com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest" time="0.0"/>
+  <testcase name="acepta actividades de un solo dia()" classname="com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

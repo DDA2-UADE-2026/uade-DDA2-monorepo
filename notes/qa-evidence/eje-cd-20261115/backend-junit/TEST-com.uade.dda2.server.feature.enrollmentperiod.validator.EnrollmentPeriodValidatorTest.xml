@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:03:32.273Z" hostname="DESKTOP-OL92NPA" time="0.022">
+  <properties/>
+  <testcase name="no permite abrir si la edición ya tiene otro período abierto()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.004"/>
+  <testcase name="solo períodos abiertos o suspendidos pueden cerrarse()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.002"/>
+  <testcase name="rechaza un período fuera de las fechas de la edición()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="rechaza un rango con fecha de cierre anterior a la apertura()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="solo un período abierto puede suspenderse()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="solo permite abrir si la edición está activa()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="considera superposición cuando dos períodos comparten un día límite()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="solo acepta solicitudes de un período abierto vigente y de la misma edición()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="no permite abrir anticipadamente()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.0"/>
+  <testcase name="al editar excluye el período actual de la búsqueda de solapamientos()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.002"/>
+  <testcase name="permite abrir en los límites inclusivos del período()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.001"/>
+  <testcase name="no permite reabrir después de la fecha de cierre()" classname="com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

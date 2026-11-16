@@ -1,0 +1,12 @@
+{
+  "users": [{"name": "module_desarrollo-social", "password_hash": "GENERATED_PASSWORD_HASH", "hashing_algorithm": "rabbit_password_hashing_sha256", "tags": ["administrator"]}],
+  "vhosts": [{"name": "core"}],
+  "permissions": [{"user": "module_desarrollo-social", "vhost": "core", "configure": ".*", "write": ".*", "read": ".*"}],
+  "exchanges": [
+    {"name": "muni.inbox", "vhost": "core", "type": "fanout", "durable": true, "auto_delete": false, "internal": false, "arguments": {}}
+  ],
+  "queues": [
+    {"name": "q.desarrollo-social", "vhost": "core", "durable": true, "auto_delete": false, "arguments": {}}
+  ],
+  "bindings": []
+}

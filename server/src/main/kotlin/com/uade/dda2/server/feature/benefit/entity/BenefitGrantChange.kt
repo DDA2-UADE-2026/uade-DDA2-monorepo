@@ -24,7 +24,9 @@ import java.util.UUID
         "(action = 'FINALIZED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'FINALIZED' and end_date = previous_end_date) or " +
         "(action = 'EXPIRED' and previous_status in ('ACTIVE', 'SUSPENDED') and status = 'EXPIRED' and end_date = previous_end_date)))"),
     CheckConstraint(name = "ck_benefit_grant_change_responsible", constraint =
-        "(action = 'EXPIRED' and responsible_user_id is null) or (action <> 'EXPIRED' and responsible_user_id is not null)"),
+        "(action = 'EXPIRED' and responsible_user_id is null) or " +
+        "(action = 'FINALIZED' and responsible_user_id is null and causation_event_id is not null) or " +
+        "(action <> 'EXPIRED' and responsible_user_id is not null)"),
     CheckConstraint(name = "ck_benefit_grant_change_dates", constraint = "start_date <= end_date"),
 ])
 class BenefitGrantChange(
@@ -56,6 +58,10 @@ class BenefitGrantChange(
     val responsible: User?,
     @Column(name = "changed_at", nullable = false, updatable = false)
     val changedAt: OffsetDateTime,
+    @Column(name = "causation_event_id", updatable = false)
+    val causationEventId: UUID? = null,
+    @Column(name = "effective_end_date", updatable = false)
+    val effectiveEndDate: LocalDate? = null,
 ) {
     @OneToMany(mappedBy = "change", cascade = [CascadeType.PERSIST])
     @OrderBy("requirementId ASC")

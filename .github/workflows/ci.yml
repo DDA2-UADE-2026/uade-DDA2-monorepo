@@ -45,13 +45,13 @@ jobs:
             changed_files="$(git diff --name-only "$BEFORE_SHA" "$HEAD_SHA")"
           fi
 
-          if grep -q '^client/' <<< "$changed_files"; then
+          if grep -Eq '^client/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
             echo "client=true" >> "$GITHUB_OUTPUT"
           else
             echo "client=false" >> "$GITHUB_OUTPUT"
           fi
 
-          if grep -q '^server/' <<< "$changed_files"; then
+          if grep -Eq '^server/|^\.github/workflows/ci\.yml$' <<< "$changed_files"; then
             echo "server=true" >> "$GITHUB_OUTPUT"
           else
             echo "server=false" >> "$GITHUB_OUTPUT"
@@ -78,10 +78,13 @@ jobs:
           cache-dependency-path: client/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Lint
         run: npm run lint
+
+      - name: Test client
+        run: npm run test:run
 
       - name: Build
         run: npm run build
@@ -103,6 +106,21 @@ jobs:
           java-version: "17"
           cache: gradle
 
-      - name: Build server
+      - name: Test and build server
         working-directory: server
-        run: ./gradlew assemble --no-daemon
+        run: |
+          ./gradlew build --no-daemon
+          ./gradlew testContainers --no-daemon
+
+      - name: Upload backend test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports-${{ github.run_id }}
+          path: |
+            server/build/test-results/test/**/*.xml
+            server/build/test-results/testContainers/**/*.xml
+            server/build/reports/tests/test/index.html
+            server/build/reports/tests/testContainers/index.html
+          if-no-files-found: warn
+          retention-days: 14

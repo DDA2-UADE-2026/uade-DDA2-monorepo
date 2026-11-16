@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:02:03.604Z" hostname="DESKTOP-OL92NPA" time="0.012">
+  <properties/>
+  <testcase name="transiciones son definitivas y no aceptan asignacion como cambio()" classname="com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest" time="0.004"/>
+  <testcase name="renovacion requiere fecha y checklist explicitos()" classname="com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest" time="0.001"/>
+  <testcase name="motivo recortado admite limites y rechaza vacios nulos y extensos()" classname="com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest" time="0.001"/>
+  <testcase name="acepta renovar el ultimo dia inclusivo pero rechaza despues del vencimiento()" classname="com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest" time="0.001"/>
+  <testcase name="checklist distingue estructura invalida de requisito incumplido()" classname="com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

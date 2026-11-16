@@ -1,0 +1,8 @@
+.opencode
+
+# Local configuration and generated credentials
+.env
+.env.*
+!.env.example
+.DS_Store
+**/__pycache__/

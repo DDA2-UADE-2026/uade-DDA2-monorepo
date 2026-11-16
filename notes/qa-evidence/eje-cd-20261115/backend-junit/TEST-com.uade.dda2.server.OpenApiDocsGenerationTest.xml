@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.OpenApiDocsGenerationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T21:58:07.304Z" hostname="DESKTOP-OL92NPA" time="8.554">
+  <properties/>
+  <testcase name="dumps the OpenAPI spec to build openapi openapi json()" classname="com.uade.dda2.server.OpenApiDocsGenerationTest" time="8.522"/>
+  <system-out><![CDATA[2026-11-15T18:58:07.309-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.OpenApiDocsGenerationTest]: OpenApiDocsGenerationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:58:07.319-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.OpenApiDocsGenerationTest
+2026-11-15T18:58:07.322-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.OpenApiDocsGenerationTest]: OpenApiDocsGenerationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T18:58:07.329-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.OpenApiDocsGenerationTest
+2026-11-15T18:58:15.523-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 8143 ms
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

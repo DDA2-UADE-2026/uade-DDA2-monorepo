@@ -37,7 +37,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  create6Mutation,
+  create7Mutation,
   delete6Mutation,
   findAll3Options,
   findAll3QueryKey,
@@ -273,16 +273,16 @@ function BenefitDialog({
   })
 
   const create = useMutation({
-    ...create6Mutation(),
+    ...create7Mutation(),
     onSuccess: () => {
-      refresh()
+      void refresh()
       onOpenChange(false)
     },
   })
   const update = useMutation({
     ...update6Mutation(),
     onSuccess: () => {
-      refresh()
+      void refresh()
       onOpenChange(false)
     },
   })
@@ -340,7 +340,7 @@ function BenefitDialog({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Field name="benefitType" children={(field) => {

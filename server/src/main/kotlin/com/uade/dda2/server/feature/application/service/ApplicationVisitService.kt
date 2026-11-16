@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.application.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
 import com.uade.dda2.server.config.AppointmentProperties
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.CancelApplicationVisitRequest
@@ -90,6 +91,7 @@ class ApplicationVisitService(
     private val applicationTime: EnrollmentPeriodExpirationProperties,
     private val appointmentTime: AppointmentProperties,
     private val entityManager: EntityManager,
+    private val businessEvents: org.springframework.context.ApplicationEventPublisher,
 ) {
     @Transactional
     fun create(applicationId: UUID, request: CreateApplicationVisitRequest): ApplicationVisitResponse {
@@ -145,6 +147,7 @@ class ApplicationVisitService(
             entityId = requireNotNull(visit.id).toString(),
             newValues = json.writeValueAsString(visit.toCreationAuditSnapshot(previousStatus)),
         )
+        businessEvents.publishEvent(M8BusinessFact.VisitScheduled(visit))
         return visit.toResponse(appointmentTime.zone())
     }
 
@@ -198,6 +201,7 @@ class ApplicationVisitService(
         locked.visit.lastRescheduledAt = now
         locked.application.updatedAt = LocalDateTime.ofInstant(now.toInstant(), applicationTime.zone())
         visits.saveAndFlush(locked.visit)
+        businessEvents.publishEvent(M8BusinessFact.VisitScheduled(locked.visit))
         recordUpdate(
             actor = locked.actor,
             visit = locked.visit,

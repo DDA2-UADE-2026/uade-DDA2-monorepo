@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState, type FormEvent } from "react"
 
-import { AuditDiffDialog } from "@/components/audit/AuditDiffDialog"
+import { AuditDiffSheet } from "@/components/audit/AuditDiffSheet"
 import { DataPagination } from "@/components/DataPagination"
 import {
   OutletNavSidebarTrigger,
@@ -394,7 +394,35 @@ function RouteComponent() {
                           <TableCell>
                             {log.entityId &&
                             (log.oldValues || log.newValues) ? (
-                              <AuditDiffDialog log={log} />
+                              <AuditDiffSheet
+                                log={log}
+                                details={
+                                  <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                                    <div>
+                                      <dt className="text-xs text-muted-foreground">Fecha</dt>
+                                      <dd className="mt-0.5">{formatDateTime(log.createdAt)}</dd>
+                                    </div>
+                                    <div>
+                                      <dt className="text-xs text-muted-foreground">Acción</dt>
+                                      <dd className="mt-0.5">
+                                        {log.action ? (
+                                          <Badge variant="outline" className={actionStyles[log.action]}>
+                                            {actionLabels[log.action]}
+                                          </Badge>
+                                        ) : "—"}
+                                      </dd>
+                                    </div>
+                                    <div>
+                                      <dt className="text-xs text-muted-foreground">Entidad</dt>
+                                      <dd className="mt-0.5">{log.entityType ? getEntityLabel(log.entityType) : "—"}</dd>
+                                    </div>
+                                    <div>
+                                      <dt className="text-xs text-muted-foreground">Usuario</dt>
+                                      <dd className="mt-0.5"><ActorCell log={log} /></dd>
+                                    </div>
+                                  </dl>
+                                }
+                              />
                             ) : (
                               "—"
                             )}

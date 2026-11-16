@@ -99,6 +99,21 @@ class CenterCatalogFlowTest {
     }
 
     @Test
+    fun `gestion de actividades solo puede consultar centros activos`() {
+        val token = tx {
+            val permission = permissions.findByNameIn(listOf("activities:management:create")).firstOrNull()
+                ?: permissions.save(Permission(name = "activities:management:create"))
+            val role = roles.saveAndFlush(Role(name = "ACTIVITY-${UUID.randomUUID()}", permissions = mutableSetOf(permission)))
+            val user = users.saveAndFlush(User(name = "Actividad", email = "activity-${UUID.randomUUID()}@example.com", roles = mutableSetOf(role)))
+            jwt.createToken(user, role)
+        }
+        expect(mvc.perform(get("/api/admin/municipal-centers").param("active", "true").header("Authorization", "Bearer $token")).andReturn(), 200)
+        expect(mvc.perform(get("/api/admin/municipal-centers").header("Authorization", "Bearer $token")).andReturn(), 403)
+        expect(mvc.perform(get("/api/admin/municipal-centers").param("active", "false").header("Authorization", "Bearer $token")).andReturn(), 403)
+        expect(mvc.perform(get("/api/admin/municipal-centers").param("active", "true").header("Authorization", "Bearer $wrongRoleToken")).andReturn(), 403)
+    }
+
+    @Test
     fun `administra centros con busqueda estados y auditoria`() {
         val suffix = UUID.randomUUID().toString().take(8)
         val created = centerResponse(

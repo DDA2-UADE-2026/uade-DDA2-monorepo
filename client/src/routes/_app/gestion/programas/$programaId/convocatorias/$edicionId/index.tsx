@@ -19,7 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list3QueryKey, suspendMutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
+import { activateMutation, closeMutation, delete3Mutation, findById3Options, findById3QueryKey, list3QueryKey, suspend1Mutation, update3Mutation } from "@/generated/@tanstack/react-query.gen"
 import { zUpdateProgramEditionRequest } from "@/generated/zod.gen"
 import { UserChip } from "@/components/UserChip"
 
@@ -39,12 +39,12 @@ function RouteComponent() {
   const client = useQueryClient()
   const [closeDialogOpen, setCloseDialogOpen] = useState(false)
   const query = useQuery(findById3Options({ path: { id: edicionId } }))
-  const refresh = () => { client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }) }
+  const refresh = () => { void client.invalidateQueries({ queryKey: findById3QueryKey({ path: { id: edicionId } }) }); void client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }) }
   const update = useMutation({ ...update3Mutation(), onSuccess: refresh, onError: showApiErrorToast })
   const activate = useMutation({ ...activateMutation(), onSuccess: refresh, onError: showApiErrorToast })
-  const suspend = useMutation({ ...suspendMutation(), onSuccess: refresh, onError: showApiErrorToast })
+  const suspend = useMutation({ ...suspend1Mutation(), onSuccess: refresh, onError: showApiErrorToast })
   const close = useMutation({ ...closeMutation(), onSuccess: () => { refresh(); setCloseDialogOpen(false) }, onError: (error) => { refresh(); showApiErrorToast(error) } })
-  const remove = useMutation({ ...delete3Mutation(), onSuccess: () => { refresh(); navigate({ to: "/gestion/programas/$programaId/convocatorias", params: { programaId }, search: { page: 1 } }) }, onError: showApiErrorToast })
+  const remove = useMutation({ ...delete3Mutation(), onSuccess: () => { refresh(); void navigate({ to: "/gestion/programas/$programaId/convocatorias", params: { programaId }, search: { page: 1 } }) }, onError: showApiErrorToast })
   const busy = update.isPending || activate.isPending || suspend.isPending || close.isPending || remove.isPending
   const resetOperationErrors = () => { update.reset(); activate.reset(); suspend.reset(); close.reset(); remove.reset() }
   const form = useForm({
@@ -62,7 +62,7 @@ function RouteComponent() {
     if (query.data) form.reset({ name: query.data.name ?? "", startDate: query.data.startDate ?? "", endDate: query.data.endDate ?? "", maxCapacity: query.data.maxCapacity })
   }, [form, query.data])
   const isClosed = query.data?.status === "CLOSED"
-  return <RoutePanel><LoadingOrError pending={query.isPending} error={query.isError} retry={() => query.refetch()} />{query.data && <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
+  return <RoutePanel><LoadingOrError pending={query.isPending} error={query.isError} retry={() => query.refetch()} />{query.data && <form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); void form.handleSubmit() }}>
     <div className="flex items-center justify-between">
       <span className={isClosed ? "rounded-full border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive" : "rounded-full border px-3 py-1 text-xs"}>
         {query.data.status ? statusLabels[query.data.status] : "—"}

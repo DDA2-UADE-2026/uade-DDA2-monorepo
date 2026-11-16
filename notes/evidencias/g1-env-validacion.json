@@ -1,0 +1,11 @@
+{
+  "startupAndSmoke": "passed",
+  "exactConfiguredCredentials": "passed",
+  "jwtAndAdminMinimumLengths": "passed",
+  "existingCredentialsMismatch": "rejected without overwrite",
+  "smokeAfterRejectedChanges": "passed",
+  "knownTestCredentialsInLogs": false,
+  "configurationTests": "3 tests passed (including 10 missing/empty-variable subcases)",
+  "applicationDependenciesChanged": false,
+  "userEnvironmentModified": false
+}

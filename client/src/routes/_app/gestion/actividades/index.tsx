@@ -42,7 +42,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { list5Options } from "@/generated/@tanstack/react-query.gen"
+import { list7Options } from "@/generated/@tanstack/react-query.gen"
 import type { ActivityListItemResponse } from "@/generated/types.gen"
 
 export const Route = createFileRoute("/_app/gestion/actividades/")({
@@ -75,7 +75,7 @@ function AdminActivities() {
   } | null>(null)
 
   const { data, isPending, isError, isFetching, dataUpdatedAt, refetch } = useQuery(
-    list5Options({ query: { page: page - 1, size: PAGE_SIZE } }),
+    list7Options({ query: { page: page - 1, size: PAGE_SIZE } }),
   )
   const activities = data?.content ?? []
   const totalItems = Number(data?.totalElements ?? 0)

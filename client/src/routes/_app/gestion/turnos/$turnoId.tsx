@@ -70,8 +70,8 @@ function RouteComponent() {
   const [confirmAction, setConfirmAction] = useState<"cancel" | "release" | null>(null)
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: getAdminAppointmentQueryKey({ path: { id: turnoId } }) })
-    queryClient.invalidateQueries({
+    void queryClient.invalidateQueries({ queryKey: getAdminAppointmentQueryKey({ path: { id: turnoId } }) })
+    void queryClient.invalidateQueries({
       predicate: (query) => (query.queryKey[0] as { _id?: unknown } | undefined)?._id === "listAdminAppointments",
     })
   }
@@ -234,7 +234,7 @@ function RescheduleSection({ turnoId, current, onChanged }: {
 
   const reschedule = useMutation({
     ...rescheduleAdminAppointmentMutation(),
-    onSuccess: () => { setSelected(""); onChanged(); slots.refetch() },
+    onSuccess: () => { setSelected(""); onChanged(); void slots.refetch() },
   })
 
   const apply = (slot: AvailableAppointmentSlotResponse) => {

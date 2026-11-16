@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.uade.dda2.server.feature.center.CenterServiceFlowTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-15T22:02:59.289Z" hostname="DESKTOP-OL92NPA" time="10.404">
+  <properties/>
+  <testcase name="requiere permisos y recursos existentes()" classname="com.uade.dda2.server.feature.center.CenterServiceFlowTest" time="0.099"/>
+  <testcase name="asigna lista desactiva y reactiva el mismo servicio del centro()" classname="com.uade.dda2.server.feature.center.CenterServiceFlowTest" time="0.131"/>
+  <testcase name="rechaza asignar o reactivar con antecedentes inactivos()" classname="com.uade.dda2.server.feature.center.CenterServiceFlowTest" time="0.072"/>
+  <system-out><![CDATA[2026-11-15T19:02:59.291-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.center.CenterServiceFlowTest]: CenterServiceFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:02:59.293-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.center.CenterServiceFlowTest
+2026-11-15T19:02:59.300-03:00  INFO 25964 --- [social-development-api] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.uade.dda2.server.feature.center.CenterServiceFlowTest]: CenterServiceFlowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T19:02:59.307-03:00  INFO 25964 --- [social-development-api] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.uade.dda2.server.ServerApplication for test class com.uade.dda2.server.feature.center.CenterServiceFlowTest
+2026-11-15T19:02:59.316-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+Hibernate: drop table if exists activity cascade 
+Hibernate: drop table if exists activity_enrollment cascade 
+Hibernate: drop table if exists application cascade 
+Hibernate: drop table if exists application_document cascade 
+Hibernate: drop table if exists application_evaluation cascade 
+Hibernate: drop table if exists application_resolution cascade 
+Hibernate: drop table if exists application_resolution_requirement cascade 
+Hibernate: drop table if exists application_visit cascade 
+Hibernate: drop table if exists application_visit_reschedule_request cascade 
+Hibernate: drop table if exists appointment cascade 
+Hibernate: drop table if exists benefit_grant cascade 
+Hibernate: drop table if exists benefit_grant_change cascade 
+Hibernate: drop table if exists benefit_grant_change_requirement cascade 
+Hibernate: drop table if exists center_opening_hour cascade 
+Hibernate: drop table if exists center_service cascade 
+Hibernate: drop table if exists citizen_snapshot cascade 
+Hibernate: drop table if exists community_attention cascade 
+Hibernate: drop table if exists core_inbox cascade 
+Hibernate: drop table if exists core_outbox cascade 
+Hibernate: drop table if exists document cascade 
+Hibernate: drop table if exists enrollment_period cascade 
+Hibernate: drop table if exists intervention_action cascade 
+Hibernate: drop table if exists intervention_follow_up cascade 
+Hibernate: drop table if exists intervention_follow_up_publication cascade 
+Hibernate: drop table if exists intervention_objective cascade 
+Hibernate: drop table if exists intervention_plan cascade 
+Hibernate: drop table if exists logs cascade 
+Hibernate: drop table if exists municipal_center cascade 
+Hibernate: drop table if exists municipal_service cascade 
+Hibernate: drop table if exists permissions cascade 
+Hibernate: drop table if exists professional_assignment cascade 
+Hibernate: drop table if exists professional_availability cascade 
+Hibernate: drop table if exists program cascade 
+Hibernate: drop table if exists program_benefit cascade 
+Hibernate: drop table if exists program_document_requirement cascade 
+Hibernate: drop table if exists program_edition cascade 
+Hibernate: drop table if exists program_image cascade 
+Hibernate: drop table if exists program_incompatibility cascade 
+Hibernate: drop table if exists program_requirement cascade 
+Hibernate: drop table if exists role_permissions cascade 
+Hibernate: drop table if exists roles cascade 
+Hibernate: drop table if exists social_exemption_request cascade 
+Hibernate: drop table if exists social_external_documentation cascade 
+Hibernate: drop table if exists social_revenue_debt cascade 
+Hibernate: drop table if exists social_ticket cascade 
+Hibernate: drop table if exists social_ticket_cursor cascade 
+Hibernate: drop table if exists user_roles cascade 
+Hibernate: drop table if exists users cascade 
+Hibernate: drop sequence if exists application_number_seq
+2026-11-15T19:02:59.327-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Shutdown initiated...
+2026-11-15T19:02:59.329-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-11-15T19:02:59.401-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.center.CenterServiceFlowTest   : Starting CenterServiceFlowTest using Java 17.0.16 with PID 25964 (started by Delfina in C:\Users\Delfina\.codex\worktrees\sonar-scope-fix\uade-DDA2-monorepo\server)
+2026-11-15T19:02:59.401-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.center.CenterServiceFlowTest   : The following 1 profile is active: "docs"
+2026-11-15T19:03:01.246-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-15T19:03:01.813-03:00  INFO 25964 --- [social-development-api] [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 560 ms. Found 43 JPA repository interfaces.
+2026-11-15T19:03:02.294-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-11-15T19:03:02.396-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-15T19:03:02.396-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-24 - Starting...
+2026-11-15T19:03:02.402-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-24 - Added connection conn230: url=jdbc:h2:mem:center-services user=SA
+2026-11-15T19:03:02.402-03:00  INFO 25964 --- [social-development-api] [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-24 - Start completed.
+2026-11-15T19:03:02.402-03:00  WARN 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-15T19:03:02.402-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:center-services]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: CENTER-SERVICES/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-11-15T19:03:02.987-03:00  INFO 25964 --- [social-development-api] [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-15T19:03:03.051-03:00  INFO 25964 --- [social-development-api] [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-15T19:03:06.649-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-15T19:03:06.649-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-15T19:03:06.685-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-11-15T19:03:06.717-03:00  INFO 25964 --- [social-development-api] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 68 ms
+2026-11-15T19:03:06.826-03:00  INFO 25964 --- [social-development-api] [    Test worker] c.u.d.s.f.center.CenterServiceFlowTest   : Started CenterServiceFlowTest in 7.493 seconds (process running for 352.185)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

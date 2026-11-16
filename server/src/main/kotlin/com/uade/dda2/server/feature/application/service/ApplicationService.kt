@@ -1,5 +1,6 @@
 package com.uade.dda2.server.feature.application.service
 
+import com.uade.dda2.server.feature.integration.event.M8BusinessFact
 import com.uade.dda2.server.config.EnrollmentPeriodExpirationProperties
 import com.uade.dda2.server.feature.application.dto.request.AssignApplicationWorkerRequest
 import com.uade.dda2.server.feature.application.dto.request.CreateApplicationRequest
@@ -67,6 +68,7 @@ class ApplicationService(
     private val timeProperties: EnrollmentPeriodExpirationProperties,
     private val pendingDocuments: ApplicationPendingDocumentService,
     private val documentRequirements: ProgramDocumentRequirementRepository,
+    private val businessEvents: org.springframework.context.ApplicationEventPublisher,
 ) {
     @Transactional
     fun submit(request: CreateApplicationRequest, idempotencyKey: String?): ApplicationSubmission {
@@ -123,6 +125,7 @@ class ApplicationService(
         logs.record(user = actor, action = LogAction.CREATE, entityType = LogEntityType.APPLICATION,
             entityId = requireNotNull(application.id).toString(),
             newValues = json.writeValueAsString(application.toAuditSnapshot()))
+        businessEvents.publishEvent(M8BusinessFact.ApplicationSubmitted(application))
         return ApplicationSubmission(response(application), replayed = false)
     }
 
@@ -190,6 +193,7 @@ class ApplicationService(
         }
 
         application.assignedWorker = assignee
+        businessEvents.publishEvent(M8BusinessFact.WorkerAssigned(application))
         application.updatedAt = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
         applications.saveAndFlush(application)
         logs.record(
@@ -213,6 +217,7 @@ class ApplicationService(
         if (evaluations.existsByApplicationId(id)) throw ApplicationErrors.unassignmentAfterEvaluation()
 
         application.assignedWorker = null
+        businessEvents.publishEvent(M8BusinessFact.WorkerAssigned(application))
         application.updatedAt = LocalDateTime.now(timeProperties.zone()).truncatedTo(ChronoUnit.MICROS)
         applications.saveAndFlush(application)
         logs.record(
@@ -238,10 +243,11 @@ class ApplicationService(
             throw ApplicationErrors.invalidResolution("El motivo es obligatorio para rechazar o dejar en lista de espera.")
         }
 
-        // Se bloquea primero la edición: serializa las aprobaciones que compiten por el mismo cupo.
-        val editionId = applications.findById(id).map { it.programEdition.id }.orElse(null) ?: throw ApplicationErrors.notFound()
-        val edition = requireNotNull(editions.findByIdForUpdate(requireNotNull(editionId)))
+        // Mismo orden que resolución canónica y finalización por Core: solicitud, titular, edición.
         val application = applications.findByIdForUpdate(id) ?: throw ApplicationErrors.notFound()
+        users.findByIdForUpdate(requireNotNull(application.user.id)) ?: throw ApplicationErrors.applicantNotFound()
+        val editionId = requireNotNull(application.programEdition.id)
+        val edition = requireNotNull(editions.findByIdForUpdate(editionId))
         val allowed = when (application.status) {
             ApplicationStatus.IN_EVALUATION -> true
             // Desde la lista de espera solo queda decidir: no se vuelve a poner en espera.
@@ -257,9 +263,10 @@ class ApplicationService(
         }
         if (decision == ApplicationResolutionDecision.APPROVED) {
             if (pendingDocuments.calculate(application).isNotEmpty()) throw ApplicationErrors.resolutionWithPendingDocuments()
-            if (applications.countByProgramEditionIdAndStatus(editionId, ApplicationStatus.APPROVED) >= edition.maxCapacity) {
-                throw ApplicationErrors.editionCapacityReached()
-            }
+            val approved = applications.countByProgramEditionIdAndStatus(editionId, ApplicationStatus.APPROVED)
+            if (approved >= edition.maxCapacity) throw ApplicationErrors.editionCapacityReached()
+            // La ruta anterior también reserva el cupo que finalización/fallecimiento deben liberar.
+            edition.currentEnrollment = approved.toInt() + 1
         }
 
         val previousStatus = application.status
@@ -270,6 +277,7 @@ class ApplicationService(
         application.resolvedBy = actor
         application.updatedAt = now
         applications.saveAndFlush(application)
+        businessEvents.publishEvent(M8BusinessFact.ApplicationResolved(application, decision, now.atZone(timeProperties.zone()).toOffsetDateTime()))
         logs.record(
             user = actor,
             action = LogAction.UPDATE,

@@ -57,7 +57,7 @@ export function CenterDialog({ center, onOpenChange, onSaved }: {
   const create = useMutation({
     ...createMunicipalCenterMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
       onSaved?.()
       onOpenChange(false)
     },
@@ -65,7 +65,7 @@ export function CenterDialog({ center, onOpenChange, onSaved }: {
   const update = useMutation({
     ...updateMunicipalCenterMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: listMunicipalCentersQueryKey() })
       onSaved?.()
       onOpenChange(false)
     },
@@ -126,7 +126,7 @@ export function CenterDialog({ center, onOpenChange, onSaved }: {
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>
