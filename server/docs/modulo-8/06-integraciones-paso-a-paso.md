@@ -6,7 +6,7 @@
 
 | Contraparte funcional | Qué recibe M8 | Qué envía M8 | Medio implementado |
 | --- | --- | --- | --- |
-| M1 Ciudadanos, organizaciones y expedientes | Datos/estado de ciudadanos vinculados; referencias de expedientes y documentación pedida. | Pedido de requisitos documentales de una solicitud. | Eventos mediante Core. Login de servidor a servidor confirmado, con detalles e implementación pendientes. Acceso al archivo pendiente de acuerdo. |
+| M1 Ciudadanos, organizaciones y expedientes | Datos/estado de ciudadanos vinculados; referencias de expedientes y documentación pedida. | Pedido de requisitos documentales de una solicitud. | Eventos mediante Core. Cliente HTTP de login disponible, desactivado por defecto; endpoint proxy y sesión pendientes. Acceso al archivo pendiente de acuerdo. |
 | M2 Atención Ciudadana | Tickets derivados, respuestas, cambios de prioridad/escalamiento, reaperturas y cierres. | Hechos de inicio, avance, información requerida, devolución, resolución o rechazo operativo. | Eventos mediante Core. |
 | M5 Rentas | Deudas vencidas/canceladas, pedidos y resultados de exención. | Alta y cambios de cada beneficio otorgado. | Eventos mediante Core. |
 | M9 Core | Entrega de eventos y respuestas de diagnóstico/registro. | Eventos producidos y consultas técnicas autenticadas. | AMQPS para mensajes; HTTPS para API de máquina. |
@@ -27,7 +27,7 @@ flowchart LR
 
 ## 2. M1: vinculación e identidad
 
-El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint confirmado, el uso de `citizenId` UUID, la sesión propia de M8 y los ejemplos documentados de éxito `200` y error `401`. El contrato mínimo permite implementar el cliente y sus pruebas locales. Quedan variantes y cuenta de prueba por confirmar; el cliente y el endpoint proxy todavía no están implementados.
+El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint confirmado, el uso de `citizenId` UUID, la sesión propia de M8 y los ejemplos documentados de éxito `200` y error `401`. El cliente HTTP y sus pruebas locales están implementados, con `M1_AUTH_ENABLED=false` por defecto. La resolución de cuentas, el endpoint proxy y su sesión todavía están pendientes, junto con variantes del contrato y la cuenta privada para probar el ingreso real.
 
 | Paso | Entrada o acción | Datos que utiliza M8 | Resultado local | Salida |
 | --- | --- | --- | --- | --- |

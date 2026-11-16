@@ -11,6 +11,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 app:
+  m1:
+    auth:
+      enabled: false
   core:
     enabled: false
   benefit-grant:

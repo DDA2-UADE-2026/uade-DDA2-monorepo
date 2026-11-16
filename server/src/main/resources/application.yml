@@ -102,6 +102,12 @@ springwolf:
       publishing:
         enabled: false
 app:
+  m1:
+    auth:
+      enabled: ${M1_AUTH_ENABLED:false}
+      base-url: ${M1_AUTH_BASE_URL:https://ciudadanos-m1-backend.onrender.com}
+      connect-timeout: ${M1_AUTH_CONNECT_TIMEOUT:5s}
+      read-timeout: ${M1_AUTH_READ_TIMEOUT:15s}
   core:
     enabled: ${CORE_ENABLED:false}
     business:

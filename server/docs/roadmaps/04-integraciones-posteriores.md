@@ -25,7 +25,9 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [x] Incorporar las capturas de M1 de HTTP `200` y `401`: campos en la raíz, UUID de ciudadano, perfil y headers. Ejemplos documentados, sin prueba remota.
 - [x] Definir el contrato mínimo y los datos de perfil para implementar el cliente y sus pruebas locales.
 - [ ] Completar variantes de errores, nulabilidad, contactos y cuenta de prueba privada con M1.
-- [ ] Implementar el cliente y el login proxy M8, con vinculación verificada y permisos locales de ciudadano.
+- [x] Implementar cliente HTTP M1, DTOs, configuración opt-in, validaciones de identidad y errores locales sin secretos; pruebas con HTTP simulado.
+- [ ] Resolver usuarios locales y vinculación verificada por UUID ciudadano.
+- [ ] Implementar el login proxy y la sesión M8 con permisos locales de ciudadano.
 - [ ] Acordar e implementar la obtención autorizada del contenido documental por UUID.
 
 ## Etapa B3 Atención Ciudadana

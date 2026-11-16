@@ -6,9 +6,10 @@ El frontend usa exclusivamente cookies HttpOnly; no guarda JWT en `localStorage`
 los tokens del almacenamiento y es necesario iniciar sesión otra vez.
 
 El [contrato de login integrado con M1](m1-auth-contract.md) registra el ingreso
-de servidor a servidor y la futura sesión propia de M8. El endpoint proxy todavía
-no está implementado. Los ejemplos documentados de éxito `200` y error `401` ya están
-registrados; faltan variantes del contrato y la cuenta de prueba privada con M1.
+de servidor a servidor y la futura sesión propia de M8. El cliente HTTP está
+implementado detrás de `M1_AUTH_ENABLED=false`; la resolución de cuentas y el endpoint
+proxy todavía están pendientes. Los ejemplos documentados de éxito `200` y error `401`
+ya están registrados; faltan variantes del contrato y la cuenta de prueba privada con M1.
 
 ## Contratos
 

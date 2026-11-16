@@ -1,8 +1,8 @@
 # Contrato de login integrado con M1
 
-Estado al 16 de noviembre de 2026: contrato mínimo registrado a partir de la comunicación de M1 y las capturas de sus ejemplos de éxito y error aportadas por el equipo. El backend M8 actuará como proxy de autenticación: enviará las credenciales a M1 por HTTPS y emitirá su propia sesión con permisos locales. El cliente HTTP y el endpoint de M8 todavía no están implementados.
+Estado al 16 de noviembre de 2026: contrato mínimo registrado a partir de la comunicación de M1 y las capturas de sus ejemplos de éxito y error aportadas por el equipo. El cliente HTTP de M1 está implementado y desactivado por defecto. El backend M8 actuará como proxy de autenticación y emitirá su propia sesión con permisos locales; el endpoint, la resolución de cuentas y la sesión externa corresponden a los pasos siguientes.
 
-Este documento cubre el primer paso de la integración. Los ejemplos documentados de HTTP `200` y `401` permiten implementar el cliente y sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
+Este documento cubre el contrato del primer paso y el cliente HTTP del segundo. Los ejemplos documentados de HTTP `200` y `401` son la base de sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
 
 ## Fuentes y precedencia
 
@@ -80,7 +80,7 @@ Un ejemplo de éxito no especifica por sí solo la nulabilidad u obligatoriedad 
 | `actorId` | Coincide con `citizenId` para ciudadanos y aparece en el ejemplo nuevo. | Si viene informado, exigir un UUID equivalente. Su obligatoriedad general debe confirmarse; no usarlo como fallback si falta `citizenId`. |
 | `uuid` | Aparece igual a `citizenId` y `actorId` en el ejemplo nuevo. | No usarlo como fallback de `citizenId`. Si viene informado para el ciudadano, exigir un UUID equivalente. |
 | `user_id` | ID numérico interno de M1. | No usarlo para vincular al ciudadano ni sobrescribir `users.id` de M8. |
-| `Authorization` de respuesta | `Bearer <JWT de M1>`. | Tratarlo como secreto. No validarlo con la clave de M8 ni reenviarlo al navegador como sesión M8. |
+| `Authorization` de respuesta | `Bearer <JWT de M1>`. | Exigir el esquema Bearer y un valor no vacío, sin verificar su firma. Tratarlo como secreto y descartarlo al resolver la identidad. No reenviarlo al navegador como sesión M8. |
 
 El campo `role` también aparece en la raíz con valor `CIUDADANO`. M8 decide el tipo de actor con `actorType` y asigna permisos locales; no deriva privilegios del campo `role` de M1.
 
@@ -108,7 +108,7 @@ El ciudadano sintético `4`, confirmado por M1 como `ACTIVO`, tiene UUID `f398db
 
 La captura nueva de la sección 9.1 documenta un error de credenciales HTTP `401`. Su [cuerpo transcrito](../external/m1-auth/login-invalid-credentials.json) es un objeto en la raíz con `timestamp`, `status`, `error`, `message` y `path`; `status` es el entero `401` y los demás campos son strings. El timestamp del ejemplo es `2026-10-21T09:45:00-03:00`, una fecha ilustrativa de M1 y no la fecha de una prueba nuestra.
 
-La guía anterior también documenta `400` por datos faltantes y `403` por cuenta inactiva o bloqueada. Esos casos requieren confirmación actual. El cliente futuro decide por el estado HTTP y los campos estructurados, sin depender del texto de `message` ni interpretar un `status` del cuerpo como un éxito si el HTTP indica error.
+La guía anterior también documenta `400` por datos faltantes y `403` por cuenta inactiva o bloqueada. Esos casos requieren confirmación actual. El cliente decide por el estado HTTP; no lee ni conserva el cuerpo de un error remoto y no depende de su texto `message` o `status` interno.
 
 | Situación | Comportamiento previsto en M8 |
 | --- | --- |
@@ -122,7 +122,48 @@ La guía anterior también documenta `400` por datos faltantes y `403` por cuent
 | Se agota el tiempo de espera de M1 | `504`, sin reintentar automáticamente el login. |
 | M1 limita intentos | Mantener un error de límite de intentos, si se confirma ese contrato. No reintentar automáticamente. |
 
-Esta tabla define la política propuesta de M8. Los códigos internos del backend y los detalles de timeout y rate limiting se concretarán al implementar el cliente y la ruta proxy. Los cuerpos y headers de error de M1 no se reenviarán sin filtrar ni se registrarán con credenciales o tokens.
+Los códigos implementados y su estado HTTP local son:
+
+| Código M8 | HTTP local | Situación |
+| --- | --- | --- |
+| `M1_AUTH_INVALID_REQUEST` | `400` | Correo o contraseña vacíos; no se llama a M1. |
+| `M1_AUTH_INVALID_CREDENTIALS` | `401` | HTTP `401` remoto o `200` con booleano `auth: false`. |
+| `M1_AUTH_ACCOUNT_FORBIDDEN` | `403` | HTTP `403` remoto, sin deducir un motivo no informado. |
+| `M1_AUTH_ACTOR_NOT_ALLOWED` | `403` | Actor autenticado distinto de `CIUDADANO`. |
+| `M1_AUTH_RATE_LIMITED` | `429` | HTTP `429` remoto. |
+| `M1_AUTH_INVALID_RESPONSE` | `502` | Protocolo, JSON o identidad inválidos; redirecciones u otro estado exitoso distinto de `200`. |
+| `M1_AUTH_UPSTREAM_ERROR` | `502` | Otros rechazos HTTP y fallas remotas, incluido `504` enviado por M1. |
+| `M1_AUTH_UNAVAILABLE` | `503` | HTTP `503` remoto o falla de conexión, DNS o TLS. |
+| `M1_AUTH_TIMEOUT` | `504` | Se agota el tiempo de espera del cliente M8 al llamar a M1. |
+
+`M1AuthException` extiende `ApiException`, por lo que utiliza el contrato de errores existente de M8 cuando se conecte a una ruta. Conserva únicamente el código local y, si se conoce, el estado HTTP remoto; no conserva la excepción original, URLs, cuerpos ni headers. No se copian mensajes de M1 al frontend. El rate limiting de la futura ruta proxy se implementará en el paso de sesión.
+
+## Cliente HTTP implementado
+
+La [configuración](../../src/main/kotlin/com/uade/dda2/server/config/M1AuthConfiguration.kt) crea un [M1AuthClient](../../src/main/kotlin/com/uade/dda2/server/feature/integration/client/M1AuthClient.kt) independiente del cliente de máquina de Core. Usa [RestClient](https://docs.spring.io/spring-framework/reference/integration/rest-clients.html) y [JdkClientHttpRequestFactory](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/client/JdkClientHttpRequestFactory.html), ya disponibles en el stack del proyecto, sin agregar dependencias.
+
+| Variable | Valor predeterminado | Función |
+| --- | --- | --- |
+| `M1_AUTH_ENABLED` | `false` | Crea el cliente al activar; no realiza una llamada de arranque. |
+| `M1_AUTH_BASE_URL` | `https://ciudadanos-m1-backend.onrender.com` | Origen HTTPS sin ruta, credenciales, query ni fragmento. HTTP solo en loopback para pruebas. |
+| `M1_AUTH_CONNECT_TIMEOUT` | `5s` | Tiempo máximo de conexión. |
+| `M1_AUTH_READ_TIMEOUT` | `15s` | Tiempo de espera de respuesta. |
+
+Al activar se validan el origen y los tiempos, entre 1 y 2147483647 milisegundos. El perfil `docs` mantiene el cliente desactivado. No requiere compartir claves JWT, guardar una contraseña de prueba ni activar Core.
+
+`login(M1LoginRequest(gmail, password))` envía una solicitud al endpoint acordado. Quita espacios exteriores del correo y conserva la contraseña exactamente. No sigue redirecciones ni agrega reintentos automáticos, caché de credenciales, cookies, tokens previos o llamadas a refresh.
+
+El éxito requiere `Content-Type` JSON, el encabezado Bearer acordado y un cuerpo de hasta 64 KiB. Se validan tipos sin coerción, UUID completos, coincidencia de identificadores auxiliares cuando estén presentes y un nombre utilizable de hasta 150 caracteres. Se ignoran los campos adicionales de M1. El resultado `M1CitizenIdentity` contiene solo `citizenId` UUID, `userId` numérico opcional y `name`; no conserva access token, refresh token, roles remotos ni contactos.
+
+Las [pruebas HTTP](../../src/test/kotlin/com/uade/dda2/server/feature/integration/M1AuthClientTest.kt) utilizan un servidor loopback y los ejemplos versionados. Las [pruebas de configuración](../../src/test/kotlin/com/uade/dda2/server/feature/integration/M1AuthConfigurationTest.kt) comprueban activación, propiedades y valores rechazados. Ejecutar desde `server`:
+
+```powershell
+.\gradlew.bat test --tests '*M1AuthClientTest' --tests '*M1AuthConfigurationTest' --console=plain
+```
+
+Verificación local del 16 de noviembre de 2026: 72 pruebas nuevas de M1 y 24 de regresión de autenticación, cookies y arranque aprobadas, sin omisiones. `bootJar` generado correctamente. Se comprobó el timeout tanto antes de los headers como durante la lectura del cuerpo, el rechazo de redirecciones y la ausencia de reenvíos tras errores. Estas pruebas no contactan al despliegue de M1.
+
+Este paso no crea usuarios ni modifica roles o sesiones locales. El endpoint `POST /auth/session/m1/login` sigue siendo una propuesta pendiente de implementación, sin cambios en el contrato OpenAPI actual.
 
 ## Pendientes y criterio de cierre del primer paso
 
