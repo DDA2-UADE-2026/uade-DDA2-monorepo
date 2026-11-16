@@ -20,7 +20,7 @@ def api(path, body=None):
         return json.load(result)
 
 
-with opener.open("http://client/", timeout=10) as page:
+with opener.open("http://client:8080/", timeout=10) as page:
     assert page.status == 200 and b'<div id="root">' in page.read(), "Frontend no disponible"
 assert api("/actuator/health")["status"] == "UP"
 password = Path("/run/secrets/BOOTSTRAP_ADMIN_PASSWORD").read_text().strip()
