@@ -1,0 +1,668 @@
+{
+  "captured_at": "2026-11-16T19:43:14.215976+00:00",
+  "implementation": "Configuration-scoped eachDependency override, exact group and four names; not constraints or global force",
+  "candidate": {
+    "base_commit": "3e708fbfd2806bb5272c9040351859936599ce97",
+    "branch": "feature/security-bouncycastle-tooling",
+    "tests": {
+      "tests": 617,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "passed": 612
+    },
+    "suite_count": 57,
+    "junit_suites": [
+      {
+        "name": "com.uade.dda2.server.AsyncApiDocsGenerationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.OpenApiDocsGenerationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.ServerApplicationTests",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.error.GlobalExceptionHandlerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.ActivityAttendanceFlowTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.ActivityEnrollmentFlowTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.ActivityFlowTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.activity.validator.ActivityValidatorTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationAssignmentFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationDocumentFlowTest",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationEvaluationFlowTest",
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationFlowTest",
+        "tests": 59,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationResolutionFlowTest",
+        "tests": 48,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.ApplicationVisitFlowTest",
+        "tests": 42,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.application.validator.ApplicationResolutionValidatorTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.appointment.AppointmentConcurrencyFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.appointment.AppointmentFlowTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.appointment.AppointmentSlotGeneratorTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.AdminUserInitializerTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.AuthFlowTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.CitizenModelTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.auth.CookieAuthFlowTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.BenefitGrantFlowTest",
+        "tests": 115,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.scheduler.BenefitGrantExpirationSchedulerTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.service.CitizenBenefitGrantServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.validator.BenefitGrantLifecycleValidatorTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.benefit.validator.BenefitGrantValidatorTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterCatalogFlowTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterConcurrencyFlowTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterLifecycleFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterOpeningHourFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterPersistenceTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.CenterServiceFlowTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.ProfessionalAssignmentFlowTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.ProfessionalAvailabilityFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.entity.MunicipalNameNormalizerTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.center.validator.EffectiveScheduleValidatorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.enrollmentperiod.service.EnrollmentPeriodExpirationServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.enrollmentperiod.validator.EnrollmentPeriodValidatorTest",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.indicator.IndicatorFlowTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreAmqpPublisherTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreBrokerClientTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreConnectionCheckRunnerTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreDashboardFlowTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreDisabledConfigurationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreEnvelopeCodecTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreHttpClientTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CoreMessageListenerTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.CorePersistenceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.M8BusinessFlowTest",
+        "tests": 19,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.integration.M8ContractCodecTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.intervention.InterventionPlanFlowTest",
+        "tests": 51,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "name": "com.uade.dda2.server.feature.intervention.mapper.InterventionProgressTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.intervention.validator.InterventionValidatorTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.feature.program.ProgramImageFlowTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.security.JwtServiceTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.uade.dda2.server.security.LoginRateLimitFilterTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "runtime_library_count": 131,
+    "runtime_libraries_unchanged_from_boot409": true,
+    "bc_absent_from_bootjar": true,
+    "application_classfile_majors": [
+      61
+    ],
+    "input_source_changes": [
+      "server/build.gradle.kts",
+      "server/gradle.lockfile"
+    ],
+    "root_matches_tested_inputs": true,
+    "lock_delta": [
+      {
+        "coordinate_scope": "org.bouncycastle:bcpg-jdk18on|kotlinBouncyCastleConfiguration",
+        "before": "1.80",
+        "after": "1.87"
+      },
+      {
+        "coordinate_scope": "org.bouncycastle:bcpkix-jdk18on|kotlinBouncyCastleConfiguration",
+        "before": "1.80",
+        "after": "1.87"
+      },
+      {
+        "coordinate_scope": "org.bouncycastle:bcprov-jdk18on|kotlinBouncyCastleConfiguration",
+        "before": "1.80.2",
+        "after": "1.87"
+      },
+      {
+        "coordinate_scope": "org.bouncycastle:bcutil-jdk18on|kotlinBouncyCastleConfiguration",
+        "before": "1.80.2",
+        "after": "1.87"
+      }
+    ],
+    "hashes_after": {
+      "server/build.gradle.kts": "77fd639c691fdb990bc6315828292f6af1033b4a1ce02ba646a11758e7149513",
+      "server/gradle.lockfile": "542c647272101261ada02b179780bd5b697f8523a8352a79afe294e4476223e0",
+      "server/settings.gradle.kts": "e7ccb3287fac3794439526cddde486400df1889d60b2ae0a3cc19a56c417add6",
+      "server/gradle/wrapper/gradle-wrapper.properties": "e0846bd420bf1543f500e0c9b35c01d84611b0f1afe01e24a82d0eca53c33ccb",
+      "client/package.json": "c45e75ca62d301603f2e24aab38c8590bffcb2013f61ef6bf936c00f7c1f2584",
+      "client/package-lock.json": "80b51cc40082e7cae09a0fe5820adacaf9dec759fe354f7de10d468acad5f0e3"
+    },
+    "frontend_kotlin_boot_runtime_not_upgraded": true
+  },
+  "accepted_commands": [
+    {
+      "label": "01c-bc-lock-scoped-rule",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "kotlinBouncyCastleConfiguration",
+        "--update-locks",
+        "org.bouncycastle:*",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:37:31.566462+00:00",
+      "duration_seconds": 10.678,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/01c-bc-lock-scoped-rule.log"
+    },
+    {
+      "label": "tree-compileClasspath",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "compileClasspath",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:40:32.390522+00:00",
+      "duration_seconds": 6.655,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/tree-compileClasspath.log"
+    },
+    {
+      "label": "tree-productionRuntimeClasspath",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "productionRuntimeClasspath",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:40:39.046278+00:00",
+      "duration_seconds": 4.794,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/tree-productionRuntimeClasspath.log"
+    },
+    {
+      "label": "tree-testRuntimeClasspath",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "testRuntimeClasspath",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:40:43.840905+00:00",
+      "duration_seconds": 4.917,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/tree-testRuntimeClasspath.log"
+    },
+    {
+      "label": "tree-kotlinBouncyCastleConfiguration",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "kotlinBouncyCastleConfiguration",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:40:48.758754+00:00",
+      "duration_seconds": 4.118,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/tree-kotlinBouncyCastleConfiguration.log"
+    },
+    {
+      "label": "tree-swiftExportClasspathResolvable",
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "swiftExportClasspathResolvable",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:40:52.878073+00:00",
+      "duration_seconds": 3.95,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/tree-swiftExportClasspathResolvable.log"
+    },
+    {
+      "label": "02-backend-build",
+      "argv": [
+        "./gradlew",
+        "build",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/bc187-results/home"
+      ],
+      "started_at": "2026-11-16T19:38:39.967701+00:00",
+      "duration_seconds": 144.162,
+      "exit_code": 0,
+      "failed_markers": 0,
+      "log": "artifacts/security-preparation/bc187-results/02-backend-build.log"
+    }
+  ],
+  "discarded_probes": {
+    "normal_constraints": "Exit0 but bcpg/bcpkix remained1.80; semantic version gate rejected before root lock integration",
+    "strict_constraints": "Same version override by implicit dependency-management; rejected",
+    "root_cause": "Spring dependency-management1.1.7 implicitly manages explicit KGP defaults1.80 and rewrites constraints; later scoped rule selects all four1.87"
+  },
+  "pgp_compatibility": {
+    "result": "PASS",
+    "archive_source_identity": {
+      "method": "git archive --format=tar",
+      "commit": "3e708fbfd2806bb5272c9040351859936599ce97",
+      "members": 1450,
+      "validation": "PASS: relative paths only, no traversal, no links, only regular files/directories"
+    },
+    "runtime": {
+      "java": "Corretto 17.0.15.6.1 / 17.0.15+6-LTS",
+      "gradle": "9.5.1",
+      "kgp": "2.2.21"
+    },
+    "configuration": "kotlinBouncyCastleConfiguration",
+    "jar_sha256": {
+      "bcpg-jdk18on-1.87.jar": "e947b0a18f4f5fc62c925b65f0eaf5987ed3605c6f8b42147d8ac72f11351234",
+      "bcpkix-jdk18on-1.87.jar": "a44be2660d72ed88673372b8cc2d53a25a5aaf27122fb803ed93f07147536aa1",
+      "bcprov-jdk18on-1.87.jar": "12d2d3dd82a9ec15e92ec7c7943ee64f6097c6dc12c07e984f1693b77565b9aa",
+      "bcutil-jdk18on-1.87.jar": "af46dd381553fdc466cd0c18f8bf2144c7dbcb7337eee3e16cab15e96613ddf0"
+    },
+    "versions": "All four JAR manifests report Bundle-Version 1.87; class origins independently resolved from exactly these four JARs",
+    "runs": {
+      "resolve_four_jars_online": {
+        "exit_code": 0,
+        "tasks_executed": 1
+      },
+      "real_generatePgpKeys_and_local_helper_offline": {
+        "exit_code": 0,
+        "tasks_executed": 2
+      },
+      "capture_individual_helper_results_offline_no_regeneration": {
+        "exit_code": 0,
+        "tasks_executed": 1
+      }
+    },
+    "generation": "PASS actual KGP GenerateKeys worker; offline upload task absent; worker classpath equals real BC scope",
+    "gpg_binary": {
+      "sign_and_verify": "PASS",
+      "tampering_rejected": "PASS",
+      "wrong_password_rejected": "PASS"
+    },
+    "asc_armored": {
+      "sign_and_verify": "PASS",
+      "tampering_rejected": "PASS",
+      "wrong_password_rejected": "PASS"
+    },
+    "counts": {
+      "private_key_files": 2,
+      "public_key_files": 2,
+      "metadata_files": 1,
+      "total": 5,
+      "permissions": "0600"
+    },
+    "frozen_build_lock_sha256": {
+      "build.gradle.kts": "77fd639c691fdb990bc6315828292f6af1033b4a1ce02ba646a11758e7149513",
+      "gradle.lockfile": "542c647272101261ada02b179780bd5b697f8523a8352a79afe294e4476223e0"
+    },
+    "build_and_lock_unchanged": true,
+    "isolation": "Allowlisted environment, isolated HOME/TMP/Gradle cache, no inherited credentials, umask 077",
+    "safety": "Synthetic data only. No key contents printed or included in reports. No upload, publish, keyserver, checkSigningConfiguration, production services, global installs or application tests executed.",
+    "compiler_note": "Deprecated BC signature-generator constructor compiles and executes; no API incompatibility or linkage failures",
+    "background_jobs": "All four owned jobs collected successfully; none remaining",
+    "sanitized_evidence": [
+      "offline.log",
+      "helper-pass.log",
+      "verify.log",
+      "artifact-metadata.json",
+      "class-origins.txt",
+      "resolved-classpath.txt",
+      "java-version.txt",
+      "preparation.json",
+      "overlay-sha256.json"
+    ]
+  },
+  "sonar_risks_after_boot_reported_by_user": 63,
+  "sonar_reanalyzed_here": false,
+  "commit_push_merge_here": false
+}
