@@ -19,7 +19,7 @@ export function CoreContract() {
   const subscriptions = useQuery(listCoreSubscriptionsOptions())
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
+    <div className="flex flex-col gap-4">
       <ContractCard
         title="Publicaciones"
         description="Eventos que nuestro módulo publica en Core."
