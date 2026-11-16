@@ -3,19 +3,19 @@ import { Link, useRouterState } from "@tanstack/react-router"
 import type { ComponentProps, ReactNode } from "react"
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { cn } from "@/lib/utils"
+import { cn, trimTrailingSlashes } from "@/lib/utils"
 
 export function RouteTabs({ items }: { items: { label: string; to: string }[] }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
-  const currentPath = pathname.replace(/\/+$/, "") || "/"
+  const currentPath = trimTrailingSlashes(pathname) || "/"
   const activePath = items
-    .map((item) => item.to.replace(/\/+$/, "") || "/")
+    .map((item) => trimTrailingSlashes(item.to) || "/")
     .filter((itemPath) => currentPath === itemPath || currentPath.startsWith(`${itemPath}/`))
     .sort((left, right) => right.length - left.length)[0]
 
   return <nav className="flex gap-6 overflow-x-auto border-b px-4 lg:px-6">
     {items.map((item) => {
-      const itemPath = item.to.replace(/\/+$/, "") || "/"
+      const itemPath = trimTrailingSlashes(item.to) || "/"
       return <Link key={item.to} to={item.to} className={cn("shrink-0 whitespace-nowrap border-b-2 border-transparent px-1 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground", itemPath === activePath && "border-primary text-foreground")}>{item.label}</Link>
     })}
   </nav>

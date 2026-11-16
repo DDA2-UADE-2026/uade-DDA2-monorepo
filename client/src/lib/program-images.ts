@@ -1,3 +1,5 @@
+import { trimTrailingSlashes } from "@/lib/utils"
+
 export const PROGRAM_IMAGE_ACCEPT = ".jpg,.jpeg,.png,image/jpeg,image/png"
 export const MAX_PROGRAM_IMAGE_BYTES = 10 * 1024 * 1024
 export const PROGRAM_IMAGE_FALLBACK = `${import.meta.env.BASE_URL}brand/og.png`
@@ -25,7 +27,7 @@ export function programImageSource(imageUrl?: string): string | undefined {
   if (!imageUrl) return undefined
   if (/^https?:\/\//i.test(imageUrl)) return imageUrl
 
-  const serverUrl = import.meta.env.VITE_SERVER_URL?.replace(/\/+$/, "") ?? ""
+  const serverUrl = trimTrailingSlashes(import.meta.env.VITE_SERVER_URL ?? "")
   const imagePath = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`
   return `${serverUrl}${imagePath}`
 }
