@@ -3,8 +3,8 @@
 import { type InfiniteData, infiniteQueryOptions, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assignApplicationWorker, assignProfessional, assignServiceToCenter, cancelAdminAppointment, cancelApplicationVisit, close, close1, closeEnrollmentPeriod, content, content1, correctCommunityAttention, create, create1, create10, create11, create2, create3, create4, create5, create6, create7, create8, create9, createApplicationEvaluation, createApplicationVisit, createCenterOpeningHour, createCenterOpeningHoursBatch, createCitizenAppointment, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createOwnApplicationVisitRescheduleRequest, createProfessionalAvailabilitiesBatch, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, finalize, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, followUp, get, get1, get2, get3, get4, get5, getAdminAppointment, getApplicationEvaluation, getApplicationVisit, getApplicationVisitRescheduleRequest, getAvailableProgram, getCitizenAppointment, getCoreConnectionStatus, getCoreDashboard, getCoreEvent, getCoreLocalMetrics, getEnrollmentPeriod, getIndicators, getMunicipalCenter, getMunicipalService, getOwnApplicationVisit, getOwnApplicationVisitRescheduleRequest, getOwnInterventionPlan, getProfessionalActivity, getProfessionalAppointment, getPublicImage, health, history_, history1, info, links, list, list1, list10, list2, list3, list4, list5, list6, list7, list8, list9, listActivities, listAdminAppointmentDayAvailability, listAdminAppointmentMonthlySummary, listAdminAppointments, listAdminAppointmentSlots, listAdminBenefitGrants, listAllOwnVisits, listApplicationEvaluations, listApplicationVisitRescheduleRequests, listApplicationVisits, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listCitizenAppointmentCenters, listCitizenAppointments, listCitizenAppointmentServices, listCitizenAppointmentSlots, listCoreEvents, listCorePublications, listCoreSubscriptions, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listOwnApplicationVisitRescheduleRequests, listOwnApplicationVisits, listOwnBenefitGrants, listOwnInterventionPlans, listOwnPublishedInterventionFollowUps, listProfessionalAppointments, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, publish1, put, put1, recordApplicationVisitResult, registerCommunityAttention, releaseAdminAppointmentSlot, renew, reopenEnrollmentPeriod, rescheduleAdminAppointment, rescheduleApplicationVisit, resolveApplication, review, reviewApplicationVisitRescheduleRequest, selectRole, sessionCsrf, sessionLogin, sessionLogout, sessionRoleSelection, sessionSelectRole, sessionSwitchRole, submit, submit1, suspend, suspend1, suspendEnrollmentPeriod, switchRole, unassignApplicationWorker, update, update1, update2, update3, update4, update5, update6, update7, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage, withdraw } from '../sdk.gen';
-import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignApplicationWorkerData, AssignApplicationWorkerError, AssignApplicationWorkerResponse, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, CancelAdminAppointmentData, CancelAdminAppointmentError, CancelAdminAppointmentResponse, CancelApplicationVisitData, CancelApplicationVisitError, CancelApplicationVisitResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, CorrectCommunityAttentionData, CorrectCommunityAttentionError, CorrectCommunityAttentionResponse, Create10Data, Create10Error, Create10Response, Create11Data, Create11Error, Create11Response, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, Create9Data, Create9Error, Create9Response, CreateApplicationEvaluationData, CreateApplicationEvaluationError, CreateApplicationEvaluationResponse, CreateApplicationVisitData, CreateApplicationVisitError, CreateApplicationVisitResponse, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchError, CreateCenterOpeningHoursBatchResponse, CreateCitizenAppointmentData, CreateCitizenAppointmentError, CreateCitizenAppointmentResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateOwnApplicationVisitRescheduleRequestData, CreateOwnApplicationVisitRescheduleRequestError, CreateOwnApplicationVisitRescheduleRequestResponse, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchError, CreateProfessionalAvailabilitiesBatchResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, FinalizeData, FinalizeError, FinalizeResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, FollowUpData, FollowUpError, FollowUpResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, Get5Data, Get5Error, Get5Response, GetAdminAppointmentData, GetAdminAppointmentError, GetAdminAppointmentResponse, GetApplicationEvaluationData, GetApplicationEvaluationError, GetApplicationEvaluationResponse, GetApplicationVisitData, GetApplicationVisitError, GetApplicationVisitRescheduleRequestData, GetApplicationVisitRescheduleRequestError, GetApplicationVisitRescheduleRequestResponse, GetApplicationVisitResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetCitizenAppointmentData, GetCitizenAppointmentError, GetCoreConnectionStatusData, GetCoreConnectionStatusError, GetCoreConnectionStatusResponse, GetCoreDashboardData, GetCoreDashboardError, GetCoreDashboardResponse, GetCoreEventData, GetCoreEventError, GetCoreEventResponse, GetCoreLocalMetricsData, GetCoreLocalMetricsError, GetCoreLocalMetricsResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetIndicatorsData, GetIndicatorsError, GetIndicatorsResponse, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetOwnApplicationVisitData, GetOwnApplicationVisitError, GetOwnApplicationVisitRescheduleRequestData, GetOwnApplicationVisitRescheduleRequestError, GetOwnApplicationVisitRescheduleRequestResponse, GetOwnApplicationVisitResponse, GetOwnInterventionPlanData, GetOwnInterventionPlanError, GetOwnInterventionPlanResponse, GetProfessionalActivityData, GetProfessionalActivityError, GetProfessionalActivityResponse, GetProfessionalAppointmentData, GetProfessionalAppointmentError, GetProfessionalAppointmentResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, HealthData, HealthError, HealthResponse, History1Data, History1Error, History1Response, HistoryData, HistoryError, HistoryResponse, InfoData, InfoError, InfoResponse, LinksData, LinksError, LinksResponse, List10Data, List10Error, List10Response, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, List9Data, List9Error, List9Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityError, ListAdminAppointmentDayAvailabilityResponse, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryError, ListAdminAppointmentMonthlySummaryResponse, ListAdminAppointmentsData, ListAdminAppointmentsError, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsError, ListAdminAppointmentSlotsResponse, ListAdminAppointmentsResponse, ListAdminBenefitGrantsData, ListAdminBenefitGrantsError, ListAdminBenefitGrantsResponse, ListAllOwnVisitsData, ListAllOwnVisitsError, ListAllOwnVisitsResponse, ListApplicationEvaluationsData, ListApplicationEvaluationsError, ListApplicationEvaluationsResponse, ListApplicationVisitRescheduleRequestsData, ListApplicationVisitRescheduleRequestsError, ListApplicationVisitRescheduleRequestsResponse, ListApplicationVisitsData, ListApplicationVisitsError, ListApplicationVisitsResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersError, ListCitizenAppointmentCentersResponse, ListCitizenAppointmentsData, ListCitizenAppointmentsError, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesError, ListCitizenAppointmentServicesResponse, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsError, ListCitizenAppointmentSlotsResponse, ListCitizenAppointmentsResponse, ListCoreEventsData, ListCoreEventsError, ListCoreEventsResponse, ListCorePublicationsData, ListCorePublicationsError, ListCorePublicationsResponse, ListCoreSubscriptionsData, ListCoreSubscriptionsError, ListCoreSubscriptionsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListOwnApplicationVisitRescheduleRequestsData, ListOwnApplicationVisitRescheduleRequestsError, ListOwnApplicationVisitRescheduleRequestsResponse, ListOwnApplicationVisitsData, ListOwnApplicationVisitsError, ListOwnApplicationVisitsResponse, ListOwnBenefitGrantsData, ListOwnBenefitGrantsError, ListOwnBenefitGrantsResponse, ListOwnInterventionPlansData, ListOwnInterventionPlansError, ListOwnInterventionPlansResponse, ListOwnPublishedInterventionFollowUpsData, ListOwnPublishedInterventionFollowUpsError, ListOwnPublishedInterventionFollowUpsResponse, ListProfessionalAppointmentsData, ListProfessionalAppointmentsError, ListProfessionalAppointmentsResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, Publish1Data, Publish1Error, Publish1Response, PublishData, PublishError, PublishResponse, Put1Data, Put1Error, Put1Response, PutData, PutError, PutResponse, RecordApplicationVisitResultData, RecordApplicationVisitResultError, RecordApplicationVisitResultResponse, RegisterCommunityAttentionData, RegisterCommunityAttentionError, RegisterCommunityAttentionResponse, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotError, ReleaseAdminAppointmentSlotResponse, RenewData, RenewError, RenewResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, RescheduleAdminAppointmentData, RescheduleAdminAppointmentError, RescheduleAdminAppointmentResponse, RescheduleApplicationVisitData, RescheduleApplicationVisitError, RescheduleApplicationVisitResponse, ResolveApplicationData, ResolveApplicationError, ResolveApplicationResponse, ReviewApplicationVisitRescheduleRequestData, ReviewApplicationVisitRescheduleRequestError, ReviewApplicationVisitRescheduleRequestResponse, ReviewData, ReviewError, SelectRoleData, SelectRoleError, SelectRoleResponse, SessionCsrfData, SessionCsrfError, SessionCsrfResponse2, SessionLoginData, SessionLoginError, SessionLoginResponse, SessionLogoutData, SessionLogoutError, SessionLogoutResponse, SessionRoleSelectionData, SessionRoleSelectionError, SessionRoleSelectionResponse, SessionSelectRoleData, SessionSelectRoleError, SessionSelectRoleResponse, SessionSwitchRoleData, SessionSwitchRoleError, SessionSwitchRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, Suspend1Data, Suspend1Error, Suspend1Response, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, UnassignApplicationWorkerData, UnassignApplicationWorkerError, UnassignApplicationWorkerResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse, WithdrawData, WithdrawError, WithdrawResponse } from '../types.gen';
+import { activate, activateCenterOpeningHour, activateCenterService, activateMunicipalCenter, activateMunicipalService, activateProfessionalAssignment, activateProfessionalAvailability, assign, assignApplicationWorker, assignProfessional, assignServiceToCenter, asyncApiYaml, asyncApiYaml1, cancelAdminAppointment, cancelApplicationVisit, close, close1, closeEnrollmentPeriod, content, content1, correctCommunityAttention, create, create1, create10, create11, create2, create3, create4, create5, create6, create7, create8, create9, createApplicationEvaluation, createApplicationVisit, createCenterOpeningHour, createCenterOpeningHoursBatch, createCitizenAppointment, createEnrollmentPeriod, createMunicipalCenter, createMunicipalService, createOwnApplicationVisitRescheduleRequest, createProfessionalAvailabilitiesBatch, createProfessionalAvailability, createProgramImage, deactivateCenterOpeningHour, deactivateCenterService, deactivateMunicipalCenter, deactivateMunicipalService, deactivateProfessionalAssignment, deactivateProfessionalAvailability, debts, delete_, delete1, delete2, delete3, delete4, delete5, delete6, delete7, delete8, deleteProgramImage, enroll, exemptions, finalize, findAll, findAll1, findAll2, findAll3, findAll4, findAll5, findById, findById1, findById2, findById3, findById4, findById5, followUp, get, get1, get2, get3, get4, get5, get6, getAdminAppointment, getApplicationEvaluation, getApplicationVisit, getApplicationVisitRescheduleRequest, getAvailableProgram, getCitizenAppointment, getCoreConnectionStatus, getCoreDashboard, getCoreEvent, getCoreLocalMetrics, getEnrollmentPeriod, getIndicators, getMunicipalCenter, getMunicipalService, getOwnApplicationVisit, getOwnApplicationVisitRescheduleRequest, getOwnInterventionPlan, getProfessionalActivity, getProfessionalAppointment, getPublicImage, getUiConfig, health, history_, history1, info, link, linkApplication, links, list, list1, list10, list11, list12, list13, list2, list3, list4, list5, list6, list7, list8, list9, listActivities, listAdminAppointmentDayAvailability, listAdminAppointmentMonthlySummary, listAdminAppointments, listAdminAppointmentSlots, listAdminBenefitGrants, listAllOwnVisits, listApplicationEvaluations, listApplicationVisitRescheduleRequests, listApplicationVisits, listAvailablePrograms, listCenterOpeningHours, listCenterServices, listCitizenAppointmentCenters, listCitizenAppointments, listCitizenAppointmentServices, listCitizenAppointmentSlots, listCoreEvents, listCorePublications, listCoreSubscriptions, listEnrollmentPeriods, listEnrollments, listLogs, listLogsByEntity, listLogsByUser, listMunicipalCenters, listMunicipalServices, listOwnApplicationVisitRescheduleRequests, listOwnApplicationVisits, listOwnBenefitGrants, listOwnInterventionPlans, listOwnPublishedInterventionFollowUps, listProfessionalAppointments, listProfessionalAssignments, listProfessionalAvailability, listProgramEditionOptions, listProgramOptions, login, me, openEnrollmentPeriod, type Options, publish, publish1, put, put1, recordApplicationVisitResult, registerCommunityAttention, releaseAdminAppointmentSlot, renew, reopenEnrollmentPeriod, rescheduleAdminAppointment, rescheduleApplicationVisit, resolveApplication, review, review1, reviewApplicationVisitRescheduleRequest, selectRole, sessionCsrf, sessionLogin, sessionLogout, sessionRoleSelection, sessionSelectRole, sessionSwitchRole, submit, submit1, suspend, suspend1, suspendEnrollmentPeriod, switchRole, unassignApplicationWorker, update, update1, update2, update3, update4, update5, update6, update7, update8, updateAttendance, updateCenterOpeningHour, updateEnrollmentPeriod, updateMunicipalCenter, updateMunicipalService, updateProfessionalAvailability, updateProgramImage, withdraw } from '../sdk.gen';
+import type { ActivateCenterOpeningHourData, ActivateCenterOpeningHourError, ActivateCenterOpeningHourResponse, ActivateCenterServiceData, ActivateCenterServiceError, ActivateCenterServiceResponse, ActivateData, ActivateError, ActivateMunicipalCenterData, ActivateMunicipalCenterError, ActivateMunicipalCenterResponse, ActivateMunicipalServiceData, ActivateMunicipalServiceError, ActivateMunicipalServiceResponse, ActivateProfessionalAssignmentData, ActivateProfessionalAssignmentError, ActivateProfessionalAssignmentResponse, ActivateProfessionalAvailabilityData, ActivateProfessionalAvailabilityError, ActivateProfessionalAvailabilityResponse, ActivateResponse, AssignApplicationWorkerData, AssignApplicationWorkerError, AssignApplicationWorkerResponse, AssignData, AssignError, AssignProfessionalData, AssignProfessionalError, AssignProfessionalResponse, AssignResponse, AssignServiceToCenterData, AssignServiceToCenterError, AssignServiceToCenterResponse, AsyncApiYaml1Data, AsyncApiYaml1Error, AsyncApiYaml1Response, AsyncApiYamlData, AsyncApiYamlError, AsyncApiYamlResponse, CancelAdminAppointmentData, CancelAdminAppointmentError, CancelAdminAppointmentResponse, CancelApplicationVisitData, CancelApplicationVisitError, CancelApplicationVisitResponse, Close1Data, Close1Error, Close1Response, CloseData, CloseEnrollmentPeriodData, CloseEnrollmentPeriodError, CloseEnrollmentPeriodResponse, CloseError, CloseResponse, Content1Data, Content1Error, Content1Response, ContentData, ContentError, ContentResponse, CorrectCommunityAttentionData, CorrectCommunityAttentionError, CorrectCommunityAttentionResponse, Create10Data, Create10Error, Create10Response, Create11Data, Create11Error, Create11Response, Create1Data, Create1Error, Create1Response, Create2Data, Create2Error, Create2Response, Create3Data, Create3Error, Create3Response, Create4Data, Create4Error, Create4Response, Create5Data, Create5Error, Create5Response, Create6Data, Create6Error, Create6Response, Create7Data, Create7Error, Create7Response, Create8Data, Create8Error, Create8Response, Create9Data, Create9Error, Create9Response, CreateApplicationEvaluationData, CreateApplicationEvaluationError, CreateApplicationEvaluationResponse, CreateApplicationVisitData, CreateApplicationVisitError, CreateApplicationVisitResponse, CreateCenterOpeningHourData, CreateCenterOpeningHourError, CreateCenterOpeningHourResponse, CreateCenterOpeningHoursBatchData, CreateCenterOpeningHoursBatchError, CreateCenterOpeningHoursBatchResponse, CreateCitizenAppointmentData, CreateCitizenAppointmentError, CreateCitizenAppointmentResponse, CreateData, CreateEnrollmentPeriodData, CreateEnrollmentPeriodError, CreateEnrollmentPeriodResponse, CreateError, CreateMunicipalCenterData, CreateMunicipalCenterError, CreateMunicipalCenterResponse, CreateMunicipalServiceData, CreateMunicipalServiceError, CreateMunicipalServiceResponse, CreateOwnApplicationVisitRescheduleRequestData, CreateOwnApplicationVisitRescheduleRequestError, CreateOwnApplicationVisitRescheduleRequestResponse, CreateProfessionalAvailabilitiesBatchData, CreateProfessionalAvailabilitiesBatchError, CreateProfessionalAvailabilitiesBatchResponse, CreateProfessionalAvailabilityData, CreateProfessionalAvailabilityError, CreateProfessionalAvailabilityResponse, CreateProgramImageData, CreateProgramImageError, CreateProgramImageResponse, CreateResponse, DeactivateCenterOpeningHourData, DeactivateCenterOpeningHourError, DeactivateCenterOpeningHourResponse, DeactivateCenterServiceData, DeactivateCenterServiceError, DeactivateCenterServiceResponse, DeactivateMunicipalCenterData, DeactivateMunicipalCenterError, DeactivateMunicipalCenterResponse, DeactivateMunicipalServiceData, DeactivateMunicipalServiceError, DeactivateMunicipalServiceResponse, DeactivateProfessionalAssignmentData, DeactivateProfessionalAssignmentError, DeactivateProfessionalAssignmentResponse, DeactivateProfessionalAvailabilityData, DeactivateProfessionalAvailabilityError, DeactivateProfessionalAvailabilityResponse, DebtsData, DebtsError, DebtsResponse, Delete1Data, Delete1Error, Delete1Response, Delete2Data, Delete2Error, Delete2Response, Delete3Data, Delete3Error, Delete3Response, Delete4Data, Delete4Error, Delete4Response, Delete5Data, Delete5Error, Delete5Response, Delete6Data, Delete6Error, Delete6Response, Delete7Data, Delete7Error, Delete7Response, Delete8Data, Delete8Error, Delete8Response, DeleteData, DeleteError, DeleteProgramImageData, DeleteProgramImageError, DeleteProgramImageResponse, DeleteResponse, EnrollData, EnrollError, EnrollResponse, ExemptionsData, ExemptionsError, ExemptionsResponse, FinalizeData, FinalizeError, FinalizeResponse, FindAll1Data, FindAll1Error, FindAll1Response, FindAll2Data, FindAll2Error, FindAll2Response, FindAll3Data, FindAll3Error, FindAll3Response, FindAll4Data, FindAll4Error, FindAll4Response, FindAll5Data, FindAll5Error, FindAll5Response, FindAllData, FindAllError, FindAllResponse, FindById1Data, FindById1Error, FindById1Response, FindById2Data, FindById2Error, FindById2Response, FindById3Data, FindById3Error, FindById3Response, FindById4Data, FindById4Error, FindById4Response, FindById5Data, FindById5Error, FindById5Response, FindByIdData, FindByIdError, FindByIdResponse, FollowUpData, FollowUpError, FollowUpResponse, Get1Data, Get1Error, Get1Response, Get2Data, Get2Error, Get2Response, Get3Data, Get3Error, Get3Response, Get4Data, Get4Error, Get4Response, Get5Data, Get5Error, Get5Response, Get6Data, Get6Error, Get6Response, GetAdminAppointmentData, GetAdminAppointmentError, GetAdminAppointmentResponse, GetApplicationEvaluationData, GetApplicationEvaluationError, GetApplicationEvaluationResponse, GetApplicationVisitData, GetApplicationVisitError, GetApplicationVisitRescheduleRequestData, GetApplicationVisitRescheduleRequestError, GetApplicationVisitRescheduleRequestResponse, GetApplicationVisitResponse, GetAvailableProgramData, GetAvailableProgramError, GetAvailableProgramResponse, GetCitizenAppointmentData, GetCitizenAppointmentError, GetCoreConnectionStatusData, GetCoreConnectionStatusError, GetCoreConnectionStatusResponse, GetCoreDashboardData, GetCoreDashboardError, GetCoreDashboardResponse, GetCoreEventData, GetCoreEventError, GetCoreEventResponse, GetCoreLocalMetricsData, GetCoreLocalMetricsError, GetCoreLocalMetricsResponse, GetData, GetEnrollmentPeriodData, GetEnrollmentPeriodError, GetEnrollmentPeriodResponse, GetError, GetIndicatorsData, GetIndicatorsError, GetIndicatorsResponse, GetMunicipalCenterData, GetMunicipalCenterError, GetMunicipalCenterResponse, GetMunicipalServiceData, GetMunicipalServiceError, GetMunicipalServiceResponse, GetOwnApplicationVisitData, GetOwnApplicationVisitError, GetOwnApplicationVisitRescheduleRequestData, GetOwnApplicationVisitRescheduleRequestError, GetOwnApplicationVisitRescheduleRequestResponse, GetOwnApplicationVisitResponse, GetOwnInterventionPlanData, GetOwnInterventionPlanError, GetOwnInterventionPlanResponse, GetProfessionalActivityData, GetProfessionalActivityError, GetProfessionalActivityResponse, GetProfessionalAppointmentData, GetProfessionalAppointmentError, GetProfessionalAppointmentResponse, GetPublicImageData, GetPublicImageError, GetPublicImageResponse, GetResponse, GetUiConfigData, GetUiConfigError, GetUiConfigResponse, HealthData, HealthError, HealthResponse, History1Data, History1Error, History1Response, HistoryData, HistoryError, HistoryResponse, InfoData, InfoError, InfoResponse, LinkApplicationData, LinkApplicationError, LinkApplicationResponse, LinkData, LinkError, LinkResponse, LinksData, LinksError, LinksResponse, List10Data, List10Error, List10Response, List11Data, List11Error, List11Response, List12Data, List12Error, List12Response, List13Data, List13Error, List13Response, List1Data, List1Error, List1Response, List2Data, List2Error, List2Response, List3Data, List3Error, List3Response, List4Data, List4Error, List4Response, List5Data, List5Error, List5Response, List6Data, List6Error, List6Response, List7Data, List7Error, List7Response, List8Data, List8Error, List8Response, List9Data, List9Error, List9Response, ListActivitiesData, ListActivitiesError, ListActivitiesResponse, ListAdminAppointmentDayAvailabilityData, ListAdminAppointmentDayAvailabilityError, ListAdminAppointmentDayAvailabilityResponse, ListAdminAppointmentMonthlySummaryData, ListAdminAppointmentMonthlySummaryError, ListAdminAppointmentMonthlySummaryResponse, ListAdminAppointmentsData, ListAdminAppointmentsError, ListAdminAppointmentSlotsData, ListAdminAppointmentSlotsError, ListAdminAppointmentSlotsResponse, ListAdminAppointmentsResponse, ListAdminBenefitGrantsData, ListAdminBenefitGrantsError, ListAdminBenefitGrantsResponse, ListAllOwnVisitsData, ListAllOwnVisitsError, ListAllOwnVisitsResponse, ListApplicationEvaluationsData, ListApplicationEvaluationsError, ListApplicationEvaluationsResponse, ListApplicationVisitRescheduleRequestsData, ListApplicationVisitRescheduleRequestsError, ListApplicationVisitRescheduleRequestsResponse, ListApplicationVisitsData, ListApplicationVisitsError, ListApplicationVisitsResponse, ListAvailableProgramsData, ListAvailableProgramsError, ListAvailableProgramsResponse, ListCenterOpeningHoursData, ListCenterOpeningHoursError, ListCenterOpeningHoursResponse, ListCenterServicesData, ListCenterServicesError, ListCenterServicesResponse, ListCitizenAppointmentCentersData, ListCitizenAppointmentCentersError, ListCitizenAppointmentCentersResponse, ListCitizenAppointmentsData, ListCitizenAppointmentsError, ListCitizenAppointmentServicesData, ListCitizenAppointmentServicesError, ListCitizenAppointmentServicesResponse, ListCitizenAppointmentSlotsData, ListCitizenAppointmentSlotsError, ListCitizenAppointmentSlotsResponse, ListCitizenAppointmentsResponse, ListCoreEventsData, ListCoreEventsError, ListCoreEventsResponse, ListCorePublicationsData, ListCorePublicationsError, ListCorePublicationsResponse, ListCoreSubscriptionsData, ListCoreSubscriptionsError, ListCoreSubscriptionsResponse, ListData, ListEnrollmentPeriodsData, ListEnrollmentPeriodsError, ListEnrollmentPeriodsResponse, ListEnrollmentsData, ListEnrollmentsError, ListEnrollmentsResponse, ListError, ListLogsByEntityData, ListLogsByEntityError, ListLogsByEntityResponse, ListLogsByUserData, ListLogsByUserError, ListLogsByUserResponse, ListLogsData, ListLogsError, ListLogsResponse, ListMunicipalCentersData, ListMunicipalCentersError, ListMunicipalCentersResponse, ListMunicipalServicesData, ListMunicipalServicesError, ListMunicipalServicesResponse, ListOwnApplicationVisitRescheduleRequestsData, ListOwnApplicationVisitRescheduleRequestsError, ListOwnApplicationVisitRescheduleRequestsResponse, ListOwnApplicationVisitsData, ListOwnApplicationVisitsError, ListOwnApplicationVisitsResponse, ListOwnBenefitGrantsData, ListOwnBenefitGrantsError, ListOwnBenefitGrantsResponse, ListOwnInterventionPlansData, ListOwnInterventionPlansError, ListOwnInterventionPlansResponse, ListOwnPublishedInterventionFollowUpsData, ListOwnPublishedInterventionFollowUpsError, ListOwnPublishedInterventionFollowUpsResponse, ListProfessionalAppointmentsData, ListProfessionalAppointmentsError, ListProfessionalAppointmentsResponse, ListProfessionalAssignmentsData, ListProfessionalAssignmentsError, ListProfessionalAssignmentsResponse, ListProfessionalAvailabilityData, ListProfessionalAvailabilityError, ListProfessionalAvailabilityResponse, ListProgramEditionOptionsData, ListProgramEditionOptionsError, ListProgramEditionOptionsResponse, ListProgramOptionsData, ListProgramOptionsError, ListProgramOptionsResponse, ListResponse, LoginData, LoginError, LoginResponse2, MeData, MeError, MeResponse2, OpenEnrollmentPeriodData, OpenEnrollmentPeriodError, OpenEnrollmentPeriodResponse, Publish1Data, Publish1Error, Publish1Response, PublishData, PublishError, PublishResponse, Put1Data, Put1Error, Put1Response, PutData, PutError, PutResponse, RecordApplicationVisitResultData, RecordApplicationVisitResultError, RecordApplicationVisitResultResponse, RegisterCommunityAttentionData, RegisterCommunityAttentionError, RegisterCommunityAttentionResponse, ReleaseAdminAppointmentSlotData, ReleaseAdminAppointmentSlotError, ReleaseAdminAppointmentSlotResponse, RenewData, RenewError, RenewResponse, ReopenEnrollmentPeriodData, ReopenEnrollmentPeriodError, ReopenEnrollmentPeriodResponse, RescheduleAdminAppointmentData, RescheduleAdminAppointmentError, RescheduleAdminAppointmentResponse, RescheduleApplicationVisitData, RescheduleApplicationVisitError, RescheduleApplicationVisitResponse, ResolveApplicationData, ResolveApplicationError, ResolveApplicationResponse, Review1Data, Review1Error, ReviewApplicationVisitRescheduleRequestData, ReviewApplicationVisitRescheduleRequestError, ReviewApplicationVisitRescheduleRequestResponse, ReviewData, ReviewError, ReviewResponse, SelectRoleData, SelectRoleError, SelectRoleResponse, SessionCsrfData, SessionCsrfError, SessionCsrfResponse2, SessionLoginData, SessionLoginError, SessionLoginResponse, SessionLogoutData, SessionLogoutError, SessionLogoutResponse, SessionRoleSelectionData, SessionRoleSelectionError, SessionRoleSelectionResponse, SessionSelectRoleData, SessionSelectRoleError, SessionSelectRoleResponse, SessionSwitchRoleData, SessionSwitchRoleError, SessionSwitchRoleResponse, Submit1Data, Submit1Error, Submit1Response, SubmitData, SubmitError, SubmitResponse, Suspend1Data, Suspend1Error, Suspend1Response, SuspendData, SuspendEnrollmentPeriodData, SuspendEnrollmentPeriodError, SuspendEnrollmentPeriodResponse, SuspendError, SuspendResponse, SwitchRoleData, SwitchRoleError, SwitchRoleResponse, UnassignApplicationWorkerData, UnassignApplicationWorkerError, UnassignApplicationWorkerResponse, Update1Data, Update1Error, Update1Response, Update2Data, Update2Error, Update2Response, Update3Data, Update3Error, Update3Response, Update4Data, Update4Error, Update4Response, Update5Data, Update5Error, Update5Response, Update6Data, Update6Error, Update6Response, Update7Data, Update7Error, Update7Response, Update8Data, Update8Error, Update8Response, UpdateAttendanceData, UpdateAttendanceError, UpdateAttendanceResponse, UpdateCenterOpeningHourData, UpdateCenterOpeningHourError, UpdateCenterOpeningHourResponse, UpdateData, UpdateEnrollmentPeriodData, UpdateEnrollmentPeriodError, UpdateEnrollmentPeriodResponse, UpdateError, UpdateMunicipalCenterData, UpdateMunicipalCenterError, UpdateMunicipalCenterResponse, UpdateMunicipalServiceData, UpdateMunicipalServiceError, UpdateMunicipalServiceResponse, UpdateProfessionalAvailabilityData, UpdateProfessionalAvailabilityError, UpdateProfessionalAvailabilityResponse, UpdateProgramImageData, UpdateProgramImageError, UpdateProgramImageResponse, UpdateResponse, WithdrawData, WithdrawError, WithdrawResponse } from '../types.gen';
 
 /**
  * Eliminar un usuario
@@ -720,6 +720,61 @@ export const updateMunicipalCenterMutation = (options?: Partial<Options<UpdateMu
     const mutationOptions: UseMutationOptions<UpdateMunicipalCenterResponse, UpdateMunicipalCenterError, Options<UpdateMunicipalCenterData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await updateMunicipalCenter({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Asignar un administrativo
+ *
+ * Encola STARTED una sola vez por derivación ROUTED.
+ */
+export const assignMutation = (options?: Partial<Options<AssignData>>): UseMutationOptions<AssignResponse, AssignError, Options<AssignData>> => {
+    const mutationOptions: UseMutationOptions<AssignResponse, AssignError, Options<AssignData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await assign({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Vincular la solicitud social del mismo ciudadano
+ */
+export const linkApplicationMutation = (options?: Partial<Options<LinkApplicationData>>): UseMutationOptions<LinkApplicationResponse, LinkApplicationError, Options<LinkApplicationData>> => {
+    const mutationOptions: UseMutationOptions<LinkApplicationResponse, LinkApplicationError, Options<LinkApplicationData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await linkApplication({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Vincular una exención a un beneficio
+ *
+ * Permite resolver coincidencias ambiguas entre beneficios TAX_EXEMPTION activos del mismo ciudadano.
+ */
+export const linkMutation = (options?: Partial<Options<LinkData>>): UseMutationOptions<LinkResponse, LinkError, Options<LinkData>> => {
+    const mutationOptions: UseMutationOptions<LinkResponse, LinkError, Options<LinkData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await link({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -2125,6 +2180,25 @@ export const createCenterOpeningHoursBatchMutation = (options?: Partial<Options<
     return mutationOptions;
 };
 
+/**
+ * Encolar una actualización operativa
+ *
+ * Respuesta 202: guardada en outbox, pendiente de confirmación del broker. El backend genera actor, fecha, evento y causalidad. Ver las reglas por updateType en AsyncAPI.
+ */
+export const update8Mutation = (options?: Partial<Options<Update8Data>>): UseMutationOptions<Update8Response, Update8Error, Options<Update8Data>> => {
+    const mutationOptions: UseMutationOptions<Update8Response, Update8Error, Options<Update8Data>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await update8({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
 export const listProfessionalAssignmentsQueryKey = (options: Options<ListProfessionalAssignmentsData>) => createQueryKey('listProfessionalAssignments', options);
 
 /**
@@ -2826,14 +2900,33 @@ export const cancelAdminAppointmentMutation = (options?: Partial<Options<CancelA
 };
 
 /**
+ * Revisar una entrega externa
+ *
+ * VALID sin observación u OBSERVED con observación. No descarga documentos ni valida automáticamente su contenido.
+ */
+export const reviewMutation = (options?: Partial<Options<ReviewData>>): UseMutationOptions<ReviewResponse, ReviewError, Options<ReviewData>> => {
+    const mutationOptions: UseMutationOptions<ReviewResponse, ReviewError, Options<ReviewData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await review({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
  * Revisar un documento pendiente
  *
  * Solo admite VALID u OBSERVED desde PENDING. OBSERVED exige observación y VALID no la admite.
  */
-export const reviewMutation = (options?: Partial<Options<ReviewData>>): UseMutationOptions<unknown, ReviewError, Options<ReviewData>> => {
-    const mutationOptions: UseMutationOptions<unknown, ReviewError, Options<ReviewData>> = {
+export const review1Mutation = (options?: Partial<Options<Review1Data>>): UseMutationOptions<unknown, Review1Error, Options<Review1Data>> => {
+    const mutationOptions: UseMutationOptions<unknown, Review1Error, Options<Review1Data>> = {
         mutationFn: async (fnOptions) => {
-            const { data } = await review({
+            const { data } = await review1({
                 ...options,
                 ...fnOptions,
                 throwOnError: true
@@ -2881,6 +2974,51 @@ export const close1Mutation = (options?: Partial<Options<Close1Data>>): UseMutat
     };
     return mutationOptions;
 };
+
+export const getUiConfigQueryKey = (options?: Options<GetUiConfigData>) => createQueryKey('getUiConfig', options);
+
+export const getUiConfigOptions = (options?: Options<GetUiConfigData>) => queryOptions<GetUiConfigResponse, GetUiConfigError, GetUiConfigResponse, ReturnType<typeof getUiConfigQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await getUiConfig({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUiConfigQueryKey(options)
+});
+
+export const asyncApiYamlQueryKey = (options?: Options<AsyncApiYamlData>) => createQueryKey('asyncApiYaml', options);
+
+export const asyncApiYamlOptions = (options?: Options<AsyncApiYamlData>) => queryOptions<AsyncApiYamlResponse, AsyncApiYamlError, AsyncApiYamlResponse, ReturnType<typeof asyncApiYamlQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await asyncApiYaml({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: asyncApiYamlQueryKey(options)
+});
+
+export const asyncApiYaml1QueryKey = (options: Options<AsyncApiYaml1Data>) => createQueryKey('asyncApiYaml1', options);
+
+export const asyncApiYaml1Options = (options: Options<AsyncApiYaml1Data>) => queryOptions<AsyncApiYaml1Response, AsyncApiYaml1Error, AsyncApiYaml1Response, ReturnType<typeof asyncApiYaml1QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await asyncApiYaml1({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: asyncApiYaml1QueryKey(options)
+});
 
 export const findAll4QueryKey = (options?: Options<FindAll4Data>) => createQueryKey('findAll4', options);
 
@@ -3724,6 +3862,72 @@ export const listProgramEditionOptionsOptions = (options: Options<ListProgramEdi
     queryKey: listProgramEditionOptionsQueryKey(options)
 });
 
+export const list9QueryKey = (options?: Options<List9Data>) => createQueryKey('list9', options);
+
+/**
+ * Listar tickets de M8
+ */
+export const list9Options = (options?: Options<List9Data>) => queryOptions<List9Response, List9Error, List9Response, ReturnType<typeof list9QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list9({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list9QueryKey(options)
+});
+
+export const list9InfiniteQueryKey = (options?: Options<List9Data>): QueryKey<Options<List9Data>> => createQueryKey('list9', options, true);
+
+/**
+ * Listar tickets de M8
+ */
+export const list9InfiniteOptions = (options?: Options<List9Data>) => {
+    const opts = infiniteQueryOptions<List9Response, List9Error, InfiniteData<List9Response>, QueryKey<Options<List9Data>>, number | Pick<QueryKey<Options<List9Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<List9Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await list9({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: list9InfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const get3QueryKey = (options: Options<Get3Data>) => createQueryKey('get3', options);
+
+/**
+ * Consultar el ticket y su snapshot operativo
+ */
+export const get3Options = (options: Options<Get3Data>) => queryOptions<Get3Response, Get3Error, Get3Response, ReturnType<typeof get3QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await get3({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: get3QueryKey(options)
+});
+
 export const listCoreSubscriptionsQueryKey = (options?: Options<ListCoreSubscriptionsData>) => createQueryKey('listCoreSubscriptions', options);
 
 /**
@@ -3763,6 +3967,102 @@ export const getCoreConnectionStatusOptions = (options?: Options<GetCoreConnecti
     },
     queryKey: getCoreConnectionStatusQueryKey(options)
 });
+
+export const exemptionsQueryKey = (options?: Options<ExemptionsData>) => createQueryKey('exemptions', options);
+
+/**
+ * Consultar solicitudes de exención y resoluciones
+ */
+export const exemptionsOptions = (options?: Options<ExemptionsData>) => queryOptions<ExemptionsResponse, ExemptionsError, ExemptionsResponse, ReturnType<typeof exemptionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await exemptions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: exemptionsQueryKey(options)
+});
+
+export const exemptionsInfiniteQueryKey = (options?: Options<ExemptionsData>): QueryKey<Options<ExemptionsData>> => createQueryKey('exemptions', options, true);
+
+/**
+ * Consultar solicitudes de exención y resoluciones
+ */
+export const exemptionsInfiniteOptions = (options?: Options<ExemptionsData>) => {
+    const opts = infiniteQueryOptions<ExemptionsResponse, ExemptionsError, InfiniteData<ExemptionsResponse>, QueryKey<Options<ExemptionsData>>, number | Pick<QueryKey<Options<ExemptionsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<ExemptionsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await exemptions({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: exemptionsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
+
+export const debtsQueryKey = (options?: Options<DebtsData>) => createQueryKey('debts', options);
+
+/**
+ * Consultar deudas recibidas de Rentas
+ */
+export const debtsOptions = (options?: Options<DebtsData>) => queryOptions<DebtsResponse, DebtsError, DebtsResponse, ReturnType<typeof debtsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await debts({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: debtsQueryKey(options)
+});
+
+export const debtsInfiniteQueryKey = (options?: Options<DebtsData>): QueryKey<Options<DebtsData>> => createQueryKey('debts', options, true);
+
+/**
+ * Consultar deudas recibidas de Rentas
+ */
+export const debtsInfiniteOptions = (options?: Options<DebtsData>) => {
+    const opts = infiniteQueryOptions<DebtsResponse, DebtsError, InfiniteData<DebtsResponse>, QueryKey<Options<DebtsData>>, number | Pick<QueryKey<Options<DebtsData>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<DebtsData>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await debts({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: debtsInfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const listCorePublicationsQueryKey = (options?: Options<ListCorePublicationsData>) => createQueryKey('listCorePublications', options);
 
@@ -3895,6 +4195,54 @@ export const getCoreDashboardOptions = (options?: Options<GetCoreDashboardData>)
     },
     queryKey: getCoreDashboardQueryKey(options)
 });
+
+export const list10QueryKey = (options?: Options<List10Data>) => createQueryKey('list10', options);
+
+/**
+ * Consultar titulares bloqueados o fallecidos
+ */
+export const list10Options = (options?: Options<List10Data>) => queryOptions<List10Response, List10Error, List10Response, ReturnType<typeof list10QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list10({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list10QueryKey(options)
+});
+
+export const list10InfiniteQueryKey = (options?: Options<List10Data>): QueryKey<Options<List10Data>> => createQueryKey('list10', options, true);
+
+/**
+ * Consultar titulares bloqueados o fallecidos
+ */
+export const list10InfiniteOptions = (options?: Options<List10Data>) => {
+    const opts = infiniteQueryOptions<List10Response, List10Error, InfiniteData<List10Response>, QueryKey<Options<List10Data>>, number | Pick<QueryKey<Options<List10Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+    // @ts-ignore
+    {
+        queryFn: async ({ pageParam, queryKey, signal }) => {
+            // @ts-ignore
+            const page: Pick<QueryKey<Options<List10Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+                query: {
+                    page: pageParam
+                }
+            };
+            const params = createInfiniteParams(queryKey, page);
+            const { data } = await list10({
+                ...options,
+                ...params,
+                signal,
+                throwOnError: true
+            });
+            return data;
+        },
+        queryKey: list10InfiniteQueryKey(options)
+    });
+    return opts as Omit<typeof opts, 'initialData'>;
+};
 
 export const getIndicatorsQueryKey = (options?: Options<GetIndicatorsData>) => createQueryKey('getIndicators', options);
 
@@ -4054,32 +4402,12 @@ export const listAdminAppointmentDayAvailabilityOptions = (options: Options<List
     queryKey: listAdminAppointmentDayAvailabilityQueryKey(options)
 });
 
-export const get3QueryKey = (options: Options<Get3Data>) => createQueryKey('get3', options);
+export const get4QueryKey = (options: Options<Get4Data>) => createQueryKey('get4', options);
 
 /**
  * Consultar una solicitud de cualquier titular
  *
  * Requiere applications:management:view en el rol activo. Devuelve la entidad completa, incluidos el ticket de origen, el motivo de resolución, el trabajador asignado y la clave de idempotencia, que la vista propia no expone. No devuelve los archivos: sus metadatos y contenido siguen en las rutas de documentos con sus propios permisos.
- */
-export const get3Options = (options: Options<Get3Data>) => queryOptions<Get3Response, Get3Error, Get3Response, ReturnType<typeof get3QueryKey>>({
-    queryFn: async ({ queryKey, signal }) => {
-        const { data } = await get3({
-            ...options,
-            ...queryKey[0],
-            signal,
-            throwOnError: true
-        });
-        return data;
-    },
-    queryKey: get3QueryKey(options)
-});
-
-export const get4QueryKey = (options: Options<Get4Data>) => createQueryKey('get4', options);
-
-/**
- * Consultar el plan y estados actuales de sus acciones
- *
- * Lectura profesional completa por permiso; no exige ser el trabajador asignado. Conserva orden de objetivos y acciones. Incluye ciudadano del caso, responsable y fecha UTC. La consulta ciudadana usa DTO propios y rutas separadas.
  */
 export const get4Options = (options: Options<Get4Data>) => queryOptions<Get4Response, Get4Error, Get4Response, ReturnType<typeof get4QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -4092,6 +4420,26 @@ export const get4Options = (options: Options<Get4Data>) => queryOptions<Get4Resp
         return data;
     },
     queryKey: get4QueryKey(options)
+});
+
+export const get5QueryKey = (options: Options<Get5Data>) => createQueryKey('get5', options);
+
+/**
+ * Consultar el plan y estados actuales de sus acciones
+ *
+ * Lectura profesional completa por permiso; no exige ser el trabajador asignado. Conserva orden de objetivos y acciones. Incluye ciudadano del caso, responsable y fecha UTC. La consulta ciudadana usa DTO propios y rutas separadas.
+ */
+export const get5Options = (options: Options<Get5Data>) => queryOptions<Get5Response, Get5Error, Get5Response, ReturnType<typeof get5QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await get5({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: get5QueryKey(options)
 });
 
 export const historyQueryKey = (options: Options<HistoryData>) => createQueryKey('history', options);
@@ -4134,14 +4482,14 @@ export const history1Options = (options: Options<History1Data>) => queryOptions<
     queryKey: history1QueryKey(options)
 });
 
-export const list9QueryKey = (options: Options<List9Data>) => createQueryKey('list9', options);
+export const list11QueryKey = (options: Options<List11Data>) => createQueryKey('list11', options);
 
 /**
- * Listar documentos de cualquier solicitud
+ * Consultar entregas documentales de M1
  */
-export const list9Options = (options: Options<List9Data>) => queryOptions<List9Response, List9Error, List9Response, ReturnType<typeof list9QueryKey>>({
+export const list11Options = (options: Options<List11Data>) => queryOptions<List11Response, List11Error, List11Response, ReturnType<typeof list11QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list9({
+        const { data } = await list11({
             ...options,
             ...queryKey[0],
             signal,
@@ -4149,7 +4497,25 @@ export const list9Options = (options: Options<List9Data>) => queryOptions<List9R
         });
         return data;
     },
-    queryKey: list9QueryKey(options)
+    queryKey: list11QueryKey(options)
+});
+
+export const list12QueryKey = (options: Options<List12Data>) => createQueryKey('list12', options);
+
+/**
+ * Listar documentos de cualquier solicitud
+ */
+export const list12Options = (options: Options<List12Data>) => queryOptions<List12Response, List12Error, List12Response, ReturnType<typeof list12QueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await list12({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: list12QueryKey(options)
 });
 
 export const content1QueryKey = (options: Options<Content1Data>) => createQueryKey('content1', options);
@@ -4388,14 +4754,14 @@ export const getApplicationEvaluationOptions = (options: Options<GetApplicationE
     queryKey: getApplicationEvaluationQueryKey(options)
 });
 
-export const list10QueryKey = (options?: Options<List10Data>) => createQueryKey('list10', options);
+export const list13QueryKey = (options?: Options<List13Data>) => createQueryKey('list13', options);
 
 /**
  * Listar actividades abiertas o inscripciones propias
  */
-export const list10Options = (options?: Options<List10Data>) => queryOptions<List10Response, List10Error, List10Response, ReturnType<typeof list10QueryKey>>({
+export const list13Options = (options?: Options<List13Data>) => queryOptions<List13Response, List13Error, List13Response, ReturnType<typeof list13QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await list10({
+        const { data } = await list13({
             ...options,
             ...queryKey[0],
             signal,
@@ -4403,27 +4769,27 @@ export const list10Options = (options?: Options<List10Data>) => queryOptions<Lis
         });
         return data;
     },
-    queryKey: list10QueryKey(options)
+    queryKey: list13QueryKey(options)
 });
 
-export const list10InfiniteQueryKey = (options?: Options<List10Data>): QueryKey<Options<List10Data>> => createQueryKey('list10', options, true);
+export const list13InfiniteQueryKey = (options?: Options<List13Data>): QueryKey<Options<List13Data>> => createQueryKey('list13', options, true);
 
 /**
  * Listar actividades abiertas o inscripciones propias
  */
-export const list10InfiniteOptions = (options?: Options<List10Data>) => {
-    const opts = infiniteQueryOptions<List10Response, List10Error, InfiniteData<List10Response>, QueryKey<Options<List10Data>>, number | Pick<QueryKey<Options<List10Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
+export const list13InfiniteOptions = (options?: Options<List13Data>) => {
+    const opts = infiniteQueryOptions<List13Response, List13Error, InfiniteData<List13Response>, QueryKey<Options<List13Data>>, number | Pick<QueryKey<Options<List13Data>>[0], 'body' | 'headers' | 'path' | 'query'>>(
     // @ts-ignore
     {
         queryFn: async ({ pageParam, queryKey, signal }) => {
             // @ts-ignore
-            const page: Pick<QueryKey<Options<List10Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
+            const page: Pick<QueryKey<Options<List13Data>>[0], 'body' | 'headers' | 'path' | 'query'> = typeof pageParam === 'object' ? pageParam : {
                 query: {
                     page: pageParam
                 }
             };
             const params = createInfiniteParams(queryKey, page);
-            const { data } = await list10({
+            const { data } = await list13({
                 ...options,
                 ...params,
                 signal,
@@ -4431,19 +4797,19 @@ export const list10InfiniteOptions = (options?: Options<List10Data>) => {
             });
             return data;
         },
-        queryKey: list10InfiniteQueryKey(options)
+        queryKey: list13InfiniteQueryKey(options)
     });
     return opts as Omit<typeof opts, 'initialData'>;
 };
 
-export const get5QueryKey = (options: Options<Get5Data>) => createQueryKey('get5', options);
+export const get6QueryKey = (options: Options<Get6Data>) => createQueryKey('get6', options);
 
 /**
  * Consultar una actividad abierta o una actividad cerrada con inscripción propia
  */
-export const get5Options = (options: Options<Get5Data>) => queryOptions<Get5Response, Get5Error, Get5Response, ReturnType<typeof get5QueryKey>>({
+export const get6Options = (options: Options<Get6Data>) => queryOptions<Get6Response, Get6Error, Get6Response, ReturnType<typeof get6QueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
-        const { data } = await get5({
+        const { data } = await get6({
             ...options,
             ...queryKey[0],
             signal,
@@ -4451,7 +4817,7 @@ export const get5Options = (options: Options<Get5Data>) => queryOptions<Get5Resp
         });
         return data;
     },
-    queryKey: get5QueryKey(options)
+    queryKey: get6QueryKey(options)
 });
 
 export const linksQueryKey = (options?: Options<LinksData>) => createQueryKey('links', options);

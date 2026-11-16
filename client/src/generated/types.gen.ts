@@ -5,6 +5,8 @@ export type ClientOptions = {
 };
 
 /**
+ * UpdateUserRequest
+ *
  * Datos requeridos para actualizar un usuario.
  */
 export type UpdateUserRequest = {
@@ -25,12 +27,16 @@ export type UpdateUserRequest = {
      */
     active?: boolean;
     /**
+     * List
+     *
      * Lista completa de roles que conservará el usuario.
      */
     roles?: Array<string>;
 };
 
 /**
+ * UserManagementResponse
+ *
  * Detalle administrativo de un usuario.
  */
 export type UserManagementResponse = {
@@ -55,10 +61,14 @@ export type UserManagementResponse = {
      */
     readonly active?: boolean;
     /**
+     * List
+     *
      * Roles asignados al usuario.
      */
     readonly roles?: Array<string>;
     /**
+     * Map
+     *
      * Permisos asignados, separados por rol. No representan permisos de un JWT operativo.
      */
     readonly permissionsByRole?: {
@@ -83,6 +93,8 @@ export type UserManagementResponse = {
 };
 
 /**
+ * UpdateRoleRequest
+ *
  * Datos requeridos para actualizar un rol.
  */
 export type UpdateRoleRequest = {
@@ -91,12 +103,16 @@ export type UpdateRoleRequest = {
      */
     name: string;
     /**
+     * List
+     *
      * Lista completa de permisos que conservará el rol.
      */
     permissions?: Array<string>;
 };
 
 /**
+ * RoleResponse
+ *
  * Rol y permisos asociados.
  */
 export type RoleResponse = {
@@ -109,25 +125,37 @@ export type RoleResponse = {
      */
     readonly name?: string;
     /**
+     * List
+     *
      * Permisos asignados al rol.
      */
     readonly permissions?: Array<string>;
 };
 
 /**
+ * CorrectAttentionRequest
+ *
  * Corrige una constancia usando la version consultada previamente.
  */
 export type CorrectAttentionRequest = {
     version: number;
+    /**
+     * AttentionResult
+     */
     result: 'ATENDIDO' | 'AUSENTE';
     attendedOn?: string;
     description?: string;
 };
 
 /**
+ * CommunityAttentionResponse
+ *
  * Constancia de asistencia o atencion comunitaria; no incluye datos clinicos.
  */
 export type CommunityAttentionResponse = {
+    /**
+     * AttentionResult
+     */
     result?: 'ATENDIDO' | 'AUSENTE';
     attendedOn?: string;
     description?: string;
@@ -137,6 +165,8 @@ export type CommunityAttentionResponse = {
 };
 
 /**
+ * PublishInterventionFollowUpRequest
+ *
  * Version publica redactada explicitamente; nunca copia notas ni resultado profesional.
  */
 export type PublishInterventionFollowUpRequest = {
@@ -144,6 +174,8 @@ export type PublishInterventionFollowUpRequest = {
 };
 
 /**
+ * InterventionPublicationResponse
+ *
  * Gestion profesional de la version publica actual, incluidas publicaciones retiradas.
  */
 export type InterventionPublicationResponse = {
@@ -181,6 +213,22 @@ export type ErrorResponse = {
      */
     path?: string;
     /**
+     * URI del tipo de problema según RFC 9457.
+     */
+    type?: string;
+    /**
+     * Título HTTP del problema.
+     */
+    title?: string;
+    /**
+     * Detalle legible del problema.
+     */
+    detail?: string;
+    /**
+     * URI de la solicitud que produjo el problema.
+     */
+    instance?: string;
+    /**
      * Errores de validación asociados a campos, cuando corresponda.
      */
     fields?: Array<FieldErrorResponse>;
@@ -201,6 +249,8 @@ export type FieldErrorResponse = {
 };
 
 /**
+ * RescheduleApplicationVisitRequest
+ *
  * Nuevo horario y lugar de una visita o entrevista social pendiente.
  */
 export type RescheduleApplicationVisitRequest = {
@@ -219,27 +269,43 @@ export type RescheduleApplicationVisitRequest = {
 };
 
 /**
+ * ApplicationVisitRescheduleRequestSummaryResponse
+ *
  * Resumen sin textos sensibles de la solicitud de reprogramacion mas reciente.
  */
 export type ApplicationVisitRescheduleRequestSummaryResponse = {
     id?: string;
+    /**
+     * ApplicationVisitRescheduleRequestStatus
+     */
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     requestedAt?: string;
     reviewedAt?: string;
 };
 
 /**
+ * ApplicationVisitResponse
+ *
  * Estado vigente de una visita o entrevista social programada, cancelada o finalizada.
  */
 export type ApplicationVisitResponse = {
     id?: string;
     applicationId?: string;
+    /**
+     * ApplicationStatus
+     */
     applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    /**
+     * ApplicationVisitType
+     */
     type?: 'VISIT' | 'INTERVIEW';
     startsAt?: string;
     endsAt?: string;
     durationMinutes?: number;
     location?: string;
+    /**
+     * ApplicationVisitStatus
+     */
     status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
     responsibleId?: number;
     responsibleName?: string;
@@ -286,6 +352,8 @@ export type ApplicationVisitResponse = {
 };
 
 /**
+ * ApplicationDocumentResponse
+ *
  * Metadatos de un documento entregado; nunca contiene sus bytes.
  */
 export type ApplicationDocumentResponse = {
@@ -299,6 +367,9 @@ export type ApplicationDocumentResponse = {
     originalName?: string;
     contentType?: string;
     sizeBytes?: number;
+    /**
+     * ApplicationDocumentStatus
+     */
     status?: 'PENDING' | 'VALID' | 'OBSERVED';
     observation?: string;
     uploadedAt?: string;
@@ -308,6 +379,8 @@ export type ApplicationDocumentResponse = {
 };
 
 /**
+ * ProgramImageResponse
+ *
  * Metadatos de la imagen de portada de un programa; nunca contiene sus bytes.
  */
 export type ProgramImageResponse = {
@@ -346,6 +419,8 @@ export type ProgramImageResponse = {
 };
 
 /**
+ * UpdateEnrollmentPeriodRequest
+ *
  * Datos editables de un período de inscripción.
  */
 export type UpdateEnrollmentPeriodRequest = {
@@ -364,6 +439,8 @@ export type UpdateEnrollmentPeriodRequest = {
 };
 
 /**
+ * EnrollmentPeriodResponse
+ *
  * Detalle completo de un período de inscripción.
  */
 export type EnrollmentPeriodResponse = {
@@ -396,6 +473,8 @@ export type EnrollmentPeriodResponse = {
      */
     readonly closeDate?: string;
     /**
+     * EnrollmentPeriodStatus
+     *
      * Estado actual del período.
      */
     readonly status?: 'SCHEDULED' | 'OPEN' | 'SUSPENDED' | 'CLOSED';
@@ -414,6 +493,8 @@ export type EnrollmentPeriodResponse = {
 };
 
 /**
+ * UpdateProgramRequest
+ *
  * Datos requeridos para actualizar un programa social.
  */
 export type UpdateProgramRequest = {
@@ -428,6 +509,8 @@ export type UpdateProgramRequest = {
 };
 
 /**
+ * ProgramCreatedByResponse
+ *
  * Referencia al usuario que creó el registro.
  */
 export type ProgramCreatedByResponse = {
@@ -442,6 +525,8 @@ export type ProgramCreatedByResponse = {
 };
 
 /**
+ * ProgramResponse
+ *
  * Detalle completo de un programa social.
  */
 export type ProgramResponse = {
@@ -476,6 +561,8 @@ export type ProgramResponse = {
 };
 
 /**
+ * UpdateProgramEditionRequest
+ *
  * Datos requeridos para actualizar una edición de un programa.
  */
 export type UpdateProgramEditionRequest = {
@@ -498,6 +585,8 @@ export type UpdateProgramEditionRequest = {
 };
 
 /**
+ * ProgramEditionResponse
+ *
  * Detalle completo de una edición de programa.
  */
 export type ProgramEditionResponse = {
@@ -534,6 +623,8 @@ export type ProgramEditionResponse = {
      */
     readonly currentEnrollment?: number;
     /**
+     * ProgramEditionStatus
+     *
      * Estado actual de la edición.
      */
     readonly status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
@@ -552,10 +643,14 @@ export type ProgramEditionResponse = {
 };
 
 /**
+ * UpdateProgramRequirementRequest
+ *
  * Datos requeridos para actualizar un requisito.
  */
 export type UpdateProgramRequirementRequest = {
     /**
+     * ProgramRequirementType
+     *
      * Tipo actualizado del requisito.
      */
     type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
@@ -570,6 +665,8 @@ export type UpdateProgramRequirementRequest = {
 };
 
 /**
+ * ProgramRequirementResponse
+ *
  * Requisito asociado a una edición de programa.
  */
 export type ProgramRequirementResponse = {
@@ -582,6 +679,8 @@ export type ProgramRequirementResponse = {
      */
     readonly programEditionId?: string;
     /**
+     * ProgramRequirementType
+     *
      * Tipo de requisito.
      */
     readonly type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
@@ -596,6 +695,8 @@ export type ProgramRequirementResponse = {
 };
 
 /**
+ * UpdateProgramDocumentRequirementRequest
+ *
  * Actualización de un documento solicitado por una edición.
  */
 export type UpdateProgramDocumentRequirementRequest = {
@@ -606,6 +707,8 @@ export type UpdateProgramDocumentRequirementRequest = {
 };
 
 /**
+ * ProgramDocumentRequirementResponse
+ *
  * Documento que una edición solicita a sus postulantes.
  */
 export type ProgramDocumentRequirementResponse = {
@@ -618,10 +721,14 @@ export type ProgramDocumentRequirementResponse = {
 };
 
 /**
+ * UpdateProgramBenefitRequest
+ *
  * Datos requeridos para actualizar un beneficio.
  */
 export type UpdateProgramBenefitRequest = {
     /**
+     * ProgramBenefitType
+     *
      * Tipo actualizado del beneficio.
      */
     benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
@@ -636,6 +743,8 @@ export type UpdateProgramBenefitRequest = {
 };
 
 /**
+ * ProgramBenefitResponse
+ *
  * Beneficio asociado a una edición de programa.
  */
 export type ProgramBenefitResponse = {
@@ -648,6 +757,8 @@ export type ProgramBenefitResponse = {
      */
     readonly programEditionId?: string;
     /**
+     * ProgramBenefitType
+     *
      * Tipo de beneficio.
      */
     readonly benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
@@ -662,15 +773,22 @@ export type ProgramBenefitResponse = {
 };
 
 /**
+ * UpdateProfessionalAvailabilityRequest
+ *
  * Datos editables de una disponibilidad profesional.
  */
 export type UpdateProfessionalAvailabilityRequest = {
+    /**
+     * DayOfWeek
+     */
     dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
     startTime?: string;
     endTime?: string;
 };
 
 /**
+ * ProfessionalAvailabilityResponse
+ *
  * Disponibilidad semanal para una asignación profesional y servicio.
  */
 export type ProfessionalAvailabilityResponse = {
@@ -680,6 +798,9 @@ export type ProfessionalAvailabilityResponse = {
     centerId?: string;
     serviceId?: string;
     serviceName?: string;
+    /**
+     * DayOfWeek
+     */
     dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
     startTime?: string;
     endTime?: string;
@@ -689,6 +810,8 @@ export type ProfessionalAvailabilityResponse = {
 };
 
 /**
+ * UpdateMunicipalServiceRequest
+ *
  * Datos editables de un servicio municipal.
  */
 export type UpdateMunicipalServiceRequest = {
@@ -698,6 +821,8 @@ export type UpdateMunicipalServiceRequest = {
 };
 
 /**
+ * MunicipalServiceResponse
+ *
  * Detalle de un servicio municipal compartido.
  */
 export type MunicipalServiceResponse = {
@@ -711,6 +836,8 @@ export type MunicipalServiceResponse = {
 };
 
 /**
+ * UpdateMunicipalCenterRequest
+ *
  * Datos editables de un centro municipal.
  */
 export type UpdateMunicipalCenterRequest = {
@@ -721,6 +848,8 @@ export type UpdateMunicipalCenterRequest = {
 };
 
 /**
+ * MunicipalCenterResponse
+ *
  * Detalle de un centro municipal.
  */
 export type MunicipalCenterResponse = {
@@ -735,20 +864,131 @@ export type MunicipalCenterResponse = {
 };
 
 /**
+ * AssignSocialTicketRequest
+ */
+export type AssignSocialTicketRequest = {
+    workerId?: number;
+};
+
+/**
+ * EventAttachmentData
+ */
+export type EventAttachmentData = {
+    fileName: string;
+    contentType: string;
+    url: string;
+    sizeBytes?: number;
+};
+
+/**
+ * SocialTicketDetailResponse
+ */
+export type SocialTicketDetailResponse = {
+    ticket?: SocialTicketResponse;
+    /**
+     * Map
+     */
+    routing?: {
+        [key: string]: unknown;
+    };
+    correlationId?: string;
+    responseCausationId?: string;
+    /**
+     * Map
+     */
+    informationResponse?: {
+        [key: string]: unknown;
+    };
+    reopenReason?: string;
+    /**
+     * List
+     */
+    attachments?: Array<EventAttachmentData>;
+};
+
+/**
+ * SocialTicketResponse
+ */
+export type SocialTicketResponse = {
+    id?: string;
+    publicId?: string;
+    citizenId?: string;
+    anonymous?: boolean;
+    responsibleAreaId?: string;
+    currentStatus?: string;
+    currentPriority?: string;
+    /**
+     * SocialTicketState
+     */
+    state?: 'RECEIVED' | 'IN_PROGRESS' | 'WAITING_INFORMATION' | 'RESOLVED' | 'RETURNED' | 'CLOSED';
+    applicationId?: string;
+    assignedWorkerId?: number;
+    informationPending?: boolean;
+    requiresAttention?: boolean;
+    sourceUpdatedAt?: string;
+    closedReason?: string;
+};
+
+/**
+ * LinkSocialTicketApplicationRequest
+ */
+export type LinkSocialTicketApplicationRequest = {
+    applicationId?: string;
+};
+
+/**
+ * LinkExemptionBenefitRequest
+ */
+export type LinkExemptionBenefitRequest = {
+    benefitGrantId?: string;
+};
+
+/**
+ * RevenueExemptionResponse
+ */
+export type RevenueExemptionResponse = {
+    id?: string;
+    citizenId?: string;
+    conceptCode?: string;
+    requestReason?: string;
+    requestedPercentage?: number;
+    requestedFrom?: string;
+    requestedUntil?: string;
+    benefitGrantId?: string;
+    ambiguousBenefit?: boolean;
+    status?: string;
+    exemptionId?: string;
+    percentage?: number;
+    validFrom?: string;
+    validUntil?: string;
+    resolutionReason?: string;
+};
+
+/**
+ * UpdateCenterOpeningHourRequest
+ *
  * Datos editables de una franja semanal de apertura.
  */
 export type UpdateCenterOpeningHourRequest = {
+    /**
+     * DayOfWeek
+     */
     dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
     startTime?: string;
     endTime?: string;
 };
 
 /**
+ * CenterOpeningHourResponse
+ *
  * Franja semanal de apertura de un centro.
  */
 export type CenterOpeningHourResponse = {
     id?: string;
     centerId?: string;
+    /**
+     * DayOfWeek
+     */
     dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
     startTime?: string;
     endTime?: string;
@@ -758,6 +998,8 @@ export type CenterOpeningHourResponse = {
 };
 
 /**
+ * RescheduleAppointmentRequest
+ *
  * Reprograma un turno al horario elegido para el mismo servicio y centro.
  */
 export type RescheduleAppointmentRequest = {
@@ -767,6 +1009,8 @@ export type RescheduleAppointmentRequest = {
 };
 
 /**
+ * AdminAppointmentResponse
+ *
  * Detalle administrativo del turno y estado de retención de su horario.
  */
 export type AdminAppointmentResponse = {
@@ -778,10 +1022,15 @@ export type AdminAppointmentResponse = {
 };
 
 /**
+ * AppointmentResponse
+ *
  * Detalle vigente de un turno propio, confirmado o cancelado.
  */
 export type AppointmentResponse = {
     id?: string;
+    /**
+     * AppointmentStatus
+     */
     status?: 'CONFIRMED' | 'CANCELLED';
     serviceId?: string;
     serviceName?: string;
@@ -796,6 +1045,8 @@ export type AppointmentResponse = {
 };
 
 /**
+ * AssignApplicationWorkerRequest
+ *
  * Trabajador al que se asigna la solicitud para evaluarla y gestionar sus visitas.
  */
 export type AssignApplicationWorkerRequest = {
@@ -806,6 +1057,8 @@ export type AssignApplicationWorkerRequest = {
 };
 
 /**
+ * AdminApplicationResponse
+ *
  * Solicitud completa para administración: todos los campos de la entidad, incluidos los que la vista propia no expone.
  */
 export type AdminApplicationResponse = {
@@ -833,6 +1086,9 @@ export type AdminApplicationResponse = {
     programEditionId?: string;
     programEditionName?: string;
     enrollmentPeriodId?: string;
+    /**
+     * ApplicationStatus
+     */
     status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     /**
      * Identificador del trámite de origen, cuando la solicitud llegó desde otro canal.
@@ -866,16 +1122,31 @@ export type AdminApplicationResponse = {
      */
     requestHash?: string;
     /**
+     * List
+     *
      * Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.
      */
     pendingDocuments?: Array<PendingApplicationDocumentResponse>;
     /**
+     * List
+     *
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
+    /**
+     * Motivo de cierre automático, independiente de la resolución histórica.
+     */
+    closedReason?: string;
+    closedAt?: string;
+    /**
+     * Evento externo que causó el cierre.
+     */
+    closedByEventId?: string;
 };
 
 /**
+ * AvailableProgramDocumentRequirementResponse
+ *
  * Documento solicitado por una edición disponible.
  */
 export type AvailableProgramDocumentRequirementResponse = {
@@ -886,15 +1157,23 @@ export type AvailableProgramDocumentRequirementResponse = {
     required?: boolean;
 };
 
+/**
+ * PendingApplicationDocumentResponse
+ */
 export type PendingApplicationDocumentResponse = {
     requirementId?: string;
     code?: string;
     name?: string;
+    /**
+     * PendingDocumentReason
+     */
     reason?: 'MISSING' | 'OBSERVED';
     observation?: string;
 };
 
 /**
+ * UpdateActivityRequest
+ *
  * Datos requeridos para actualizar una actividad comunitaria en borrador.
  */
 export type UpdateActivityRequest = {
@@ -907,6 +1186,8 @@ export type UpdateActivityRequest = {
 };
 
 /**
+ * ActivityCreatedByResponse
+ *
  * Usuario que creó la actividad.
  */
 export type ActivityCreatedByResponse = {
@@ -915,6 +1196,8 @@ export type ActivityCreatedByResponse = {
 };
 
 /**
+ * ActivityResponse
+ *
  * Detalle de una actividad comunitaria.
  */
 export type ActivityResponse = {
@@ -925,6 +1208,9 @@ export type ActivityResponse = {
     startDate?: string;
     endDate?: string;
     capacity?: number;
+    /**
+     * ActivityStatus
+     */
     status?: 'DRAFT' | 'OPEN' | 'CLOSED';
     createdBy?: ActivityCreatedByResponse;
     createdAt?: string;
@@ -932,6 +1218,8 @@ export type ActivityResponse = {
 };
 
 /**
+ * CreateUserRequest
+ *
  * Datos requeridos para crear un usuario.
  */
 export type CreateUserRequest = {
@@ -952,12 +1240,16 @@ export type CreateUserRequest = {
      */
     active?: boolean;
     /**
+     * List
+     *
      * Nombres de los roles asignados.
      */
     roles?: Array<string>;
 };
 
 /**
+ * CreateRoleRequest
+ *
  * Datos requeridos para crear un rol.
  */
 export type CreateRoleRequest = {
@@ -966,12 +1258,16 @@ export type CreateRoleRequest = {
      */
     name: string;
     /**
+     * List
+     *
      * Nombres de los permisos que se asignarán al rol.
      */
     permissions?: Array<string>;
 };
 
 /**
+ * SwitchRoleRequest
+ *
  * Nombre del rol asignado a seleccionar o activar. Cambiar el rol activo no revoca JWT emitidos anteriormente.
  */
 export type SwitchRoleRequest = {
@@ -982,6 +1278,8 @@ export type SwitchRoleRequest = {
 };
 
 /**
+ * LoginResponse
+ *
  * Resultado de autenticación: JWT operativo con un rol activo o JWT temporal para seleccionar rol.
  */
 export type LoginResponse = {
@@ -1012,6 +1310,8 @@ export type LoginResponse = {
 };
 
 /**
+ * UserResponse
+ *
  * Datos públicos de un usuario autenticado.
  */
 export type UserResponse = {
@@ -1032,6 +1332,8 @@ export type UserResponse = {
      */
     readonly email?: string;
     /**
+     * List
+     *
      * Roles asignados al usuario.
      */
     readonly roles?: Array<string>;
@@ -1040,12 +1342,16 @@ export type UserResponse = {
      */
     readonly activeRole?: string;
     /**
+     * List
+     *
      * Permisos del rol activo incluidos en el JWT; no suma los demás roles.
      */
     readonly permissions?: Array<string>;
 };
 
 /**
+ * CookieSessionResponse
+ *
  * Sesión del navegador. Los JWT se envían exclusivamente en cookies HttpOnly.
  */
 export type CookieSessionResponse = {
@@ -1055,6 +1361,8 @@ export type CookieSessionResponse = {
 };
 
 /**
+ * LoginRequest
+ *
  * Credenciales requeridas para iniciar sesión.
  */
 export type LoginRequest = {
@@ -1065,6 +1373,8 @@ export type LoginRequest = {
 };
 
 /**
+ * SelectRoleRequest
+ *
  * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
  */
 export type SelectRoleRequest = {
@@ -1075,15 +1385,22 @@ export type SelectRoleRequest = {
 };
 
 /**
+ * CreateAttentionRequest
+ *
  * Registra asistencia. ATENDIDO exige fecha y descripcion; AUSENTE no admite ninguna de ellas.
  */
 export type CreateAttentionRequest = {
+    /**
+     * AttentionResult
+     */
     result: 'ATENDIDO' | 'AUSENTE';
     attendedOn?: string;
     description?: string;
 };
 
 /**
+ * CreateAppointmentRequest
+ *
  * Solicita un turno propio previamente ofrecido por la consulta de horarios.
  */
 export type CreateAppointmentRequest = {
@@ -1093,6 +1410,8 @@ export type CreateAppointmentRequest = {
 };
 
 /**
+ * CreateApplicationRequest
+ *
  * Presenta una solicitud propia. Solo admite enrollmentPeriodId; el usuario proviene del JWT.
  */
 export type CreateApplicationRequest = {
@@ -1103,6 +1422,8 @@ export type CreateApplicationRequest = {
 };
 
 /**
+ * ApplicationResponse
+ *
  * Solicitud y referencias a su titular y registrante. No expone datos personales ni internos de idempotencia.
  */
 export type ApplicationResponse = {
@@ -1121,11 +1442,16 @@ export type ApplicationResponse = {
     registeredByUserId?: number;
     programEditionId?: string;
     enrollmentPeriodId?: string;
+    /**
+     * ApplicationStatus
+     */
     status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     submittedAt?: string;
     createdAt?: string;
     updatedAt?: string;
     /**
+     * List
+     *
      * Documentos obligatorios todavía faltantes u observados. Una entrega PENDING ya presentada no aparece aquí.
      */
     pendingDocuments?: Array<PendingApplicationDocumentResponse>;
@@ -1133,21 +1459,30 @@ export type ApplicationResponse = {
     programName?: string;
     programEditionName?: string;
     /**
+     * List
+     *
      * Catálogo completo de documentos de la edición, incluidos los opcionales, aunque la edición ya no esté disponible para nuevas solicitudes.
      */
     documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
 };
 
 /**
+ * CreateInterventionPlanRequest
+ *
  * Estructura inicial inmutable. Ciudadano y responsable se obtienen del caso.
  */
 export type CreateInterventionPlanRequest = {
     /**
+     * List
+     *
      * Al menos un objetivo, en el orden deseado.
      */
     objectives: Array<InterventionObjectiveRequest>;
 };
 
+/**
+ * InterventionActionRequest
+ */
 export type InterventionActionRequest = {
     description: string;
     /**
@@ -1160,31 +1495,50 @@ export type InterventionActionRequest = {
     dueDate: string;
 };
 
+/**
+ * InterventionObjectiveRequest
+ */
 export type InterventionObjectiveRequest = {
     description: string;
     /**
+     * List
+     *
      * Al menos una accion, en el orden deseado.
      */
     actions: Array<InterventionActionRequest>;
 };
 
+/**
+ * InterventionActionResponse
+ */
 export type InterventionActionResponse = {
     id?: string;
     description?: string;
     startDate?: string;
     dueDate?: string;
+    /**
+     * InterventionActionStatus
+     */
     status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
     responsibleUserId?: number;
     responsibleUserName?: string;
 };
 
+/**
+ * InterventionObjectiveResponse
+ */
 export type InterventionObjectiveResponse = {
     id?: string;
     description?: string;
+    /**
+     * List
+     */
     actions?: Array<InterventionActionResponse>;
 };
 
 /**
+ * InterventionPlanResponse
+ *
  * Plan profesional de un caso. Estructura inicial fija y estados actuales de sus acciones.
  */
 export type InterventionPlanResponse = {
@@ -1197,13 +1551,21 @@ export type InterventionPlanResponse = {
      * Instante UTC de creacion, con precision de microsegundos.
      */
     createdAt?: string;
+    /**
+     * List
+     */
     objectives?: Array<InterventionObjectiveResponse>;
 };
 
 /**
+ * CreateInterventionFollowUpRequest
+ *
  * Seguimiento inmutable de una accion. Autor y registro UTC se obtienen del servidor.
  */
 export type CreateInterventionFollowUpRequest = {
+    /**
+     * InterventionFollowUpStatus
+     */
     status: 'IN_PROGRESS' | 'COMPLETED';
     /**
      * Fecha real desde el inicio de la accion hasta hoy, sin retroceder respecto al seguimiento anterior.
@@ -1217,6 +1579,8 @@ export type CreateInterventionFollowUpRequest = {
 };
 
 /**
+ * InterventionFollowUpResponse
+ *
  * Seguimiento profesional inmutable; las notas y resultados originales no se exponen a ciudadanos ni a logs generales.
  */
 export type InterventionFollowUpResponse = {
@@ -1227,7 +1591,13 @@ export type InterventionFollowUpResponse = {
     objectiveId?: string;
     actionId?: string;
     sequenceNumber?: number;
+    /**
+     * InterventionActionStatus
+     */
     previousStatus?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    /**
+     * InterventionActionStatus
+     */
     status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
     occurredOn?: string;
     notes?: string;
@@ -1248,10 +1618,14 @@ export type InterventionFollowUpResponse = {
 };
 
 /**
+ * CreateApplicationVisitRequest
+ *
  * Datos para programar una visita o entrevista social. El responsable, fin y fecha de registro se derivan en el servidor.
  */
 export type CreateApplicationVisitRequest = {
     /**
+     * ApplicationVisitType
+     *
      * Tipo de actuacion social.
      */
     type: 'VISIT' | 'INTERVIEW';
@@ -1270,10 +1644,14 @@ export type CreateApplicationVisitRequest = {
 };
 
 /**
+ * RecordApplicationVisitResultRequest
+ *
  * Resultado final de una visita o entrevista social. El profesional y la fecha se derivan del servidor.
  */
 export type RecordApplicationVisitResultRequest = {
     /**
+     * ApplicationVisitResultStatus
+     *
      * Estado final de la actuacion.
      */
     status: 'REALIZED' | 'NOT_REALIZED';
@@ -1288,6 +1666,8 @@ export type RecordApplicationVisitResultRequest = {
 };
 
 /**
+ * CreateApplicationVisitRescheduleRequest
+ *
  * Motivo ciudadano para solicitar la reprogramacion de una visita o entrevista propia.
  */
 export type CreateApplicationVisitRescheduleRequest = {
@@ -1298,6 +1678,8 @@ export type CreateApplicationVisitRescheduleRequest = {
 };
 
 /**
+ * ApplicationVisitRescheduleScheduleResponse
+ *
  * Horario historico de una visita o entrevista.
  */
 export type ApplicationVisitRescheduleScheduleResponse = {
@@ -1308,6 +1690,8 @@ export type ApplicationVisitRescheduleScheduleResponse = {
 };
 
 /**
+ * CitizenApplicationVisitRescheduleRequestDetailResponse
+ *
  * Detalle ciudadano de una solicitud de reprogramacion propia.
  */
 export type CitizenApplicationVisitRescheduleRequestDetailResponse = {
@@ -1315,7 +1699,13 @@ export type CitizenApplicationVisitRescheduleRequestDetailResponse = {
     applicationId?: string;
     applicationNumber?: number;
     visitId?: string;
+    /**
+     * ApplicationVisitType
+     */
     visitType?: 'VISIT' | 'INTERVIEW';
+    /**
+     * ApplicationVisitRescheduleRequestStatus
+     */
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     reason?: string;
     requestedAt?: string;
@@ -1326,14 +1716,20 @@ export type CitizenApplicationVisitRescheduleRequestDetailResponse = {
 };
 
 /**
+ * CreateApplicationEvaluationRequest
+ *
  * Evaluacion social de una solicitud. El profesional y la fecha se obtienen del servidor.
  */
 export type CreateApplicationEvaluationRequest = {
     /**
+     * VulnerabilityLevel
+     *
      * Nivel de vulnerabilidad detectado.
      */
     vulnerability: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
+     * EvaluationPriority
+     *
      * Prioridad de intervencion.
      */
     priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -1344,16 +1740,22 @@ export type CreateApplicationEvaluationRequest = {
 };
 
 /**
+ * ApplicationEvaluationResponse
+ *
  * Evaluacion social registrada para una solicitud.
  */
 export type ApplicationEvaluationResponse = {
     id?: string;
     applicationId?: string;
     /**
+     * VulnerabilityLevel
+     *
      * Nivel de vulnerabilidad determinado durante la evaluacion social.
      */
     vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
+     * EvaluationPriority
+     *
      * Prioridad de intervencion determinada durante la evaluacion social.
      */
     priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -1370,6 +1772,8 @@ export type ApplicationEvaluationResponse = {
 };
 
 /**
+ * CreateProgramRequest
+ *
  * Datos requeridos para crear un programa social.
  */
 export type CreateProgramRequest = {
@@ -1384,6 +1788,8 @@ export type CreateProgramRequest = {
 };
 
 /**
+ * ProgramIncompatibilityResponse
+ *
  * Relación de incompatibilidad entre dos programas.
  */
 export type ProgramIncompatibilityResponse = {
@@ -1406,6 +1812,8 @@ export type ProgramIncompatibilityResponse = {
 };
 
 /**
+ * CreateEnrollmentPeriodRequest
+ *
  * Datos requeridos para crear un período de inscripción.
  */
 export type CreateEnrollmentPeriodRequest = {
@@ -1424,10 +1832,14 @@ export type CreateEnrollmentPeriodRequest = {
 };
 
 /**
+ * CreateProgramRequirementRequest
+ *
  * Datos requeridos para crear un requisito.
  */
 export type CreateProgramRequirementRequest = {
     /**
+     * ProgramRequirementType
+     *
      * Tipo de requisito exigido.
      */
     type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
@@ -1442,6 +1854,8 @@ export type CreateProgramRequirementRequest = {
 };
 
 /**
+ * CreateProgramDocumentRequirementRequest
+ *
  * Configuración de un documento solicitado por una edición.
  */
 export type CreateProgramDocumentRequirementRequest = {
@@ -1452,10 +1866,14 @@ export type CreateProgramDocumentRequirementRequest = {
 };
 
 /**
+ * CreateProgramBenefitRequest
+ *
  * Datos requeridos para crear un beneficio.
  */
 export type CreateProgramBenefitRequest = {
     /**
+     * ProgramBenefitType
+     *
      * Tipo de beneficio otorgado.
      */
     benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
@@ -1470,6 +1888,8 @@ export type CreateProgramBenefitRequest = {
 };
 
 /**
+ * CreateProgramEditionRequest
+ *
  * Datos requeridos para crear una edición de un programa.
  */
 export type CreateProgramEditionRequest = {
@@ -1492,24 +1912,36 @@ export type CreateProgramEditionRequest = {
 };
 
 /**
+ * CreateProfessionalAvailabilityRequest
+ *
  * Franja semanal de disponibilidad profesional.
  */
 export type CreateProfessionalAvailabilityRequest = {
+    /**
+     * DayOfWeek
+     */
     dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
     startTime?: string;
     endTime?: string;
 };
 
 /**
+ * CreateProfessionalAvailabilitiesRequest
+ *
  * Misma disponibilidad replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
  */
 export type CreateProfessionalAvailabilitiesRequest = {
+    /**
+     * List
+     */
     days?: Array<'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'>;
     startTime?: string;
     endTime?: string;
 };
 
 /**
+ * CreateMunicipalServiceRequest
+ *
  * Datos requeridos para crear un servicio municipal.
  */
 export type CreateMunicipalServiceRequest = {
@@ -1519,6 +1951,8 @@ export type CreateMunicipalServiceRequest = {
 };
 
 /**
+ * CreateMunicipalCenterRequest
+ *
  * Datos requeridos para crear un centro municipal.
  */
 export type CreateMunicipalCenterRequest = {
@@ -1529,6 +1963,8 @@ export type CreateMunicipalCenterRequest = {
 };
 
 /**
+ * AssignCenterServiceRequest
+ *
  * Servicio del catálogo que se asignará al centro.
  */
 export type AssignCenterServiceRequest = {
@@ -1536,6 +1972,8 @@ export type AssignCenterServiceRequest = {
 };
 
 /**
+ * CenterServiceResponse
+ *
  * Servicio del catálogo asignado a un centro municipal.
  */
 export type CenterServiceResponse = {
@@ -1548,24 +1986,167 @@ export type CenterServiceResponse = {
 };
 
 /**
+ * CreateCenterOpeningHourRequest
+ *
  * Franja semanal de apertura de un centro.
  */
 export type CreateCenterOpeningHourRequest = {
+    /**
+     * DayOfWeek
+     */
     dayOfWeek?: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
     startTime?: string;
     endTime?: string;
 };
 
 /**
+ * CreateCenterOpeningHoursRequest
+ *
  * Misma franja de apertura replicada en varios días. Todo-o-nada: si un día falla, no se crea ninguna.
  */
 export type CreateCenterOpeningHoursRequest = {
+    /**
+     * List
+     */
     days?: Array<'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'>;
     startTime?: string;
     endTime?: string;
 };
 
 /**
+ * InformationRequestData
+ */
+export type InformationRequestData = {
+    messageForCitizen?: string;
+    requiredBy?: string;
+    purpose?: string;
+};
+
+/**
+ * InformationResponseData
+ */
+export type InformationResponseData = {
+    message?: string;
+    purpose?: string;
+};
+
+/**
+ * ReasonCodeData
+ */
+export type ReasonCodeData = {
+    reasonCode: string;
+};
+
+/**
+ * ResolutionData
+ */
+export type ResolutionData = {
+    type: string;
+};
+
+/**
+ * TicketDetailsData
+ */
+export type TicketDetailsData = {
+    routing?: TicketRoutingData;
+    informationRequest?: InformationRequestData;
+    informationResponse?: InformationResponseData;
+    returnInfo?: ReasonCodeData;
+    resolution?: ResolutionData;
+    cancellation?: ReasonCodeData;
+    reopen?: TicketReopenData;
+    escalation?: TicketEscalationData;
+    duplicate?: TicketDuplicateData;
+    closure?: ReasonCodeData;
+};
+
+/**
+ * TicketDuplicateData
+ */
+export type TicketDuplicateData = {
+    mainTicketId: string;
+};
+
+/**
+ * TicketEscalationData
+ */
+export type TicketEscalationData = {
+    active: boolean;
+    reasonCode?: string;
+    escalatedAt?: string;
+};
+
+/**
+ * TicketLocationData
+ */
+export type TicketLocationData = {
+    addressLine?: string;
+    street?: string;
+    streetNumber?: string;
+    neighborhoodId?: string;
+    reference?: string;
+};
+
+/**
+ * TicketReopenData
+ */
+export type TicketReopenData = {
+    reason?: string;
+};
+
+/**
+ * TicketRoutingData
+ */
+export type TicketRoutingData = {
+    requestType: string;
+    category: string;
+    subcategory: string;
+    ticketType: string;
+    summary: string;
+    description: string;
+    /**
+     * Map
+     *
+     * Respuestas dinámicas del formulario como objeto JSON.
+     */
+    formData?: {
+        [key: string]: unknown;
+    };
+    location?: TicketLocationData;
+    resolutionDueAt?: string;
+    escalation?: TicketEscalationData;
+    reassignment?: boolean;
+};
+
+/**
+ * UpdateSocialTicketRequest
+ */
+export type UpdateSocialTicketRequest = {
+    /**
+     * TicketUpdateType
+     */
+    updateType?: 'STARTED' | 'PROGRESS' | 'INFORMATION_REQUIRED' | 'RETURNED' | 'RESOLVED' | 'REJECTED';
+    publicMessage?: string;
+    internalMessage?: string;
+    progress?: number;
+    details?: TicketDetailsData;
+    /**
+     * List
+     */
+    attachments?: Array<EventAttachmentData>;
+};
+
+/**
+ * SocialEventQueuedResponse
+ */
+export type SocialEventQueuedResponse = {
+    eventId?: string;
+    status?: string;
+};
+
+/**
+ * AssignProfessionalRequest
+ *
  * Profesional que se asignará al servicio del centro.
  */
 export type AssignProfessionalRequest = {
@@ -1573,6 +2154,8 @@ export type AssignProfessionalRequest = {
 };
 
 /**
+ * ProfessionalAssignmentResponse
+ *
  * Profesional asignado a un servicio específico de un centro.
  */
 export type ProfessionalAssignmentResponse = {
@@ -1590,6 +2173,8 @@ export type ProfessionalAssignmentResponse = {
 };
 
 /**
+ * CreateAssistedApplicationRequest
+ *
  * Presentación asistida para un usuario existente. Quien registra se obtiene exclusivamente del JWT.
  */
 export type CreateAssistedApplicationRequest = {
@@ -1600,6 +2185,9 @@ export type CreateAssistedApplicationRequest = {
     enrollmentPeriodId: string;
 };
 
+/**
+ * ApplicationRequirementCheckRequest
+ */
 export type ApplicationRequirementCheckRequest = {
     requirementId: string;
     /**
@@ -1609,22 +2197,34 @@ export type ApplicationRequirementCheckRequest = {
 };
 
 /**
+ * CreateApplicationResolutionRequest
+ *
  * Resolucion administrativa. Responsable y fecha se obtienen del servidor.
  */
 export type CreateApplicationResolutionRequest = {
+    /**
+     * ApplicationResolutionDecision
+     */
     decision: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
     reason: string;
     /**
+     * List
+     *
      * Un resultado por cada requisito vigente. Lista vacia si no hay requisitos.
      */
     requirementChecks: Array<ApplicationRequirementCheckRequest>;
 };
 
 /**
+ * ApplicationResolutionRequirementResponse
+ *
  * Copia del requisito y resultado al momento de resolver; no sigue los cambios del catalogo.
  */
 export type ApplicationResolutionRequirementResponse = {
     requirementId?: string;
+    /**
+     * ProgramRequirementType
+     */
     type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
     value?: string;
     description?: string;
@@ -1632,12 +2232,20 @@ export type ApplicationResolutionRequirementResponse = {
 };
 
 /**
+ * ApplicationResolutionResponse
+ *
  * Resolucion historica inmutable, visible solo para administracion.
  */
 export type ApplicationResolutionResponse = {
     id?: string;
     applicationId?: string;
+    /**
+     * ApplicationStatus
+     */
     previousStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
+    /**
+     * ApplicationResolutionDecision
+     */
     decision?: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
     reason?: string;
     resolvedByUserId?: number;
@@ -1646,14 +2254,21 @@ export type ApplicationResolutionResponse = {
      * Fecha de resolucion en UTC.
      */
     resolvedAt?: string;
+    /**
+     * List
+     */
     requirementChecks?: Array<ApplicationResolutionRequirementResponse>;
 };
 
 /**
+ * ResolveApplicationRequest
+ *
  * Resolucion de una solicitud evaluada: aprobarla, rechazarla o dejarla en lista de espera.
  */
 export type ResolveApplicationRequest = {
     /**
+     * ApplicationResolutionDecision
+     *
      * APPROVED, REJECTED o WAITLISTED. Desde lista de espera solo se admite APPROVED o REJECTED.
      */
     decision: 'APPROVED' | 'REJECTED' | 'WAITLISTED';
@@ -1664,6 +2279,8 @@ export type ResolveApplicationRequest = {
 };
 
 /**
+ * CreateBenefitGrantRequest
+ *
  * Otorgamiento individual. Titular, estado, datos del beneficio, responsable y fecha los obtiene el servidor.
  */
 export type CreateBenefitGrantRequest = {
@@ -1682,6 +2299,8 @@ export type CreateBenefitGrantRequest = {
 };
 
 /**
+ * BenefitGrantResponse
+ *
  * Otorgamiento individual visible solo para administracion. Los datos copiados no siguen los cambios del catalogo.
  */
 export type BenefitGrantResponse = {
@@ -1689,12 +2308,17 @@ export type BenefitGrantResponse = {
     applicationId?: string;
     userId?: number;
     programBenefitId?: string;
+    /**
+     * ProgramBenefitType
+     */
     benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
     description?: string;
     amount?: number;
     startDate?: string;
     endDate?: string;
     /**
+     * BenefitGrantStatus
+     *
      * Estado actual. EXPIRED y FINALIZED son definitivos; el vencimiento automatico se procesa despues del ultimo dia inclusivo.
      */
     status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
@@ -1707,18 +2331,25 @@ export type BenefitGrantResponse = {
 };
 
 /**
+ * ChangeBenefitGrantStateRequest
+ *
  * Cambio de estado con motivo obligatorio. Responsable y fecha se obtienen del servidor.
  */
 export type ChangeBenefitGrantStateRequest = {
     reason: string;
 };
 
+/**
+ * BenefitGrantRequirementCheckRequest
+ */
 export type BenefitGrantRequirementCheckRequest = {
     requirementId: string;
     fulfilled: boolean;
 };
 
 /**
+ * RenewBenefitGrantRequest
+ *
  * Renovacion del mismo otorgamiento. Conserva inicio y datos copiados del beneficio.
  */
 export type RenewBenefitGrantRequest = {
@@ -1728,12 +2359,16 @@ export type RenewBenefitGrantRequest = {
      */
     endDate: string;
     /**
+     * List
+     *
      * Un resultado por requisito vigente; lista vacia si no hay requisitos.
      */
     requirementChecks: Array<BenefitGrantRequirementCheckRequest>;
 };
 
 /**
+ * CreateActivityRequest
+ *
  * Datos requeridos para crear una actividad comunitaria.
  */
 export type CreateActivityRequest = {
@@ -1764,6 +2399,8 @@ export type CreateActivityRequest = {
 };
 
 /**
+ * ActivityEnrollmentResponse
+ *
  * Confirmación de inscripción a una actividad.
  */
 export type ActivityEnrollmentResponse = {
@@ -1775,13 +2412,20 @@ export type ActivityEnrollmentResponse = {
 };
 
 /**
+ * UpdateActivityAttendanceRequest
+ *
  * Asistencia de un ciudadano inscripto en una actividad.
  */
 export type UpdateActivityAttendanceRequest = {
+    /**
+     * ActivityAttendanceStatus
+     */
     attendance: 'PRESENT' | 'ABSENT';
 };
 
 /**
+ * AttendanceRecordedByResponse
+ *
  * Usuario que registró la asistencia.
  */
 export type AttendanceRecordedByResponse = {
@@ -1790,6 +2434,8 @@ export type AttendanceRecordedByResponse = {
 };
 
 /**
+ * ProfessionalActivityEnrollmentResponse
+ *
  * Inscripción visible para un profesional de centro.
  */
 export type ProfessionalActivityEnrollmentResponse = {
@@ -1798,16 +2444,23 @@ export type ProfessionalActivityEnrollmentResponse = {
     citizenId?: number;
     citizenName?: string;
     enrolledAt?: string;
+    /**
+     * ActivityAttendanceStatus
+     */
     attendance?: 'PRESENT' | 'ABSENT';
     attendanceRecordedBy?: AttendanceRecordedByResponse;
     attendanceRecordedAt?: string;
 };
 
 /**
+ * ReviewApplicationVisitRescheduleRequest
+ *
  * Decision del responsable sobre una solicitud ciudadana de reprogramacion.
  */
 export type ReviewApplicationVisitRescheduleRequest = {
     /**
+     * ApplicationVisitRescheduleDecision
+     *
      * Decision final: APPROVED o REJECTED.
      */
     status: 'APPROVED' | 'REJECTED';
@@ -1830,6 +2483,8 @@ export type ReviewApplicationVisitRescheduleRequest = {
 };
 
 /**
+ * AdminApplicationVisitRescheduleRequestDetailResponse
+ *
  * Detalle administrativo completo de una solicitud de reprogramacion.
  */
 export type AdminApplicationVisitRescheduleRequestDetailResponse = {
@@ -1837,6 +2492,9 @@ export type AdminApplicationVisitRescheduleRequestDetailResponse = {
     applicationId?: string;
     applicationNumber?: number;
     visitId?: string;
+    /**
+     * ApplicationVisitType
+     */
     visitType?: 'VISIT' | 'INTERVIEW';
     applicantUserId?: number;
     applicantName?: string;
@@ -1850,6 +2508,9 @@ export type AdminApplicationVisitRescheduleRequestDetailResponse = {
     programEditionName?: string;
     requestedById?: number;
     requestedByName?: string;
+    /**
+     * ApplicationVisitRescheduleRequestStatus
+     */
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     reason?: string;
     requestedAt?: string;
@@ -1863,6 +2524,8 @@ export type AdminApplicationVisitRescheduleRequestDetailResponse = {
 };
 
 /**
+ * CancelApplicationVisitRequest
+ *
  * Motivo requerido para cancelar una visita o entrevista social pendiente.
  */
 export type CancelApplicationVisitRequest = {
@@ -1873,14 +2536,67 @@ export type CancelApplicationVisitRequest = {
 };
 
 /**
+ * ReviewApplicationDocumentRequest
+ *
  * Resultado de la revisión administrativa de un documento pendiente.
  */
 export type ReviewApplicationDocumentRequest = {
+    /**
+     * ApplicationDocumentStatus
+     */
     status?: 'VALID' | 'OBSERVED';
     observation?: string;
 };
 
 /**
+ * ExternalDocumentationResponse
+ */
+export type ExternalDocumentationResponse = {
+    requestId?: string;
+    applicationId?: string;
+    requirementId?: string;
+    fileId?: string;
+    fileNumber?: string;
+    documentId?: string;
+    deliveryStatus?: string;
+    /**
+     * ApplicationDocumentStatus
+     */
+    reviewStatus?: 'PENDING' | 'VALID' | 'OBSERVED';
+    observation?: string;
+    reviewedByUserId?: number;
+    reviewedAt?: string;
+};
+
+/**
+ * InitialConfig
+ */
+export type InitialConfig = {
+    showBindings?: boolean;
+    showHeaders?: boolean;
+};
+
+/**
+ * UiConfig
+ */
+export type UiConfig = {
+    initialConfig?: InitialConfig;
+    /**
+     * List
+     */
+    groups?: Array<UiConfigGroup>;
+};
+
+/**
+ * UiConfigGroup
+ */
+export type UiConfigGroup = {
+    name?: string;
+};
+
+/**
+ * PermissionResponse
+ *
  * Permiso disponible en el sistema.
  */
 export type PermissionResponse = {
@@ -1895,6 +2611,8 @@ export type PermissionResponse = {
 };
 
 /**
+ * LogActorResponse
+ *
  * Usuario que originó el evento auditado.
  */
 export type LogActorResponse = {
@@ -1913,6 +2631,8 @@ export type LogActorResponse = {
 };
 
 /**
+ * LogResponse
+ *
  * Registro inmutable de un evento de auditoría.
  */
 export type LogResponse = {
@@ -1925,13 +2645,17 @@ export type LogResponse = {
      */
     readonly actor?: LogActorResponse;
     /**
+     * LogAction
+     *
      * Acción auditada.
      */
     readonly action?: 'CREATE' | 'UPDATE' | 'DELETE' | 'LOGIN';
     /**
+     * LogEntityType
+     *
      * Tipo de entidad afectada.
      */
-    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'INTERVENTION_PLAN' | 'INTERVENTION_FOLLOW_UP' | 'APPLICATION_RESOLUTION' | 'BENEFIT_GRANT' | 'BENEFIT_GRANT_CHANGE' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+    readonly entityType?: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'INTERVENTION_PLAN' | 'INTERVENTION_FOLLOW_UP' | 'APPLICATION_RESOLUTION' | 'BENEFIT_GRANT' | 'BENEFIT_GRANT_CHANGE' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'SOCIAL_TICKET' | 'EXTERNAL_DOCUMENTATION' | 'REVENUE_DEBT' | 'REVENUE_EXEMPTION' | 'CITIZEN_SNAPSHOT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
     /**
      * Identificador de la entidad afectada.
      */
@@ -1951,6 +2675,8 @@ export type LogResponse = {
 };
 
 /**
+ * SessionCsrfResponse
+ *
  * Token CSRF para enviar en el header indicado junto con las cookies del navegador.
  */
 export type SessionCsrfResponse = {
@@ -1959,6 +2685,8 @@ export type SessionCsrfResponse = {
 };
 
 /**
+ * MeResponse
+ *
  * Perfil del usuario autenticado.
  */
 export type MeResponse = {
@@ -1969,6 +2697,8 @@ export type MeResponse = {
 };
 
 /**
+ * AvailableProgramListItemResponse
+ *
  * Resumen de un programa disponible para mostrar en un listado ciudadano.
  */
 export type AvailableProgramListItemResponse = {
@@ -2003,10 +2733,14 @@ export type AvailableProgramListItemResponse = {
 };
 
 /**
+ * AvailableProgramListResponse
+ *
  * Página de programas disponibles para ciudadanos.
  */
 export type AvailableProgramListResponse = {
     /**
+     * List
+     *
      * Programas incluidos en la página actual.
      */
     readonly content?: Array<AvailableProgramListItemResponse>;
@@ -2029,6 +2763,8 @@ export type AvailableProgramListResponse = {
 };
 
 /**
+ * AvailableEnrollmentPeriodResponse
+ *
  * Período de inscripción configurado para una edición.
  */
 export type AvailableEnrollmentPeriodResponse = {
@@ -2045,12 +2781,16 @@ export type AvailableEnrollmentPeriodResponse = {
      */
     readonly closeDate?: string;
     /**
+     * EnrollmentPeriodStatus
+     *
      * Estado actual del período.
      */
     readonly status?: 'SCHEDULED' | 'OPEN' | 'SUSPENDED' | 'CLOSED';
 };
 
 /**
+ * AvailableProgramBenefitResponse
+ *
  * Beneficio ofrecido por una edición disponible.
  */
 export type AvailableProgramBenefitResponse = {
@@ -2059,6 +2799,8 @@ export type AvailableProgramBenefitResponse = {
      */
     readonly id?: string;
     /**
+     * ProgramBenefitType
+     *
      * Tipo de beneficio.
      */
     readonly type?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
@@ -2073,6 +2815,8 @@ export type AvailableProgramBenefitResponse = {
 };
 
 /**
+ * AvailableProgramDetailResponse
+ *
  * Detalle de un programa disponible para ciudadanos.
  */
 export type AvailableProgramDetailResponse = {
@@ -2093,16 +2837,22 @@ export type AvailableProgramDetailResponse = {
      */
     readonly imageUrl?: string;
     /**
+     * List
+     *
      * Ediciones vigentes o futuras disponibles para el ciudadano.
      */
     readonly editions?: Array<AvailableProgramEditionResponse>;
     /**
+     * List
+     *
      * Programas incompatibles con el programa consultado.
      */
     readonly incompatibilities?: Array<AvailableProgramIncompatibilityResponse>;
 };
 
 /**
+ * AvailableProgramEditionResponse
+ *
  * Edición disponible de un programa, con sus beneficios y requisitos.
  */
 export type AvailableProgramEditionResponse = {
@@ -2135,28 +2885,40 @@ export type AvailableProgramEditionResponse = {
      */
     readonly availableCapacity?: number;
     /**
+     * ProgramEditionStatus
+     *
      * Estado actual de la edición.
      */
     readonly status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
     /**
+     * List
+     *
      * Beneficios ofrecidos por esta edición.
      */
     readonly benefits?: Array<AvailableProgramBenefitResponse>;
     /**
+     * List
+     *
      * Requisitos exigidos por esta edición.
      */
     readonly requirements?: Array<AvailableProgramRequirementResponse>;
     /**
+     * List
+     *
      * Documentos solicitados por esta edición, obligatorios u opcionales.
      */
     readonly documentRequirements?: Array<AvailableProgramDocumentRequirementResponse>;
     /**
+     * List
+     *
      * Períodos de inscripción configurados para esta edición.
      */
     readonly enrollmentPeriods?: Array<AvailableEnrollmentPeriodResponse>;
 };
 
 /**
+ * AvailableProgramIncompatibilityResponse
+ *
  * Programa incompatible con el programa consultado.
  */
 export type AvailableProgramIncompatibilityResponse = {
@@ -2171,6 +2933,8 @@ export type AvailableProgramIncompatibilityResponse = {
 };
 
 /**
+ * AvailableProgramRequirementResponse
+ *
  * Requisito exigido por una edición disponible.
  */
 export type AvailableProgramRequirementResponse = {
@@ -2179,6 +2943,8 @@ export type AvailableProgramRequirementResponse = {
      */
     readonly id?: string;
     /**
+     * ProgramRequirementType
+     *
      * Tipo de requisito.
      */
     readonly type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
@@ -2193,6 +2959,8 @@ export type AvailableProgramRequirementResponse = {
 };
 
 /**
+ * ProfessionalAppointmentResponse
+ *
  * Turno asignado al profesional con resultado de atencion, cuando existe.
  */
 export type ProfessionalAppointmentResponse = {
@@ -2202,7 +2970,13 @@ export type ProfessionalAppointmentResponse = {
     attention?: CommunityAttentionResponse;
 };
 
+/**
+ * ProfessionalActivityListResponse
+ */
 export type ProfessionalActivityListResponse = {
+    /**
+     * List
+     */
     content?: Array<ProfessionalActivityResponse>;
     page?: number;
     size?: number;
@@ -2211,6 +2985,8 @@ export type ProfessionalActivityListResponse = {
 };
 
 /**
+ * ProfessionalActivityResponse
+ *
  * Actividad disponible para el registro profesional de asistencia.
  */
 export type ProfessionalActivityResponse = {
@@ -2219,11 +2995,20 @@ export type ProfessionalActivityResponse = {
     location?: string;
     startDate?: string;
     endDate?: string;
+    /**
+     * ActivityStatus
+     */
     status?: 'DRAFT' | 'OPEN' | 'CLOSED';
     enrolledCount?: number;
 };
 
+/**
+ * ProfessionalActivityEnrollmentListResponse
+ */
 export type ProfessionalActivityEnrollmentListResponse = {
+    /**
+     * List
+     */
     content?: Array<ProfessionalActivityEnrollmentResponse>;
     page?: number;
     size?: number;
@@ -2231,7 +3016,13 @@ export type ProfessionalActivityEnrollmentListResponse = {
     totalPages?: number;
 };
 
+/**
+ * CitizenInterventionPlanListResponse
+ */
 export type CitizenInterventionPlanListResponse = {
+    /**
+     * List
+     */
     content?: Array<CitizenInterventionPlanSummaryResponse>;
     page?: number;
     size?: number;
@@ -2244,6 +3035,8 @@ export type CitizenInterventionPlanListResponse = {
 };
 
 /**
+ * CitizenInterventionPlanSummaryResponse
+ *
  * Cabecera propia sin responsables. Estado calculado a partir de todas las acciones.
  */
 export type CitizenInterventionPlanSummaryResponse = {
@@ -2255,24 +3048,41 @@ export type CitizenInterventionPlanSummaryResponse = {
     programEditionId?: string;
     programEditionName?: string;
     createdAt?: string;
+    /**
+     * InterventionActionStatus
+     */
     status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
 };
 
+/**
+ * CitizenInterventionActionResponse
+ */
 export type CitizenInterventionActionResponse = {
     id?: string;
     description?: string;
     startDate?: string;
     dueDate?: string;
+    /**
+     * InterventionActionStatus
+     */
     status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
 };
 
+/**
+ * CitizenInterventionObjectiveResponse
+ */
 export type CitizenInterventionObjectiveResponse = {
     id?: string;
     description?: string;
+    /**
+     * List
+     */
     actions?: Array<CitizenInterventionActionResponse>;
 };
 
 /**
+ * CitizenInterventionPlanResponse
+ *
  * Plan propio con estructura acordada y estado calculado; sin informacion profesional interna.
  */
 export type CitizenInterventionPlanResponse = {
@@ -2284,11 +3094,23 @@ export type CitizenInterventionPlanResponse = {
     programEditionId?: string;
     programEditionName?: string;
     createdAt?: string;
+    /**
+     * InterventionActionStatus
+     */
     status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+    /**
+     * List
+     */
     objectives?: Array<CitizenInterventionObjectiveResponse>;
 };
 
+/**
+ * CitizenInterventionFollowUpListResponse
+ */
 export type CitizenInterventionFollowUpListResponse = {
+    /**
+     * List
+     */
     content?: Array<CitizenInterventionFollowUpResponse>;
     page?: number;
     size?: number;
@@ -2301,18 +3123,25 @@ export type CitizenInterventionFollowUpListResponse = {
 };
 
 /**
+ * CitizenInterventionFollowUpResponse
+ *
  * Unicamente la version publica vigente del seguimiento. No incluye secuencia interna, notas, resultado profesional ni autores.
  */
 export type CitizenInterventionFollowUpResponse = {
     id?: string;
     actionId?: string;
     occurredOn?: string;
+    /**
+     * InterventionActionStatus
+     */
     status?: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
     summary?: string;
     publishedAt?: string;
 };
 
 /**
+ * AvailableAppointmentSlotResponse
+ *
  * Horario actualmente otorgable al ciudadano autenticado.
  */
 export type AvailableAppointmentSlotResponse = {
@@ -2324,6 +3153,8 @@ export type AvailableAppointmentSlotResponse = {
 };
 
 /**
+ * AppointmentServiceResponse
+ *
  * Servicio municipal habilitado para solicitar turnos.
  */
 export type AppointmentServiceResponse = {
@@ -2334,6 +3165,8 @@ export type AppointmentServiceResponse = {
 };
 
 /**
+ * AppointmentCenterResponse
+ *
  * Centro que ofrece efectivamente el servicio seleccionado.
  */
 export type AppointmentCenterResponse = {
@@ -2346,9 +3179,14 @@ export type AppointmentCenterResponse = {
 };
 
 /**
+ * CitizenBenefitGrantListResponse
+ *
  * Pagina de todos los beneficios del titular, de cualquier solicitud y estado, ordenados por otorgamiento e ID descendentes.
  */
 export type CitizenBenefitGrantListResponse = {
+    /**
+     * List
+     */
     content?: Array<CitizenBenefitGrantResponse>;
     page?: number;
     size?: number;
@@ -2361,6 +3199,8 @@ export type CitizenBenefitGrantListResponse = {
 };
 
 /**
+ * CitizenBenefitGrantResponse
+ *
  * Beneficio otorgado al titular autenticado. No incluye responsables, motivos ni historial administrativo.
  */
 export type CitizenBenefitGrantResponse = {
@@ -2372,6 +3212,9 @@ export type CitizenBenefitGrantResponse = {
     programName?: string;
     programEditionId?: string;
     programEditionName?: string;
+    /**
+     * ProgramBenefitType
+     */
     benefitType?: 'TAX_EXEMPTION' | 'HOUSING_SUBSIDY' | 'FOOD_ASSISTANCE' | 'UTILITY_SUBSIDY';
     /**
      * Descripcion copiada al otorgar, independiente de cambios del catalogo.
@@ -2382,6 +3225,8 @@ export type CitizenBenefitGrantResponse = {
      */
     amount?: number | null;
     /**
+     * BenefitGrantStatus
+     *
      * Estado persistido actual. FINALIZED y EXPIRED tambien permanecen visibles.
      */
     status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
@@ -2395,7 +3240,13 @@ export type CitizenBenefitGrantResponse = {
     endDate?: string;
 };
 
+/**
+ * ApplicationListResponse
+ */
 export type ApplicationListResponse = {
+    /**
+     * List
+     */
     content?: Array<ApplicationResponse>;
     page?: number;
     size?: number;
@@ -2404,6 +3255,8 @@ export type ApplicationListResponse = {
 };
 
 /**
+ * CitizenApplicationVisitListItemResponse
+ *
  * Resumen ciudadano de una visita o entrevista asociada a una solicitud propia.
  */
 export type CitizenApplicationVisitListItemResponse = {
@@ -2415,6 +3268,8 @@ export type CitizenApplicationVisitListItemResponse = {
      */
     programName?: string;
     /**
+     * ApplicationVisitType
+     *
      * Modalidad de la actuacion: VISIT o INTERVIEW.
      */
     type?: 'VISIT' | 'INTERVIEW';
@@ -2428,6 +3283,9 @@ export type CitizenApplicationVisitListItemResponse = {
     endsAt?: string;
     durationMinutes?: number;
     location?: string;
+    /**
+     * ApplicationVisitStatus
+     */
     status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
     /**
      * Indica si el horario o lugar fue reprogramado al menos una vez.
@@ -2448,9 +3306,14 @@ export type CitizenApplicationVisitListItemResponse = {
 };
 
 /**
+ * CitizenApplicationVisitListResponse
+ *
  * Pagina de visitas y entrevistas de solicitudes propias.
  */
 export type CitizenApplicationVisitListResponse = {
+    /**
+     * List
+     */
     content?: Array<CitizenApplicationVisitListItemResponse>;
     page?: number;
     size?: number;
@@ -2459,6 +3322,8 @@ export type CitizenApplicationVisitListResponse = {
 };
 
 /**
+ * CitizenApplicationVisitDetailResponse
+ *
  * Detalle ciudadano de una visita o entrevista asociada a una solicitud propia.
  */
 export type CitizenApplicationVisitDetailResponse = {
@@ -2466,6 +3331,8 @@ export type CitizenApplicationVisitDetailResponse = {
     applicationId?: string;
     applicationNumber?: number;
     /**
+     * ApplicationVisitType
+     *
      * Modalidad de la actuacion: VISIT o INTERVIEW.
      */
     type?: 'VISIT' | 'INTERVIEW';
@@ -2479,6 +3346,9 @@ export type CitizenApplicationVisitDetailResponse = {
     endsAt?: string;
     durationMinutes?: number;
     location?: string;
+    /**
+     * ApplicationVisitStatus
+     */
     status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
     /**
      * Indica si el horario o lugar fue reprogramado al menos una vez.
@@ -2503,6 +3373,8 @@ export type CitizenApplicationVisitDetailResponse = {
 };
 
 /**
+ * CitizenApplicationVisitRescheduleRequestListItemResponse
+ *
  * Solicitud propia de reprogramacion incluida en el historial ciudadano.
  */
 export type CitizenApplicationVisitRescheduleRequestListItemResponse = {
@@ -2510,7 +3382,13 @@ export type CitizenApplicationVisitRescheduleRequestListItemResponse = {
     applicationId?: string;
     applicationNumber?: number;
     visitId?: string;
+    /**
+     * ApplicationVisitType
+     */
     visitType?: 'VISIT' | 'INTERVIEW';
+    /**
+     * ApplicationVisitRescheduleRequestStatus
+     */
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     requestedAt?: string;
     reviewedAt?: string;
@@ -2520,9 +3398,14 @@ export type CitizenApplicationVisitRescheduleRequestListItemResponse = {
 };
 
 /**
+ * CitizenApplicationVisitRescheduleRequestListResponse
+ *
  * Pagina del historial ciudadano de solicitudes de reprogramacion.
  */
 export type CitizenApplicationVisitRescheduleRequestListResponse = {
+    /**
+     * List
+     */
     content?: Array<CitizenApplicationVisitRescheduleRequestListItemResponse>;
     page?: number;
     size?: number;
@@ -2531,6 +3414,8 @@ export type CitizenApplicationVisitRescheduleRequestListResponse = {
 };
 
 /**
+ * ProgramListItemResponse
+ *
  * Resumen de un programa incluido en un listado.
  */
 export type ProgramListItemResponse = {
@@ -2565,10 +3450,14 @@ export type ProgramListItemResponse = {
 };
 
 /**
+ * ProgramListResponse
+ *
  * Página de programas sociales.
  */
 export type ProgramListResponse = {
     /**
+     * List
+     *
      * Programas incluidos en la página actual.
      */
     readonly content?: Array<ProgramListItemResponse>;
@@ -2591,6 +3480,8 @@ export type ProgramListResponse = {
 };
 
 /**
+ * EnrollmentPeriodListItemResponse
+ *
  * Resumen de un período de inscripción incluido en un listado.
  */
 export type EnrollmentPeriodListItemResponse = {
@@ -2607,6 +3498,8 @@ export type EnrollmentPeriodListItemResponse = {
      */
     readonly closeDate?: string;
     /**
+     * EnrollmentPeriodStatus
+     *
      * Estado actual del período.
      */
     readonly status?: 'SCHEDULED' | 'OPEN' | 'SUSPENDED' | 'CLOSED';
@@ -2625,10 +3518,14 @@ export type EnrollmentPeriodListItemResponse = {
 };
 
 /**
+ * EnrollmentPeriodListResponse
+ *
  * Página de períodos de inscripción de una edición.
  */
 export type EnrollmentPeriodListResponse = {
     /**
+     * List
+     *
      * Períodos incluidos en la página actual.
      */
     readonly content?: Array<EnrollmentPeriodListItemResponse>;
@@ -2651,6 +3548,8 @@ export type EnrollmentPeriodListResponse = {
 };
 
 /**
+ * ProgramOptionResponse
+ *
  * Opción reducida de un programa para controles de selección.
  */
 export type ProgramOptionResponse = {
@@ -2669,6 +3568,8 @@ export type ProgramOptionResponse = {
 };
 
 /**
+ * ProgramEditionListItemResponse
+ *
  * Resumen de una edición incluida en un listado.
  */
 export type ProgramEditionListItemResponse = {
@@ -2705,6 +3606,8 @@ export type ProgramEditionListItemResponse = {
      */
     readonly currentEnrollment?: number;
     /**
+     * ProgramEditionStatus
+     *
      * Estado actual de la edición.
      */
     readonly status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
@@ -2719,10 +3622,14 @@ export type ProgramEditionListItemResponse = {
 };
 
 /**
+ * ProgramEditionListResponse
+ *
  * Página de ediciones de un programa.
  */
 export type ProgramEditionListResponse = {
     /**
+     * List
+     *
      * Ediciones incluidas en la página actual.
      */
     readonly content?: Array<ProgramEditionListItemResponse>;
@@ -2745,6 +3652,8 @@ export type ProgramEditionListResponse = {
 };
 
 /**
+ * ProgramEditionOptionResponse
+ *
  * Opción reducida de una edición para controles de selección.
  */
 export type ProgramEditionOptionResponse = {
@@ -2759,9 +3668,14 @@ export type ProgramEditionOptionResponse = {
 };
 
 /**
+ * MunicipalServiceListResponse
+ *
  * Página de servicios municipales.
  */
 export type MunicipalServiceListResponse = {
+    /**
+     * List
+     */
     content?: Array<MunicipalServiceResponse>;
     page?: number;
     size?: number;
@@ -2770,9 +3684,14 @@ export type MunicipalServiceListResponse = {
 };
 
 /**
+ * MunicipalCenterListResponse
+ *
  * Página de centros municipales.
  */
 export type MunicipalCenterListResponse = {
+    /**
+     * List
+     */
     content?: Array<MunicipalCenterResponse>;
     page?: number;
     size?: number;
@@ -2780,6 +3699,23 @@ export type MunicipalCenterListResponse = {
     totalPages?: number;
 };
 
+/**
+ * SocialIntegrationPage
+ */
+export type SocialIntegrationPageSocialTicketResponse = {
+    /**
+     * List
+     */
+    content?: Array<SocialTicketResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * CoreSubscription
+ */
 export type CoreSubscription = {
     id?: string;
     moduleName?: string;
@@ -2789,7 +3725,13 @@ export type CoreSubscription = {
     active?: boolean;
 };
 
+/**
+ * CoreAmqpCheck
+ */
 export type CoreAmqpCheck = {
+    /**
+     * CoreConnectionState
+     */
     state?: 'DISABLED' | 'NOT_CONFIGURED' | 'UP' | 'DEGRADED' | 'DOWN';
     queue?: string;
     pendingMessages?: number;
@@ -2798,6 +3740,8 @@ export type CoreAmqpCheck = {
 };
 
 /**
+ * CoreConnectionStatusResponse
+ *
  * Comprobación activa de la readiness de Core, HTTP autenticado y AMQPS. No publica ni consume eventos; no es un monitor continuo.
  */
 export type CoreConnectionStatusResponse = {
@@ -2812,7 +3756,13 @@ export type CoreConnectionStatusResponse = {
     amqp?: CoreAmqpCheck;
 };
 
+/**
+ * CoreHttpCheck
+ */
 export type CoreHttpCheck = {
+    /**
+     * CoreConnectionState
+     */
     state?: 'DISABLED' | 'NOT_CONFIGURED' | 'UP' | 'DEGRADED' | 'DOWN';
     upstreamStatus?: number;
     code?: string;
@@ -2820,11 +3770,19 @@ export type CoreHttpCheck = {
 };
 
 /**
+ * CoreReadinessCheck
+ *
  * Readiness pública de Core según el cuerpo de GET /health/ready. Core puede responder HTTP 200 con status degraded o down; state lo refleja. checks resume cada dependencia remota (database, broker). No acredita que el worker de Core esté consumiendo.
  */
 export type CoreReadinessCheck = {
+    /**
+     * CoreConnectionState
+     */
     state?: 'DISABLED' | 'NOT_CONFIGURED' | 'UP' | 'DEGRADED' | 'DOWN';
     status?: string;
+    /**
+     * Map
+     */
     checks?: {
         [key: string]: string;
     };
@@ -2833,6 +3791,53 @@ export type CoreReadinessCheck = {
     traceId?: string;
 };
 
+/**
+ * SocialIntegrationPage
+ */
+export type SocialIntegrationPageRevenueExemptionResponse = {
+    /**
+     * List
+     */
+    content?: Array<RevenueExemptionResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * RevenueDebtResponse
+ */
+export type RevenueDebtResponse = {
+    id?: string;
+    citizenId?: string;
+    conceptCode?: string;
+    outstandingAmount?: number;
+    dueDate?: string;
+    settled?: boolean;
+    settledAt?: string;
+    remainingBalance?: number;
+    outstandingBalance?: number;
+    sourceUpdatedAt?: string;
+};
+
+/**
+ * SocialIntegrationPage
+ */
+export type SocialIntegrationPageRevenueDebtResponse = {
+    /**
+     * List
+     */
+    content?: Array<RevenueDebtResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * CorePublication
+ */
 export type CorePublication = {
     id?: string;
     moduleName?: string;
@@ -2841,6 +3846,8 @@ export type CorePublication = {
 };
 
 /**
+ * CoreLocalMetrics
+ *
  * Contadores locales acumulados, independientes de la ventana de estadísticas de Core. BROKER_CONFIRMED no acredita procesamiento remoto.
  */
 export type CoreLocalMetrics = {
@@ -2852,9 +3859,14 @@ export type CoreLocalMetrics = {
 };
 
 /**
+ * CoreEventPage
+ *
  * Página de Core: page comienza en 1. El listado no incluye el payload del evento.
  */
 export type CoreEventPage = {
+    /**
+     * List
+     */
     items?: Array<CoreEventSummary>;
     total?: number;
     page?: number;
@@ -2862,6 +3874,9 @@ export type CoreEventPage = {
     pages?: number;
 };
 
+/**
+ * CoreEventSummary
+ */
 export type CoreEventSummary = {
     id?: string;
     eventId?: string;
@@ -2879,6 +3894,9 @@ export type CoreEventSummary = {
     deliveredCount?: number;
 };
 
+/**
+ * CoreDelivery
+ */
 export type CoreDelivery = {
     targetModule?: string;
     queueName?: string;
@@ -2887,64 +3905,91 @@ export type CoreDelivery = {
     maxAttempts?: number;
 };
 
+/**
+ * CoreEventDetail
+ */
 export type CoreEventDetail = {
     eventId?: string;
     eventType?: string;
     status?: string;
     ingestionChannel?: string;
     envelope?: JsonNode;
+    /**
+     * List
+     */
     deliveries?: Array<CoreDelivery>;
 };
 
+/**
+ * JsonNode
+ */
 export type JsonNode = {
     array?: boolean;
     empty?: boolean;
     null?: boolean;
     float?: boolean;
     number?: boolean;
-    missingNode?: boolean;
-    object?: boolean;
-    container?: boolean;
+    floatingPointNumber?: boolean;
     valueNode?: boolean;
-    pojo?: boolean;
     short?: boolean;
-    int?: boolean;
-    nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING';
-    string?: boolean;
-    integralNumber?: boolean;
-    double?: boolean;
     /**
      * @deprecated
      */
     textual?: boolean;
+    object?: boolean;
+    int?: boolean;
     long?: boolean;
     bigDecimal?: boolean;
+    container?: boolean;
+    double?: boolean;
     bigInteger?: boolean;
-    binary?: boolean;
     boolean?: boolean;
-    floatingPointNumber?: boolean;
+    binary?: boolean;
+    pojo?: boolean;
+    /**
+     * JsonNodeType
+     */
+    nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING';
+    string?: boolean;
+    integralNumber?: boolean;
+    missingNode?: boolean;
     embeddedValue?: boolean;
 };
 
+/**
+ * CoreDashboardResponse
+ */
 export type CoreDashboardResponse = {
     checkedAt?: string;
     local?: CoreLocalMetrics;
     core?: CoreModuleDashboard;
 };
 
+/**
+ * CoreDeadLetterMetrics
+ */
 export type CoreDeadLetterMetrics = {
     open?: number;
+    /**
+     * Map
+     */
     byReason?: {
         [key: string]: number;
     };
 };
 
+/**
+ * CoreHourlyVolume
+ */
 export type CoreHourlyVolume = {
     hour?: string;
     total?: number;
     rejected?: number;
 };
 
+/**
+ * CoreModuleDashboard
+ */
 export type CoreModuleDashboard = {
     module?: string;
     windowHours?: number;
@@ -2954,26 +3999,50 @@ export type CoreModuleDashboard = {
     deadLetters?: CoreDeadLetterMetrics;
     subscriptions?: CoreSubscriptionMetrics;
     publications?: CorePublicationMetrics;
+    /**
+     * List
+     */
     volumeByHour?: Array<CoreHourlyVolume>;
     processing?: CoreProcessingMetrics;
 };
 
+/**
+ * CoreProcessingMetrics
+ */
 export type CoreProcessingMetrics = {
     avgMs?: number;
     maxMs?: number;
 };
 
+/**
+ * CorePublicationMetrics
+ */
 export type CorePublicationMetrics = {
+    /**
+     * List
+     */
     declared?: Array<string>;
 };
 
+/**
+ * CorePublishedMetrics
+ */
 export type CorePublishedMetrics = {
     total?: number;
     inWindow?: number;
+    /**
+     * List
+     */
     topTypes?: Array<CoreTypeVolume>;
 };
 
+/**
+ * CoreReceivedMetrics
+ */
 export type CoreReceivedMetrics = {
+    /**
+     * Map
+     */
     byStatus?: {
         [key: string]: number;
     };
@@ -2983,17 +4052,56 @@ export type CoreReceivedMetrics = {
     dead?: number;
 };
 
+/**
+ * CoreSubscriptionMetrics
+ */
 export type CoreSubscriptionMetrics = {
     total?: number;
     active?: number;
+    /**
+     * List
+     */
     eventTypes?: Array<string>;
 };
 
+/**
+ * CoreTypeVolume
+ */
 export type CoreTypeVolume = {
     eventType?: string;
     total?: number;
 };
 
+/**
+ * CitizenIntegrationAlertResponse
+ */
+export type CitizenIntegrationAlertResponse = {
+    userId?: number;
+    citizenId?: string;
+    blocked?: boolean;
+    reason?: string;
+    reviewRequired?: boolean;
+    deceasedAt?: string;
+    sourceUpdatedAt?: string;
+};
+
+/**
+ * SocialIntegrationPage
+ */
+export type SocialIntegrationPageCitizenIntegrationAlertResponse = {
+    /**
+     * List
+     */
+    content?: Array<CitizenIntegrationAlertResponse>;
+    page?: number;
+    size?: number;
+    totalElements?: number;
+    totalPages?: number;
+};
+
+/**
+ * ActivityIndicators
+ */
 export type ActivityIndicators = {
     enrollments?: number;
     present?: number;
@@ -3004,26 +4112,41 @@ export type ActivityIndicators = {
     unrecorded?: number;
 };
 
+/**
+ * ApplicationTrendPoint
+ */
 export type ApplicationTrendPoint = {
     periodStart?: string;
     submitted?: number;
     resolved?: number;
 };
 
+/**
+ * AppointmentIndicators
+ */
 export type AppointmentIndicators = {
     confirmed?: number;
     cancelled?: number;
     attended?: number;
     absent?: number;
+    /**
+     * List
+     */
     trend?: Array<AppointmentTrendPoint>;
 };
 
+/**
+ * AppointmentTrendPoint
+ */
 export type AppointmentTrendPoint = {
     periodStart?: string;
     confirmed?: number;
     cancelled?: number;
 };
 
+/**
+ * AttentionIndicators
+ */
 export type AttentionIndicators = {
     /**
      * Solicitudes activas sin trabajador asignado.
@@ -3035,43 +4158,67 @@ export type AttentionIndicators = {
     awaitingEvaluation?: number;
     staleAfterDays?: number;
     /**
+     * List
+     *
      * Las solicitudes sin evaluar más antiguas, hasta cinco.
      */
     oldestAwaitingEvaluation?: Array<AwaitingApplication>;
 };
 
+/**
+ * AwaitingApplication
+ */
 export type AwaitingApplication = {
     applicationId?: string;
     applicationNumber?: number;
     programName?: string;
+    /**
+     * ApplicationStatus
+     */
     status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     submittedAt?: string;
     daysWaiting?: number;
 };
 
+/**
+ * DocumentCounts
+ */
 export type DocumentCounts = {
     pending?: number;
     valid?: number;
     observed?: number;
 };
 
+/**
+ * EditionCapacity
+ */
 export type EditionCapacity = {
     editionId?: string;
     programId?: string;
     programName?: string;
     editionName?: string;
+    /**
+     * ProgramEditionStatus
+     */
     status?: 'DRAFT' | 'ACTIVE' | 'SUSPENDED' | 'CLOSED';
     maxCapacity?: number;
     approved?: number;
     waitlisted?: number;
 };
 
+/**
+ * EvaluationMatrixCell
+ */
 export type EvaluationMatrixCell = {
     /**
+     * VulnerabilityLevel
+     *
      * Nivel de vulnerabilidad determinado durante la evaluacion social.
      */
     vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
+     * EvaluationPriority
+     *
      * Prioridad de intervencion determinada durante la evaluacion social.
      */
     priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -3079,6 +4226,8 @@ export type EvaluationMatrixCell = {
 };
 
 /**
+ * IndicatorsResponse
+ *
  * Tablero de indicadores del módulo, agregados en el servidor para un período y, opcionalmente, un programa.
  */
 export type IndicatorsResponse = {
@@ -3093,15 +4242,21 @@ export type IndicatorsResponse = {
     programId?: string;
     generatedAt?: string;
     /**
+     * IndicatorBucket
+     *
      * Agrupación de las series temporales: semanas (lunes) para períodos de hasta 120 días, meses si no.
      */
     bucket?: 'WEEK' | 'MONTH';
     summary?: SummaryIndicators;
     /**
+     * List
+     *
      * Solicitudes presentadas y resueltas por intervalo.
      */
     applicationsTrend?: Array<ApplicationTrendPoint>;
     /**
+     * List
+     *
      * Estado actual de las solicitudes presentadas en el período.
      */
     statusDistribution?: Array<StatusCount>;
@@ -3110,14 +4265,20 @@ export type IndicatorsResponse = {
      */
     resolutions?: ResolutionCounts;
     /**
+     * List
+     *
      * Solicitudes presentadas en el período por programa y resultado actual.
      */
     programs?: Array<ProgramIndicator>;
     /**
+     * List
+     *
      * Ocupación actual del cupo de cada edición no borrador; no depende del período.
      */
     capacity?: Array<EditionCapacity>;
     /**
+     * List
+     *
      * Evaluaciones registradas en el período, por vulnerabilidad y prioridad.
      */
     evaluationMatrix?: Array<EvaluationMatrixCell>;
@@ -3126,6 +4287,8 @@ export type IndicatorsResponse = {
      */
     attention?: AttentionIndicators;
     /**
+     * List
+     *
      * Visitas y entrevistas con inicio en el período, por intervalo y estado.
      */
     visitsTrend?: Array<VisitTrendPoint>;
@@ -3134,6 +4297,8 @@ export type IndicatorsResponse = {
      */
     rescheduleRequests?: RescheduleRequestCounts;
     /**
+     * List
+     *
      * Casos activos y visitas programadas por trabajador asignado; no depende del período.
      */
     workload?: Array<WorkerLoad>;
@@ -3155,6 +4320,9 @@ export type IndicatorsResponse = {
     activities?: ActivityIndicators;
 };
 
+/**
+ * ProgramIndicator
+ */
 export type ProgramIndicator = {
     programId?: string;
     programName?: string;
@@ -3168,18 +4336,27 @@ export type ProgramIndicator = {
     rejected?: number;
 };
 
+/**
+ * RescheduleRequestCounts
+ */
 export type RescheduleRequestCounts = {
     pending?: number;
     approved?: number;
     rejected?: number;
 };
 
+/**
+ * ResolutionCounts
+ */
 export type ResolutionCounts = {
     approved?: number;
     waitlisted?: number;
     rejected?: number;
 };
 
+/**
+ * StageTimes
+ */
 export type StageTimes = {
     averageDaysToEvaluation?: number;
     averageDaysEvaluationToResolution?: number;
@@ -3187,11 +4364,20 @@ export type StageTimes = {
     sampleSize?: number;
 };
 
+/**
+ * StatusCount
+ */
 export type StatusCount = {
+    /**
+     * ApplicationStatus
+     */
     status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     count?: number;
 };
 
+/**
+ * SummaryIndicators
+ */
 export type SummaryIndicators = {
     applicationsSubmitted?: number;
     /**
@@ -3217,6 +4403,9 @@ export type SummaryIndicators = {
     averageDaysToResolution?: number;
 };
 
+/**
+ * VisitTrendPoint
+ */
 export type VisitTrendPoint = {
     periodStart?: string;
     scheduled?: number;
@@ -3225,6 +4414,9 @@ export type VisitTrendPoint = {
     cancelled?: number;
 };
 
+/**
+ * WorkerLoad
+ */
 export type WorkerLoad = {
     userId?: number;
     name?: string;
@@ -3232,13 +4424,22 @@ export type WorkerLoad = {
     scheduledVisits?: number;
 };
 
+/**
+ * AdminBenefitGrantListItem
+ */
 export type AdminBenefitGrantListItem = {
     benefit?: CitizenBenefitGrantResponse;
     userId?: number;
     userName?: string;
 };
 
+/**
+ * AdminBenefitGrantListResponse
+ */
 export type AdminBenefitGrantListResponse = {
+    /**
+     * List
+     */
     content?: Array<AdminBenefitGrantListItem>;
     page?: number;
     size?: number;
@@ -3247,6 +4448,8 @@ export type AdminBenefitGrantListResponse = {
 };
 
 /**
+ * AdminDaySummaryResponse
+ *
  * Ocupación de un centro en un día para el calendario administrativo.
  */
 export type AdminDaySummaryResponse = {
@@ -3258,6 +4461,8 @@ export type AdminDaySummaryResponse = {
 };
 
 /**
+ * AdminFreeSlotResponse
+ *
  * Horario libre de un centro en una fecha, con servicio y profesional.
  */
 export type AdminFreeSlotResponse = {
@@ -3272,6 +4477,8 @@ export type AdminFreeSlotResponse = {
 };
 
 /**
+ * AdminApplicationListItemResponse
+ *
  * Resumen de una solicitud en el listado administrativo. No incluye documentos ni campos internos de idempotencia.
  */
 export type AdminApplicationListItemResponse = {
@@ -3298,6 +4505,9 @@ export type AdminApplicationListItemResponse = {
     programEditionId?: string;
     programEditionName?: string;
     enrollmentPeriodId?: string;
+    /**
+     * ApplicationStatus
+     */
     status?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     /**
      * Trabajador asignado al registrar la evaluacion profesional.
@@ -3310,9 +4520,14 @@ export type AdminApplicationListItemResponse = {
 };
 
 /**
+ * AdminApplicationListResponse
+ *
  * Página de solicitudes de todos los titulares, ordenadas por número descendente.
  */
 export type AdminApplicationListResponse = {
+    /**
+     * List
+     */
     content?: Array<AdminApplicationListItemResponse>;
     /**
      * Número de página, comenzando en cero.
@@ -3332,8 +4547,14 @@ export type AdminApplicationListResponse = {
     totalPages?: number;
 };
 
+/**
+ * BenefitGrantChangeRequirementResponse
+ */
 export type BenefitGrantChangeRequirementResponse = {
     requirementId?: string;
+    /**
+     * ProgramRequirementType
+     */
     type?: 'MIN_AGE' | 'MAX_INCOME' | 'RESIDENCY_YEARS' | 'HAS_CHILDREN';
     value?: string;
     description?: string;
@@ -3341,6 +4562,8 @@ export type BenefitGrantChangeRequirementResponse = {
 };
 
 /**
+ * BenefitGrantChangeResponse
+ *
  * Actuacion inmutable. ASSIGNED conserva los datos conocidos de la asignacion, sin motivo ni estado anterior.
  */
 export type BenefitGrantChangeResponse = {
@@ -3348,8 +4571,17 @@ export type BenefitGrantChangeResponse = {
     grantId?: string;
     applicationId?: string;
     sequenceNumber?: number;
+    /**
+     * BenefitGrantChangeAction
+     */
     action?: 'ASSIGNED' | 'RENEWED' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    /**
+     * BenefitGrantStatus
+     */
     previousStatus?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
+    /**
+     * BenefitGrantStatus
+     */
     status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
     previousStartDate?: string;
     previousEndDate?: string;
@@ -3357,27 +4589,43 @@ export type BenefitGrantChangeResponse = {
     endDate?: string;
     reason?: string;
     /**
-     * Responsable humano; null exclusivamente en vencimientos automaticos.
+     * Responsable humano; null en vencimientos o finalizaciones automáticas con evento causal.
      */
     responsibleUserId?: number | null;
     /**
-     * Nombre del responsable, o Sistema en vencimientos automaticos.
+     * Nombre del responsable, o Sistema en actuaciones automáticas.
      */
     responsibleUserName?: string;
     /**
      * Instante UTC de la actuacion. La finalizacion tiene efecto inmediato.
      */
     changedAt?: string;
+    /**
+     * List
+     */
     requirementChecks?: Array<BenefitGrantChangeRequirementResponse>;
+    /**
+     * Evento causal para cambios automáticos de integración.
+     */
+    causationEventId?: string;
+    /**
+     * Fin efectivo por fallecimiento; no reemplaza la vigencia planificada histórica.
+     */
+    effectiveEndDate?: string;
 };
 
 /**
+ * ApplicationVisitListItemResponse
+ *
  * Actuacion incluida en la agenda administrativa de solicitudes.
  */
 export type ApplicationVisitListItemResponse = {
     id?: string;
     applicationId?: string;
     applicationNumber?: number;
+    /**
+     * ApplicationStatus
+     */
     applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     applicantUserId?: number;
     applicantName?: string;
@@ -3385,11 +4633,17 @@ export type ApplicationVisitListItemResponse = {
     programName?: string;
     programEditionId?: string;
     programEditionName?: string;
+    /**
+     * ApplicationVisitType
+     */
     type?: 'VISIT' | 'INTERVIEW';
     startsAt?: string;
     endsAt?: string;
     durationMinutes?: number;
     location?: string;
+    /**
+     * ApplicationVisitStatus
+     */
     status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
     responsibleId?: number;
     responsibleName?: string;
@@ -3406,9 +4660,14 @@ export type ApplicationVisitListItemResponse = {
 };
 
 /**
+ * ApplicationVisitListResponse
+ *
  * Pagina de visitas y entrevistas sociales ordenada cronologicamente.
  */
 export type ApplicationVisitListResponse = {
+    /**
+     * List
+     */
     content?: Array<ApplicationVisitListItemResponse>;
     page?: number;
     size?: number;
@@ -3417,12 +4676,17 @@ export type ApplicationVisitListResponse = {
 };
 
 /**
+ * ApplicationVisitDetailResponse
+ *
  * Detalle administrativo de una visita o entrevista y su solicitud asociada.
  */
 export type ApplicationVisitDetailResponse = {
     id?: string;
     applicationId?: string;
     applicationNumber?: number;
+    /**
+     * ApplicationStatus
+     */
     applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     applicantUserId?: number;
     applicantName?: string;
@@ -3432,11 +4696,17 @@ export type ApplicationVisitDetailResponse = {
     programEditionId?: string;
     programEditionName?: string;
     enrollmentPeriodId?: string;
+    /**
+     * ApplicationVisitType
+     */
     type?: 'VISIT' | 'INTERVIEW';
     startsAt?: string;
     endsAt?: string;
     durationMinutes?: number;
     location?: string;
+    /**
+     * ApplicationVisitStatus
+     */
     status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
     responsibleId?: number;
     responsibleName?: string;
@@ -3468,6 +4738,8 @@ export type ApplicationVisitDetailResponse = {
 };
 
 /**
+ * AdminApplicationVisitRescheduleRequestListItemResponse
+ *
  * Solicitud de reprogramacion incluida en la bandeja administrativa.
  */
 export type AdminApplicationVisitRescheduleRequestListItemResponse = {
@@ -3475,6 +4747,9 @@ export type AdminApplicationVisitRescheduleRequestListItemResponse = {
     applicationId?: string;
     applicationNumber?: number;
     visitId?: string;
+    /**
+     * ApplicationVisitType
+     */
     visitType?: 'VISIT' | 'INTERVIEW';
     applicantUserId?: number;
     applicantName?: string;
@@ -3484,6 +4759,9 @@ export type AdminApplicationVisitRescheduleRequestListItemResponse = {
     programName?: string;
     programEditionId?: string;
     programEditionName?: string;
+    /**
+     * ApplicationVisitRescheduleRequestStatus
+     */
     status?: 'PENDING' | 'APPROVED' | 'REJECTED';
     requestedAt?: string;
     reviewedAt?: string;
@@ -3496,9 +4774,14 @@ export type AdminApplicationVisitRescheduleRequestListItemResponse = {
 };
 
 /**
+ * AdminApplicationVisitRescheduleRequestListResponse
+ *
  * Pagina filtrada de solicitudes de reprogramacion.
  */
 export type AdminApplicationVisitRescheduleRequestListResponse = {
+    /**
+     * List
+     */
     content?: Array<AdminApplicationVisitRescheduleRequestListItemResponse>;
     page?: number;
     size?: number;
@@ -3507,12 +4790,17 @@ export type AdminApplicationVisitRescheduleRequestListResponse = {
 };
 
 /**
+ * ApplicationEvaluationListItemResponse
+ *
  * Resumen administrativo de una evaluacion social. La recomendacion se consulta solo en el detalle.
  */
 export type ApplicationEvaluationListItemResponse = {
     id?: string;
     applicationId?: string;
     applicationNumber?: number;
+    /**
+     * ApplicationStatus
+     */
     applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     applicantUserId?: number;
     applicantName?: string;
@@ -3521,10 +4809,14 @@ export type ApplicationEvaluationListItemResponse = {
     programEditionId?: string;
     programEditionName?: string;
     /**
+     * VulnerabilityLevel
+     *
      * Nivel de vulnerabilidad determinado durante la evaluacion social.
      */
     vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
+     * EvaluationPriority
+     *
      * Prioridad de intervencion determinada durante la evaluacion social.
      */
     priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -3546,9 +4838,14 @@ export type ApplicationEvaluationListItemResponse = {
 };
 
 /**
+ * ApplicationEvaluationListResponse
+ *
  * Pagina administrativa de evaluaciones sociales, ordenada por fecha descendente.
  */
 export type ApplicationEvaluationListResponse = {
+    /**
+     * List
+     */
     content?: Array<ApplicationEvaluationListItemResponse>;
     page?: number;
     size?: number;
@@ -3557,12 +4854,17 @@ export type ApplicationEvaluationListResponse = {
 };
 
 /**
+ * ApplicationEvaluationDetailResponse
+ *
  * Detalle administrativo completo de una evaluacion social y su solicitud asociada.
  */
 export type ApplicationEvaluationDetailResponse = {
     id?: string;
     applicationId?: string;
     applicationNumber?: number;
+    /**
+     * ApplicationStatus
+     */
     applicationStatus?: 'DRAFT' | 'SUBMITTED' | 'IN_VALIDATION' | 'PENDING_DOCUMENTATION' | 'IN_EVALUATION' | 'IN_VISIT' | 'APPROVED' | 'REJECTED' | 'WAITLISTED' | 'CLOSED';
     applicantUserId?: number;
     applicantName?: string;
@@ -3573,10 +4875,14 @@ export type ApplicationEvaluationDetailResponse = {
     programEditionName?: string;
     enrollmentPeriodId?: string;
     /**
+     * VulnerabilityLevel
+     *
      * Nivel de vulnerabilidad determinado durante la evaluacion social.
      */
     vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     /**
+     * EvaluationPriority
+     *
      * Prioridad de intervencion determinada durante la evaluacion social.
      */
     priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -3594,6 +4900,8 @@ export type ApplicationEvaluationDetailResponse = {
 };
 
 /**
+ * ActivityListItemResponse
+ *
  * Actividad incluida en un listado administrativo.
  */
 export type ActivityListItemResponse = {
@@ -3603,15 +4911,23 @@ export type ActivityListItemResponse = {
     startDate?: string;
     endDate?: string;
     capacity?: number;
+    /**
+     * ActivityStatus
+     */
     status?: 'DRAFT' | 'OPEN' | 'CLOSED';
     createdAt?: string;
     updatedAt?: string;
 };
 
 /**
+ * ActivityListResponse
+ *
  * Página de actividades comunitarias.
  */
 export type ActivityListResponse = {
+    /**
+     * List
+     */
     content?: Array<ActivityListItemResponse>;
     page?: number;
     size?: number;
@@ -3620,18 +4936,28 @@ export type ActivityListResponse = {
 };
 
 /**
+ * CitizenActivityEnrollmentResponse
+ *
  * Inscripción del ciudadano autenticado, sin datos de otros participantes.
  */
 export type CitizenActivityEnrollmentResponse = {
     id?: string;
     enrolledAt?: string;
+    /**
+     * ActivityAttendanceStatus
+     */
     attendance?: 'PRESENT' | 'ABSENT';
 };
 
 /**
+ * CitizenActivityListResponse
+ *
  * Página de actividades abiertas o de inscripciones propias, incluidas las actividades cerradas.
  */
 export type CitizenActivityListResponse = {
+    /**
+     * List
+     */
     content?: Array<CitizenActivityResponse>;
     page?: number;
     size?: number;
@@ -3640,6 +4966,8 @@ export type CitizenActivityListResponse = {
 };
 
 /**
+ * CitizenActivityResponse
+ *
  * Actividad disponible para la comunidad o incluida en las inscripciones del ciudadano autenticado.
  */
 export type CitizenActivityResponse = {
@@ -3652,16 +4980,24 @@ export type CitizenActivityResponse = {
     capacity?: number;
     enrolledCount?: number;
     availableCapacity?: number;
+    /**
+     * ActivityStatus
+     */
     status?: 'DRAFT' | 'OPEN' | 'CLOSED';
     myEnrollment?: CitizenActivityEnrollmentResponse;
 };
 
+/**
+ * Link
+ */
 export type Link = {
     href?: string;
     templated?: boolean;
 };
 
 /**
+ * UpdateUserRequest
+ *
  * Datos requeridos para actualizar un usuario.
  */
 export type UpdateUserRequestWritable = {
@@ -3686,12 +5022,16 @@ export type UpdateUserRequestWritable = {
      */
     active?: boolean;
     /**
+     * List
+     *
      * Lista completa de roles que conservará el usuario.
      */
     roles?: Array<string>;
 };
 
 /**
+ * CreateUserRequest
+ *
  * Datos requeridos para crear un usuario.
  */
 export type CreateUserRequestWritable = {
@@ -3716,12 +5056,16 @@ export type CreateUserRequestWritable = {
      */
     active?: boolean;
     /**
+     * List
+     *
      * Nombres de los roles asignados.
      */
     roles?: Array<string>;
 };
 
 /**
+ * CookieSessionResponse
+ *
  * Sesión del navegador. Los JWT se envían exclusivamente en cookies HttpOnly.
  */
 export type CookieSessionResponseWritable = {
@@ -3730,6 +5074,8 @@ export type CookieSessionResponseWritable = {
 };
 
 /**
+ * LoginRequest
+ *
  * Credenciales requeridas para iniciar sesión.
  */
 export type LoginRequestWritable = {
@@ -3744,6 +5090,8 @@ export type LoginRequestWritable = {
 };
 
 /**
+ * SelectRoleRequest
+ *
  * Selección de rol luego de un login con múltiples roles. No acepta un JWT operativo.
  */
 export type SelectRoleRequestWritable = {
@@ -3758,6 +5106,8 @@ export type SelectRoleRequestWritable = {
 };
 
 /**
+ * AvailableProgramDetailResponse
+ *
  * Detalle de un programa disponible para ciudadanos.
  */
 export type AvailableProgramDetailResponseWritable = {
@@ -3765,6 +5115,8 @@ export type AvailableProgramDetailResponseWritable = {
 };
 
 /**
+ * AvailableProgramEditionResponse
+ *
  * Edición disponible de un programa, con sus beneficios y requisitos.
  */
 export type AvailableProgramEditionResponseWritable = {
@@ -4641,6 +5993,12 @@ export type UpdateEnrollmentPeriodResponse = UpdateEnrollmentPeriodResponses[key
 
 export type Delete2Data = {
     body?: never;
+    headers?: {
+        /**
+         * Si se envía, la escritura solo se realiza si la etiqueta coincide con la representación actual.
+         */
+        'If-Match'?: string;
+    };
     path: {
         /**
          * UUID del programa.
@@ -4672,6 +6030,10 @@ export type Delete2Errors = {
      * La operación entra en conflicto con el estado actual de los datos.
      */
     409: ErrorResponse;
+    /**
+     * La representación cambió desde la última consulta.
+     */
+    412: ErrorResponse;
     /**
      * Ocurrió un error interno inesperado.
      */
@@ -4737,6 +6099,12 @@ export type FindById2Response = FindById2Responses[keyof FindById2Responses];
 
 export type Update2Data = {
     body: UpdateProgramRequest;
+    headers?: {
+        /**
+         * Si se envía, la escritura solo se realiza si la etiqueta coincide con la representación actual.
+         */
+        'If-Match'?: string;
+    };
     path: {
         /**
          * UUID del programa.
@@ -4768,6 +6136,10 @@ export type Update2Errors = {
      * La operación entra en conflicto con el estado actual de los datos.
      */
     409: ErrorResponse;
+    /**
+     * La representación cambió desde la última consulta.
+     */
+    412: ErrorResponse;
     /**
      * Ocurrió un error interno inesperado.
      */
@@ -5614,6 +6986,147 @@ export type UpdateMunicipalCenterResponses = {
 
 export type UpdateMunicipalCenterResponse = UpdateMunicipalCenterResponses[keyof UpdateMunicipalCenterResponses];
 
+export type AssignData = {
+    body: AssignSocialTicketRequest;
+    path: {
+        ticketId: string;
+    };
+    query?: never;
+    url: '/api/admin/integrations/core/tickets/{ticketId}/assignee';
+};
+
+export type AssignErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AssignError = AssignErrors[keyof AssignErrors];
+
+export type AssignResponses = {
+    /**
+     * OK
+     */
+    200: SocialTicketDetailResponse;
+};
+
+export type AssignResponse = AssignResponses[keyof AssignResponses];
+
+export type LinkApplicationData = {
+    body: LinkSocialTicketApplicationRequest;
+    path: {
+        ticketId: string;
+    };
+    query?: never;
+    url: '/api/admin/integrations/core/tickets/{ticketId}/application';
+};
+
+export type LinkApplicationErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type LinkApplicationError = LinkApplicationErrors[keyof LinkApplicationErrors];
+
+export type LinkApplicationResponses = {
+    /**
+     * OK
+     */
+    200: SocialTicketDetailResponse;
+};
+
+export type LinkApplicationResponse = LinkApplicationResponses[keyof LinkApplicationResponses];
+
+export type LinkData = {
+    body: LinkExemptionBenefitRequest;
+    path: {
+        requestId: string;
+    };
+    query?: never;
+    url: '/api/admin/integrations/core/revenue/exemptions/{requestId}/benefit';
+};
+
+export type LinkErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type LinkError = LinkErrors[keyof LinkErrors];
+
+export type LinkResponses = {
+    /**
+     * OK
+     */
+    200: RevenueExemptionResponse;
+};
+
+export type LinkResponse = LinkResponses[keyof LinkResponses];
+
 export type UpdateCenterOpeningHourData = {
     body: UpdateCenterOpeningHourRequest;
     path: {
@@ -5976,6 +7489,8 @@ export type FindAllError = FindAllErrors[keyof FindAllErrors];
 
 export type FindAllResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<UserManagementResponse>;
@@ -6050,6 +7565,8 @@ export type FindAll1Error = FindAll1Errors[keyof FindAll1Errors];
 
 export type FindAll1Responses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<RoleResponse>;
@@ -6205,6 +7722,10 @@ export type SessionSelectRoleErrors = {
      */
     409: ErrorResponse;
     /**
+     * Se alcanzó el límite de intentos de autenticación.
+     */
+    429: ErrorResponse;
+    /**
      * Ocurrió un error interno inesperado.
      */
     500: ErrorResponse;
@@ -6283,6 +7804,10 @@ export type SessionLoginErrors = {
      */
     409: ErrorResponse;
     /**
+     * Se alcanzó el límite de intentos de autenticación.
+     */
+    429: ErrorResponse;
+    /**
      * Ocurrió un error interno inesperado.
      */
     500: ErrorResponse;
@@ -6324,6 +7849,10 @@ export type SelectRoleErrors = {
      */
     409: ErrorResponse;
     /**
+     * Se alcanzó el límite de intentos de autenticación.
+     */
+    429: ErrorResponse;
+    /**
      * Ocurrió un error interno inesperado.
      */
     500: ErrorResponse;
@@ -6364,6 +7893,10 @@ export type LoginErrors = {
      * La operación entra en conflicto con el estado actual de los datos.
      */
     409: ErrorResponse;
+    /**
+     * Se alcanzó el límite de intentos de autenticación.
+     */
+    429: ErrorResponse;
     /**
      * Ocurrió un error interno inesperado.
      */
@@ -6407,6 +7940,8 @@ export type ListCitizenAppointmentsError = ListCitizenAppointmentsErrors[keyof L
 
 export type ListCitizenAppointmentsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AppointmentResponse>;
@@ -7529,6 +9064,8 @@ export type FindAll2Error = FindAll2Errors[keyof FindAll2Errors];
 
 export type FindAll2Responses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProgramRequirementResponse>;
@@ -7622,6 +9159,8 @@ export type List2Error = List2Errors[keyof List2Errors];
 
 export type List2Responses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProgramDocumentRequirementResponse>;
@@ -7715,6 +9254,8 @@ export type FindAll3Error = FindAll3Errors[keyof FindAll3Errors];
 
 export type FindAll3Responses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProgramBenefitResponse>;
@@ -7913,6 +9454,8 @@ export type ListProfessionalAvailabilityError = ListProfessionalAvailabilityErro
 
 export type ListProfessionalAvailabilityResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProfessionalAvailabilityResponse>;
@@ -8007,6 +9550,8 @@ export type CreateProfessionalAvailabilitiesBatchError = CreateProfessionalAvail
 
 export type CreateProfessionalAvailabilitiesBatchResponses = {
     /**
+     * List
+     *
      * Created
      */
     201: Array<ProfessionalAvailabilityResponse>;
@@ -8216,6 +9761,8 @@ export type ListCenterServicesError = ListCenterServicesErrors[keyof ListCenterS
 
 export type ListCenterServicesResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<CenterServiceResponse>;
@@ -8306,6 +9853,8 @@ export type ListCenterOpeningHoursError = ListCenterOpeningHoursErrors[keyof Lis
 
 export type ListCenterOpeningHoursResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<CenterOpeningHourResponse>;
@@ -8400,12 +9949,61 @@ export type CreateCenterOpeningHoursBatchError = CreateCenterOpeningHoursBatchEr
 
 export type CreateCenterOpeningHoursBatchResponses = {
     /**
+     * List
+     *
      * Created
      */
     201: Array<CenterOpeningHourResponse>;
 };
 
 export type CreateCenterOpeningHoursBatchResponse = CreateCenterOpeningHoursBatchResponses[keyof CreateCenterOpeningHoursBatchResponses];
+
+export type Update8Data = {
+    body: UpdateSocialTicketRequest;
+    path: {
+        ticketId: string;
+    };
+    query?: never;
+    url: '/api/admin/integrations/core/tickets/{ticketId}/updates';
+};
+
+export type Update8Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Update8Error = Update8Errors[keyof Update8Errors];
+
+export type Update8Responses = {
+    /**
+     * Accepted
+     */
+    202: SocialEventQueuedResponse;
+};
+
+export type Update8Response = Update8Responses[keyof Update8Responses];
 
 export type ListProfessionalAssignmentsData = {
     body?: never;
@@ -8443,6 +10041,8 @@ export type ListProfessionalAssignmentsError = ListProfessionalAssignmentsErrors
 
 export type ListProfessionalAssignmentsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProfessionalAssignmentResponse>;
@@ -8638,6 +10238,8 @@ export type List5Error = List5Errors[keyof List5Errors];
 
 export type List5Responses = {
     /**
+     * List
+     *
      * Historial cronologico.
      */
     200: Array<ApplicationResolutionResponse>;
@@ -8775,6 +10377,8 @@ export type List6Error = List6Errors[keyof List6Errors];
 
 export type List6Responses = {
     /**
+     * List
+     *
      * Otorgamientos de la solicitud.
      */
     200: Array<BenefitGrantResponse>;
@@ -10064,10 +11668,10 @@ export type ReviewData = {
     body: ReviewApplicationDocumentRequest;
     path: {
         applicationId: string;
-        applicationDocumentId: string;
+        requestId: string;
     };
     query?: never;
-    url: '/api/admin/applications/{applicationId}/documents/{applicationDocumentId}/review';
+    url: '/api/admin/applications/{applicationId}/external-documents/{requestId}/review';
 };
 
 export type ReviewErrors = {
@@ -10098,6 +11702,54 @@ export type ReviewErrors = {
 };
 
 export type ReviewError = ReviewErrors[keyof ReviewErrors];
+
+export type ReviewResponses = {
+    /**
+     * OK
+     */
+    200: ExternalDocumentationResponse;
+};
+
+export type ReviewResponse = ReviewResponses[keyof ReviewResponses];
+
+export type Review1Data = {
+    body: ReviewApplicationDocumentRequest;
+    path: {
+        applicationId: string;
+        applicationDocumentId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{applicationId}/documents/{applicationDocumentId}/review';
+};
+
+export type Review1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Review1Error = Review1Errors[keyof Review1Errors];
 
 export type Publish1Data = {
     body?: never;
@@ -10193,6 +11845,115 @@ export type Close1Responses = {
 
 export type Close1Response = Close1Responses[keyof Close1Responses];
 
+export type GetUiConfigData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/springwolf/ui-config';
+};
+
+export type GetUiConfigErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type GetUiConfigError = GetUiConfigErrors[keyof GetUiConfigErrors];
+
+export type GetUiConfigResponses = {
+    /**
+     * OK
+     */
+    200: UiConfig;
+};
+
+export type GetUiConfigResponse = GetUiConfigResponses[keyof GetUiConfigResponses];
+
+export type AsyncApiYamlData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/springwolf/docs';
+};
+
+export type AsyncApiYamlErrors = {
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AsyncApiYamlError = AsyncApiYamlErrors[keyof AsyncApiYamlErrors];
+
+export type AsyncApiYamlResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type AsyncApiYamlResponse = AsyncApiYamlResponses[keyof AsyncApiYamlResponses];
+
+export type AsyncApiYaml1Data = {
+    body?: never;
+    path: {
+        group: string;
+    };
+    query?: never;
+    url: '/springwolf/docs/{group}';
+};
+
+export type AsyncApiYaml1Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type AsyncApiYaml1Error = AsyncApiYaml1Errors[keyof AsyncApiYaml1Errors];
+
+export type AsyncApiYaml1Responses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type AsyncApiYaml1Response = AsyncApiYaml1Responses[keyof AsyncApiYaml1Responses];
+
 export type FindAll4Data = {
     body?: never;
     path?: never;
@@ -10219,6 +11980,8 @@ export type FindAll4Error = FindAll4Errors[keyof FindAll4Errors];
 
 export type FindAll4Responses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<PermissionResponse>;
@@ -10252,6 +12015,8 @@ export type ListLogsError = ListLogsErrors[keyof ListLogsErrors];
 
 export type ListLogsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<LogResponse>;
@@ -10298,6 +12063,8 @@ export type ListLogsByUserError = ListLogsByUserErrors[keyof ListLogsByUserError
 
 export type ListLogsByUserResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<LogResponse>;
@@ -10309,9 +12076,11 @@ export type ListLogsByEntityData = {
     body?: never;
     path: {
         /**
+         * LogEntityType
+         *
          * Tipo de entidad auditada.
          */
-        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'INTERVENTION_PLAN' | 'INTERVENTION_FOLLOW_UP' | 'APPLICATION_RESOLUTION' | 'BENEFIT_GRANT' | 'BENEFIT_GRANT_CHANGE' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
+        entityType: 'PERMISSION' | 'ROLE' | 'USER' | 'ENROLLMENT_PERIOD' | 'APPLICATION' | 'APPLICATION_EVALUATION' | 'INTERVENTION_PLAN' | 'INTERVENTION_FOLLOW_UP' | 'APPLICATION_RESOLUTION' | 'BENEFIT_GRANT' | 'BENEFIT_GRANT_CHANGE' | 'APPLICATION_VISIT' | 'APPLICATION_VISIT_RESCHEDULE_REQUEST' | 'APPLICATION_DOCUMENT' | 'SOCIAL_TICKET' | 'EXTERNAL_DOCUMENTATION' | 'REVENUE_DEBT' | 'REVENUE_EXEMPTION' | 'CITIZEN_SNAPSHOT' | 'ACTIVITY' | 'ACTIVITY_ENROLLMENT' | 'MUNICIPAL_CENTER' | 'MUNICIPAL_SERVICE' | 'CENTER_SERVICE' | 'PROFESSIONAL_ASSIGNMENT' | 'CENTER_OPENING_HOUR' | 'PROFESSIONAL_AVAILABILITY' | 'APPOINTMENT' | 'PROGRAM' | 'PROGRAM_EDITION' | 'PROGRAM_BENEFIT' | 'PROGRAM_REQUIREMENT' | 'PROGRAM_DOCUMENT_REQUIREMENT' | 'PROGRAM_IMAGE' | 'PROGRAM_INCOMPATIBILITY';
         /**
          * Identificador de la entidad auditada.
          */
@@ -10348,6 +12117,8 @@ export type ListLogsByEntityError = ListLogsByEntityErrors[keyof ListLogsByEntit
 
 export type ListLogsByEntityResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<LogResponse>;
@@ -10582,6 +12353,8 @@ export type ListProfessionalAppointmentsError = ListProfessionalAppointmentsErro
 
 export type ListProfessionalAppointmentsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProfessionalAppointmentResponse>;
@@ -10999,6 +12772,8 @@ export type ListCitizenAppointmentSlotsError = ListCitizenAppointmentSlotsErrors
 
 export type ListCitizenAppointmentSlotsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AvailableAppointmentSlotResponse>;
@@ -11032,6 +12807,8 @@ export type ListCitizenAppointmentServicesError = ListCitizenAppointmentServices
 
 export type ListCitizenAppointmentServicesResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AppointmentServiceResponse>;
@@ -11075,6 +12852,8 @@ export type ListCitizenAppointmentCentersError = ListCitizenAppointmentCentersEr
 
 export type ListCitizenAppointmentCentersResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AppointmentCenterResponse>;
@@ -11296,6 +13075,8 @@ export type List8Error = List8Errors[keyof List8Errors];
 
 export type List8Responses = {
     /**
+     * List
+     *
      * Documentos entregados en la solicitud propia.
      */
     200: Array<ApplicationDocumentResponse>;
@@ -11436,6 +13217,8 @@ export type FindAll5Error = FindAll5Errors[keyof FindAll5Errors];
 
 export type FindAll5Responses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProgramIncompatibilityResponse>;
@@ -11469,6 +13252,8 @@ export type ListProgramOptionsError = ListProgramOptionsErrors[keyof ListProgram
 
 export type ListProgramOptionsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProgramOptionResponse>;
@@ -11515,12 +13300,102 @@ export type ListProgramEditionOptionsError = ListProgramEditionOptionsErrors[key
 
 export type ListProgramEditionOptionsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<ProgramEditionOptionResponse>;
 };
 
 export type ListProgramEditionOptionsResponse = ListProgramEditionOptionsResponses[keyof ListProgramEditionOptionsResponses];
+
+export type List9Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * SocialTicketState
+         */
+        state?: 'RECEIVED' | 'IN_PROGRESS' | 'WAITING_INFORMATION' | 'RESOLVED' | 'RETURNED' | 'CLOSED';
+        attention?: boolean;
+        page?: number;
+        size?: number;
+    };
+    url: '/api/admin/integrations/core/tickets';
+};
+
+export type List9Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List9Error = List9Errors[keyof List9Errors];
+
+export type List9Responses = {
+    /**
+     * OK
+     */
+    200: SocialIntegrationPageSocialTicketResponse;
+};
+
+export type List9Response = List9Responses[keyof List9Responses];
+
+export type Get3Data = {
+    body?: never;
+    path: {
+        ticketId: string;
+    };
+    query?: never;
+    url: '/api/admin/integrations/core/tickets/{ticketId}';
+};
+
+export type Get3Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Get3Error = Get3Errors[keyof Get3Errors];
+
+export type Get3Responses = {
+    /**
+     * OK
+     */
+    200: SocialTicketDetailResponse;
+};
+
+export type Get3Response = Get3Responses[keyof Get3Responses];
 
 export type ListCoreSubscriptionsData = {
     body?: never;
@@ -11556,6 +13431,8 @@ export type ListCoreSubscriptionsError = ListCoreSubscriptionsErrors[keyof ListC
 
 export type ListCoreSubscriptionsResponses = {
     /**
+     * List
+     *
      * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
      */
     200: Array<CoreSubscription>;
@@ -11604,6 +13481,88 @@ export type GetCoreConnectionStatusResponses = {
 
 export type GetCoreConnectionStatusResponse = GetCoreConnectionStatusResponses[keyof GetCoreConnectionStatusResponses];
 
+export type ExemptionsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        citizenId?: string;
+        page?: number;
+        size?: number;
+    };
+    url: '/api/admin/integrations/core/revenue/exemptions';
+};
+
+export type ExemptionsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type ExemptionsError = ExemptionsErrors[keyof ExemptionsErrors];
+
+export type ExemptionsResponses = {
+    /**
+     * OK
+     */
+    200: SocialIntegrationPageRevenueExemptionResponse;
+};
+
+export type ExemptionsResponse = ExemptionsResponses[keyof ExemptionsResponses];
+
+export type DebtsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        citizenId?: string;
+        page?: number;
+        size?: number;
+    };
+    url: '/api/admin/integrations/core/revenue/debts';
+};
+
+export type DebtsErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type DebtsError = DebtsErrors[keyof DebtsErrors];
+
+export type DebtsResponses = {
+    /**
+     * OK
+     */
+    200: SocialIntegrationPageRevenueDebtResponse;
+};
+
+export type DebtsResponse = DebtsResponses[keyof DebtsResponses];
+
 export type ListCorePublicationsData = {
     body?: never;
     path?: never;
@@ -11638,6 +13597,8 @@ export type ListCorePublicationsError = ListCorePublicationsErrors[keyof ListCor
 
 export type ListCorePublicationsResponses = {
     /**
+     * List
+     *
      * Consulta completada. En /status, revisar el estado de cada transporte en el cuerpo.
      */
     200: Array<CorePublication>;
@@ -11703,6 +13664,8 @@ export type ListCoreEventsData = {
          */
         eventType?: string;
         /**
+         * CoreEventStatus
+         *
          * Estado de ingesta y ruteo del evento en Core.
          */
         status?: 'ROUTED' | 'NO_SUBSCRIBERS' | 'REJECTED' | 'DUPLICATE';
@@ -11856,6 +13819,46 @@ export type GetCoreDashboardResponses = {
 
 export type GetCoreDashboardResponse = GetCoreDashboardResponses[keyof GetCoreDashboardResponses];
 
+export type List10Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/api/admin/integrations/core/citizen-alerts';
+};
+
+export type List10Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List10Error = List10Errors[keyof List10Errors];
+
+export type List10Responses = {
+    /**
+     * OK
+     */
+    200: SocialIntegrationPageCitizenIntegrationAlertResponse;
+};
+
+export type List10Response = List10Responses[keyof List10Responses];
+
 export type GetIndicatorsData = {
     body?: never;
     path?: never;
@@ -11912,6 +13915,9 @@ export type ListAdminBenefitGrantsData = {
     query?: {
         page?: number;
         size?: number;
+        /**
+         * BenefitGrantStatus
+         */
         status?: 'ACTIVE' | 'SUSPENDED' | 'FINALIZED' | 'EXPIRED';
         applicationNumber?: number;
     };
@@ -11981,6 +13987,8 @@ export type ListAdminAppointmentsError = ListAdminAppointmentsErrors[keyof ListA
 
 export type ListAdminAppointmentsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AdminAppointmentResponse>;
@@ -12069,6 +14077,8 @@ export type ListAdminAppointmentSlotsError = ListAdminAppointmentSlotsErrors[key
 
 export type ListAdminAppointmentSlotsResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AvailableAppointmentSlotResponse>;
@@ -12111,6 +14121,8 @@ export type ListAdminAppointmentMonthlySummaryError = ListAdminAppointmentMonthl
 
 export type ListAdminAppointmentMonthlySummaryResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AdminDaySummaryResponse>;
@@ -12152,6 +14164,8 @@ export type ListAdminAppointmentDayAvailabilityError = ListAdminAppointmentDayAv
 
 export type ListAdminAppointmentDayAvailabilityResponses = {
     /**
+     * List
+     *
      * OK
      */
     200: Array<AdminFreeSlotResponse>;
@@ -12159,56 +14173,13 @@ export type ListAdminAppointmentDayAvailabilityResponses = {
 
 export type ListAdminAppointmentDayAvailabilityResponse = ListAdminAppointmentDayAvailabilityResponses[keyof ListAdminAppointmentDayAvailabilityResponses];
 
-export type Get3Data = {
-    body?: never;
-    path: {
-        id: string;
-    };
-    query?: never;
-    url: '/api/admin/applications/{id}';
-};
-
-export type Get3Errors = {
-    /**
-     * La solicitud es inválida.
-     */
-    400: ErrorResponse;
-    /**
-     * No autenticado.
-     */
-    401: ErrorResponse;
-    /**
-     * No posee permisos para realizar la operación.
-     */
-    403: ErrorResponse;
-    /**
-     * No se encontró el recurso solicitado.
-     */
-    404: ErrorResponse;
-    /**
-     * Ocurrió un error interno inesperado.
-     */
-    500: ErrorResponse;
-};
-
-export type Get3Error = Get3Errors[keyof Get3Errors];
-
-export type Get3Responses = {
-    /**
-     * Detalle completo de la solicitud.
-     */
-    200: AdminApplicationResponse;
-};
-
-export type Get3Response = Get3Responses[keyof Get3Responses];
-
 export type Get4Data = {
     body?: never;
     path: {
         id: string;
     };
     query?: never;
-    url: '/api/admin/applications/{id}/intervention-plan';
+    url: '/api/admin/applications/{id}';
 };
 
 export type Get4Errors = {
@@ -12238,12 +14209,55 @@ export type Get4Error = Get4Errors[keyof Get4Errors];
 
 export type Get4Responses = {
     /**
+     * Detalle completo de la solicitud.
+     */
+    200: AdminApplicationResponse;
+};
+
+export type Get4Response = Get4Responses[keyof Get4Responses];
+
+export type Get5Data = {
+    body?: never;
+    path: {
+        id: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{id}/intervention-plan';
+};
+
+export type Get5Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type Get5Error = Get5Errors[keyof Get5Errors];
+
+export type Get5Responses = {
+    /**
      * Plan con estructura inicial y estados actuales.
      */
     200: InterventionPlanResponse;
 };
 
-export type Get4Response = Get4Responses[keyof Get4Responses];
+export type Get5Response = Get5Responses[keyof Get5Responses];
 
 export type HistoryData = {
     body?: never;
@@ -12282,6 +14296,8 @@ export type HistoryError = HistoryErrors[keyof HistoryErrors];
 
 export type HistoryResponses = {
     /**
+     * List
+     *
      * Historial completo de la accion.
      */
     200: Array<InterventionFollowUpResponse>;
@@ -12326,6 +14342,8 @@ export type History1Error = History1Errors[keyof History1Errors];
 
 export type History1Responses = {
     /**
+     * List
+     *
      * Historial inmutable del otorgamiento.
      */
     200: Array<BenefitGrantChangeResponse>;
@@ -12333,16 +14351,16 @@ export type History1Responses = {
 
 export type History1Response = History1Responses[keyof History1Responses];
 
-export type List9Data = {
+export type List11Data = {
     body?: never;
     path: {
         applicationId: string;
     };
     query?: never;
-    url: '/api/admin/applications/{applicationId}/documents';
+    url: '/api/admin/applications/{applicationId}/external-documents';
 };
 
-export type List9Errors = {
+export type List11Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -12365,16 +14383,63 @@ export type List9Errors = {
     500: ErrorResponse;
 };
 
-export type List9Error = List9Errors[keyof List9Errors];
+export type List11Error = List11Errors[keyof List11Errors];
 
-export type List9Responses = {
+export type List11Responses = {
     /**
+     * List
+     *
+     * OK
+     */
+    200: Array<ExternalDocumentationResponse>;
+};
+
+export type List11Response = List11Responses[keyof List11Responses];
+
+export type List12Data = {
+    body?: never;
+    path: {
+        applicationId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{applicationId}/documents';
+};
+
+export type List12Errors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+};
+
+export type List12Error = List12Errors[keyof List12Errors];
+
+export type List12Responses = {
+    /**
+     * List
+     *
      * OK
      */
     200: Array<ApplicationDocumentResponse>;
 };
 
-export type List9Response = List9Responses[keyof List9Responses];
+export type List12Response = List12Responses[keyof List12Responses];
 
 export type Content1Data = {
     body?: never;
@@ -12439,10 +14504,14 @@ export type ListApplicationVisitsData = {
         programId?: string;
         programEditionId?: string;
         /**
+         * ApplicationVisitType
+         *
          * Tipo exacto de actuacion.
          */
         type?: 'VISIT' | 'INTERVIEW';
         /**
+         * ApplicationVisitStatus
+         *
          * Estado exacto: SCHEDULED, CANCELLED, REALIZED o NOT_REALIZED.
          */
         status?: 'SCHEDULED' | 'CANCELLED' | 'REALIZED' | 'NOT_REALIZED';
@@ -12537,6 +14606,9 @@ export type ListApplicationVisitRescheduleRequestsData = {
     query?: {
         page?: number;
         size?: number;
+        /**
+         * ApplicationVisitRescheduleRequestStatus
+         */
         status?: 'PENDING' | 'APPROVED' | 'REJECTED';
         applicationId?: string;
         applicationNumber?: number;
@@ -12667,10 +14739,14 @@ export type ListApplicationEvaluationsData = {
          */
         programEditionId?: string;
         /**
+         * VulnerabilityLevel
+         *
          * Nivel de vulnerabilidad determinado durante la evaluacion social.
          */
         vulnerability?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
         /**
+         * EvaluationPriority
+         *
          * Prioridad de intervencion determinada durante la evaluacion social.
          */
         priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -12759,7 +14835,7 @@ export type GetApplicationEvaluationResponses = {
 
 export type GetApplicationEvaluationResponse = GetApplicationEvaluationResponses[keyof GetApplicationEvaluationResponses];
 
-export type List10Data = {
+export type List13Data = {
     body?: never;
     path?: never;
     query?: {
@@ -12779,7 +14855,7 @@ export type List10Data = {
     url: '/api/activities';
 };
 
-export type List10Errors = {
+export type List13Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -12798,18 +14874,18 @@ export type List10Errors = {
     500: ErrorResponse;
 };
 
-export type List10Error = List10Errors[keyof List10Errors];
+export type List13Error = List13Errors[keyof List13Errors];
 
-export type List10Responses = {
+export type List13Responses = {
     /**
      * OK
      */
     200: CitizenActivityListResponse;
 };
 
-export type List10Response = List10Responses[keyof List10Responses];
+export type List13Response = List13Responses[keyof List13Responses];
 
-export type Get5Data = {
+export type Get6Data = {
     body?: never;
     path: {
         id: string;
@@ -12818,7 +14894,7 @@ export type Get5Data = {
     url: '/api/activities/{id}';
 };
 
-export type Get5Errors = {
+export type Get6Errors = {
     /**
      * La solicitud es inválida.
      */
@@ -12841,16 +14917,16 @@ export type Get5Errors = {
     500: ErrorResponse;
 };
 
-export type Get5Error = Get5Errors[keyof Get5Errors];
+export type Get6Error = Get6Errors[keyof Get6Errors];
 
-export type Get5Responses = {
+export type Get6Responses = {
     /**
      * OK
      */
     200: CitizenActivityResponse;
 };
 
-export type Get5Response = Get5Responses[keyof Get5Responses];
+export type Get6Response = Get6Responses[keyof Get6Responses];
 
 export type LinksData = {
     body?: never;
@@ -12878,6 +14954,8 @@ export type LinksError = LinksErrors[keyof LinksErrors];
 
 export type LinksResponses = {
     /**
+     * Map
+     *
      * OK
      */
     200: {

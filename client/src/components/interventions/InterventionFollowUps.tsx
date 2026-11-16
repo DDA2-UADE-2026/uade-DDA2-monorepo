@@ -72,8 +72,8 @@ export function InterventionFollowUps({ applicationId, action, canCreate, canPub
         <DialogFooter><DialogClose render={<Button variant="outline" />}>Cerrar</DialogClose></DialogFooter>
       </DialogContent>
     </Dialog>
-    {showForm && <FollowUpForm applicationId={applicationId} action={action} onClose={() => setShowForm(false)} onSuccess={() => { setShowForm(false); refresh(); queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) }) }} />}
-    {publication && <PublicationForm applicationId={applicationId} actionId={action.id!} followUp={publication} onClose={() => setPublication(null)} onSuccess={() => { setPublication(null); refresh() }} />}
+    {showForm && <FollowUpForm applicationId={applicationId} action={action} onClose={() => setShowForm(false)} onSuccess={() => { setShowForm(false); void refresh(); void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) }) }} />}
+    {publication && <PublicationForm applicationId={applicationId} actionId={action.id!} followUp={publication} onClose={() => setPublication(null)} onSuccess={() => { setPublication(null); void refresh() }} />}
   </>
 }
 

@@ -156,10 +156,10 @@ function CreateProgramDialog({ onOpenChange }: { onOpenChange: (open: boolean) =
   const createProgram = useMutation({
     ...create3Mutation(),
     onSuccess: (program) => {
-      queryClient.invalidateQueries({ queryKey: list1QueryKey() })
+      void queryClient.invalidateQueries({ queryKey: list1QueryKey() })
       onOpenChange(false)
       if (program.id) {
-        navigate({
+        void navigate({
           to: "/gestion/programas/$programaId",
           params: { programaId: program.id },
         })
@@ -198,7 +198,7 @@ function CreateProgramDialog({ onOpenChange }: { onOpenChange: (open: boolean) =
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>

@@ -47,7 +47,7 @@ function RouteComponent() {
           </CardContent>
         </Card>)}
       </div>
-      <DataPagination className="rounded-xl border" page={applications.isPlaceholderData ? (applications.data.page ?? 0) + 1 : page} totalPages={Math.max(1, applications.data.totalPages ?? 1)} totalItems={applications.data.totalElements ?? 0} pageSize={PAGE_SIZE} onPageChange={(nextPage) => { if (!applications.isFetching) navigate({ search: { page: nextPage } }) }} />
+      <DataPagination className="rounded-xl border" page={applications.isPlaceholderData ? (applications.data.page ?? 0) + 1 : page} totalPages={Math.max(1, applications.data.totalPages ?? 1)} totalItems={applications.data.totalElements ?? 0} pageSize={PAGE_SIZE} onPageChange={(nextPage) => { if (!applications.isFetching) void navigate({ search: { page: nextPage } }) }} />
     </>}
   </ApplicationPage>
 }

@@ -49,14 +49,14 @@ export function ActivityStatusDialog({ activity, action, onOpenChange, onDone }:
 }) {
   const queryClient = useQueryClient()
   const onSuccess = (saved: ActivityResponse) => {
-    queryClient.invalidateQueries({ queryKey: list7QueryKey() })
-    queryClient.invalidateQueries({ queryKey: list10QueryKey() })
-    queryClient.invalidateQueries({ queryKey: listActivitiesQueryKey() })
+    void queryClient.invalidateQueries({ queryKey: list7QueryKey() })
+    void queryClient.invalidateQueries({ queryKey: list10QueryKey() })
+    void queryClient.invalidateQueries({ queryKey: listActivitiesQueryKey() })
     if (saved.id) {
-      queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: saved.id } }) })
-      queryClient.invalidateQueries({ queryKey: getProfessionalActivityQueryKey({ path: { activityId: saved.id } }) })
+      void queryClient.invalidateQueries({ queryKey: get5QueryKey({ path: { id: saved.id } }) })
+      void queryClient.invalidateQueries({ queryKey: getProfessionalActivityQueryKey({ path: { activityId: saved.id } }) })
     }
-    if (saved.id) queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
+    if (saved.id) void queryClient.invalidateQueries({ queryKey: get1QueryKey({ path: { id: saved.id } }) })
     onDone?.(saved)
     onOpenChange(false)
   }

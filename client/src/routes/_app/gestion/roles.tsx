@@ -225,14 +225,14 @@ function RoleFormDialog({
   const createRole = useMutation({
     ...create1Mutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: findAll1QueryKey() })
+      void queryClient.invalidateQueries({ queryKey: findAll1QueryKey() })
       onOpenChange(false)
     },
   })
   const updateRole = useMutation({
     ...update1Mutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: findAll1QueryKey() })
+      void queryClient.invalidateQueries({ queryKey: findAll1QueryKey() })
       onOpenChange(false)
     },
   })
@@ -283,7 +283,7 @@ function RoleFormDialog({
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>

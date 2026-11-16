@@ -88,8 +88,8 @@ function RouteComponent() {
     navigate({ search: { ...search, estado, page: 1 } })
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
-  const activate = useMutation({ ...activateMunicipalServiceMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
-  const deactivate = useMutation({ ...deactivateMunicipalServiceMutation(), onSuccess: () => { invalidate(); setStatusChange(null) } })
+  const activate = useMutation({ ...activateMunicipalServiceMutation(), onSuccess: () => { void invalidate(); setStatusChange(null) } })
+  const deactivate = useMutation({ ...deactivateMunicipalServiceMutation(), onSuccess: () => { void invalidate(); setStatusChange(null) } })
   const statusPending = activate.isPending || deactivate.isPending
   const statusError = activate.error ?? deactivate.error
 
@@ -126,7 +126,7 @@ function RouteComponent() {
                 <InputGroupInput
                   value={searchInput}
                   onChange={(event) => setSearchInput(event.target.value)}
-                  onKeyDown={(event) => { if (event.key === "Enter") applySearch() }}
+                  onKeyDown={(event) => { if (event.key === "Enter") void applySearch() }}
                   placeholder="Buscar por nombre…"
                   aria-label="Buscar servicios"
                 />
@@ -264,14 +264,14 @@ function ServiceDialog({ service, onOpenChange }: {
   const create = useMutation({
     ...createMunicipalServiceMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
       onOpenChange(false)
     },
   })
   const update = useMutation({
     ...updateMunicipalServiceMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: listMunicipalServicesQueryKey() })
       onOpenChange(false)
     },
   })
@@ -329,7 +329,7 @@ function ServiceDialog({ service, onOpenChange }: {
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <FieldGroup>

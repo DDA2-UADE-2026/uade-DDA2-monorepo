@@ -70,7 +70,7 @@ export function AdminApplicationDocumentUploadDialog({ applicationId, requiremen
     },
     onError: (error) => {
       // Una solicitud resuelta deja de admitir cambios: se refresca el detalle para reflejarlo.
-      if (error.status === 409) queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) })
+      if (error.status === 409) void queryClient.invalidateQueries({ queryKey: get3QueryKey({ path: { id: applicationId } }) })
     },
   })
 

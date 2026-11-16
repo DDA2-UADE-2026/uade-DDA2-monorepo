@@ -38,7 +38,7 @@ export function ApplicationDocumentUploadDialog({ applicationId, requirement, ex
       onOpenChange(false)
     },
     onError: (error) => {
-      if (error.status === 409) queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) })
+      if (error.status === 409) void queryClient.invalidateQueries({ queryKey: get2QueryKey({ path: { id: applicationId } }) })
     },
   })
   const busy = disabled || upload.isPending

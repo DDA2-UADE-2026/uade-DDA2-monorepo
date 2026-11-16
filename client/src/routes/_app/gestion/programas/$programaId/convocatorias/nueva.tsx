@@ -21,7 +21,7 @@ function RouteComponent() {
   const { programaId } = Route.useParams()
   const navigate = useNavigate()
   const client = useQueryClient()
-  const create = useMutation({ ...create8Mutation(), onSuccess: (data) => { client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }); navigate({ to: "/gestion/programas/$programaId/convocatorias/$edicionId", params: { programaId, edicionId: data.id ?? "" } }) } })
+  const create = useMutation({ ...create8Mutation(), onSuccess: (data) => { void client.invalidateQueries({ queryKey: list3QueryKey({ path: { programId: programaId } }) }); void navigate({ to: "/gestion/programas/$programaId/convocatorias/$edicionId", params: { programaId, edicionId: data.id ?? "" } }) } })
   const form = useForm({
     defaultValues: { name: "", startDate: "", endDate: "", maxCapacity: undefined as number | undefined },
     validators: { onChange: createEditionSchema },
@@ -31,7 +31,7 @@ function RouteComponent() {
     }),
   })
 
-  return <RoutePanel><h2 className="mb-5 text-lg font-semibold">Nueva edición</h2><form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); form.handleSubmit() }}>
+  return <RoutePanel><h2 className="mb-5 text-lg font-semibold">Nueva edición</h2><form className="grid gap-5" noValidate onSubmit={(event) => { event.preventDefault(); event.stopPropagation(); void form.handleSubmit() }}>
     <form.Field name="name" children={(field) => {
       const invalid = field.state.meta.isTouched && !field.state.meta.isValid
       return <FormField label="Nombre" htmlFor={field.name} invalid={invalid} errors={field.state.meta.errors}><input id={field.name} name={field.name} className={inputClass} value={field.state.value} onBlur={field.handleBlur} onChange={(event) => field.handleChange(event.target.value)} aria-invalid={invalid} /></FormField>

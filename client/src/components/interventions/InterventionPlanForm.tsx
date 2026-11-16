@@ -28,7 +28,7 @@ export function InterventionPlanForm({ applicationId, onCreated }: { application
     ...create2Mutation(),
     onSuccess: (plan) => {
       queryClient.setQueryData(get4QueryKey({ path: { id: applicationId } }), plan)
-      queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) })
+      void queryClient.invalidateQueries({ queryKey: get4QueryKey({ path: { id: applicationId } }) })
       onCreated?.(plan)
     },
   })

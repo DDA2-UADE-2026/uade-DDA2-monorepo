@@ -46,12 +46,12 @@ function LoginForm() {
         {
           onSuccess: (data) => {
             if (data.user?.activeRole) {
-              navigate({ to: getRoleHome(data.user.activeRole), replace: true })
+              void navigate({ to: getRoleHome(data.user.activeRole), replace: true })
               return
             }
 
             if (data.requiresRoleSelection) {
-              navigate({ to: "/seleccionar-rol", replace: true })
+              void navigate({ to: "/seleccionar-rol", replace: true })
             }
           },
         },
@@ -109,7 +109,7 @@ function LoginForm() {
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
       >
         <FieldGroup>

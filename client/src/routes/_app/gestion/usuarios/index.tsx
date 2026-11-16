@@ -278,7 +278,7 @@ function UserRolesDialog({
   const updateUser = useMutation({
     ...updateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
       onOpenChange(false)
     },
   })
@@ -332,7 +332,7 @@ function UserRolesDialog({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Field
@@ -428,7 +428,7 @@ function CreateUserDialog({
   const createUser = useMutation({
     ...createMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
+      void queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
       onOpenChange(false)
     },
   })
@@ -475,7 +475,7 @@ function CreateUserDialog({
           onSubmit={(e) => {
             e.preventDefault()
             e.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Subscribe

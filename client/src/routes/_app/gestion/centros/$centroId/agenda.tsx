@@ -52,9 +52,9 @@ export function OpeningHoursSection({ centroId }: { centroId: string }) {
 
   const key = listCenterOpeningHoursQueryKey({ path: { centerId: centroId } })
   const invalidate = () => queryClient.invalidateQueries({ queryKey: key })
-  const create = useMutation({ ...createCenterOpeningHourMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
-  const createBulk = useMutation({ ...createCenterOpeningHoursBatchMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
-  const update = useMutation({ ...updateCenterOpeningHourMutation(), onSuccess: () => { invalidate(); setDialog(null) } })
+  const create = useMutation({ ...createCenterOpeningHourMutation(), onSuccess: () => { void invalidate(); setDialog(null) } })
+  const createBulk = useMutation({ ...createCenterOpeningHoursBatchMutation(), onSuccess: () => { void invalidate(); setDialog(null) } })
+  const update = useMutation({ ...updateCenterOpeningHourMutation(), onSuccess: () => { void invalidate(); setDialog(null) } })
   const activate = useMutation({ ...activateCenterOpeningHourMutation(), onSuccess: invalidate })
   const deactivate = useMutation({ ...deactivateCenterOpeningHourMutation(), onSuccess: invalidate })
   const isPending = create.isPending || createBulk.isPending || update.isPending
@@ -260,7 +260,7 @@ export function AssignmentAvailability({ assignmentId, professionalId, professio
   const [duplicateInactiveError, setDuplicateInactiveError] = useState<string | null>(null)
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: listProfessionalAvailabilityQueryKey({ path: { assignmentId } }) })
+    void queryClient.invalidateQueries({ queryKey: listProfessionalAvailabilityQueryKey({ path: { assignmentId } }) })
     onChanged()
   }
   const create = useMutation({ ...createProfessionalAvailabilityMutation(), onSuccess: () => { invalidate(); setDialog(null) } })

@@ -275,14 +275,14 @@ function BenefitDialog({
   const create = useMutation({
     ...create7Mutation(),
     onSuccess: () => {
-      refresh()
+      void refresh()
       onOpenChange(false)
     },
   })
   const update = useMutation({
     ...update6Mutation(),
     onSuccess: () => {
-      refresh()
+      void refresh()
       onOpenChange(false)
     },
   })
@@ -340,7 +340,7 @@ function BenefitDialog({
           onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
-            form.handleSubmit()
+            void form.handleSubmit()
           }}
         >
           <form.Field name="benefitType" children={(field) => {
