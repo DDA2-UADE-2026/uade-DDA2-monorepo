@@ -1,0 +1,208 @@
+{
+  "captured_at": "2026-11-16T23:40:00Z",
+  "base_commit": "87da65300fc062ca7af0f44a1067bfeb5a1f9e2b",
+  "branch": "feature/security-frontend-patches",
+  "runtime": {
+    "node": "v24.22.3",
+    "npm": "11.19.1",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "runtime_verification": "artifacts/security-preparation/frontend-runtime/download-verification.json",
+    "ci_node_major_parity": true
+  },
+  "updates": [
+    {
+      "package": "jsondiffpatch",
+      "from": "0.7.6",
+      "to": "0.7.7",
+      "mechanism": "Direct dependency ^0.7.7 in client/package.json",
+      "sonar_records": [
+        {
+          "id": "aff4ad97-90a6-45b8-ba73-cc4a4477e32a",
+          "cve": "CVE-2026-122234",
+          "severity_sonar": "LOW",
+          "cvss": 4.7,
+          "cwe": "CWE-79"
+        }
+      ],
+      "registry_integrity": "sha512-C3375q+xluwQYS6Je613YqXpZhW9uSi2YFRR+8QTJVYhdk0GZiDr7HD9bXNrdV9PJCpmwsCgJM9ZXXESSZPCzA=="
+    },
+    {
+      "package": "js-yaml",
+      "from": "4.2.0",
+      "to": "4.3.2",
+      "mechanism": "Scoped overrides for @hey-api/json-schema-ref-parser in client/package.json",
+      "upstream_consumer": {
+        "package": "@hey-api/json-schema-ref-parser",
+        "version": "1.4.4",
+        "latest_published": "1.4.4",
+        "pinned_js_yaml": "4.2.0",
+        "parent": "@hey-api/openapi-ts@0.99.0 (latest published 0.99.0)"
+      },
+      "sonar_records": [
+        {
+          "id": "9e320e0a-8d48-49be-a0be-16e2f9cc0176",
+          "cve": "CVE-2026-59869",
+          "severity_sonar": "MEDIUM",
+          "cvss": 7.5,
+          "cwe": "CWE-407"
+        },
+        {
+          "id": "034948d0-933b-4f3b-aec0-b98ed38138bf",
+          "cve": "CVE-2026-84375",
+          "severity_sonar": "MEDIUM",
+          "cvss": 7.5,
+          "cwe": "CWE-400; CWE-407"
+        }
+      ],
+      "registry_integrity": "sha512-SFNOvSJ+Dgf/9An904Yx+CgSlIPCkIpao4qo51lpee25TIRejdH3rhR4EZMGoNx3/TP3O+wzWuiTFl4sqbltzA=="
+    }
+  ],
+  "lockfile_delta": {
+    "package_entries_total": 759,
+    "added_keys": [],
+    "removed_keys": [],
+    "changed_keys": [
+      "",
+      "node_modules/js-yaml",
+      "node_modules/jsondiffpatch"
+    ],
+    "npm_ls_problems": null,
+    "npm_explain_js_yaml": {
+      "version": "4.3.2",
+      "spec": "4.3.2",
+      "rawSpec": "4.2.0",
+      "overridden": true,
+      "from": "@hey-api/json-schema-ref-parser@1.4.4"
+    },
+    "npm_explain_jsondiffpatch": {
+      "version": "0.7.7",
+      "spec": "^0.7.7",
+      "overridden": false
+    }
+  },
+  "baseline": {
+    "commit": "87da65300fc062ca7af0f44a1067bfeb5a1f9e2b",
+    "commands": [
+      { "name": "01-npm-ci", "exit_code": 0, "duration_ms": 7859, "network_guard": false },
+      { "name": "02-lint", "exit_code": 0, "duration_ms": 13444, "network_guard": true },
+      { "name": "03-test-run", "exit_code": 0, "duration_ms": 15695, "network_guard": true },
+      { "name": "04-build", "exit_code": 0, "duration_ms": 24514, "network_guard": true }
+    ],
+    "tests": {
+      "success": true,
+      "total": 186,
+      "passed": 180,
+      "failed": 0,
+      "skipped": 6,
+      "suites": 47
+    },
+    "network_blocked_attempts": 0
+  },
+  "candidate_initial": {
+    "commands": [
+      { "name": "00-npm-lock", "exit_code": 0, "duration_ms": 934, "network_guard": false },
+      { "name": "01-npm-ci", "exit_code": 0, "duration_ms": 8017, "network_guard": false, "packages_added": 686 },
+      { "name": "02-lint", "exit_code": 0, "duration_ms": 13168, "network_guard": true },
+      { "name": "03-test-run", "exit_code": 0, "duration_ms": 16326, "network_guard": true },
+      { "name": "04-build", "exit_code": 0, "duration_ms": 24158, "network_guard": true },
+      { "name": "05-npm-ls-all", "exit_code": 0, "duration_ms": 577, "network_guard": false },
+      { "name": "06-npm-ls-production", "exit_code": 0, "duration_ms": 406, "network_guard": false },
+      { "name": "07-npm-ls-development", "exit_code": 0, "duration_ms": 424, "network_guard": false },
+      { "name": "08-explain-jsondiffpatch", "exit_code": 0, "duration_ms": 379, "network_guard": false },
+      { "name": "09-explain-js-yaml", "exit_code": 0, "duration_ms": 375, "network_guard": false }
+    ],
+    "tests": {
+      "success": true,
+      "total": 186,
+      "passed": 180,
+      "failed": 0,
+      "skipped": 6,
+      "suites": 47
+    },
+    "network_blocked_attempts": 0
+  },
+  "candidate_with_regression_tests": {
+    "added_test_file": "client/src/components/audit/AuditDiffSheet.test.tsx",
+    "new_test_cases": 5,
+    "commands": [
+      { "name": "02-lint", "exit_code": 0, "duration_ms": 12537, "network_guard": true },
+      { "name": "03-test-run", "exit_code": 0, "duration_ms": 14621, "network_guard": true },
+      { "name": "04-build", "exit_code": 0, "duration_ms": 23293, "network_guard": true },
+      { "name": "05-npm-ls-all", "exit_code": 0, "duration_ms": 585, "network_guard": false },
+      { "name": "06-npm-ls-production", "exit_code": 0, "duration_ms": 393, "network_guard": false },
+      { "name": "07-npm-ls-development", "exit_code": 0, "duration_ms": 408, "network_guard": false },
+      { "name": "08-explain-jsondiffpatch", "exit_code": 0, "duration_ms": 365, "network_guard": false },
+      { "name": "09-explain-js-yaml", "exit_code": 0, "duration_ms": 363, "network_guard": false }
+    ],
+    "tests": {
+      "success": true,
+      "total": 191,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 6,
+      "suites": 48
+    },
+    "preexisting_skips": [
+      "src/lib/program-images.test.ts (3)",
+      "src/components/programs/ProgramImageUploadDialog.test.tsx (3)"
+    ],
+    "network_blocked_attempts": 0
+  },
+  "yaml_openapi_probe": {
+    "network_guard": true,
+    "versions": {
+      "js-yaml": "4.3.2",
+      "jsondiffpatch": "0.7.7",
+      "@hey-api/json-schema-ref-parser": "1.4.4",
+      "@hey-api/openapi-ts": "0.99.0"
+    },
+    "yaml_checks": {
+      "valid_merge_keys": true,
+      "invalid_yaml_rejected": true,
+      "chained_merge_keys_ms": 1.652,
+      "chained_merge_keys_outcome": "parsed",
+      "empty_mapping_merge_keys_ms": 2.522,
+      "empty_mapping_merge_keys_outcome": "parsed",
+      "ref_parser_yaml_merge_keys": true,
+      "ref_parser_invalid_yaml_rejected": true
+    },
+    "openapi_codegen": {
+      "source_spec_fixture": "server/build/openapi/openapi.json",
+      "paths_count": 167,
+      "schemas_count": 246,
+      "json_and_yaml_outputs_identical": true,
+      "generated_file_bytes": {
+        "client.gen.ts": 965,
+        "index.ts": 36292,
+        "sdk.gen.ts": 165827,
+        "types.gen.ts": 338629,
+        "zod.gen.ts": 225253,
+        "@tanstack/react-query.gen.ts": 224406
+      }
+    }
+  },
+  "bundle_comparison": {
+    "baseline_assets_count": 306,
+    "candidate_assets_count": 306,
+    "baseline_total_bytes": 5581546,
+    "candidate_total_bytes": 5581683,
+    "audit_chunk_before": { "file": "auditoria-BrnXavy3.js", "bytes": 31138 },
+    "audit_chunk_after": { "file": "auditoria-BchmsrVJ.js", "bytes": 31242 },
+    "js_yaml_in_dist_assets": false,
+    "client_src_generated_unchanged": true
+  },
+  "integrated_file_sha256": {
+    "client/package.json": "2c92ea5ec415fc44112d91cf4ad49e5188aa8e0d27d193b9e819615fde9d003d",
+    "client/package-lock.json": "8fd56ded26f90771a835263418ba5339a145e3d80dc41788d61a3f29bf356a34",
+    "client/src/components/audit/AuditDiffSheet.test.tsx": "ac72bc32f339c62c50150e2df4efa4428a72b3dea4205eaa2e4f14a3ec78ecc0"
+  },
+  "limits": [
+    "macOS arm64 validation with Node v24.22.3; not exact GitHub Ubuntu CI runner parity",
+    "Local root client/node_modules and client/src/generated were not modified",
+    "SonarCloud was not re-executed here; closure of the 3 records must be confirmed on the PR analysis",
+    "Scoped js-yaml override carries maintenance debt until @hey-api/json-schema-ref-parser updates past 4.2.0"
+  ],
+  "sonar_reanalyzed_here": false,
+  "commit_push_merge_here": false
+}
