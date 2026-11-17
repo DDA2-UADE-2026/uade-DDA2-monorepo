@@ -6,12 +6,14 @@
 
 | Contraparte funcional | Qué recibe M8 | Qué envía M8 | Medio implementado |
 | --- | --- | --- | --- |
-| M1 Ciudadanos, organizaciones y expedientes | Datos/estado de ciudadanos vinculados; referencias de expedientes y documentación pedida. | Pedido de requisitos documentales de una solicitud. | Eventos mediante Core. Login y acceso a contenido documental requieren acuerdo adicional. |
+| M1 Ciudadanos, organizaciones y expedientes | Identidad autenticada, datos/estado de ciudadanos vinculados y referencias documentales. | Credenciales de login por HTTPS y pedido documental por Core. | Login y proxy de archivos implementados, desactivados por defecto. Eventos mediante Core. Ruta UUID y autorización del archivo pendientes de acuerdo. |
 | M2 Atención Ciudadana | Tickets derivados, respuestas, cambios de prioridad/escalamiento, reaperturas y cierres. | Hechos de inicio, avance, información requerida, devolución, resolución o rechazo operativo. | Eventos mediante Core. |
 | M5 Rentas | Deudas vencidas/canceladas, pedidos y resultados de exención. | Alta y cambios de cada beneficio otorgado. | Eventos mediante Core. |
 | M9 Core | Entrega de eventos y respuestas de diagnóstico/registro. | Eventos producidos y consultas técnicas autenticadas. | AMQPS para mensajes; HTTPS para API de máquina. |
 
 Las contrapartes de la tabla indican el destino de negocio. M8 publica en el ingreso compartido y Core decide el ruteo efectivo a partir de su registro. No se crean conexiones directas a bases ajenas ni se escriben sus datos.
+
+La [verificación local consolidada de M1](../technical/m1-integration-verification.md) cubre login, identidad local, sesión, eventos y proxy de archivos. Se ejecuta con `verifyM1Integration`, HTTP loopback y H2, sin contactar a M1/Core ni retomar la prueba suspendida del ciudadano sintético.
 
 ```mermaid
 flowchart LR
@@ -27,9 +29,11 @@ flowchart LR
 
 ## 2. M1: vinculación e identidad
 
+El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint `POST /auth/session/m1/login`, el uso de `citizenId` UUID y los ejemplos de éxito `200` y error `401`. Están implementados cliente HTTP, resolución de cuenta y sesión propia de M8 con cookies y CSRF, limitada a `CIUDADANO`. El ingreso está desactivado por defecto. Quedan variantes del contrato y la cuenta privada para probar el login real.
+
 | Paso | Entrada o acción | Datos que utiliza M8 | Resultado local | Salida |
 | --- | --- | --- | --- | --- |
-| 1 | Vincular cuenta por un procedimiento verificado. | UUID canónico de M1 y cuenta local. | `users.external_citizen_id`. El procedimiento de autenticación/vinculación sigue pendiente de acuerdo e implementación. | No hay un evento de vinculación implementado. |
+| 1 | Ingresar por `/auth/session/m1/login` con CSRF y credenciales M1. | UUID canónico y correo del ingreso autenticado. | Reutiliza o crea cuenta externa sin contraseña local y emite cookie propia de M8, solo `CIUDADANO`. No fusiona por correo ni habilita otros roles. | Audita el alta cuando corresponde y el ingreso. No emite eventos de negocio. |
 | 2 | Recibir `citizenUpdated`. | `citizenId`, `updateType`, `details`, actor y fecha del sobre. | Busca usuario vinculado; si no existe, confirma e ignora sin aprovisionarlo. | Ninguna por desconocido. |
 | 3a | `REGISTERED`. | DNI, nombre/apellido y domicilio del payload. | Actualiza snapshot de nombre/DNI y domicilio con sus relojes. No crea una cuenta ni copia todo `details` al modelo local. | Ninguna. |
 | 3b | `ADDRESS_UPDATED`. | `previousAddress`, `newAddress`; usa la nueva calle/número. | Actualiza domicilio si la fecha no es anterior al último cambio aplicado. | Ninguna. |
@@ -51,9 +55,13 @@ Nombre/DNI y domicilio tienen relojes separados para evitar que un registro inic
 | 7 | Administrativo autorizado | Referencia del documento entregado. | Revisa como `VALID` u `OBSERVED`. Debe contar con acceso autorizado al contenido de M1, todavía pendiente de coordinar. | Sin evento externo nuevo. |
 | 8 | Resolución/renovación | Revisión vigente de requisitos obligatorios. | Integra la revisión externa al control documental; una entrega local del mismo requisito prevalece si existe. | El siguiente evento depende de la decisión/otorgamiento, no de la mera revisión. |
 
-La correlación del pedido es `application.id`. La respuesta debe conservar ese `correlationId` y usar como `causationId` el `eventId` del pedido. El cruce documental utiliza `requirementId`, no el nombre visible del archivo.
+La correlación del pedido es `application.id`. Ambas respuestas deben conservar ese `correlationId` y usar como `causationId` el `eventId` del pedido. M1 confirmó esta causa para la inicial; falta confirmarla para la entrega posterior. El cruce documental utiliza `requirementId` y el tipo guardado en el pedido original, además del catálogo vigente. Cada `requestId` aparece una sola vez por sobre.
 
 Un cambio de referencia o estado recibido vuelve a dejar pendiente la revisión. Los mensajes se comparan temporalmente para no sustituir referencias con una actualización anterior. El evento no incluye bytes ni autoriza a inventar una URL de descarga. El archivo local y el `documentId` de M1 son referencias de sistemas distintos.
+
+La [verificación de las dos respuestas](../technical/m1-documentation-responses.md) se realizó con eventos simulados y H2, sin contactar a M1/Core ni publicar mensajes. Incluye duplicados, respuesta inicial atrasada, entregas parciales, rechazo de identidad o requisitos incorrectos y rollback completo ante un ítem inválido.
+
+El [proxy administrativo de archivos](../technical/m1-file-proxy.md) descarga por la referencia persistida con permiso `applications:management:documents:view`. Está desactivado hasta acordar y configurar la ruta UUID y la credencial de servicio de M1. El navegador recibe un adjunto desde M8, sin tokens remotos; la descarga no valida automáticamente la entrega.
 
 ## 4. M2: recibir la derivación y abrir gestión
 

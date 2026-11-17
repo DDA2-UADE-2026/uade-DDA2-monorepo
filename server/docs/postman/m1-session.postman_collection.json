@@ -1,0 +1,244 @@
+{
+  "info": {
+    "name": "M8 - Login ciudadano mediante M1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Prueba manual del proxy M8 con cookies y CSRF. Activar M1_AUTH_ENABLED en el backend. Configurar m1Email y m1Password solo en un entorno privado de Postman; no exportarlos ni agregarlos al repositorio. Los requests se omiten si faltan esas variables. Habilitar el jar de cookies y ejecutar en orden. No se guardan JWT en variables."
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "m1CsrfToken",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.environment.get(\"m1Email\") || !pm.environment.get(\"m1Password\")) {",
+          "  console.warn(\"Configurar m1Email y m1Password en el entorno privado de Postman.\");",
+          "  pm.execution.skipRequest();",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1 - Obtener CSRF para el login",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/auth/session/csrf",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CSRF disponible\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) pm.collectionVariables.set(\"m1CsrfToken\", pm.response.json().token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Ingresar mediante M1",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{m1CsrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/session/m1/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{{m1LoginPayload}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.variables.set(\"m1LoginPayload\", JSON.stringify({email: pm.environment.get(\"m1Email\"), password: pm.environment.get(\"m1Password\")}));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Ingreso ciudadano sin tokens en JSON\", () => {",
+              "  pm.response.to.have.status(200);",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.requiresRoleSelection).to.eql(false);",
+              "  pm.expect(body.user.activeRole).to.eql(\"CIUDADANO\");",
+              "  pm.expect(body.user.roles).to.eql([\"CIUDADANO\"]);",
+              "  pm.expect(body).not.to.have.property(\"token\");",
+              "  pm.expect(body).not.to.have.property(\"selectionToken\");",
+              "  pm.expect(pm.response.headers.has(\"Authorization\")).to.eql(false);",
+              "  pm.expect(pm.response.headers.has(\"X-Refresh-Token\")).to.eql(false);",
+              "});",
+              "pm.collectionVariables.unset(\"m1CsrfToken\");"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Consultar perfil con cookie M8",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/auth/me",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Perfil limitado a ciudadano\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json().user.roles).to.eql([\"CIUDADANO\"]); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Obtener CSRF vigente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/auth/session/csrf",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"CSRF disponible\", () => pm.response.to.have.status(200));",
+              "if (pm.response.code === 200) pm.collectionVariables.set(\"m1CsrfToken\", pm.response.json().token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Comprobar rechazo del cambio a ADMIN",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{m1CsrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/session/switch-role",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"role\":\"ADMIN\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"M1 no habilita roles administrativos\", () => { pm.response.to.have.status(403); pm.expect(pm.response.json().code).to.eql(\"AUTH_ROLE_NOT_ALLOWED_FOR_SOURCE\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - Cerrar sesion M8",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-XSRF-TOKEN",
+            "value": "{{m1CsrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/session/logout",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Cookies eliminadas\", () => pm.response.to.have.status(204));",
+              "pm.collectionVariables.unset(\"m1CsrfToken\");"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7 - Comprobar salida",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/auth/me",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Sin sesion\", () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

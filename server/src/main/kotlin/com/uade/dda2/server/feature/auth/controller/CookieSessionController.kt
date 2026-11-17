@@ -2,17 +2,21 @@ package com.uade.dda2.server.feature.auth.controller
 
 import com.uade.dda2.server.error.UnauthorizedException
 import com.uade.dda2.server.feature.auth.dto.request.LoginRequest
+import com.uade.dda2.server.feature.auth.dto.request.M1SessionLoginRequest
 import com.uade.dda2.server.feature.auth.dto.request.SelectRoleRequest
 import com.uade.dda2.server.feature.auth.dto.request.SwitchRoleRequest
 import com.uade.dda2.server.feature.auth.dto.response.CookieSessionResponse
 import com.uade.dda2.server.feature.auth.dto.response.LoginResponse
 import com.uade.dda2.server.feature.auth.dto.response.SessionCsrfResponse
 import com.uade.dda2.server.feature.auth.service.AuthService
+import com.uade.dda2.server.feature.auth.service.M1SessionService
 import com.uade.dda2.server.security.ACCESS_COOKIE
 import com.uade.dda2.server.security.AuthCookies
 import com.uade.dda2.server.security.ROLE_SELECTION_COOKIE
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -29,6 +33,7 @@ class CookieSessionController(
     private val authService: AuthService,
     private val cookies: AuthCookies,
     private val csrfTokens: CsrfTokenRepository,
+    private val m1SessionService: M1SessionService,
 ) {
     @GetMapping("/csrf")
     @Operation(operationId = "sessionCsrf", summary = "Obtener token CSRF", description = "Consultar antes de operaciones de escritura. Enviar el token en X-XSRF-TOKEN y las cookies con credentials: include.")
@@ -38,6 +43,14 @@ class CookieSessionController(
     @Operation(operationId = "sessionLogin", summary = "Iniciar sesión con cookie")
     fun login(@Valid @RequestBody body: LoginRequest, request: HttpServletRequest, response: HttpServletResponse): CookieSessionResponse =
         establish(authService.login(body), request, response)
+
+    @PostMapping("/m1/login")
+    @Operation(operationId = "sessionM1Login", summary = "Iniciar sesión ciudadana mediante M1",
+        description = "Envía las credenciales a M1, resuelve la cuenta por citizenId y emite una cookie HttpOnly con JWT propio de M8, solo para CIUDADANO. No devuelve tokens en JSON ni requiere Bearer. Obtener CSRF antes del POST. M1_AUTH_ENABLED=false devuelve 503. No admite selección o cambio hacia roles administrativos.")
+    @Parameter(name = "X-XSRF-TOKEN", `in` = ParameterIn.HEADER, required = true,
+        description = "Token obtenido de GET /auth/session/csrf; enviar también las cookies.", schema = Schema(type = "string"))
+    fun m1Login(@Valid @RequestBody body: M1SessionLoginRequest, request: HttpServletRequest, response: HttpServletResponse): CookieSessionResponse =
+        establish(m1SessionService.login(body), request, response)
 
     @GetMapping("/role-selection")
     @Operation(operationId = "sessionRoleSelection", summary = "Recuperar selección de rol pendiente", description = "Permite recargar la pantalla sin almacenar tokens en JavaScript. Responde 401 si no hay una selección vigente.")

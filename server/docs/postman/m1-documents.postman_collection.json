@@ -1,0 +1,119 @@
+{
+  "info": {
+    "name": "M8 - Documentacion externa de M1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Consultas manuales exclusivamente a M8. No ejecutada contra M1 ni Core. Usar una sesion administrativa M8 mediante m8AdminAccessToken en un entorno privado, nunca el JWT ciudadano de M1. La descarga se omite por defecto: habilitar m1FileProxyReadEnabled solo tras acordar UUID/autorizacion con M1 y autorizar una prueba remota."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{m8AdminAccessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "applicationId",
+      "value": ""
+    },
+    {
+      "key": "requestId",
+      "value": ""
+    },
+    {
+      "key": "m1FileProxyReadEnabled",
+      "value": "false"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;",
+          "if (!pm.environment.get(\"m8AdminAccessToken\") || !uuid.test(pm.variables.get(\"applicationId\") || \"\")) {",
+          "  console.warn(\"Configurar m8AdminAccessToken privado y applicationId de M8.\");",
+          "  pm.execution.skipRequest();",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1 - Consultar referencias documentales en M8",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/admin/applications/{{applicationId}}/external-documents",
+        "description": "Exige applications:management:documents:view. Consulta referencias locales; no descarga archivos ni publica eventos. requestId es el ID documental de M1, no documentId ni eventId."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Referencias de la solicitud indicada\", () => {",
+              "  pm.response.to.have.status(200);",
+              "  const rows = pm.response.json();",
+              "  pm.expect(rows).to.be.an(\"array\");",
+              "  rows.forEach(row => pm.expect(row.applicationId).to.eql(pm.variables.get(\"applicationId\")));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Descargar archivo por el proxy M8 (opt-in)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/admin/applications/{{applicationId}}/external-documents/{{requestId}}/file",
+        "description": "Se omite salvo m1FileProxyReadEnabled=true. Solo usar con entrega COMPLETED, M1_DOCUMENTS_ENABLED y ruta UUID/credencial de servicio acordadas. Esta peticion puede provocar una consulta M8->M1 si se habilita; no se ejecuta como parte de verifyM1Integration."
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const validRequestId = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(pm.variables.get(\"requestId\") || \"\");",
+              "if (pm.variables.get(\"m1FileProxyReadEnabled\") !== \"true\" || !validRequestId) {",
+              "  console.warn(\"Descarga omitida: requiere requestId UUID y habilitacion explicita para leer mediante M8.\");",
+              "  pm.execution.skipRequest();",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Archivo protegido como adjunto\", () => {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.headers.get(\"Content-Disposition\")).to.include(\"attachment\");",
+              "  pm.expect(pm.response.headers.get(\"Cache-Control\")).to.include(\"no-store\");",
+              "  pm.expect(pm.response.headers.get(\"X-Content-Type-Options\")).to.eql(\"nosniff\");",
+              "});",
+              "pm.test(\"Sin credenciales remotas\", () => {",
+              "  pm.expect(pm.response.headers.has(\"Authorization\")).to.eql(false);",
+              "  pm.expect(pm.response.headers.has(\"X-Refresh-Token\")).to.eql(false);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

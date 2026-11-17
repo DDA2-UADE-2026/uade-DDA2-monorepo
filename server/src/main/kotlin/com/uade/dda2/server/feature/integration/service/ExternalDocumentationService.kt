@@ -47,12 +47,22 @@ class ExternalDocumentationService(
             ?: throw CoreIntegrationException("M8_DOCUMENT_REQUEST_UNKNOWN")
         if (request.eventType != M8EventType.SOCIAL_DOCUMENTATION_REQUESTED.wireName || request.correlationId != p.applicationId)
             throw CoreIntegrationException("M8_DOCUMENT_REQUEST_UNKNOWN")
-        val requestedIds: Set<String> = json.readTree(request.payloadJson)["data"]["requiredDocuments"]
-            .asSequence().map { it["requirementId"].asString() }.toSet()
+        val requested = try {
+            json.treeToValue(json.readTree(request.payloadJson)["data"], SocialDocumentationRequestedData::class.java)
+                ?: throw CoreIntegrationException("M8_DOCUMENT_REQUEST_UNKNOWN")
+        } catch (_: Exception) {
+            throw CoreIntegrationException("M8_DOCUMENT_REQUEST_UNKNOWN")
+        }
+        // El pedido guarda la identidad y el catálogo vigentes al enviarlo. Una modificación
+        // local posterior no autoriza una respuesta para otro ciudadano o tipo documental.
+        if (requested.citizenId != p.citizenId || requested.applicationId != p.applicationId ||
+            requested.programId != p.programId || requested.programEditionId != p.programEditionId)
+            throw CoreIntegrationException("M8_DOCUMENT_IDENTITY_MISMATCH")
+        val requestedById = requested.requiredDocuments.associateBy { it.requirementId }
         p.files.forEach { file -> file.documentationRequests.forEach { document ->
             val requirement = requirements.findByIdAndProgramEditionId(document.requirementId, p.programEditionId)
                 ?: throw CoreIntegrationException("M8_DOCUMENT_REQUIREMENT_UNKNOWN")
-            if (document.requirementId.toString() !in requestedIds || requirement.code != document.documentType)
+            if (requestedById[document.requirementId]?.type != document.documentType || requirement.code != document.documentType)
                 throw CoreIntegrationException("M8_DOCUMENT_REQUIREMENT_MISMATCH")
             val existing = receipts.findById(document.requestId).orElse(null)
             if (existing != null && (existing.applicationId != p.applicationId || existing.requirementId != document.requirementId))
@@ -83,6 +93,17 @@ class ExternalDocumentationService(
         access.check("applications:management:documents:view")
         if (!applications.existsById(applicationId)) throw NotFoundException("APPLICATION_NOT_FOUND", "No se encontró la solicitud.")
         return receipts.findAllByApplicationId(applicationId).map { response(it) }
+    }
+
+    @Transactional(readOnly = true)
+    fun fileDocumentId(applicationId: UUID, requestId: UUID): UUID {
+        access.check("applications:management:documents:view")
+        if (!applications.existsById(applicationId)) throw NotFoundException("APPLICATION_NOT_FOUND", "No se encontró la solicitud.")
+        val receipt = receipts.findById(requestId).orElse(null)?.takeIf { it.applicationId == applicationId }
+            ?: throw NotFoundException("M8_DOCUMENT_NOT_FOUND", "No se encontró la referencia documental.")
+        if (receipt.status != "COMPLETED" || receipt.documentId == null)
+            throw ConflictException("M8_DOCUMENT_FILE_NOT_READY", "La referencia documental todavía no tiene un archivo entregado.")
+        return requireNotNull(receipt.documentId)
     }
 
     @Transactional

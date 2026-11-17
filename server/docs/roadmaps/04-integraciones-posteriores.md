@@ -19,9 +19,21 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [x] Pedido documental al presentar solicitud con requisitos, máximo diez y correlación por solicitud.
 - [x] Exigir UUID canónico M1 antes de permitir operaciones que necesitan publicarlo; rollback completo si falta.
 - [x] Referencias de expedientes/documentos separadas de archivos locales; COMPLETED no equivale a VALID.
+- [x] Verificar [ambas respuestas documentales en aislamiento](../technical/m1-documentation-responses.md): identidad y tipo contra el pedido original, duplicados, orden temporal, rollback y revisión humana; 40 casos nuevos y 73 locales aprobados, sin contactar M1/Core.
 - [x] Revisión administrativa protegida y estados documentales compartidos con evaluación/renovación.
 - [x] Eventos por otorgamiento, renovación, suspensión, finalización y vencimiento; beneficio estable y amount presente aunque sea null.
-- [ ] Coordinar con M1 la vinculación verificada de cuentas y la obtención autorizada del contenido documental.
+- [x] Registrar el [contrato mínimo de login M1](../technical/m1-auth-contract.md), las diferencias con la guía 2.1 y el uso de una sesión propia de M8; sin implementación ni prueba remota de login.
+- [x] Incorporar las capturas de M1 de HTTP `200` y `401`: campos en la raíz, UUID de ciudadano, perfil y headers. Ejemplos documentados, sin prueba remota.
+- [x] Definir el contrato mínimo y los datos de perfil para implementar el cliente y sus pruebas locales.
+- [ ] Completar variantes de errores, nulabilidad, contactos y cuenta de prueba privada con M1.
+- [x] Implementar cliente HTTP M1, DTOs, configuración opt-in, validaciones de identidad y errores locales sin secretos; pruebas con HTTP simulado.
+- [x] Resolver cuentas por UUID M1 o crear identidad externa con `CIUDADANO`, sin contraseña local; preservar cuentas existentes y auditar el alta atómica. Concurrencia probada con JPA/H2.
+- [ ] Implementar la vinculación explícita de cuentas locales previas sin UUID, verificando el control de ambas identidades.
+- [x] Exponer `/auth/session/m1/login` con CSRF y límite de intentos, emitir cookie M8 y conservar el origen firmado M1 para impedir cambios a roles administrativos; probar HTTP/JPA local y documentar OpenAPI.
+- [ ] Verificar login proxy contra el despliegue M1 con la cuenta privada coordinada.
+- [x] Implementar el [proxy administrativo de archivos](../technical/m1-file-proxy.md), protegido por M8, con consulta UUID y credencial de servicio configurables, desactivado por defecto; validación HTTP/JPA local.
+- [ ] Acordar con M1 la ruta por UUID y autorización de servicio; configurar y verificar la interoperabilidad del proxy cuando se autorice una prueba remota.
+- [x] Consolidar el [cierre local de M1](../technical/m1-integration-verification.md): tarea `verifyM1Integration`, cobertura de login/cuentas/sesión/eventos/archivos, OpenAPI/AsyncAPI y colecciones Postman contrastadas con las rutas M8. Sin pruebas contra M1/Core ni reanudar la prueba detenida del ciudadano sintético.
 
 ## Etapa B3 Atención Ciudadana
 

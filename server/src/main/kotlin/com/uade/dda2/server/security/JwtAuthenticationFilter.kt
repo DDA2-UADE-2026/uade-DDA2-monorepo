@@ -20,7 +20,7 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
     // These routes must work when a previous access cookie is expired or malformed.
     override fun shouldNotFilter(request: HttpServletRequest): Boolean = request.requestURI.removePrefix(request.contextPath) in setOf(
-        "/auth/session/csrf", "/auth/session/login", "/auth/session/select-role",
+        "/auth/session/csrf", "/auth/session/login", "/auth/session/m1/login", "/auth/session/select-role",
         "/auth/session/role-selection", "/auth/session/logout",
     )
 
