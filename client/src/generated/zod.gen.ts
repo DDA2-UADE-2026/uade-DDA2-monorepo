@@ -932,6 +932,15 @@ export const zCookieSessionResponse = z.object({
 });
 
 /**
+ * M1SessionLoginRequest
+ *
+ * Credenciales de Ciudadanos para obtener una sesión propia de M8.
+ */
+export const zM1SessionLoginRequest = z.object({
+    email: z.email().min(0).max(180)
+});
+
+/**
  * LoginRequest
  *
  * Credenciales requeridas para iniciar sesión.
@@ -2887,19 +2896,8 @@ export const zJsonNode = z.object({
     float: z.boolean().optional(),
     number: z.boolean().optional(),
     floatingPointNumber: z.boolean().optional(),
-    valueNode: z.boolean().optional(),
-    short: z.boolean().optional(),
-    textual: z.boolean().optional(),
-    object: z.boolean().optional(),
-    int: z.boolean().optional(),
-    long: z.boolean().optional(),
-    bigDecimal: z.boolean().optional(),
-    container: z.boolean().optional(),
-    double: z.boolean().optional(),
-    bigInteger: z.boolean().optional(),
-    boolean: z.boolean().optional(),
-    binary: z.boolean().optional(),
-    pojo: z.boolean().optional(),
+    string: z.boolean().optional(),
+    integralNumber: z.boolean().optional(),
     nodeType: z.enum([
         'ARRAY',
         'BINARY',
@@ -2911,9 +2909,20 @@ export const zJsonNode = z.object({
         'POJO',
         'STRING'
     ]).optional(),
-    string: z.boolean().optional(),
-    integralNumber: z.boolean().optional(),
+    binary: z.boolean().optional(),
     missingNode: z.boolean().optional(),
+    double: z.boolean().optional(),
+    container: z.boolean().optional(),
+    bigInteger: z.boolean().optional(),
+    bigDecimal: z.boolean().optional(),
+    pojo: z.boolean().optional(),
+    int: z.boolean().optional(),
+    object: z.boolean().optional(),
+    boolean: z.boolean().optional(),
+    valueNode: z.boolean().optional(),
+    short: z.boolean().optional(),
+    textual: z.boolean().optional(),
+    long: z.boolean().optional(),
     embeddedValue: z.boolean().optional()
 });
 
@@ -3855,6 +3864,16 @@ export const zCookieSessionResponseWritable = z.object({
 });
 
 /**
+ * M1SessionLoginRequest
+ *
+ * Credenciales de Ciudadanos para obtener una sesión propia de M8.
+ */
+export const zM1SessionLoginRequestWritable = z.object({
+    email: z.email().min(0).max(180),
+    password: z.string().min(1)
+});
+
+/**
  * LoginRequest
  *
  * Credenciales requeridas para iniciar sesión.
@@ -4447,6 +4466,17 @@ export const zSessionSelectRoleBody = zSwitchRoleRequest;
  * OK
  */
 export const zSessionSelectRoleResponse = zCookieSessionResponse;
+
+export const zSessionM1LoginBody = zM1SessionLoginRequestWritable;
+
+export const zSessionM1LoginHeaders = z.object({
+    'X-XSRF-TOKEN': z.string()
+});
+
+/**
+ * OK
+ */
+export const zSessionM1LoginResponse = zCookieSessionResponse;
 
 /**
  * No Content
@@ -5960,6 +5990,16 @@ export const zList11Path = z.object({
  * OK
  */
 export const zList11Response = z.array(zExternalDocumentationResponse);
+
+export const zFilePath = z.object({
+    applicationId: z.uuid(),
+    requestId: z.uuid()
+});
+
+/**
+ * Archivo como adjunto (PDF, PNG, JPEG u octet-stream).
+ */
+export const zFileResponse = z.string();
 
 export const zList12Path = z.object({
     applicationId: z.uuid()

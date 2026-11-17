@@ -1361,6 +1361,18 @@ export type CookieSessionResponse = {
 };
 
 /**
+ * M1SessionLoginRequest
+ *
+ * Credenciales de Ciudadanos para obtener una sesión propia de M8.
+ */
+export type M1SessionLoginRequest = {
+    /**
+     * Correo de acceso registrado en M1.
+     */
+    email: string;
+};
+
+/**
  * LoginRequest
  *
  * Credenciales requeridas para iniciar sesión.
@@ -3930,29 +3942,29 @@ export type JsonNode = {
     float?: boolean;
     number?: boolean;
     floatingPointNumber?: boolean;
+    string?: boolean;
+    integralNumber?: boolean;
+    /**
+     * JsonNodeType
+     */
+    nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING';
+    binary?: boolean;
+    missingNode?: boolean;
+    double?: boolean;
+    container?: boolean;
+    bigInteger?: boolean;
+    bigDecimal?: boolean;
+    pojo?: boolean;
+    int?: boolean;
+    object?: boolean;
+    boolean?: boolean;
     valueNode?: boolean;
     short?: boolean;
     /**
      * @deprecated
      */
     textual?: boolean;
-    object?: boolean;
-    int?: boolean;
     long?: boolean;
-    bigDecimal?: boolean;
-    container?: boolean;
-    double?: boolean;
-    bigInteger?: boolean;
-    boolean?: boolean;
-    binary?: boolean;
-    pojo?: boolean;
-    /**
-     * JsonNodeType
-     */
-    nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING';
-    string?: boolean;
-    integralNumber?: boolean;
-    missingNode?: boolean;
     embeddedValue?: boolean;
 };
 
@@ -5071,6 +5083,22 @@ export type CreateUserRequestWritable = {
 export type CookieSessionResponseWritable = {
     requiresRoleSelection?: boolean;
     expiresIn?: number;
+};
+
+/**
+ * M1SessionLoginRequest
+ *
+ * Credenciales de Ciudadanos para obtener una sesión propia de M8.
+ */
+export type M1SessionLoginRequestWritable = {
+    /**
+     * Correo de acceso registrado en M1.
+     */
+    email: string;
+    /**
+     * Contraseña de M1. Se envía sin modificar y no se guarda en M8.
+     */
+    password: string;
 };
 
 /**
@@ -7741,6 +7769,69 @@ export type SessionSelectRoleResponses = {
 };
 
 export type SessionSelectRoleResponse = SessionSelectRoleResponses[keyof SessionSelectRoleResponses];
+
+export type SessionM1LoginData = {
+    body: M1SessionLoginRequestWritable;
+    headers: {
+        /**
+         * Token obtenido de GET /auth/session/csrf; enviar también las cookies.
+         */
+        'X-XSRF-TOKEN': string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/session/m1/login';
+};
+
+export type SessionM1LoginErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * M1 rechazó las credenciales.
+     */
+    401: ErrorResponse;
+    /**
+     * CSRF inválido, actor no ciudadano o cuenta local sin acceso.
+     */
+    403: ErrorResponse;
+    /**
+     * La operación entra en conflicto con el estado actual de los datos.
+     */
+    409: ErrorResponse;
+    /**
+     * Se alcanzó el límite de intentos de autenticación.
+     */
+    429: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Respuesta de M1 inválida o error del servicio remoto.
+     */
+    502: ErrorResponse;
+    /**
+     * Ingreso M1 desactivado, servicio no disponible o configuración local incompleta.
+     */
+    503: ErrorResponse;
+    /**
+     * M1 no respondió dentro del tiempo de espera.
+     */
+    504: ErrorResponse;
+};
+
+export type SessionM1LoginError = SessionM1LoginErrors[keyof SessionM1LoginErrors];
+
+export type SessionM1LoginResponses = {
+    /**
+     * OK
+     */
+    200: CookieSessionResponse;
+};
+
+export type SessionM1LoginResponse = SessionM1LoginResponses[keyof SessionM1LoginResponses];
 
 export type SessionLogoutData = {
     body?: never;
@@ -14395,6 +14486,66 @@ export type List11Responses = {
 };
 
 export type List11Response = List11Responses[keyof List11Responses];
+
+export type FileData = {
+    body?: never;
+    path: {
+        applicationId: string;
+        requestId: string;
+    };
+    query?: never;
+    url: '/api/admin/applications/{applicationId}/external-documents/{requestId}/file';
+};
+
+export type FileErrors = {
+    /**
+     * La solicitud es inválida.
+     */
+    400: ErrorResponse;
+    /**
+     * No autenticado.
+     */
+    401: ErrorResponse;
+    /**
+     * No posee permisos para realizar la operación.
+     */
+    403: ErrorResponse;
+    /**
+     * No se encontró el recurso solicitado.
+     */
+    404: ErrorResponse;
+    /**
+     * La referencia todavía no tiene un archivo COMPLETED.
+     */
+    409: ErrorResponse;
+    /**
+     * Ocurrió un error interno inesperado.
+     */
+    500: ErrorResponse;
+    /**
+     * Acceso de servicio rechazado, respuesta inválida, archivo mayor al límite o error de M1.
+     */
+    502: ErrorResponse;
+    /**
+     * Proxy deshabilitado o M1 no disponible.
+     */
+    503: ErrorResponse;
+    /**
+     * M1 excedió el plazo de descarga.
+     */
+    504: ErrorResponse;
+};
+
+export type FileError = FileErrors[keyof FileErrors];
+
+export type FileResponses = {
+    /**
+     * Archivo como adjunto (PDF, PNG, JPEG u octet-stream).
+     */
+    200: Blob | File;
+};
+
+export type FileResponse = FileResponses[keyof FileResponses];
 
 export type List12Data = {
     body?: never;
