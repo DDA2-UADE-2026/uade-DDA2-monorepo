@@ -1,6 +1,6 @@
 # SonarCloud: preparación del saneamiento de dependencias
 
-Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparación no actualizó dependencias ni estados Sonar. La [actualización Spring Boot 4.0.9](<actualizacion-springboot-4.0.9.md>) ya está mergeada en `develop`; el usuario confirmó tests aprobados y **63 riesgos** en Sonar. [Bouncy Castle 1.87 sólo para tooling Kotlin](<actualizacion-bouncycastle-1.87.md>) también está mergeado; el usuario confirmó **29 riesgos** restantes. La tanda de [RabbitMQ Java client 5.37.0](<actualizacion-rabbitmq-client-5.37.0.md>) se encuentra en PR; sobre esa rama se preparó la tanda acotada de [frontend (`jsondiffpatch` 0.7.7 y `js-yaml` 4.3.2)](<actualizacion-frontend-jsondiffpatch-js-yaml.md>). Los resultados nuevos deberán confirmarse con CI y Sonar del próximo PR.
+Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparación no actualizó dependencias ni estados Sonar. Ya están mergeadas en `develop` las actualizaciones de [Spring Boot 4.0.9](<actualizacion-springboot-4.0.9.md>), [Bouncy Castle 1.87 sólo para tooling Kotlin](<actualizacion-bouncycastle-1.87.md>), [RabbitMQ Java client 5.37.0](<actualizacion-rabbitmq-client-5.37.0.md>) y [frontend (`jsondiffpatch` 0.7.7 y `js-yaml` 4.3.2)](<actualizacion-frontend-jsondiffpatch-js-yaml.md>). La tanda actual eleva [OpenTelemetry 1.67.0 en `swiftExportClasspathResolvable`](<actualizacion-opentelemetry-1.67.0.md>) para cerrar el último riesgo **Medium** restante (`CVE-2026-45292`) y su par **Low** (`CVE-2026-118259`). Los resultados nuevos deberán confirmarse con CI y Sonar del próximo PR.
 
 ## Lectura recomendada
 
@@ -12,6 +12,7 @@ Revisión inicial fechada el **16 de noviembre de 2026**. La fase de preparació
 6. [Bouncy Castle 1.87: override acotado y pruebas PGP locales](<actualizacion-bouncycastle-1.87.md>).
 7. [RabbitMQ Java client 5.37.0: actualización y regresiones; integración pendiente en dev](<actualizacion-rabbitmq-client-5.37.0.md>).
 8. [Frontend: `jsondiffpatch` 0.7.7 y `js-yaml` 4.3.2 con override acotado y pruebas locales](<actualizacion-frontend-jsondiffpatch-js-yaml.md>).
+9. [OpenTelemetry 1.67.0: propiedad oficial del BOM para tooling SwiftExport](<actualizacion-opentelemetry-1.67.0.md>).
 
 ## Evidencia versionable
 
