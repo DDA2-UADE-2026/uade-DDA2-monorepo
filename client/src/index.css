@@ -134,6 +134,48 @@
   }
 }
 
+/*
+ * View Transitions del portal ciudadano. El snapshot se limita al Outlet:
+ * sidebar, barra de carga y chrome general permanecen quietos.
+ */
+.portal-route-transition {
+  view-transition-name: portal-route-content;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(portal-route-content) {
+  animation: portal-route-out 130ms ease-in both;
+}
+
+::view-transition-new(portal-route-content) {
+  animation: portal-route-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes portal-route-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.997);
+  }
+}
+
+@keyframes portal-route-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.997);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(portal-route-content),
+  ::view-transition-new(portal-route-content) {
+    animation: none;
+  }
+}
+
 @theme inline {
     --font-sans: 'Inter Variable', sans-serif;
     --font-heading: 'Noto Sans Variable', sans-serif;
