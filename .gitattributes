@@ -1,2 +1,8 @@
+# Los scripts y configuraciones que se ejecutan dentro de contenedores Linux
+# deben conservar LF aunque Git para Windows use core.autocrlf=true.
+*.sh text eol=lf
+*.conf text eol=lf
+Dockerfile text eol=lf
+
 # Keep the Windows entrypoint usable with native CMD after checkout.
 /start.cmd text eol=crlf

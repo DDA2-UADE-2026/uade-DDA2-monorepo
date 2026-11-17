@@ -19,6 +19,12 @@ const RESOLUTION_COPY: Record<string, string> = {
 }
 
 export const Route = createFileRoute("/_app/portal/solicitudes/$solicitudId/")({
+  loader: ({ context, params }) => {
+    if (!z.uuid().safeParse(params.solicitudId).success) return
+    return context.queryClient.prefetchQuery(
+      get2Options({ path: { id: params.solicitudId } }),
+    )
+  },
   component: RouteComponent,
 })
 

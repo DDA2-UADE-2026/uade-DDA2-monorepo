@@ -51,7 +51,7 @@ class AuthService(
         return LoginResponse(
             token = null,
             expiresIn = null,
-            user = authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList()),
+            user = authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList(), JwtAuthSource.LOCAL),
             requiresRoleSelection = true,
             selectionToken = jwtService.createRoleSelectionToken(user),
             selectionExpiresIn = jwtProperties.roleSelectionExpirationSeconds,
@@ -68,7 +68,8 @@ class AuthService(
     fun pendingRoleSelection(token: String): UserResponse {
         val user = selectionUser(token)
         ensureHasRoles(user)
-        return authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList())
+        // Role selection only exists for local logins; M1 sessions start with CIUDADANO active.
+        return authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList(), JwtAuthSource.LOCAL)
     }
 
     private fun selectionUser(token: String): User {
@@ -119,6 +120,7 @@ class AuthService(
                 roles = roles,
                 activeRole = principal.activeRole,
                 permissions = principal.permissions,
+                authSource = principal.authSource,
             ),
         )
     }
@@ -128,7 +130,7 @@ class AuthService(
         return LoginResponse(
             token = jwtService.createToken(user, role, source),
             expiresIn = jwtProperties.expirationSeconds,
-            user = authMapper.toUserResponse(user, sessionRoles(user, source), role.name, permissions),
+            user = authMapper.toUserResponse(user, sessionRoles(user, source), role.name, permissions, source),
         )
     }
 

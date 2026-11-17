@@ -74,6 +74,7 @@ import { Route as AppPortalSolicitudesNuevaRouteImport } from "./routes/_app/por
 import { Route as AppPortalTurnosIndexRouteImport } from "./routes/_app/portal/turnos/index"
 import { Route as AppPortalTurnosTurnoIdRouteImport } from "./routes/_app/portal/turnos/$turnoId"
 import { Route as AppPortalTurnosNuevoRouteImport } from "./routes/_app/portal/turnos/nuevo"
+import { Route as AuthGuestLoginCiudadanosRouteImport } from "./routes/_auth/_guest/login_.ciudadanos"
 import { Route as AppGestionActividadesActividadIdIndexRouteImport } from "./routes/_app/gestion/actividades/$actividadId/index"
 import { Route as AppGestionActividadesActividadIdAsistenciaRouteImport } from "./routes/_app/gestion/actividades/$actividadId/asistencia"
 import { Route as AppGestionCasosSolicitudIdIndexRouteImport } from "./routes/_app/gestion/casos/$solicitudId/index"
@@ -449,6 +450,12 @@ const AppPortalTurnosNuevoRoute = AppPortalTurnosNuevoRouteImport.update({
   path: "/turnos/nuevo",
   getParentRoute: () => AppPortalRouteRoute,
 } as any)
+const AuthGuestLoginCiudadanosRoute =
+  AuthGuestLoginCiudadanosRouteImport.update({
+    id: "/login_/ciudadanos",
+    path: "/login/ciudadanos",
+    getParentRoute: () => AuthGuestRouteRoute,
+  } as any)
 const AppGestionActividadesActividadIdIndexRoute =
   AppGestionActividadesActividadIdIndexRouteImport.update({
     id: "/actividades/$actividadId/",
@@ -642,6 +649,7 @@ export interface FileRoutesByFullPath {
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
   "/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
+  "/login/ciudadanos": typeof AuthGuestLoginCiudadanosRoute
   "/gestion/actividades/": typeof AppGestionActividadesIndexRoute
   "/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
   "/gestion/beneficios/": typeof AppGestionBeneficiosIndexRoute
@@ -723,6 +731,7 @@ export interface FileRoutesByTo {
   "/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
   "/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
+  "/login/ciudadanos": typeof AuthGuestLoginCiudadanosRoute
   "/gestion/actividades": typeof AppGestionActividadesIndexRoute
   "/gestion/auditoria": typeof AppGestionAuditoriaIndexRoute
   "/gestion/beneficios": typeof AppGestionBeneficiosIndexRoute
@@ -813,6 +822,7 @@ export interface FileRoutesById {
   "/_app/portal/solicitudes/nueva": typeof AppPortalSolicitudesNuevaRoute
   "/_app/portal/turnos/$turnoId": typeof AppPortalTurnosTurnoIdRoute
   "/_app/portal/turnos/nuevo": typeof AppPortalTurnosNuevoRoute
+  "/_auth/_guest/login_/ciudadanos": typeof AuthGuestLoginCiudadanosRoute
   "/_app/gestion/actividades/": typeof AppGestionActividadesIndexRoute
   "/_app/gestion/auditoria/": typeof AppGestionAuditoriaIndexRoute
   "/_app/gestion/beneficios/": typeof AppGestionBeneficiosIndexRoute
@@ -902,6 +912,7 @@ export interface FileRouteTypes {
     | "/portal/solicitudes/nueva"
     | "/portal/turnos/$turnoId"
     | "/portal/turnos/nuevo"
+    | "/login/ciudadanos"
     | "/gestion/actividades/"
     | "/gestion/auditoria/"
     | "/gestion/beneficios/"
@@ -983,6 +994,7 @@ export interface FileRouteTypes {
     | "/portal/solicitudes/nueva"
     | "/portal/turnos/$turnoId"
     | "/portal/turnos/nuevo"
+    | "/login/ciudadanos"
     | "/gestion/actividades"
     | "/gestion/auditoria"
     | "/gestion/beneficios"
@@ -1072,6 +1084,7 @@ export interface FileRouteTypes {
     | "/_app/portal/solicitudes/nueva"
     | "/_app/portal/turnos/$turnoId"
     | "/_app/portal/turnos/nuevo"
+    | "/_auth/_guest/login_/ciudadanos"
     | "/_app/gestion/actividades/"
     | "/_app/gestion/auditoria/"
     | "/_app/gestion/beneficios/"
@@ -1582,6 +1595,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AppPortalTurnosNuevoRouteImport
       parentRoute: typeof AppPortalRouteRoute
     }
+    "/_auth/_guest/login_/ciudadanos": {
+      id: "/_auth/_guest/login_/ciudadanos"
+      path: "/login/ciudadanos"
+      fullPath: "/login/ciudadanos"
+      preLoaderRoute: typeof AuthGuestLoginCiudadanosRouteImport
+      parentRoute: typeof AuthGuestRouteRoute
+    }
     "/_app/gestion/actividades/$actividadId/": {
       id: "/_app/gestion/actividades/$actividadId/"
       path: "/actividades/$actividadId"
@@ -2018,11 +2038,13 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 interface AuthGuestRouteRouteChildren {
   AuthGuestLoginRoute: typeof AuthGuestLoginRoute
   AuthGuestRegisterRoute: typeof AuthGuestRegisterRoute
+  AuthGuestLoginCiudadanosRoute: typeof AuthGuestLoginCiudadanosRoute
 }
 
 const AuthGuestRouteRouteChildren: AuthGuestRouteRouteChildren = {
   AuthGuestLoginRoute: AuthGuestLoginRoute,
   AuthGuestRegisterRoute: AuthGuestRegisterRoute,
+  AuthGuestLoginCiudadanosRoute: AuthGuestLoginCiudadanosRoute,
 }
 
 const AuthGuestRouteRouteWithChildren = AuthGuestRouteRoute._addFileChildren(

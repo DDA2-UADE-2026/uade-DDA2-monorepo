@@ -3,6 +3,7 @@ package com.uade.dda2.server.feature.auth.mapper
 import com.uade.dda2.server.feature.auth.dto.response.UserResponse
 import com.uade.dda2.server.feature.auth.entity.Role
 import com.uade.dda2.server.feature.auth.entity.User
+import com.uade.dda2.server.security.JwtAuthSource
 import org.springframework.stereotype.Component
 
 @Component
@@ -21,6 +22,7 @@ class AuthMapper {
         roles: List<String>,
         activeRole: String?,
         permissions: List<String>,
+        authSource: JwtAuthSource,
     ): UserResponse =
         UserResponse(
             id = requireNotNull(user.id),
@@ -30,5 +32,7 @@ class AuthMapper {
             roles = roles,
             activeRole = activeRole,
             permissions = permissions,
+            authSource = authSource,
+            externalCitizenId = user.externalCitizenId,
         )
 }

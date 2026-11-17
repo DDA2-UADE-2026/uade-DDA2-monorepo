@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useForm } from "@tanstack/react-form"
-import { useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import {
   IconAlertTriangle,
   IconEye,
@@ -24,7 +24,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Separator } from "@/components/ui/separator"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { getRoleHome } from "@/lib/auth-route-guards"
 
 function LoginForm() {
@@ -70,25 +69,10 @@ function LoginForm() {
         </Button>
       }
     >
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full aria-disabled:opacity-50"
-              aria-disabled="true"
-            >
-              <IconId />
-              Iniciar sesión con Ciudadanos
-            </Button>
-          }
-        />
-        <TooltipContent>
-          {/* TODO: remove once the real Ciudadanos SSO flow is available. */}
-          Esta función no está disponible
-        </TooltipContent>
-      </Tooltip>
+      <Button variant="outline" className="w-full" render={<Link to="/login/ciudadanos" />}>
+        <IconId />
+        Iniciar sesión con Ciudadanos
+      </Button>
       <div className="my-4 flex items-center gap-3">
         <Separator className="flex-1" />
         <span className="text-xs text-muted-foreground">O CONTINUÁ CON</span>

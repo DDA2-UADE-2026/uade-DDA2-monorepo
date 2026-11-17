@@ -1,7 +1,9 @@
-import { CatchBoundary, Outlet, createFileRoute, redirect, useLocation } from "@tanstack/react-router"
+import { useEffect } from "react"
+import { CatchBoundary, Outlet, createFileRoute, redirect, useLocation, useRouter } from "@tanstack/react-router"
 
 import { PortalSidebar } from "@/components/layout/PortalSidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { portalViewTransition } from "@/lib/portal-view-transitions"
 import { SectionErrorFallback } from "@/components/errors/SectionErrorFallback"
 import { RouteErrorPage } from "@/components/errors/RouteErrorPage"
 import { RouteNotFoundPage } from "@/components/errors/RouteNotFoundPage"
@@ -25,20 +27,42 @@ export const Route = createFileRoute("/_app/portal")({
 
 function PortalLayout() {
   const { pathname } = useLocation()
+  const router = useRouter()
+
+  useEffect(() => {
+    const previousViewTransition = router.options.defaultViewTransition
+    const previousPreload = router.options.defaultPreload
+
+    router.update({
+      ...router.options,
+      defaultPreload: "intent",
+      defaultViewTransition: portalViewTransition,
+    })
+
+    return () => {
+      router.update({
+        ...router.options,
+        defaultPreload: previousPreload,
+        defaultViewTransition: previousViewTransition,
+      })
+    }
+  }, [router])
 
   return (
     <SidebarProvider>
       <PortalSidebar />
       <SidebarInset>
-        {/* Wrapped here (not via the route's `errorComponent`) so a crash in
+        <div className="portal-route-transition flex min-h-0 flex-1 flex-col">
+          {/* Wrapped here (not via the route's `errorComponent`) so a crash in
             a nested page only replaces this slot — the sidebar keeps
             rendering instead of disappearing with the rest of the layout. */}
-        <CatchBoundary
-          getResetKey={() => pathname}
-          errorComponent={(props) => <SectionErrorFallback {...props} homeHref="/portal" />}
-        >
-          <Outlet />
-        </CatchBoundary>
+          <CatchBoundary
+            getResetKey={() => pathname}
+            errorComponent={(props) => <SectionErrorFallback {...props} homeHref="/portal" />}
+          >
+            <Outlet />
+          </CatchBoundary>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )
