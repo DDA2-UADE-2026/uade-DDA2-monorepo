@@ -1,0 +1,2 @@
+# Keep the Windows entrypoint usable with native CMD after checkout.
+/start.cmd text eol=crlf
