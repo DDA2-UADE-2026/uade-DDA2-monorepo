@@ -1347,6 +1347,16 @@ export type UserResponse = {
      * Permisos del rol activo incluidos en el JWT; no suma los demás roles.
      */
     readonly permissions?: Array<string>;
+    /**
+     * JwtAuthSource
+     *
+     * Origen de la sesión: LOCAL para usuario y contraseña de M8, M1 para el ingreso con Ciudadanos.
+     */
+    readonly authSource?: 'LOCAL' | 'M1';
+    /**
+     * citizenId de Ciudadanos (M1) vinculado a la cuenta. Null si la cuenta no tiene vínculo.
+     */
+    readonly externalCitizenId?: string | null;
 };
 
 /**

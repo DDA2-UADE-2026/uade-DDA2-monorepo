@@ -187,6 +187,8 @@ class M1SessionFlowTest {
         }
         mvc.perform(get("/auth/me").cookie(session)).andExpect(status().isOk)
             .andExpect(jsonPath("$.user.roles.length()").value(1))
+            .andExpect(jsonPath("$.user.authSource").value("M1"))
+            .andExpect(jsonPath("$.user.externalCitizenId").value(citizenId.toString()))
         mvc.perform(get("/users").cookie(session)).andExpect(status().isForbidden)
     }
 

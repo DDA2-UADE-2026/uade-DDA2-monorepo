@@ -903,7 +903,9 @@ export const zUserResponse = z.object({
     email: z.email().readonly().optional(),
     roles: z.array(z.string()).readonly().optional(),
     activeRole: z.string().readonly().optional(),
-    permissions: z.array(z.string()).readonly().optional()
+    permissions: z.array(z.string()).readonly().optional(),
+    authSource: z.enum(['LOCAL', 'M1']).readonly().optional(),
+    externalCitizenId: z.uuid().readonly().nullish()
 });
 
 /**

@@ -7,7 +7,7 @@ import { client } from '@/generated/client.gen'
 import { meQueryKey } from '@/generated/@tanstack/react-query.gen'
 import { registerCookieAuthTransport } from '@/lib/cookie-auth-transport'
 import { getAuthenticatedUser, requireRoleChoice } from '@/lib/auth-route-guards'
-import { useLogin, useLogout, useSelectRole, useSwitchRole } from './use-auth'
+import { useLogin, useLogout, useM1Login, useSelectRole, useSwitchRole } from './use-auth'
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn() } }))
 vi.mock('@/lib/avatar', () => ({ clearCurrentUserAvatar: vi.fn(), saveCurrentUserAvatar: vi.fn() }))
@@ -20,6 +20,7 @@ let pendingSelection: boolean
 let multipleRoles: boolean
 let failLogout: boolean
 let failCsrf: boolean
+let m1Replies: Array<() => Response>
 
 const roles = ['CIUDADANO', 'AUDITOR']
 const user = () => ({ id: 42, username: 'test', name: 'Test', roles, activeRole, permissions: [] })
@@ -39,6 +40,7 @@ beforeEach(() => {
   multipleRoles = false
   failLogout = false
   failCsrf = false
+  m1Replies = []
   queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })
   client.setConfig({ baseUrl: 'http://localhost:8080', credentials: 'include' })
   dispose = registerCookieAuthTransport(client)
@@ -56,6 +58,11 @@ beforeEach(() => {
       pendingSelection = multipleRoles
       activeRole = multipleRoles ? undefined : 'CIUDADANO'
       return json({ user: user(), requiresRoleSelection: multipleRoles, expiresIn: multipleRoles ? 300 : 28800 })
+    }
+    if (path === '/auth/session/m1/login') {
+      const reply = m1Replies.shift()
+      if (!reply) throw new Error('Unexpected M1 login attempt')
+      return reply()
     }
     if (path === '/auth/session/role-selection') {
       return pendingSelection ? json({ user: user(), requiresRoleSelection: true }) : unauthorized()
@@ -134,6 +141,60 @@ describe('cookie authentication', () => {
     failLogout = false
     await act(async () => { await logout.result.current.logout() })
     expect(queryClient.getQueryCache().getAll()).toHaveLength(0)
+  })
+
+  describe('M1 citizen login', () => {
+    const credentials = { body: { email: 'vecino@ejemplo.com', password: 'secret' } }
+    const m1Error = (status: number, code: string) => () => json({ status, code, message: code }, status)
+    const m1Success = () => {
+      activeRole = 'CIUDADANO'
+      return json({ user: user(), requiresRoleSelection: false, expiresIn: 28800 })
+    }
+    const m1Posts = () => requests.filter(r => new URL(r.url).pathname === '/auth/session/m1/login')
+
+    beforeEach(() => { vi.useFakeTimers({ shouldAdvanceTime: true }) })
+    afterEach(() => { vi.useRealTimers() })
+
+    it('sends the real CSRF token instead of the typed placeholder and stores the session', async () => {
+      m1Replies = [m1Success]
+      const login = renderHook(useM1Login, { wrapper })
+      await act(async () => { await login.result.current.mutateAsync(credentials) })
+
+      expect(m1Posts()).toHaveLength(1)
+      expect(m1Posts()[0].headers.get('X-XSRF-TOKEN')).toBe('csrf-current')
+      expect(await m1Posts()[0].json()).toEqual(credentials.body)
+      expect(queryClient.getQueryData(meQueryKey())).toMatchObject({ user: { activeRole: 'CIUDADANO' } })
+    })
+
+    it('retries while M1 wakes up and succeeds on a later attempt', async () => {
+      m1Replies = [m1Error(504, 'M1_AUTH_TIMEOUT'), m1Error(503, 'M1_AUTH_UNAVAILABLE'), m1Success]
+      const login = renderHook(useM1Login, { wrapper })
+      act(() => { login.result.current.mutate(credentials) })
+
+      await act(async () => { await vi.advanceTimersByTimeAsync(5000) })
+      await waitFor(() => expect(login.result.current.isSuccess).toBe(true))
+      expect(m1Posts()).toHaveLength(3)
+    })
+
+    it('stops after three attempts when M1 stays down', async () => {
+      m1Replies = [0, 1, 2].map(() => m1Error(504, 'M1_AUTH_TIMEOUT'))
+      const login = renderHook(useM1Login, { wrapper })
+      act(() => { login.result.current.mutate(credentials) })
+
+      await act(async () => { await vi.advanceTimersByTimeAsync(5000) })
+      await waitFor(() => expect(login.result.current.isError).toBe(true))
+      expect(login.result.current.error).toMatchObject({ code: 'M1_AUTH_TIMEOUT' })
+      expect(m1Posts()).toHaveLength(3)
+    })
+
+    it('never retries rejected credentials', async () => {
+      m1Replies = [m1Error(401, 'M1_AUTH_INVALID_CREDENTIALS')]
+      const login = renderHook(useM1Login, { wrapper })
+      await act(async () => {
+        await expect(login.result.current.mutateAsync(credentials)).rejects.toMatchObject({ code: 'M1_AUTH_INVALID_CREDENTIALS' })
+      })
+      expect(m1Posts()).toHaveLength(1)
+    })
   })
 
   it('does not send credentials when the CSRF bootstrap fails and permits retry', async () => {

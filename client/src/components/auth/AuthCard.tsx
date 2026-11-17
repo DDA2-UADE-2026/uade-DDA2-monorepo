@@ -23,9 +23,10 @@ interface AuthCardProps {
   children: ReactNode
   footer?: ReactNode
   className?: string
+  backTo?: "/" | "/login"
 }
 
-function AuthCard({ title, description, icon: TitleIcon, headerVisual, children, footer, className }: AuthCardProps) {
+function AuthCard({ title, description, icon: TitleIcon, headerVisual, children, footer, className, backTo = "/" }: AuthCardProps) {
   return (
     <Card className={cn("relative w-full sm:max-w-md", className)}>
       <div className="absolute right-4 top-4 hidden">
@@ -35,8 +36,8 @@ function AuthCard({ title, description, icon: TitleIcon, headerVisual, children,
         <div className="flex w-full items-center gap-2">
           <AuthBrand />
           <ThemeToggle />
-          <Button size={"icon"} variant={"outline"} render={
-            <Link to="/">
+          <Button size={"icon"} variant={"outline"} aria-label="Volver" render={
+            <Link to={backTo}>
               <IconArrowBack className="" />
             </Link>
           }/>

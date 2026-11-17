@@ -70,6 +70,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -101,7 +102,36 @@ export const Route = createFileRoute("/_app/gestion/usuarios/")({
   component: RouteComponent,
 })
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 100
+
+/** Name cell; accounts provisioned by the Ciudadanos (M1) login show their citizenId. */
+function UserNameCell({ user }: { user: UserManagementResponse }) {
+  if (!user.externalCitizenId) return <>{user.name}</>
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="flex items-center gap-1.5">
+        {user.name}
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <span className="inline-flex text-primary" aria-label="Cuenta de Ciudadanos">
+                <IconId className="size-4" aria-hidden="true" />
+              </span>
+            }
+          />
+          <TooltipContent>Ingresó con Ciudadanos</TooltipContent>
+        </Tooltip>
+      </span>
+      <span
+        className="font-mono text-xs font-normal text-muted-foreground"
+        title="Citizen ID de Ciudadanos"
+      >
+        {user.externalCitizenId}
+      </span>
+    </div>
+  )
+}
 
 function RouteComponent() {
   const { user: currentUser } = Route.useRouteContext()
@@ -186,12 +216,15 @@ function RouteComponent() {
                 </TableHeader>
                 <TableBody>
                   {pageItems.map((user) => (
-                    <TableRow key={user.id ?? user.username}>
+                    <TableRow
+                      key={user.id ?? user.username}
+                      className={user.externalCitizenId ? "bg-primary/5 hover:bg-primary/10" : undefined}
+                    >
                       <TableCell className="pr-0">
                         <UserAvatar user={user} size="sm" />
                       </TableCell>
                       <TableCell className="font-medium">
-                        {user.name}
+                        <UserNameCell user={user} />
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {user.username}
