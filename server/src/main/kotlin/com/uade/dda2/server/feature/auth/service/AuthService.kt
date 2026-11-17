@@ -3,6 +3,7 @@ package com.uade.dda2.server.feature.auth.service
 import com.uade.dda2.server.config.JwtProperties
 import com.uade.dda2.server.error.ForbiddenException
 import com.uade.dda2.server.error.UnauthorizedException
+import com.uade.dda2.server.feature.auth.dto.M1LocalAccount
 import com.uade.dda2.server.feature.auth.dto.request.LoginRequest
 import com.uade.dda2.server.feature.auth.dto.request.SelectRoleRequest
 import com.uade.dda2.server.feature.auth.dto.request.SwitchRoleRequest
@@ -15,6 +16,9 @@ import com.uade.dda2.server.feature.auth.mapper.AuthMapper
 import com.uade.dda2.server.feature.auth.repository.UserRepository
 import com.uade.dda2.server.feature.auth.validator.AuthValidator
 import com.uade.dda2.server.feature.log.service.LogService
+import com.uade.dda2.server.feature.integration.error.M1AuthException
+import com.uade.dda2.server.feature.integration.error.M1AuthFailure
+import com.uade.dda2.server.security.JwtAuthSource
 import com.uade.dda2.server.security.JwtPrincipal
 import com.uade.dda2.server.security.JwtService
 import io.jsonwebtoken.JwtException
@@ -47,7 +51,7 @@ class AuthService(
         return LoginResponse(
             token = null,
             expiresIn = null,
-            user = authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList()),
+            user = authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList(), JwtAuthSource.LOCAL),
             requiresRoleSelection = true,
             selectionToken = jwtService.createRoleSelectionToken(user),
             selectionExpiresIn = jwtProperties.roleSelectionExpirationSeconds,
@@ -64,7 +68,8 @@ class AuthService(
     fun pendingRoleSelection(token: String): UserResponse {
         val user = selectionUser(token)
         ensureHasRoles(user)
-        return authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList())
+        // Role selection only exists for local logins; M1 sessions start with CIUDADANO active.
+        return authMapper.toUserResponse(user, authMapper.roleNames(user), null, emptyList(), JwtAuthSource.LOCAL)
     }
 
     private fun selectionUser(token: String): User {
@@ -80,8 +85,27 @@ class AuthService(
 
     @Transactional(readOnly = true)
     fun switchRole(request: SwitchRoleRequest): LoginResponse {
-        val user = activeUser(currentPrincipal().id)
-        return activeRoleResponse(user, assignedRole(user, request.role))
+        val principal = currentPrincipal()
+        if (principal.authSource == JwtAuthSource.M1 && request.role.trim() != "CIUDADANO") {
+            throw ForbiddenException("AUTH_ROLE_NOT_ALLOWED_FOR_SOURCE", "El ingreso con M1 solo permite operar como CIUDADANO.")
+        }
+        val user = activeUser(principal.id)
+        return activeRoleResponse(user, assignedRole(user, request.role), principal.authSource)
+    }
+
+    @Transactional
+    fun startM1Session(account: M1LocalAccount): LoginResponse {
+        // Volver a leer y bloquear luego del aprovisionamiento, antes de emitir el JWT.
+        val user = userRepository.findByIdForUpdate(account.userId)
+            ?: throw M1AuthException(M1AuthFailure.IDENTITY_CONFLICT)
+        if (!account.citizenId.toString().equals(user.externalCitizenId, ignoreCase = true))
+            throw M1AuthException(M1AuthFailure.IDENTITY_CONFLICT)
+        if (!user.active) throw M1AuthException(M1AuthFailure.LOCAL_ACCOUNT_INACTIVE)
+        val role = user.roles.firstOrNull { it.name == "CIUDADANO" }
+            ?: throw M1AuthException(M1AuthFailure.CITIZEN_ROLE_REQUIRED)
+        val response = activeRoleResponse(user, role, JwtAuthSource.M1)
+        logService.recordLogin(user)
+        return response
     }
 
     @Transactional(readOnly = true)
@@ -89,25 +113,29 @@ class AuthService(
         val principal = currentPrincipal()
         val user = activeUser(principal.id)
 
-        val roles = authMapper.roleNames(user)
+        val roles = sessionRoles(user, principal.authSource)
         return MeResponse(
             user = authMapper.toUserResponse(
                 user = user,
                 roles = roles,
                 activeRole = principal.activeRole,
                 permissions = principal.permissions,
+                authSource = principal.authSource,
             ),
         )
     }
 
-    private fun activeRoleResponse(user: User, role: Role): LoginResponse {
+    private fun activeRoleResponse(user: User, role: Role, source: JwtAuthSource = JwtAuthSource.LOCAL): LoginResponse {
         val permissions = authMapper.permissionNames(role)
         return LoginResponse(
-            token = jwtService.createToken(user, role),
+            token = jwtService.createToken(user, role, source),
             expiresIn = jwtProperties.expirationSeconds,
-            user = authMapper.toUserResponse(user, authMapper.roleNames(user), role.name, permissions),
+            user = authMapper.toUserResponse(user, sessionRoles(user, source), role.name, permissions, source),
         )
     }
+
+    private fun sessionRoles(user: User, source: JwtAuthSource): List<String> =
+        authMapper.roleNames(user).let { roles -> if (source == JwtAuthSource.M1) roles.filter { it == "CIUDADANO" } else roles }
 
     private fun activeUser(id: Long): User =
         (userRepository.findByIdWithRoles(id) ?: throw authValidator.invalidCredentials())

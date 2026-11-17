@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.gen"
 import type { AvailableProgramListItemResponse } from "@/generated/types.gen"
 import { formatProgramDate } from "@/lib/program-dates"
+import { markSharedTransition, programSharedKey, sharedTransitionStyle } from "@/lib/portal-view-transitions"
 import { cn } from "@/lib/utils"
 
 const TICKER_SIZE = 12
@@ -122,9 +123,19 @@ function ProgramTickerCard({
       to="/portal/programas/$programaId"
       params={{ programaId: program.id ?? "" }}
       tabIndex={tabIndex}
+      onClick={(event) => {
+        // El ticker duplica sus tarjetas: sólo la clickeada se marca como
+        // shared element, así nunca hay nombres repetidos.
+        if (!program.id) return
+        markSharedTransition(event.currentTarget.querySelector("img"), programSharedKey(program.id))
+      }}
       className="relative flex w-[min(25rem,85vw)] items-center gap-4 overflow-hidden rounded-2xl bg-card p-3 ring-1 ring-foreground/10 transition-shadow hover:shadow-md hover:ring-primary/30"
     >
-      <ProgramThumbnail imageUrl={program.imageUrl} className="size-20 sm:size-24" />
+      <ProgramThumbnail
+        imageUrl={program.imageUrl}
+        className="size-20 sm:size-24"
+        style={program.id ? sharedTransitionStyle(programSharedKey(program.id)) : undefined}
+      />
       <div className="min-w-0 flex-1 pr-1 flex flex-col h-full">
         <span className="flex-1 flex-col flex">
           <p className="truncate font-heading text-base font-medium capitalize">

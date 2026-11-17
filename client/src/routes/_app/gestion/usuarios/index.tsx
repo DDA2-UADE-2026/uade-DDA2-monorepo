@@ -70,6 +70,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   Table,
   TableBody,
@@ -101,7 +102,36 @@ export const Route = createFileRoute("/_app/gestion/usuarios/")({
   component: RouteComponent,
 })
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 100
+
+/** Name cell; accounts provisioned by the Ciudadanos (M1) login show their citizenId. */
+function UserNameCell({ user }: { user: UserManagementResponse }) {
+  if (!user.externalCitizenId) return <>{user.name}</>
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className="flex items-center gap-1.5">
+        {user.name}
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <span className="inline-flex text-primary" aria-label="Cuenta de Ciudadanos">
+                <IconId className="size-4" aria-hidden="true" />
+              </span>
+            }
+          />
+          <TooltipContent>Ingresó con Ciudadanos</TooltipContent>
+        </Tooltip>
+      </span>
+      <span
+        className="font-mono text-xs font-normal text-muted-foreground"
+        title="Citizen ID de Ciudadanos"
+      >
+        {user.externalCitizenId}
+      </span>
+    </div>
+  )
+}
 
 function RouteComponent() {
   const { user: currentUser } = Route.useRouteContext()
@@ -110,7 +140,7 @@ function RouteComponent() {
     useQuery(findAllOptions())
   const [page, setPage] = useState(1)
   const [createOpen, setCreateOpen] = useState(false)
-  const [rolesUser, setRolesUser] = useState<UserManagementResponse | null>(null)
+  const [rolesSheet, setRolesSheet] = useState<{ open: boolean; user: UserManagementResponse | null }>({ open: false, user: null })
   const [activationUser, setActivationUser] = useState<(UserManagementResponse & { id: number }) | null>(null)
 
   const totalItems = data?.length ?? 0
@@ -186,12 +216,15 @@ function RouteComponent() {
                 </TableHeader>
                 <TableBody>
                   {pageItems.map((user) => (
-                    <TableRow key={user.id ?? user.username}>
+                    <TableRow
+                      key={user.id ?? user.username}
+                      className={user.externalCitizenId ? "bg-primary/5 hover:bg-primary/10" : undefined}
+                    >
                       <TableCell className="pr-0">
                         <UserAvatar user={user} size="sm" />
                       </TableCell>
                       <TableCell className="font-medium">
-                        {user.name}
+                        <UserNameCell user={user} />
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {user.username}
@@ -238,7 +271,7 @@ function RouteComponent() {
                             size="icon-sm"
                             variant="ghost"
                             aria-label={`Editar roles de ${user.name ?? user.username ?? "usuario"}`}
-                            onClick={() => setRolesUser(user)}
+                            onClick={() => setRolesSheet({ open: true, user })}
                           >
                             <IconPencil />
                           </Button>
@@ -260,37 +293,67 @@ function RouteComponent() {
       {createOpen && (
         <CreateUserDialog onOpenChange={(open) => !open && setCreateOpen(false)} />
       )}
-      {rolesUser && (
-        <UserRolesSheet
-          user={rolesUser}
-          onOpenChange={(open) => {
-            if (!open) setRolesUser(null)
-          }}
-        />
-      )}
+      <UserRolesSheet
+        open={rolesSheet.open}
+        user={rolesSheet.user}
+        onOpenChange={(open) => setRolesSheet((prev) => ({ ...prev, open }))}
+      />
       {activationUser && <ActivateUserDialog user={activationUser} onClose={() => setActivationUser(null)} />}
     </SidebarShell>
   )
 }
 
-function UserRolesSheet({
-  user,
-  onOpenChange,
-}: {
-  user: UserManagementResponse
-  onOpenChange: (open: boolean) => void
-}) {
+function useUpdateUserRolesMutation(onSaved: () => void) {
   const queryClient = useQueryClient()
-  const roles = useQuery(findAll1Options())
-  const isProtectedAdmin = user.username?.trim().toLowerCase() === "admin" &&
-    user.roles?.includes("ADMIN")
-  const updateUser = useMutation({
+  return useMutation({
     ...updateMutation(),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: findAllQueryKey() })
-      onOpenChange(false)
+      onSaved()
     },
   })
+}
+
+// El Sheet queda siempre montado para que Base UI pueda animar la entrada y la salida;
+// el contenido se desmonta al cerrar, así que el formulario arranca limpio en cada apertura.
+function UserRolesSheet({
+  open,
+  user,
+  onOpenChange,
+}: {
+  open: boolean
+  user: UserManagementResponse | null
+  onOpenChange: (open: boolean) => void
+}) {
+  const updateUser = useUpdateUserRolesMutation(() => onOpenChange(false))
+
+  return (
+    <Sheet
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!updateUser.isPending) onOpenChange(nextOpen)
+      }}
+      onOpenChangeComplete={(nextOpen) => {
+        if (!nextOpen) updateUser.reset()
+      }}
+    >
+      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-lg">
+        {user && <UserRolesSheetBody user={user} updateUser={updateUser} />}
+      </SheetContent>
+    </Sheet>
+  )
+}
+
+function UserRolesSheetBody({
+  user,
+  updateUser,
+}: {
+  user: UserManagementResponse
+  updateUser: ReturnType<typeof useUpdateUserRolesMutation>
+}) {
+  const roles = useQuery(findAll1Options())
+  const isProtectedAdmin = user.username?.trim().toLowerCase() === "admin" &&
+    user.roles?.includes("ADMIN")
   const form = useForm({
     defaultValues: {
       roles: user.roles ?? ([] as string[]),
@@ -311,13 +374,7 @@ function UserRolesSheet({
   })
 
   return (
-    <Sheet
-      open
-      onOpenChange={(open) => {
-        if (!updateUser.isPending) onOpenChange(open)
-      }}
-    >
-      <SheetContent className="w-full gap-0 data-[side=right]:sm:max-w-lg">
+    <>
         <SheetHeader className="border-b">
           <SheetTitle>Asignar roles</SheetTitle>
           <SheetDescription>
@@ -422,8 +479,7 @@ function UserRolesSheet({
             )}
           />
         </SheetFooter>
-      </SheetContent>
-    </Sheet>
+    </>
   )
 }
 

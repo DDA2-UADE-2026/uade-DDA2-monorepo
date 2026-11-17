@@ -24,6 +24,11 @@ vi.mock('@tanstack/react-router', async () => {
   return {
     ...actual,
     useNavigate: () => navigateMock,
+    Link: ({ to, children, ...props }: ComponentProps<'a'> & { to: string }) => (
+      <a href={to} {...props}>
+        {children}
+      </a>
+    ),
   }
 })
 
@@ -133,6 +138,15 @@ describe('LoginForm', () => {
     await user.click(screen.getByRole('button', { name: /^Iniciar sesión$/ }))
 
     expect(navigateMock).toHaveBeenCalledWith({ to: '/seleccionar-rol', replace: true })
+  })
+
+  it('enlaza al ingreso con Ciudadanos', () => {
+    render(<LoginForm />)
+
+    expect(screen.getByRole('button', { name: /Iniciar sesión con Ciudadanos/ })).toHaveAttribute(
+      'href',
+      '/login/ciudadanos',
+    )
   })
 
   it('muestra el error de credenciales', () => {

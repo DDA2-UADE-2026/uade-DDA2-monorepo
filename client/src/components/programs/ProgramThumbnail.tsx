@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react"
+
 import { PROGRAM_IMAGE_FALLBACK, programImageSource } from "@/lib/program-images"
 import { cn } from "@/lib/utils"
 
@@ -10,16 +12,19 @@ export function ProgramThumbnail({
   imageUrl,
   className,
   glowClassName = "blur-2xl",
+  style,
 }: {
   imageUrl?: string
   /** Define el tamaño del recuadro nítido, por ejemplo `size-16`. */
   className?: string
   glowClassName?: string
+  /** Se aplica al contenedor; las variables CSS se heredan a la portada. */
+  style?: CSSProperties
 }) {
   const source = programImageSource(imageUrl) ?? PROGRAM_IMAGE_FALLBACK
 
   return (
-    <span className={cn("relative inline-flex shrink-0", className)}>
+    <span className={cn("relative inline-flex shrink-0", className)} style={style}>
       <img
         src={source}
         alt=""

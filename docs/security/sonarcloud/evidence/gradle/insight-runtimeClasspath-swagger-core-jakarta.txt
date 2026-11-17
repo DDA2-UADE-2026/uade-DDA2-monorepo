@@ -1,0 +1,57 @@
+COMMAND ["./gradlew", "dependencyInsight", "--configuration", "runtimeClasspath", "--dependency", "swagger-core-jakarta", "--no-daemon", "--offline", "--console=plain", "-Duser.home=<workspace>/artifacts/security-preparation/backend-state/home"]
+CWD <workspace>/artifacts/security-preparation/baseline-05333b1/server
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Task :dependencyInsight
+io.swagger.core.v3:swagger-core-jakarta:2.2.52
+  Variant runtime:
+    | Attribute Name                     | Provided     | Requested    |
+    |------------------------------------|--------------|--------------|
+    | org.gradle.status                  | release      |              |
+    | org.gradle.category                | library      | library      |
+    | org.gradle.libraryelements         | jar          | jar          |
+    | org.gradle.usage                   | java-runtime | java-runtime |
+    | org.gradle.dependency.bundling     |              | external     |
+    | org.gradle.jvm.environment         |              | standard-jvm |
+    | org.gradle.jvm.version             |              | 17           |
+    | org.jetbrains.kotlin.platform.type |              | jvm          |
+   Selection reasons:
+      - By ancestor
+      - By constraint: Dependency version enforced by Dependency Locking
+
+io.swagger.core.v3:swagger-core-jakarta:{strictly 2.2.52} -> 2.2.52
+\--- runtimeClasspath
+
+io.swagger.core.v3:swagger-core-jakarta:2.2.52
++--- io.github.springwolf:springwolf-asyncapi:2.5.0
+|    +--- runtimeClasspath (requested io.github.springwolf:springwolf-asyncapi:{strictly 2.5.0})
+|    +--- io.github.springwolf:springwolf-amqp:2.5.0
+|    |    \--- runtimeClasspath
+|    +--- io.github.springwolf:springwolf-amqp-binding:2.5.0
+|    |    +--- runtimeClasspath (requested io.github.springwolf:springwolf-amqp-binding:{strictly 2.5.0})
+|    |    \--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|    \--- io.github.springwolf:springwolf-core:2.5.0
+|         +--- runtimeClasspath (requested io.github.springwolf:springwolf-core:{strictly 2.5.0})
+|         +--- io.github.springwolf:springwolf-amqp:2.5.0 (*)
+|         \--- io.github.springwolf:springwolf-amqp-binding:2.5.0 (*)
+\--- io.github.springwolf:springwolf-core:2.5.0 (*)
+
+io.swagger.core.v3:swagger-core-jakarta:2.2.43 -> 2.2.52
+\--- org.springdoc:springdoc-openapi-starter-common:3.0.2
+     +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-common:{strictly 3.0.2})
+     \--- org.springdoc:springdoc-openapi-starter-webmvc-api:3.0.2
+          +--- runtimeClasspath (requested org.springdoc:springdoc-openapi-starter-webmvc-api:{strictly 3.0.2})
+          \--- org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2
+               \--- runtimeClasspath
+
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 4s
+1 actionable task: 1 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.1/userguide/configuration_cache_enabling.html
+
+CAPTURE_EXIT_CODE=0
+CAPTURE_ELAPSED_SECONDS=4.391

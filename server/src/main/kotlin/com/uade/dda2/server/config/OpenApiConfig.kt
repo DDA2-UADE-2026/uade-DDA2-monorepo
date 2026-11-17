@@ -44,7 +44,7 @@ class OpenApiConfig {
                         COOKIE_SECURITY_SCHEME,
                         SecurityScheme().type(SecurityScheme.Type.APIKEY)
                             .`in`(SecurityScheme.In.COOKIE).name(ACCESS_COOKIE)
-                            .description("Cookie HttpOnly emitida por /auth/session/login o /auth/session/select-role. Las escrituras requieren X-XSRF-TOKEN obtenido de /auth/session/csrf."),
+                            .description("Cookie HttpOnly emitida por /auth/session/login, /auth/session/m1/login o /auth/session/select-role. Las escrituras requieren X-XSRF-TOKEN obtenido de /auth/session/csrf."),
                     )
                     addSecuritySchemes(
                         JWT_SECURITY_SCHEME,
@@ -100,6 +100,15 @@ class OpenApiConfig {
                         operation.responses.addApiResponse("401", errorResponse("Sesión o selección de rol inválida o vencida."))
                         operation.responses.addApiResponse("403", errorResponse("Verificación CSRF inválida o acceso denegado."))
                     }
+                    if (path == "/auth/session/m1/login") {
+                        operation.responses.addApiResponse("401", errorResponse("M1 rechazó las credenciales."))
+                        operation.responses.addApiResponse("403", errorResponse("CSRF inválido, actor no ciudadano o cuenta local sin acceso."))
+                        operation.responses.addApiResponse("502", errorResponse("Respuesta de M1 inválida o error del servicio remoto."))
+                        operation.responses.addApiResponse("503", errorResponse("Ingreso M1 desactivado, servicio no disponible o configuración local incompleta."))
+                        operation.responses.addApiResponse("504", errorResponse("M1 no respondió dentro del tiempo de espera."))
+                        operation.responses["200"]?.addHeaderObject("Set-Cookie", Header().schema(StringSchema())
+                            .description("Emite uade_session HttpOnly de M8 y elimina selección y CSRF anteriores. No expone tokens de M1."))
+                    }
                     if (operation.parameters.orEmpty().any { it.`in` == "path" }) {
                         operation.responses.addApiResponse("404", errorResponse("No se encontró el recurso solicitado."))
                     }
@@ -152,6 +161,7 @@ class OpenApiConfig {
         "/auth/select-role",
         "/auth/session/csrf",
         "/auth/session/login",
+        "/auth/session/m1/login",
         "/auth/session/select-role",
         "/auth/session/role-selection",
         "/auth/session/logout",
@@ -163,6 +173,7 @@ class OpenApiConfig {
         "/auth/login",
         "/auth/select-role",
         "/auth/session/login",
+        "/auth/session/m1/login",
         "/auth/session/select-role",
     )
 

@@ -1,0 +1,212 @@
+{
+  "captured_at": "2026-11-17T00:36:30Z",
+  "base_commit": "cf2bda16ff71ded4bfcb7162da9b3cdab6385366",
+  "branch": "feature/security-opentelemetry-1-67-0",
+  "runtime": {
+    "java": "Corretto 17.0.15",
+    "gradle": "9.5.1",
+    "kotlin_gradle_plugin": "2.2.21",
+    "spring_boot": "4.0.9",
+    "dependency_management_plugin": "1.1.7",
+    "platform": "darwin",
+    "architecture": "arm64"
+  },
+  "dependency_family": "io.opentelemetry",
+  "modules_updated": [
+    "io.opentelemetry:opentelemetry-api",
+    "io.opentelemetry:opentelemetry-common",
+    "io.opentelemetry:opentelemetry-context"
+  ],
+  "from": "1.55.0",
+  "to": "1.67.0",
+  "mechanism": "Official Spring Boot BOM property extra[\"opentelemetry.version\"] = \"1.67.0\"; no direct dependencies added and no global force",
+  "exclusive_configuration": "swiftExportClasspathResolvable",
+  "sonar_records": [
+    {
+      "id": "f7e719be-ea44-4a2e-b1ee-025fb16cfabb",
+      "cve": "CVE-2026-45292",
+      "severity_sonar": "MEDIUM",
+      "cvss": 5.3,
+      "cwe": "CWE-770",
+      "fix_version": "1.62.0 (partial for family); 1.67.0 (complete)"
+    },
+    {
+      "id": "7c5f7a6a-387a-472b-971c-30a549a0bdfe",
+      "cve": "CVE-2026-118259",
+      "severity_sonar": "LOW",
+      "cvss": 5.3,
+      "cwe": "CWE-1333",
+      "fix_version": "1.67.0"
+    }
+  ],
+  "lockfile_delta": {
+    "changed_lines": 3,
+    "configurations_affected": [
+      "swiftExportClasspathResolvable"
+    ],
+    "other_configurations_changed": false,
+    "absent_from_compile_runtime_test_trees": true
+  },
+  "publication": {
+    "bom_url": "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-bom/1.67.0/opentelemetry-bom-1.67.0.pom",
+    "bom_sha256": "95dc6d2a58a110fab6a8003d24e066f5fda44da26f05c2e0b1ebca6128e46013",
+    "api_url": "https://repo.maven.apache.org/maven2/io/opentelemetry/opentelemetry-api/1.67.0/opentelemetry-api-1.67.0.pom",
+    "api_sha256": "8b9700627a7ff18a2415fe2b4cfe6f5b33c27e72cf36aa332e82c4b5be016f2b"
+  },
+  "accepted_commands": [
+    {
+      "label": "01-lock",
+      "exit_code": 0,
+      "seconds": 11.326,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "swiftExportClasspathResolvable",
+        "--update-locks",
+        "io.opentelemetry:*",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    },
+    {
+      "label": "02-insight-swift",
+      "exit_code": 0,
+      "seconds": 10.217,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "dependencyInsight",
+        "--configuration",
+        "swiftExportClasspathResolvable",
+        "--dependency",
+        "io.opentelemetry:opentelemetry-api",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    },
+    {
+      "label": "tree-swiftExportClasspathResolvable",
+      "exit_code": 0,
+      "seconds": 4.456,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "swiftExportClasspathResolvable",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    },
+    {
+      "label": "tree-compileClasspath",
+      "exit_code": 0,
+      "seconds": 5.842,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "compileClasspath",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    },
+    {
+      "label": "tree-productionRuntimeClasspath",
+      "exit_code": 0,
+      "seconds": 5.242,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "productionRuntimeClasspath",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    },
+    {
+      "label": "tree-testRuntimeClasspath",
+      "exit_code": 0,
+      "seconds": 5.679,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "dependencies",
+        "--configuration",
+        "testRuntimeClasspath",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    },
+    {
+      "label": "03-build",
+      "exit_code": 0,
+      "seconds": 161.192,
+      "failed_markers": 0,
+      "argv": [
+        "./gradlew",
+        "build",
+        "--offline",
+        "--no-daemon",
+        "--console=plain",
+        "-Duser.home=<workspace>/artifacts/security-preparation/otel-results/home"
+      ]
+    }
+  ],
+  "tests": {
+    "suites": 58,
+    "tests": 624,
+    "passed": 619,
+    "skipped": 5,
+    "failures": 0,
+    "errors": 0,
+    "preexisting_skips": {
+      "ApplicationResolutionFlowTest": 1,
+      "BenefitGrantFlowTest": 3,
+      "InterventionPlanFlowTest": 1
+    }
+  },
+  "bootjar": {
+    "server-0.0.1-SNAPSHOT.jar": {
+      "sha256": "061f1955e4d045026b8b18b15dc420586b3e2e89b09688327874fc54d646fd94",
+      "runtime_library_count": 131,
+      "opentelemetry_libraries": [],
+      "bouncycastle_libraries": [],
+      "application_classes": 792,
+      "application_classfile_majors": [61]
+    },
+    "server-0.0.1-SNAPSHOT-plain.jar": {
+      "sha256": "9d188906ad598a4b37727b95b13635c8100aee47f32e3b4365e3ea6cf1f8dcdd",
+      "runtime_library_count": 0,
+      "opentelemetry_libraries": [],
+      "bouncycastle_libraries": [],
+      "application_classes": 792,
+      "application_classfile_majors": [61]
+    }
+  },
+  "hashes": {
+    "server/build.gradle.kts": "778d6c5c91c9da842c089e4e4efa24034e5bf4a81823c9275a0c6b4e63b4dd30",
+    "server/gradle.lockfile": "1bfb423cd1db1ceac27c474880720829e62424d2c06cd0929463237d16d17764"
+  },
+  "limits": [
+    "No Testcontainers, remote Core, shared PostgreSQL or SonarCloud execution here",
+    "SwiftExport task itself is not invoked by this JVM backend project"
+  ],
+  "sonar_reanalyzed_here": false,
+  "commit_push_merge_here": false
+}

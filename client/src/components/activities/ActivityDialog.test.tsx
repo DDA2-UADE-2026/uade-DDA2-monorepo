@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, expect, it, vi } from "vitest"
 
@@ -22,4 +22,29 @@ it("permite elegir un centro y editar el lugar manualmente", async () => {
   await user.clear(location)
   await user.type(location, "Plaza del barrio")
   expect(location).toHaveValue("Plaza del barrio")
+})
+
+it("al editar carga el detalle completo y guarda los cambios", async () => {
+  const activity = { id: "act-1", name: "Taller de lectura", description: "Lectura compartida", location: "Biblioteca", startDate: "2026-11-20", endDate: "2026-12-20", capacity: 20 }
+  const fetchMock = vi.fn<typeof fetch>(async (input) => {
+    const request = input as Request
+    return request.method === "PUT" ? Response.json({ ...activity, ...(await request.json()) }) : Response.json(activity)
+  })
+  client.setConfig({ baseUrl: "http://localhost", fetch: fetchMock })
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  const onSaved = vi.fn()
+  const onOpenChange = vi.fn()
+  const user = userEvent.setup()
+  render(<QueryClientProvider client={queryClient}><ActivityDialog activityId="act-1" onOpenChange={onOpenChange} onSaved={onSaved} /></QueryClientProvider>)
+
+  const name = await screen.findByLabelText("Nombre")
+  expect(name).toHaveValue("Taller de lectura")
+  await user.clear(name)
+  await user.type(name, "Club de lectura")
+  fireEvent.submit(document.getElementById("activity-form")!)
+
+  await waitFor(() => expect(onSaved).toHaveBeenCalledWith(expect.objectContaining({ id: "act-1", name: "Club de lectura" })))
+  expect(onOpenChange).toHaveBeenCalledWith(false)
+  const put = fetchMock.mock.calls.map(([input]) => input as Request).find((request) => request.method === "PUT")!
+  expect(put.url).toContain("act-1")
 })

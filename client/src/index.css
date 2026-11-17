@@ -134,6 +134,156 @@
   }
 }
 
+/*
+ * View Transitions del portal ciudadano. El snapshot se limita al Outlet:
+ * sidebar, barra de carga y chrome general permanecen quietos.
+ *
+ * El tipo de transición lo decide `portalViewTransition`
+ * (src/lib/portal-view-transitions.ts):
+ *   - sin tipo / portal-fade: crossfade entre secciones (sidebar).
+ *   - portal-forward: lista → detalle, desliza hacia la izquierda.
+ *   - portal-back: detalle → volver, desliza hacia la derecha.
+ *   - portal-search: paginación y filtros, crossfade corto.
+ * Navegadores sin `:active-view-transition-type` usan siempre el crossfade.
+ */
+.portal-route-transition {
+  view-transition-name: portal-route-content;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* El deslizamiento no debe dibujarse sobre la sidebar. */
+::view-transition-group(portal-route-content) {
+  overflow: clip;
+}
+
+/* Crossfade (default y portal-fade). */
+::view-transition-old(portal-route-content) {
+  animation: portal-route-out 130ms ease-in both;
+}
+
+::view-transition-new(portal-route-content) {
+  animation: portal-route-in 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Paginación y filtros: crossfade corto, sin desplazamiento. */
+:root:active-view-transition-type(portal-search)::view-transition-old(portal-route-content) {
+  animation: portal-fade-out 90ms linear both;
+}
+
+:root:active-view-transition-type(portal-search)::view-transition-new(portal-route-content) {
+  animation: portal-fade-in 140ms ease-out both;
+}
+
+/* Lista → detalle. */
+:root:active-view-transition-type(portal-forward)::view-transition-old(portal-route-content) {
+  animation: portal-slide-out-left 160ms ease-in both;
+}
+
+:root:active-view-transition-type(portal-forward)::view-transition-new(portal-route-content) {
+  animation: portal-slide-in-right 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Detalle → volver. */
+:root:active-view-transition-type(portal-back)::view-transition-old(portal-route-content) {
+  animation: portal-slide-out-right 160ms ease-in both;
+}
+
+:root:active-view-transition-type(portal-back)::view-transition-new(portal-route-content) {
+  animation: portal-slide-in-left 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/*
+ * Shared element opcional (tarjeta destacada → detalle). Sólo el elemento
+ * marcado con `data-vt-shared` recibe nombre, y sólo en navegaciones
+ * jerárquicas: en un crossfade lateral no se separa del contenido.
+ */
+:root:active-view-transition-type(portal-forward, portal-back) [data-vt-shared] {
+  view-transition-name: var(--vt-shared-name);
+  view-transition-class: portal-shared;
+}
+
+::view-transition-group(*.portal-shared) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: var(--radius-xl);
+  overflow: clip;
+}
+
+/* Miniatura cuadrada ↔ portada ancha: recortar en vez de estirar. */
+::view-transition-old(*.portal-shared),
+::view-transition-new(*.portal-shared) {
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes portal-route-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.997);
+  }
+}
+
+@keyframes portal-route-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.997);
+  }
+}
+
+@keyframes portal-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes portal-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes portal-slide-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+@keyframes portal-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+}
+
+@keyframes portal-slide-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@keyframes portal-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root::view-transition-old(portal-route-content),
+  :root::view-transition-new(portal-route-content),
+  :root::view-transition-group(*.portal-shared),
+  :root::view-transition-old(*.portal-shared),
+  :root::view-transition-new(*.portal-shared) {
+    animation: none !important;
+  }
+}
+
 @theme inline {
     --font-sans: 'Inter Variable', sans-serif;
     --font-heading: 'Noto Sans Variable', sans-serif;

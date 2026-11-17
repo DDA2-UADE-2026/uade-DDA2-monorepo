@@ -25,6 +25,7 @@ class LoginRateLimitFilter(
         "/auth/login",
         "/auth/select-role",
         "/auth/session/login",
+        "/auth/session/m1/login",
         "/auth/session/select-role",
     )
 

@@ -80,6 +80,28 @@ class JwtServiceTest {
         assertFailsWith<IllegalArgumentException> { JwtService(properties.copy(roleSelectionExpirationSeconds = 0)) }
     }
 
+    @Test fun `los JWT M1 conservan su origen y solo pueden activar ciudadano`() {
+        val principal = service.parse(service.createToken(user, citizen, JwtAuthSource.M1))
+        assertEquals(JwtAuthSource.M1, principal.authSource)
+        assertEquals("CIUDADANO", principal.activeRole)
+        assertFailsWith<IllegalArgumentException> { service.createToken(user, auditor, JwtAuthSource.M1) }
+        assertFailsWith<IllegalArgumentException> { service.parse(signed(accessClaims() + ("auth_source" to "M1"))) }
+    }
+
+    @Test fun `JWT locales anteriores sin origen conservan compatibilidad y origenes desconocidos se rechazan`() {
+        assertEquals(JwtAuthSource.LOCAL, service.parse(signed(accessClaims())).authSource)
+        assertEquals(JwtAuthSource.LOCAL, service.parse(service.createToken(user, auditor)).authSource)
+        for (source in listOf("EXTERNAL", "m1", 123)) {
+            assertFailsWith<IllegalArgumentException> { service.parse(signed(accessClaims() + ("auth_source" to source))) }
+        }
+    }
+
+    @Test fun `un origen M1 no habilita un token de seleccion aunque este firmado por M8`() {
+        assertFailsWith<IllegalArgumentException> {
+            service.parseRoleSelectionToken(signed(mapOf("token_type" to "ROLE_SELECTION", "auth_source" to "M1")))
+        }
+    }
+
     private fun accessClaims(): Map<String, Any> =
         mapOf("token_type" to "ACCESS", "active_role" to "AUDITOR", "permissions" to listOf("roles:view"))
 

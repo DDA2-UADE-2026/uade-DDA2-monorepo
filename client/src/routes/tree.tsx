@@ -44,9 +44,10 @@ const DEV_LINKS: TreeLink[] = [
   },
   {
     title: "Eventos asíncronos",
-    description: "Documentación de eventos y colas del ambiente de desarrollo.",
+    description: "Springwolf/AsyncAPI con eventos y colas del ambiente de desarrollo.",
     icon: IconBolt,
-  }
+    link: "https://api-muni-uade-dev.fabriziob.com/springwolf/asyncapi-ui.html",
+  },
 ]
 
 const PROD_LINKS: TreeLink[] = [
@@ -64,9 +65,10 @@ const PROD_LINKS: TreeLink[] = [
   },
   {
     title: "Eventos asíncronos",
-    description: "Documentación de eventos y colas del ambiente de producción.",
+    description: "Springwolf/AsyncAPI con eventos y colas del ambiente de producción.",
     icon: IconBolt,
-  }
+    link: "https://api-muni-uade.fabriziob.com/springwolf/asyncapi-ui.html",
+  },
 ]
 
 function TreeLinkCard({ item, iconClassName }: { item: TreeLink; iconClassName: string }) {

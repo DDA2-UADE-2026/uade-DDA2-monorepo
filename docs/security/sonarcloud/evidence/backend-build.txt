@@ -1,0 +1,105 @@
+COMMAND ["./gradlew", "build", "--no-daemon", "--console=plain", "-Duser.home=<workspace>/artifacts/security-preparation/backend-state/home"]
+CWD <workspace>/artifacts/security-preparation/baseline-05333b1/server
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :compileKotlin UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :resolveMainClassName UP-TO-DATE
+> Task :bootJar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :assemble UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+
+> Task :compileTestKotlin
+w: Lombok Kotlin compiler plugin is an experimental feature. See: https://kotlinlang.org/docs/components-stability.html.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationEvaluationFlowTest.kt:594:26 'val isTextual: Boolean' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationFlowTest.kt:121:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationFlowTest.kt:263:78 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationFlowTest.kt:394:35 'val isTextual: Boolean' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationFlowTest.kt:394:67 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationFlowTest.kt:472:129 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationVisitFlowTest.kt:1578:52 'fun textValue(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationVisitFlowTest.kt:1588:32 'fun textValue(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/application/ApplicationVisitFlowTest.kt:2046:26 'val isTextual: Boolean' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentConcurrencyFlowTest.kt:161:74 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentConcurrencyFlowTest.kt:176:86 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentConcurrencyFlowTest.kt:282:97 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:124:59 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:156:32 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:220:109 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:221:60 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:222:60 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:332:48 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:333:36 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:345:48 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:346:36 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:356:65 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:388:69 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:389:32 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:390:70 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:391:32 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:445:51 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:453:38 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:460:35 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:490:38 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:507:33 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:508:43 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:509:44 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:545:54 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:546:60 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:552:109 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:555:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:558:117 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:567:55 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:660:107 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/appointment/AppointmentFlowTest.kt:872:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/auth/CookieAuthFlowTest.kt:266:114 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/center/CenterCatalogFlowTest.kt:297:91 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/center/CenterLifecycleFlowTest.kt:305:87 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/center/CenterOpeningHourFlowTest.kt:266:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/center/CenterServiceFlowTest.kt:182:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/center/ProfessionalAssignmentFlowTest.kt:182:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+w: file://<workspace>/artifacts/security-preparation/baseline-05333b1/server/src/test/kotlin/com/uade/dda2/server/feature/center/ProfessionalAvailabilityFlowTest.kt:305:105 'fun asText(): String!' is deprecated. Deprecated in Java.
+
+> Task :compileTestJava NO-SOURCE
+> Task :testClasses UP-TO-DATE
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+> Task :test
+
+2026-11-16T09:09:36.347-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.349-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-26 - Shutdown initiated...
+2026-11-16T09:09:36.349-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-26 - Shutdown completed.
+2026-11-16T09:09:36.356-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.363-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-27 - Shutdown initiated...
+2026-11-16T09:09:36.364-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-27 - Shutdown completed.
+2026-11-16T09:09:36.370-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.372-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-28 - Shutdown initiated...
+2026-11-16T09:09:36.373-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-28 - Shutdown completed.
+2026-11-16T09:09:36.379-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.379-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-29 - Shutdown initiated...
+2026-11-16T09:09:36.379-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-29 - Shutdown completed.
+2026-11-16T09:09:36.386-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.389-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-30 - Shutdown initiated...
+2026-11-16T09:09:36.389-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-30 - Shutdown completed.
+2026-11-16T09:09:36.396-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.398-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-31 - Shutdown initiated...
+2026-11-16T09:09:36.398-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-31 - Shutdown completed.
+2026-11-16T09:09:36.405-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.407-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-32 - Shutdown initiated...
+2026-11-16T09:09:36.408-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-32 - Shutdown completed.
+2026-11-16T09:09:36.414-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-16T09:09:36.416-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-33 - Shutdown initiated...
+2026-11-16T09:09:36.416-03:00  INFO 86154 --- [social-development-api] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-33 - Shutdown completed.
+
+> Task :check
+> Task :build
+
+BUILD SUCCESSFUL in 2m 29s
+7 actionable tasks: 2 executed, 5 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.1/userguide/configuration_cache_enabling.html
+
+CAPTURE_EXIT_CODE=0
+CAPTURE_ELAPSED_SECONDS=149.724

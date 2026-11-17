@@ -68,7 +68,7 @@ Los nombres describen funciones. En numerosas rutas manda el permiso del **rol a
 | 5. Ejecutar una acción | Los controladores y servicios comprueban las autorizaciones aplicables. Las rutas propias filtran por el usuario autenticado. | Solo se genera un evento cuando el caso de uso de los capítulos siguientes lo establece. |
 | 6. Cerrar sesión con cookies | Se elimina el contexto de cookies del navegador mediante `/auth/session/logout`. | Sin evento externo. |
 
-El acceso externo desde M1 todavía requiere acordar e implementar el procedimiento de login y vinculación. Tener un campo `externalCitizenId` no implementa por sí mismo ese procedimiento.
+El [login integrado con M1](../technical/m1-auth-contract.md) está implementado en `POST /auth/session/m1/login`, desactivado por defecto. M8 autentica contra M1, reutiliza o crea la cuenta por UUID y emite su propia sesión con cookies y CSRF, limitada a `CIUDADANO`. Ese ingreso no habilita cambios a roles administrativos. La prueba real sigue pendiente de la cuenta privada de M1. Vincular una cuenta local previa sin UUID requiere verificar el control de ambas identidades; coincidir en correo, nombre o DNI no basta.
 
 El token HTTP de máquina de Core es otra credencial: permite al backend consultar servicios técnicos. No reemplaza la autenticación del ciudadano ni se entrega al frontend como su sesión.
 

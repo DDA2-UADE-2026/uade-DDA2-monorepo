@@ -1,0 +1,693 @@
+{
+  "baselineCommit": "05333b1957c8a842c294e568c4da9a86d49e88d4",
+  "node": "v26.1.0",
+  "npm": "11.13.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "commands": [
+    {
+      "name": "01-npm-ci",
+      "command": [
+        "npm",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "durationMs": 46407,
+      "exitCode": 0,
+      "log": "01-npm-ci.log"
+    },
+    {
+      "name": "02-lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "durationMs": 13238,
+      "exitCode": 0,
+      "log": "02-lint.log"
+    },
+    {
+      "name": "03-test-run",
+      "command": [
+        "npm",
+        "run",
+        "test:run",
+        "--",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=<workspace>/artifacts/security-preparation/frontend-results/vitest.json"
+      ],
+      "durationMs": 11858,
+      "exitCode": 0,
+      "log": "03-test-run.log"
+    },
+    {
+      "name": "04-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "durationMs": 24512,
+      "exitCode": 0,
+      "log": "04-build.log"
+    },
+    {
+      "name": "05-npm-ls-all",
+      "command": [
+        "npm",
+        "ls",
+        "--all",
+        "--json"
+      ],
+      "durationMs": 777,
+      "exitCode": 0,
+      "log": "05-npm-ls-all.log"
+    },
+    {
+      "name": "06-npm-ls-production",
+      "command": [
+        "npm",
+        "ls",
+        "--omit=dev",
+        "--all",
+        "--json"
+      ],
+      "durationMs": 470,
+      "exitCode": 0,
+      "log": "06-npm-ls-production.log"
+    },
+    {
+      "name": "07-npm-ls-development",
+      "command": [
+        "npm",
+        "ls",
+        "--include=dev",
+        "--all",
+        "--json"
+      ],
+      "durationMs": 450,
+      "exitCode": 0,
+      "log": "07-npm-ls-development.log"
+    },
+    {
+      "name": "explain-vite",
+      "command": [
+        "npm",
+        "explain",
+        "vite",
+        "--json"
+      ],
+      "durationMs": 395,
+      "exitCode": 0,
+      "log": "explain-vite.log"
+    },
+    {
+      "name": "explain-vitest",
+      "command": [
+        "npm",
+        "explain",
+        "vitest",
+        "--json"
+      ],
+      "durationMs": 439,
+      "exitCode": 0,
+      "log": "explain-vitest.log"
+    },
+    {
+      "name": "explain-eslint",
+      "command": [
+        "npm",
+        "explain",
+        "eslint",
+        "--json"
+      ],
+      "durationMs": 422,
+      "exitCode": 0,
+      "log": "explain-eslint.log"
+    },
+    {
+      "name": "explain-shadcn",
+      "command": [
+        "npm",
+        "explain",
+        "shadcn",
+        "--json"
+      ],
+      "durationMs": 415,
+      "exitCode": 0,
+      "log": "explain-shadcn.log"
+    },
+    {
+      "name": "explain-_hey-api_openapi-ts",
+      "command": [
+        "npm",
+        "explain",
+        "@hey-api/openapi-ts",
+        "--json"
+      ],
+      "durationMs": 420,
+      "exitCode": 0,
+      "log": "explain-_hey-api_openapi-ts.log"
+    },
+    {
+      "name": "explain-jsdom",
+      "command": [
+        "npm",
+        "explain",
+        "jsdom",
+        "--json"
+      ],
+      "durationMs": 404,
+      "exitCode": 0,
+      "log": "explain-jsdom.log"
+    },
+    {
+      "name": "explain-minimatch",
+      "command": [
+        "npm",
+        "explain",
+        "minimatch",
+        "--json"
+      ],
+      "durationMs": 442,
+      "exitCode": 0,
+      "log": "explain-minimatch.log"
+    },
+    {
+      "name": "explain-brace-expansion",
+      "command": [
+        "npm",
+        "explain",
+        "brace-expansion",
+        "--json"
+      ],
+      "durationMs": 412,
+      "exitCode": 0,
+      "log": "explain-brace-expansion.log"
+    },
+    {
+      "name": "explain-picomatch",
+      "command": [
+        "npm",
+        "explain",
+        "picomatch",
+        "--json"
+      ],
+      "durationMs": 452,
+      "exitCode": 0,
+      "log": "explain-picomatch.log"
+    },
+    {
+      "name": "explain-rollup",
+      "command": [
+        "npm",
+        "explain",
+        "rollup",
+        "--json"
+      ],
+      "durationMs": 507,
+      "exitCode": 1,
+      "log": "explain-rollup.log"
+    },
+    {
+      "name": "explain-esbuild",
+      "command": [
+        "npm",
+        "explain",
+        "esbuild",
+        "--json"
+      ],
+      "durationMs": 417,
+      "exitCode": 1,
+      "log": "explain-esbuild.log"
+    },
+    {
+      "name": "explain-undici",
+      "command": [
+        "npm",
+        "explain",
+        "undici",
+        "--json"
+      ],
+      "durationMs": 735,
+      "exitCode": 0,
+      "log": "explain-undici.log"
+    },
+    {
+      "name": "explain-tar",
+      "command": [
+        "npm",
+        "explain",
+        "tar",
+        "--json"
+      ],
+      "durationMs": 496,
+      "exitCode": 1,
+      "log": "explain-tar.log"
+    },
+    {
+      "name": "explain-glob",
+      "command": [
+        "npm",
+        "explain",
+        "glob",
+        "--json"
+      ],
+      "durationMs": 604,
+      "exitCode": 1,
+      "log": "explain-glob.log"
+    },
+    {
+      "name": "extra-explain-braces",
+      "command": [
+        "npm",
+        "explain",
+        "braces",
+        "--json"
+      ],
+      "durationMs": 680,
+      "exitCode": 0,
+      "log": "extra-explain-braces.log"
+    },
+    {
+      "name": "extra-explain-enquirer",
+      "command": [
+        "npm",
+        "explain",
+        "enquirer",
+        "--json"
+      ],
+      "durationMs": 401,
+      "exitCode": 0,
+      "log": "extra-explain-enquirer.log"
+    },
+    {
+      "name": "extra-explain-js-yaml",
+      "command": [
+        "npm",
+        "explain",
+        "js-yaml",
+        "--json"
+      ],
+      "durationMs": 406,
+      "exitCode": 0,
+      "log": "extra-explain-js-yaml.log"
+    },
+    {
+      "name": "extra-explain-uri-js",
+      "command": [
+        "npm",
+        "explain",
+        "uri-js",
+        "--json"
+      ],
+      "durationMs": 395,
+      "exitCode": 0,
+      "log": "extra-explain-uri-js.log"
+    }
+  ],
+  "checksPassed": true,
+  "testFiles": {
+    "total": 32,
+    "passed": 30,
+    "skipped": 2,
+    "failed": 0
+  },
+  "tests": {
+    "total": 125,
+    "passed": 119,
+    "failed": 0,
+    "skipped": 6
+  },
+  "skippedTests": [
+    {
+      "file": "src/lib/program-images.test.ts",
+      "name": "imágenes de portada de programas acepta imágenes JPG y PNG dentro del límite",
+      "status": "skipped"
+    },
+    {
+      "file": "src/lib/program-images.test.ts",
+      "name": "imágenes de portada de programas rechaza archivos vacíos, demasiado grandes o de otro formato",
+      "status": "skipped"
+    },
+    {
+      "file": "src/lib/program-images.test.ts",
+      "name": "imágenes de portada de programas combina las rutas públicas con la URL configurada del backend",
+      "status": "skipped"
+    },
+    {
+      "file": "src/components/programs/ProgramImageUploadDialog.test.tsx",
+      "name": "subir una portada desde administración crea una portada nueva con POST",
+      "status": "skipped"
+    },
+    {
+      "file": "src/components/programs/ProgramImageUploadDialog.test.tsx",
+      "name": "subir una portada desde administración reemplaza una portada existente con PUT",
+      "status": "skipped"
+    },
+    {
+      "file": "src/components/programs/ProgramImageUploadDialog.test.tsx",
+      "name": "subir una portada desde administración rechaza un archivo no permitido sin llamar al servidor",
+      "status": "skipped"
+    }
+  ],
+  "skipReason": "Both suites are explicitly describe.skip in baseline source; reason not documented.",
+  "manifestsUnchanged": true,
+  "hashes": {
+    "isolated": {
+      "package.json": "c45e75ca62d301603f2e24aab38c8590bffcb2013f61ef6bf936c00f7c1f2584",
+      "package-lock.json": "80b51cc40082e7cae09a0fe5820adacaf9dec759fe354f7de10d468acad5f0e3"
+    },
+    "original": {
+      "package.json": "c45e75ca62d301603f2e24aab38c8590bffcb2013f61ef6bf936c00f7c1f2584",
+      "package-lock.json": "80b51cc40082e7cae09a0fe5820adacaf9dec759fe354f7de10d468acad5f0e3"
+    }
+  },
+  "sourceIntegrity": {
+    "baseline": "05333b1957c8a842c294e568c4da9a86d49e88d4",
+    "trackedFiles": 368,
+    "changedSources": [],
+    "allTrackedClientFilesUnchanged": true
+  },
+  "dependencyDrift": {
+    "evidence": "artifacts/security-preparation/frontend-results/dependency-comparison.json",
+    "original": {
+      "hiddenLockEntries": 750,
+      "versionMismatchesAtSamePath": 65,
+      "lockedPathsAbsent": 106,
+      "absentNonOptionalPaths": 33,
+      "absentOptionalPaths": 73,
+      "installedPathsNotInLock": 97,
+      "hiddenLockVsActualManifestMismatches": 0
+    },
+    "isolated": {
+      "hiddenLockEntries": 686,
+      "versionMismatchesAtSamePath": 0,
+      "lockedPathsAbsent": 73,
+      "absentNonOptionalPaths": 0,
+      "absentOptionalPaths": 73,
+      "installedPathsNotInLock": 0,
+      "hiddenLockVsActualManifestMismatches": 0
+    },
+    "interpretation": "Path comparisons include changes in dependency hoisting; missing paths are not by themselves missing dependency names. Original installed tree differs from lock and cannot stand in for reproducible baseline. All 73 isolated absent paths are optional: 65 have OS/CPU incompatible with darwin/arm64; 8 are WASM/WASI support transitives lacking their own OS/CPU restriction under omitted wasm32 bindings. No required package paths are absent."
+  },
+  "optionalMissing": {
+    "count": 73,
+    "nonOptionalMissing": 0,
+    "incompatibleWithDarwinArm64": 65,
+    "compatibleWithDarwinArm64": 8,
+    "classification": {
+      "incompatibleOSCPU": 65,
+      "optionalWasmWasiTransitivelyOmitted": 8,
+      "requiredMissing": 0
+    },
+    "classificationEvidence": "Lock entries @oxc-parser/binding-wasm32-wasi (line2052), @rolldown/binding-wasm32-wasi (line2705), @tailwindcss/oxide-wasm32-wasi (line3460) constrain cpu=wasm32 and depend on optional @napi-rs/wasm-runtime/@emnapi/*/@tybys/wasm-util. The8 support entries have no own platform condition; they are not8 missing required packages.",
+    "groups": [
+      {
+        "os": null,
+        "cpu": null,
+        "count": 8,
+        "packages": [
+          "@emnapi/core",
+          "@emnapi/runtime",
+          "@emnapi/wasi-threads",
+          "@napi-rs/wasm-runtime",
+          "@rolldown/binding-wasm32-wasi/node_modules/@emnapi/core",
+          "@rolldown/binding-wasm32-wasi/node_modules/@emnapi/runtime",
+          "@rolldown/binding-wasm32-wasi/node_modules/@emnapi/wasi-threads",
+          "@tybys/wasm-util"
+        ]
+      },
+      {
+        "os": [
+          "android"
+        ],
+        "cpu": [
+          "arm"
+        ],
+        "count": 2,
+        "packages": [
+          "@oxc-parser/binding-android-arm-eabi",
+          "@rolldown/binding-android-arm-eabi"
+        ]
+      },
+      {
+        "os": [
+          "android"
+        ],
+        "cpu": [
+          "arm64"
+        ],
+        "count": 5,
+        "packages": [
+          "@oxc-parser/binding-android-arm64",
+          "@rolldown/binding-android-arm64",
+          "@tailwindcss/node/node_modules/lightningcss-android-arm64",
+          "@tailwindcss/oxide-android-arm64",
+          "lightningcss-android-arm64"
+        ]
+      },
+      {
+        "os": [
+          "darwin"
+        ],
+        "cpu": [
+          "x64"
+        ],
+        "count": 5,
+        "packages": [
+          "@oxc-parser/binding-darwin-x64",
+          "@rolldown/binding-darwin-x64",
+          "@tailwindcss/node/node_modules/lightningcss-darwin-x64",
+          "@tailwindcss/oxide-darwin-x64",
+          "lightningcss-darwin-x64"
+        ]
+      },
+      {
+        "os": [
+          "freebsd"
+        ],
+        "cpu": [
+          "x64"
+        ],
+        "count": 5,
+        "packages": [
+          "@oxc-parser/binding-freebsd-x64",
+          "@rolldown/binding-freebsd-x64",
+          "@tailwindcss/node/node_modules/lightningcss-freebsd-x64",
+          "@tailwindcss/oxide-freebsd-x64",
+          "lightningcss-freebsd-x64"
+        ]
+      },
+      {
+        "os": [
+          "linux"
+        ],
+        "cpu": [
+          "arm"
+        ],
+        "count": 6,
+        "packages": [
+          "@oxc-parser/binding-linux-arm-gnueabihf",
+          "@oxc-parser/binding-linux-arm-musleabihf",
+          "@rolldown/binding-linux-arm-gnueabihf",
+          "@tailwindcss/node/node_modules/lightningcss-linux-arm-gnueabihf",
+          "@tailwindcss/oxide-linux-arm-gnueabihf",
+          "lightningcss-linux-arm-gnueabihf"
+        ]
+      },
+      {
+        "os": [
+          "linux"
+        ],
+        "cpu": [
+          "arm64"
+        ],
+        "count": 10,
+        "packages": [
+          "@oxc-parser/binding-linux-arm64-gnu",
+          "@oxc-parser/binding-linux-arm64-musl",
+          "@rolldown/binding-linux-arm64-gnu",
+          "@rolldown/binding-linux-arm64-musl",
+          "@tailwindcss/node/node_modules/lightningcss-linux-arm64-gnu",
+          "@tailwindcss/node/node_modules/lightningcss-linux-arm64-musl",
+          "@tailwindcss/oxide-linux-arm64-gnu",
+          "@tailwindcss/oxide-linux-arm64-musl",
+          "lightningcss-linux-arm64-gnu",
+          "lightningcss-linux-arm64-musl"
+        ]
+      },
+      {
+        "os": [
+          "linux"
+        ],
+        "cpu": [
+          "ppc64"
+        ],
+        "count": 2,
+        "packages": [
+          "@oxc-parser/binding-linux-ppc64-gnu",
+          "@rolldown/binding-linux-ppc64-gnu"
+        ]
+      },
+      {
+        "os": [
+          "linux"
+        ],
+        "cpu": [
+          "riscv64"
+        ],
+        "count": 2,
+        "packages": [
+          "@oxc-parser/binding-linux-riscv64-gnu",
+          "@oxc-parser/binding-linux-riscv64-musl"
+        ]
+      },
+      {
+        "os": [
+          "linux"
+        ],
+        "cpu": [
+          "s390x"
+        ],
+        "count": 2,
+        "packages": [
+          "@oxc-parser/binding-linux-s390x-gnu",
+          "@rolldown/binding-linux-s390x-gnu"
+        ]
+      },
+      {
+        "os": [
+          "linux"
+        ],
+        "cpu": [
+          "x64"
+        ],
+        "count": 10,
+        "packages": [
+          "@oxc-parser/binding-linux-x64-gnu",
+          "@oxc-parser/binding-linux-x64-musl",
+          "@rolldown/binding-linux-x64-gnu",
+          "@rolldown/binding-linux-x64-musl",
+          "@tailwindcss/node/node_modules/lightningcss-linux-x64-gnu",
+          "@tailwindcss/node/node_modules/lightningcss-linux-x64-musl",
+          "@tailwindcss/oxide-linux-x64-gnu",
+          "@tailwindcss/oxide-linux-x64-musl",
+          "lightningcss-linux-x64-gnu",
+          "lightningcss-linux-x64-musl"
+        ]
+      },
+      {
+        "os": [
+          "openharmony"
+        ],
+        "cpu": [
+          "arm64"
+        ],
+        "count": 2,
+        "packages": [
+          "@oxc-parser/binding-openharmony-arm64",
+          "@rolldown/binding-openharmony-arm64"
+        ]
+      },
+      {
+        "os": null,
+        "cpu": [
+          "wasm32"
+        ],
+        "count": 3,
+        "packages": [
+          "@oxc-parser/binding-wasm32-wasi",
+          "@rolldown/binding-wasm32-wasi",
+          "@tailwindcss/oxide-wasm32-wasi"
+        ]
+      },
+      {
+        "os": [
+          "win32"
+        ],
+        "cpu": [
+          "arm64"
+        ],
+        "count": 5,
+        "packages": [
+          "@oxc-parser/binding-win32-arm64-msvc",
+          "@rolldown/binding-win32-arm64-msvc",
+          "@tailwindcss/node/node_modules/lightningcss-win32-arm64-msvc",
+          "@tailwindcss/oxide-win32-arm64-msvc",
+          "lightningcss-win32-arm64-msvc"
+        ]
+      },
+      {
+        "os": [
+          "win32"
+        ],
+        "cpu": [
+          "ia32"
+        ],
+        "count": 1,
+        "packages": [
+          "@oxc-parser/binding-win32-ia32-msvc"
+        ]
+      },
+      {
+        "os": [
+          "win32"
+        ],
+        "cpu": [
+          "x64"
+        ],
+        "count": 5,
+        "packages": [
+          "@oxc-parser/binding-win32-x64-msvc",
+          "@rolldown/binding-win32-x64-msvc",
+          "@tailwindcss/node/node_modules/lightningcss-win32-x64-msvc",
+          "@tailwindcss/oxide-win32-x64-msvc",
+          "lightningcss-win32-x64-msvc"
+        ]
+      }
+    ]
+  },
+  "warnings": [
+    {
+      "kind": "test",
+      "message": "JSDOM canvas getContext not implemented; no canvas package installed. Nonfatal pre-existing environment limitation."
+    },
+    {
+      "kind": "test",
+      "message": "React ItemGroup/AppointmentWizard list child missing unique key warning; nonfatal."
+    },
+    {
+      "kind": "build",
+      "message": "%VITE_SERVER_URL% placeholder undefined because private env intentionally absent. Build is compilation baseline, NOT deployable production configuration."
+    },
+    {
+      "kind": "build",
+      "message": "Chunk warning >500kB; ArgentinaLocationMap bundle1075.31kB(minified)/294.22kB(gzip). Nonfatal."
+    },
+    {
+      "kind": "install",
+      "message": "@hey-api/client-fetch0.13.1 deprecated; no dependency changed."
+    }
+  ],
+  "ci24Validation": {
+    "status": "PENDING",
+    "reason": "Node24 not installed; no runtime downloaded. Executed Node26.1.0 on macOS/arm64, not CI24/Linux.",
+    "jsdomMinimumNode24": "24.15.0"
+  },
+  "network": {
+    "checksGuarded": true,
+    "blockedAttempts": 0,
+    "guard": "artifacts/security-preparation/frontend-network-guard.cjs",
+    "note": "Cleared inherited NODE_OPTIONS; explicitly injected local guard through controlled NODE_OPTIONS only for lint/test/build. Guard prevents fetch, net/tls/http requests and server listen, while mocks remain local."
+  },
+  "limitations": [
+    "No vulnerability audit or autofix was run; npm audit disabled during installation. npm ls/explain establish installed inventory and dependency chains, not vulnerability or exploitability conclusions.",
+    "Only local05333b1 source was executed; no Sonar state was modified, and no equivalence to another Sonar revision is claimed.",
+    "No original checkout files, docs or backend were modified; all generated artifacts remained under assigned client isolation/frontend-* paths."
+  ]
+}

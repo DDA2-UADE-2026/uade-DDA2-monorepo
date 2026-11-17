@@ -80,6 +80,7 @@ class CookieAuthFlowTest {
         repeat(2) {
             mvc.perform(get("/auth/me").cookie(access))
                 .andExpect(status().isOk).andExpect(jsonPath("$.user.activeRole").value("CIUDADANO"))
+                .andExpect(jsonPath("$.user.authSource").value("LOCAL"))
         }
         mvc.perform(get("/roles").cookie(access)).andExpect(status().isForbidden)
         mvc.perform(get("/auth/me")).andExpect(status().isUnauthorized)

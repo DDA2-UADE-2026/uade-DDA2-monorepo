@@ -174,9 +174,9 @@ Table role_permissions {
 
 Table users {
   id bigint [pk, increment]
-  username varchar(80) [unique, note: 'Opcional para una futura cuenta externa. Username y password_hash deben estar ambos presentes o ambos ausentes.']
+  username varchar(80) [unique, note: 'Null para una cuenta externa creada desde M1. Username y password_hash deben estar ambos presentes o ambos ausentes.']
   password_hash varchar(100) [note: 'Hash BCrypt. Nunca se genera una contraseña ficticia para una identidad externa.']
-  external_citizen_id varchar(255) [unique, note: 'Identificador externo opcional, independiente de la snapshot. No es una FK. Reservado para una futura vinculación con doble autenticación; no editable desde el ABM.']
+  external_citizen_id varchar(255) [unique, note: 'UUID canónico verificado por login M1, independiente de la snapshot. No es FK ni es editable desde el ABM. Reutiliza la cuenta vinculada o crea una externa; vincular una cuenta local previa requiere verificar ambas identidades.']
   name varchar(150) [not null]
   email varchar(180) [not null]
   active boolean [not null, note: 'Valor inicial asignado por la aplicación: true.']
@@ -187,7 +187,7 @@ Table users {
     `(username is null and password_hash is null) or (username is not null and password_hash is not null)` [name: 'ck_users_local_credentials']
   }
 
-  Note: 'No se crean roles ni asignaciones automáticas. Cada JWT operativo contiene un solo active_role y únicamente sus permisos. Un usuario sin roles no puede obtener un JWT operativo.'
+  Note: 'El primer ingreso M1 asigna solo el rol CIUDADANO ya existente. Las cuentas vinculadas conservan sus roles; no se repone un rol ciudadano retirado. Cada JWT operativo contiene un solo active_role y únicamente sus permisos. Un usuario sin roles no puede obtener un JWT operativo.'
 }
 
 Table citizen_snapshot {

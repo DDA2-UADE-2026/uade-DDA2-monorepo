@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.2.21"
     kotlin("plugin.spring") version "2.2.21"
-    id("org.springframework.boot") version "4.0.7"
+    id("org.springframework.boot") version "4.0.9"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "2.2.21"
     kotlin("plugin.lombok") version "2.2.21"
@@ -9,6 +9,11 @@ plugins {
 
 group = "com.uade.dda2"
 version = "0.0.1-SNAPSHOT"
+
+// Override oficial del BOM de Boot, aplicado a todos los classpaths administrados.
+extra["rabbit-amqp-client.version"] = "5.37.0"
+// Actualiza la familia OpenTelemetry usada por el tooling SwiftExport del plugin Kotlin (fuera del runtime).
+extra["opentelemetry.version"] = "1.67.0"
 
 java {
     toolchain {
@@ -22,6 +27,20 @@ repositories {
 
 dependencyLocking {
     lockAllConfigurations()
+}
+
+// Sólo el classpath de los helpers PGP de Kotlin: BC no se agrega al runtime de la aplicación.
+// dependency-management restaura las versiones explícitas de las defaults del plugin;
+// esta regla local las alinea sin agregar dependencias ni cambiar la gestión global.
+configurations.named("kotlinBouncyCastleConfiguration") {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.bouncycastle" && requested.name in setOf(
+                "bcpg-jdk18on", "bcpkix-jdk18on", "bcprov-jdk18on", "bcutil-jdk18on"
+            )) {
+            useVersion("1.87")
+            because("Corrige vulnerabilidades del tooling Kotlin manteniendo los cuatro módulos BC alineados.")
+        }
+    }
 }
 
 dependencies {
@@ -224,6 +243,56 @@ tasks.withType<Test> {
 
 tasks.named<Test>("test") {
     useJUnitPlatform { excludeTags("core-smoke", "testcontainers") }
+}
+
+val testM1Integration by tasks.registering(Test::class) {
+    group = "verification"
+    description = "Verifica M1 con HTTP loopback, H2 y adaptadores locales; genera OpenAPI/AsyncAPI sin contactar a M1 ni Core."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { excludeTags("core-smoke", "testcontainers") }
+    filter {
+        // Lista explícita: no incorporar pruebas remotas nuevas mediante un comodín.
+        listOf(
+            "feature.integration.M1AuthClientTest",
+            "feature.integration.M1AuthConfigurationTest",
+            "feature.auth.M1CitizenAccountServiceTest",
+            "feature.auth.M1SessionFlowTest",
+            "feature.auth.M1DisabledSessionFlowTest",
+            "feature.integration.M1DocumentClientTest",
+            "feature.integration.M1DocumentsConfigurationTest",
+            "feature.integration.ExternalDocumentFileFlowTest",
+            "feature.integration.ExternalDocumentationFlowTest",
+            "feature.integration.M8ContractCodecTest",
+            "feature.integration.M8BusinessFlowTest",
+            "feature.auth.AuthFlowTest",
+            "feature.auth.CookieAuthFlowTest",
+            "feature.auth.CitizenModelTest",
+            "security.JwtServiceTest",
+            "security.LoginRateLimitFilterTest",
+            "OpenApiDocsGenerationTest",
+            "AsyncApiDocsGenerationTest",
+        ).forEach { includeTestsMatching("com.uade.dda2.server.$it") }
+    }
+    // Evitar que flags heredados del despliegue habiliten transportes. Los tests
+    // que requieren HTTP optan explícitamente por un servidor efímero loopback.
+    listOf("CORE_ENABLED", "CORE_BUSINESS_ENABLED", "CORE_AMQP_CHECK_ON_STARTUP", "CORE_PUBLISHER_ENABLED",
+        "CORE_CONSUMER_ENABLED", "CORE_SMOKE_ENABLED", "M1_AUTH_ENABLED", "M1_DOCUMENTS_ENABLED")
+        .forEach { environment(it, "false") }
+    inputs.files(
+        "docs/external/m1-auth/login-success.json",
+        "docs/external/m1-auth/login-invalid-credentials.json",
+        "docs/postman/m1-session.postman_collection.json",
+        "docs/postman/m1-documents.postman_collection.json",
+    )
+    outputs.dir(layout.buildDirectory.dir("openapi"))
+    outputs.dir(layout.buildDirectory.dir("asyncapi"))
+}
+
+tasks.register("verifyM1Integration") {
+    group = "verification"
+    description = "Cierre local de M1: pruebas seleccionadas, contratos OpenAPI/AsyncAPI, colecciones Postman y bootJar."
+    dependsOn(testM1Integration, tasks.named("bootJar"))
 }
 
 tasks.register<Test>("testContainers") {

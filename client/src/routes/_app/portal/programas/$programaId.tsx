@@ -47,6 +47,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getAvailableProgramOptions } from "@/generated/@tanstack/react-query.gen"
 import { applicationPeriodUnavailableReason, enrollmentStatusLabels } from "@/lib/application-flow"
 import { programImageSource } from "@/lib/program-images"
+import { programSharedKey, sharedTransitionStyle } from "@/lib/portal-view-transitions"
 import type {
   AvailableProgramBenefitResponse,
   AvailableProgramDocumentRequirementResponse,
@@ -83,6 +84,12 @@ const editionStatusLabels: Record<EditionStatus, string> = {
 }
 
 export const Route = createFileRoute("/_app/portal/programas/$programaId")({
+  // Precargado para que la View Transition capture la portada real y no el
+  // skeleton (necesario para el shared element desde la tarjeta).
+  loader: ({ context, params }) =>
+    context.queryClient.prefetchQuery(
+      getAvailableProgramOptions({ path: { id: params.programaId } }),
+    ),
   component: RouteComponent,
 })
 
@@ -165,6 +172,8 @@ function RouteComponent() {
                     src={programImageSource(program.imageUrl) ?? PROGRAM_IMAGE}
                     alt=""
                     className="aspect-[1.91/1] size-full max-h-96 object-cover lg:aspect-auto lg:min-h-80"
+                    data-vt-shared=""
+                    style={sharedTransitionStyle(programSharedKey(programaId))}
                   />
                   <div className="flex min-w-0 flex-col justify-center py-6">
                     <CardHeader>

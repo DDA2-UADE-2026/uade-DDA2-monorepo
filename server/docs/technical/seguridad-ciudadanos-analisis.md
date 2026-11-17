@@ -2,6 +2,13 @@
 
 Estado al 31 de agosto de 2026: implementado en el backend. No se modificó el frontend, no se agregaron migraciones ni seeds y no se ejecutaron cambios sobre la base de datos del proyecto.
 
+Esta es una referencia histórica. Para la autenticación actual con cookies y CSRF,
+consultar [cookies y Bearer](cookie-auth.md). Al 16 de noviembre de 2026, M1 confirmó
+el login de servidor a servidor y la emisión de una sesión propia de M8; el
+[contrato de integración](m1-auth-contract.md) registra lo confirmado y los pendientes.
+El login externo todavía no está implementado. Las menciones siguientes a ausencia
+de cookies o de contrato de Ciudadanos corresponden al estado original de este análisis.
+
 ## Alcance confirmado
 
 Se mantiene JWT stateless, sin tablas de sesiones, cookies de autenticación, refresh tokens ni lista de revocación. Ciudadanos todavía no tiene un contrato de autenticación: se prepara únicamente el modelo local. No hay endpoints de login externo, vinculación, desvinculación, aprovisionamiento ni sincronización.

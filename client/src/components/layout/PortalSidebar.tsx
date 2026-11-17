@@ -1,6 +1,7 @@
 import { useLocation } from "@tanstack/react-router"
 
 import { AppSidebarHeader } from "@/components/layout/AppSidebarHeader"
+import { CitizenSessionCard } from "@/components/layout/CitizenSessionCard"
 import { PORTAL_NAV } from "@/components/layout/sidebar-constants"
 import { SidebarNavMenu } from "@/components/layout/SidebarNavMenu"
 import { SidebarUser } from "@/components/layout/SidebarUser"
@@ -31,6 +32,7 @@ function PortalSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <CitizenSessionCard />
         <SidebarMenu>
           <SidebarUser />
         </SidebarMenu>

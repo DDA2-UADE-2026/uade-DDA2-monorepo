@@ -27,13 +27,16 @@ class JwtService(
         require(jwtProperties.roleSelectionExpirationSeconds > 0) { "JWT_ROLE_SELECTION_EXPIRATION_SECONDS must be positive." }
     }
 
-    fun createToken(user: User, activeRole: Role): String {
+    fun createToken(user: User, activeRole: Role, authSource: JwtAuthSource = JwtAuthSource.LOCAL): String {
         require(user.active) { "The user must be active." }
         val assignedRole = user.roles.firstOrNull { it.id == activeRole.id && it.name == activeRole.name }
         require(assignedRole != null && assignedRole.name.isNotBlank()) {
             "The active role must belong to the user."
         }
-        return tokenBuilder(user, "ACCESS", jwtProperties.expirationSeconds)
+        require(authSource != JwtAuthSource.M1 || assignedRole.name == "CIUDADANO") {
+            "M1 authentication only permits the citizen role."
+        }
+        return tokenBuilder(user, "ACCESS", jwtProperties.expirationSeconds, authSource)
             .claim("username", user.username)
             .claim("active_role", assignedRole.name)
             .claim("permissions", assignedRole.permissions.map { it.name }.distinct().sorted())
@@ -57,23 +60,41 @@ class JwtService(
         }
         val activeRole = claims["active_role", String::class.java]
         require(!activeRole.isNullOrBlank()) { "An active role is required." }
+        val source = authSource(claims)
+        require(source != JwtAuthSource.M1 || activeRole == "CIUDADANO") { "Invalid role for M1 authentication." }
         return JwtPrincipal(
             id = userId(claims),
             username = claims["username", String::class.java],
             activeRole = activeRole,
             permissions = permissions.filterIsInstance<String>().distinct().sorted(),
+            authSource = source,
         )
     }
 
-    fun parseRoleSelectionToken(token: String): Long = userId(parseClaims(token, "ROLE_SELECTION"))
+    fun parseRoleSelectionToken(token: String): Long {
+        val claims = parseClaims(token, "ROLE_SELECTION")
+        require(authSource(claims) == JwtAuthSource.LOCAL) { "Role selection requires local authentication." }
+        return userId(claims)
+    }
 
-    private fun tokenBuilder(user: User, type: String, lifetime: Long) = Instant.now().let { now ->
+    private fun tokenBuilder(user: User, type: String, lifetime: Long, source: JwtAuthSource = JwtAuthSource.LOCAL) = Instant.now().let { now ->
         Jwts.builder()
             .subject(requireNotNull(user.id).also { require(it > 0) }.toString())
             .issuer(jwtProperties.issuer)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plusSeconds(lifetime)))
             .claim("token_type", type)
+            .claim("auth_source", source.name)
+    }
+
+    private fun authSource(claims: Claims): JwtAuthSource {
+        // Los JWT anteriores a este cambio fueron emitidos por el login local.
+        if (!claims.containsKey("auth_source")) return JwtAuthSource.LOCAL
+        return when (claims["auth_source"]) {
+            "LOCAL" -> JwtAuthSource.LOCAL
+            "M1" -> JwtAuthSource.M1
+            else -> throw IllegalArgumentException("Invalid authentication source.")
+        }
     }
 
     private fun parseClaims(token: String, type: String): Claims {

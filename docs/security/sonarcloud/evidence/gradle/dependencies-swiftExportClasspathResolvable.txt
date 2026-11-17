@@ -1,0 +1,65 @@
+COMMAND ["./gradlew", "dependencies", "--configuration", "swiftExportClasspathResolvable", "--no-daemon", "--offline", "--console=plain", "-Duser.home=<workspace>/artifacts/security-preparation/backend-state/home"]
+CWD <workspace>/artifacts/security-preparation/baseline-05333b1/server
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build
+
+> Task :dependencies
+
+------------------------------------------------------------
+Root project 'server'
+------------------------------------------------------------
+
+swiftExportClasspathResolvable - Resolves the runtime classpath for the SwiftExport worker.
++--- org.jetbrains.kotlin:swift-export-embeddable:2.2.21
+|    +--- org.checkerframework:checker-qual:3.43.0
+|    +--- com.google.errorprone:error_prone_annotations:2.28.0 -> 2.49.0
+|    +--- io.opentelemetry:opentelemetry-api:1.41.0 -> 1.55.0
+|    |    \--- io.opentelemetry:opentelemetry-context:1.55.0
+|    |         \--- io.opentelemetry:opentelemetry-common:1.55.0
+|    +--- com.github.ben-manes.caffeine:caffeine:2.9.3 -> 3.2.4
+|    |    +--- org.jspecify:jspecify:1.0.0
+|    |    \--- com.google.errorprone:error_prone_annotations:2.49.0
+|    +--- org.jetbrains.kotlin:kotlin-stdlib:2.2.21
+|    |    \--- org.jetbrains:annotations:13.0
+|    +--- org.jetbrains.kotlin:kotlin-compiler-embeddable:2.2.21
+|    |    +--- org.jetbrains.kotlin:kotlin-stdlib:2.2.21 (*)
+|    |    +--- org.jetbrains.kotlin:kotlin-script-runtime:2.2.21
+|    |    +--- org.jetbrains.kotlin:kotlin-reflect:1.6.10 -> 2.2.21
+|    |    +--- org.jetbrains.kotlin:kotlin-daemon-embeddable:2.2.21
+|    |    \--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0 -> 1.10.2
+|    \--- org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.3 -> 1.9.0
+|         \--- org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0
+|              +--- org.jetbrains.kotlinx:kotlinx-serialization-bom:1.9.0
+|              |    +--- org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:1.9.0 (c)
+|              |    \--- org.jetbrains.kotlinx:kotlinx-serialization-core:1.9.0 (c)
+|              \--- org.jetbrains.kotlin:kotlin-stdlib:2.2.0 -> 2.2.21 (*)
++--- org.jetbrains.kotlin:swift-export-embeddable:{strictly 2.2.21} -> 2.2.21 (c)
++--- org.checkerframework:checker-qual:{strictly 3.43.0} -> 3.43.0 (c)
++--- com.google.errorprone:error_prone_annotations:{strictly 2.49.0} -> 2.49.0 (c)
++--- io.opentelemetry:opentelemetry-api:{strictly 1.55.0} -> 1.55.0 (c)
++--- com.github.ben-manes.caffeine:caffeine:{strictly 3.2.4} -> 3.2.4 (c)
++--- org.jetbrains.kotlin:kotlin-stdlib:{strictly 2.2.21} -> 2.2.21 (c)
++--- org.jetbrains.kotlin:kotlin-compiler-embeddable:{strictly 2.2.21} -> 2.2.21 (c)
++--- org.jetbrains.kotlinx:kotlinx-serialization-core:{strictly 1.9.0} -> 1.9.0 (c)
++--- io.opentelemetry:opentelemetry-context:{strictly 1.55.0} -> 1.55.0 (c)
++--- org.jspecify:jspecify:{strictly 1.0.0} -> 1.0.0 (c)
++--- org.jetbrains:annotations:{strictly 13.0} -> 13.0 (c)
++--- org.jetbrains.kotlin:kotlin-script-runtime:{strictly 2.2.21} -> 2.2.21 (c)
++--- org.jetbrains.kotlin:kotlin-reflect:{strictly 2.2.21} -> 2.2.21 (c)
++--- org.jetbrains.kotlin:kotlin-daemon-embeddable:{strictly 2.2.21} -> 2.2.21 (c)
++--- org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:{strictly 1.10.2} -> 1.10.2 (c)
++--- org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:{strictly 1.9.0} -> 1.9.0 (c)
++--- io.opentelemetry:opentelemetry-common:{strictly 1.55.0} -> 1.55.0 (c)
+\--- org.jetbrains.kotlinx:kotlinx-serialization-bom:{strictly 1.9.0} -> 1.9.0 (c)
+
+(c) - A dependency constraint, not a dependency. The dependency affected by the constraint occurs elsewhere in the tree.
+(*) - Indicates repeated occurrences of a transitive dependency subtree. Gradle expands transitive dependency subtrees only once per project; repeat occurrences only display the root of the subtree, followed by this annotation.
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 3s
+1 actionable task: 1 executed
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.1/userguide/configuration_cache_enabling.html
+
+CAPTURE_EXIT_CODE=0
+CAPTURE_ELAPSED_SECONDS=3.553
