@@ -26,7 +26,8 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [x] Definir el contrato mínimo y los datos de perfil para implementar el cliente y sus pruebas locales.
 - [ ] Completar variantes de errores, nulabilidad, contactos y cuenta de prueba privada con M1.
 - [x] Implementar cliente HTTP M1, DTOs, configuración opt-in, validaciones de identidad y errores locales sin secretos; pruebas con HTTP simulado.
-- [ ] Resolver usuarios locales y vinculación verificada por UUID ciudadano.
+- [x] Resolver cuentas por UUID M1 o crear identidad externa con `CIUDADANO`, sin contraseña local; preservar cuentas existentes y auditar el alta atómica. Concurrencia probada con JPA/H2.
+- [ ] Implementar la vinculación explícita de cuentas locales previas sin UUID, verificando el control de ambas identidades.
 - [ ] Implementar el login proxy y la sesión M8 con permisos locales de ciudadano.
 - [ ] Acordar e implementar la obtención autorizada del contenido documental por UUID.
 

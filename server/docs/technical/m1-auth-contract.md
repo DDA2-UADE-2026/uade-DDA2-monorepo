@@ -1,8 +1,8 @@
 # Contrato de login integrado con M1
 
-Estado al 16 de noviembre de 2026: contrato mínimo registrado a partir de la comunicación de M1 y las capturas de sus ejemplos de éxito y error aportadas por el equipo. El cliente HTTP de M1 está implementado y desactivado por defecto. El backend M8 actuará como proxy de autenticación y emitirá su propia sesión con permisos locales; el endpoint, la resolución de cuentas y la sesión externa corresponden a los pasos siguientes.
+Estado al 16 de noviembre de 2026: contrato mínimo registrado a partir de la comunicación de M1 y las capturas de sus ejemplos de éxito y error aportadas por el equipo. El cliente HTTP y la resolución de cuentas locales por UUID están implementados. El cliente está desactivado por defecto. El endpoint proxy y la emisión de la sesión propia de M8 corresponden al paso siguiente.
 
-Este documento cubre el contrato del primer paso y el cliente HTTP del segundo. Los ejemplos documentados de HTTP `200` y `401` son la base de sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
+Este documento cubre el contrato del primer paso, el cliente HTTP del segundo y el servicio de cuentas del tercero. Los ejemplos documentados de HTTP `200` y `401` son la base de sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
 
 ## Fuentes y precedencia
 
@@ -163,7 +163,44 @@ Las [pruebas HTTP](../../src/test/kotlin/com/uade/dda2/server/feature/integratio
 
 Verificación local del 16 de noviembre de 2026: 72 pruebas nuevas de M1 y 24 de regresión de autenticación, cookies y arranque aprobadas, sin omisiones. `bootJar` generado correctamente. Se comprobó el timeout tanto antes de los headers como durante la lectura del cuerpo, el rechazo de redirecciones y la ausencia de reenvíos tras errores. Estas pruebas no contactan al despliegue de M1.
 
-Este paso no crea usuarios ni modifica roles o sesiones locales. El endpoint `POST /auth/session/m1/login` sigue siendo una propuesta pendiente de implementación, sin cambios en el contrato OpenAPI actual.
+El cliente HTTP no crea usuarios ni modifica roles o sesiones locales. La cuenta local se resuelve con el servicio siguiente. El endpoint `POST /auth/session/m1/login` sigue pendiente de implementación.
+
+## Resolución de cuenta local implementada
+
+[M1CitizenAccountService](../../src/main/kotlin/com/uade/dda2/server/feature/auth/service/M1CitizenAccountService.kt) recibe la identidad aceptada por `M1AuthClient` y el correo utilizado en ese mismo login. Su método interno es `resolve(identity, authenticatedEmail)`. El futuro endpoint debe invocarlo después de que termine la llamada HTTPS, sin mantener una transacción de base abierta durante la autenticación remota. No se admite que el navegador elija un `citizenId` para este flujo.
+
+El resultado [M1LocalAccount](../../src/main/kotlin/com/uade/dda2/server/feature/auth/dto/M1LocalAccount.kt) contiene `userId` local de M8, `citizenId` UUID y `created`. No contiene roles, permisos, contraseñas ni tokens y no concede una sesión.
+
+| Caso | Resultado |
+| --- | --- |
+| El UUID ya está vinculado a una cuenta activa con `CIUDADANO`. | Reutiliza su ID local. Conserva nombre, correo, credenciales y todos los roles asignados; no copia el nuevo perfil de M1 sobre ellos. |
+| La cuenta local está inactiva. | `403 M1_AUTH_LOCAL_ACCOUNT_INACTIVE`; no la reactiva ni crea otra. |
+| A la cuenta vinculada le retiraron `CIUDADANO`. | `403 M1_AUTH_CITIZEN_ROLE_REQUIRED`; no repone el rol automáticamente. |
+| El UUID no tiene cuenta local. | Crea un usuario activo con UUID en minúsculas, nombre validado, correo de acceso sin espacios exteriores y solo el rol `CIUDADANO` del catálogo local. `username` y `password_hash` quedan en null. |
+| Falta `CIUDADANO` en el catálogo al crear la cuenta. | `503 M1_AUTH_CITIZEN_ROLE_UNAVAILABLE`; no crea roles, permisos ni una cuenta parcial. |
+| Coinciden correo, nombre, DNI o el ID numérico de M1 con otra cuenta. | No vincula ni modifica esa cuenta. UUID distintos siguen siendo identidades independientes, aun con el mismo correo. |
+| Un vínculo previo contiene letras mayúsculas en el UUID. | Lo encuentra sin distinguir mayúsculas y lo reutiliza sin reescribirlo. |
+| Hay varios vínculos legados que difieren solo en mayúsculas. | `409 M1_AUTH_IDENTITY_CONFLICT`; requiere revisión y no elige una cuenta arbitrariamente. |
+
+Los límites locales son nombre de 1 a 150 caracteres y correo de acceso de 1 a 180 después de quitar espacios exteriores. Un nombre no utilizable devuelve `M1_AUTH_INVALID_RESPONSE`; un correo vacío o demasiado largo devuelve `400 M1_AUTH_INVALID_EMAIL`. El ID numérico `user_id` de M1 no se utiliza para buscar, asignar ni sobrescribir `users.id`.
+
+La snapshot ciudadana no se crea ni modifica durante el aprovisionamiento. Se conservan bloqueos, fallecimiento y alertas ya recibidas. Su efecto sobre nuevas solicitudes sigue bajo la política de negocio existente; el servicio no deduce nuevas restricciones de login a partir de esa copia.
+
+El alta y su auditoría `CREATE/USER` se confirman juntas. El registro identifica la fuente `M1`, el UUID y el rol asignado; no guarda correo, contraseña, tokens ni el cuerpo del login. Reutilizar una cuenta no registra otra alta ni un `LOGIN`: el registro de ingreso corresponde a la emisión de sesión del paso siguiente.
+
+Se usa [TransactionTemplate](https://docs.spring.io/spring-framework/reference/data-access/transaction/programmatic.html) con una transacción independiente por intento. La restricción única existente de `external_citizen_id` arbitra los primeros ingresos simultáneos, que siempre insertan el UUID canónico en minúsculas. Si una inserción pierde esa carrera, se revierte por completo y se consulta la cuenta ganadora en una transacción nueva, volviendo a comprobar su estado y rol. No se consulta dentro de la transacción abortada ni se repite el login HTTP. Si no existe una cuenta ganadora, se devuelve `503 M1_AUTH_PROVISIONING_FAILED` sin conservar la causa de base de datos.
+
+El aprovisionamiento queda confirmado de forma independiente de una eventual transacción exterior. El paso de sesión debe volver a consultar el usuario activo y su rol antes de emitir el JWT ciudadano. No se requieren migraciones: se reutilizan las columnas, la restricción de credenciales y la unicidad existentes. La vinculación de una cuenta local previa sin UUID sigue requiriendo un flujo separado que verifique ambas identidades.
+
+Las [pruebas de cuentas](../../src/test/kotlin/com/uade/dda2/server/feature/auth/M1CitizenAccountServiceTest.kt) usan JPA y una base H2 descartable en modo PostgreSQL. Cubren la reutilización, restricciones locales, ausencia de fusiones por datos personales, auditoría y rollback. La carrera fuerza que ocho llamadas desde dos instancias lean inicialmente que no existe la cuenta: las ocho deben resolver al mismo ID, con una sola asignación de rol y una sola alta auditada. Ejecutar desde `server`:
+
+```powershell
+.\gradlew.bat test --tests '*M1CitizenAccountServiceTest' --console=plain
+```
+
+Verificación local del paso 3, 16 de noviembre de 2026: 18 pruebas nuevas de cuentas y 119 de regresión aprobadas, sin omisiones, incluyendo cliente M1, autenticación local, cookies, modelo ciudadano, eventos M8 y arranque. `bootJar` generado correctamente. La prueba de concurrencia se ejecutó sobre H2; no se verificó esta etapa sobre PostgreSQL ni contra el login remoto de M1.
+
+El endpoint proxy y la emisión de cookies/JWT todavía no están implementados. No se agregan rutas ni cambios de estructura al contrato OpenAPI actual.
 
 ## Pendientes y criterio de cierre del primer paso
 

@@ -34,8 +34,8 @@ class User(
     @Column(name = "password_hash", length = 100)
     var passwordHash: String? = null,
 
-    // Reserved for a future flow that verifies control of both identities.
-    // This is not a foreign key to Ciudadanos and is not writable through user DTOs.
+    // UUID canónico verificado por login M1. No es FK ni es editable por los DTOs del ABM.
+    // Vincular una cuenta local previa requiere verificar el control de ambas identidades.
     @Column(name = "external_citizen_id", unique = true, length = 255)
     var externalCitizenId: String? = null,
 

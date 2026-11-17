@@ -27,11 +27,11 @@ flowchart LR
 
 ## 2. M1: vinculación e identidad
 
-El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint confirmado, el uso de `citizenId` UUID, la sesión propia de M8 y los ejemplos documentados de éxito `200` y error `401`. El cliente HTTP y sus pruebas locales están implementados, con `M1_AUTH_ENABLED=false` por defecto. La resolución de cuentas, el endpoint proxy y su sesión todavía están pendientes, junto con variantes del contrato y la cuenta privada para probar el ingreso real.
+El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint confirmado, el uso de `citizenId` UUID y los ejemplos documentados de éxito `200` y error `401`. Están implementados el cliente HTTP, desactivado por defecto, y el servicio que reutiliza o crea la cuenta local por UUID. El endpoint proxy y su sesión todavía están pendientes, junto con variantes del contrato y la cuenta privada para probar el ingreso real.
 
 | Paso | Entrada o acción | Datos que utiliza M8 | Resultado local | Salida |
 | --- | --- | --- | --- | --- |
-| 1 | Vincular cuenta por un procedimiento verificado. | UUID canónico de M1 y cuenta local. | `users.external_citizen_id`. Login remoto confirmado; detalles de respuesta y procedimiento de autenticación/vinculación pendientes de cierre e implementación. | No hay un evento de vinculación implementado. |
+| 1 | Resolver la identidad aceptada por el login M1. | UUID canónico y correo del ingreso autenticado. | Servicio disponible: reutiliza la cuenta vinculada o crea una externa con `CIUDADANO` y sin contraseña. No fusiona cuentas por correo. Endpoint proxy y sesión pendientes. | No emite eventos de negocio; audita cada alta local. |
 | 2 | Recibir `citizenUpdated`. | `citizenId`, `updateType`, `details`, actor y fecha del sobre. | Busca usuario vinculado; si no existe, confirma e ignora sin aprovisionarlo. | Ninguna por desconocido. |
 | 3a | `REGISTERED`. | DNI, nombre/apellido y domicilio del payload. | Actualiza snapshot de nombre/DNI y domicilio con sus relojes. No crea una cuenta ni copia todo `details` al modelo local. | Ninguna. |
 | 3b | `ADDRESS_UPDATED`. | `previousAddress`, `newAddress`; usa la nueva calle/número. | Actualiza domicilio si la fecha no es anterior al último cambio aplicado. | Ninguna. |
