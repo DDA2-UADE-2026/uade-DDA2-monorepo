@@ -44,13 +44,20 @@ La plantilla está comentada y no contiene credenciales. `.env` está ignorado p
 
 Si falta `.env` o alguna variable está vacía, Compose corta con un mensaje claro antes de construir o arrancar servicios. El inicializador también rechaza claves JWT o contraseñas de admin demasiado cortas, sin imprimirlas.
 
-Desde la raíz, un único comando construye y levanta el entorno, y termina correctamente cuando los servicios están saludables:
+
+### Construir y levantar todo con un único comando
+
+Una vez completada la configuración previa del `.env`, ejecutar **desde la raíz del repositorio**:
 
 ```bash
 docker compose up --build --wait --wait-timeout 300
 ```
 
-La primera ejecución descarga dependencias y compila. El límite de espera de 300 segundos se aplica al arranque después de construir; el requisito G1 es de **15 minutos totales**, incluyendo descarga y build. Las siguientes ejecuciones usan caché.
+Este comando **construye y levanta el sistema completo**: frontend, backend, PostgreSQL, RabbitMQ y Core simulado. También ejecuta la preparación automática de secretos, certificados y del usuario administrador. No es necesario iniciar cada servicio por separado.
+
+El comando termina correctamente cuando todos los servicios están saludables. Después, abrir **http://localhost:5173** e ingresar con el usuario `admin` y la contraseña configurada en `BOOTSTRAP_ADMIN_PASSWORD`.
+
+**Tiempo de ejecución:** la primera vez descarga imágenes y dependencias y compila las aplicaciones; los siguientes arranques aprovechan la caché. El objetivo es completar todo en **15 minutos o menos**. La opción `--wait-timeout 300` limita únicamente la espera de los servicios después del build, **no el tiempo total de ejecución**.
 
 | Servicio | URL | Notas |
 |---|---|---|
