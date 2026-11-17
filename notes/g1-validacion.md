@@ -6,7 +6,17 @@ Fecha: 2 de noviembre de 2026 (Argentina).
 
 Frontend, backend, PostgreSQL, RabbitMQ real y Core HTTP simulado. Las otras áreas municipales y sus contratos SOAP/REST quedan pendientes por decisión del equipo. El mock cubre las rutas de autenticación y lectura usadas por el dashboard de integración; no sustituye el worker, el ruteo, los reintentos ni la DLQ del Core real. Esta validación no acredita el eje C ni G6/eje D.
 
-## Actualización: credenciales elegidas en `.env`
+## Flujo vigente: preparación automática de `.env`
+
+Los comandos por plataforma se describen en el [README](../README.md): `sh ./start.sh` en macOS/Linux, `start.cmd` desde CMD y `.\start.cmd` desde PowerShell. En Windows el wrapper invoca `start.ps1`. En la primera ejecución pide y confirma la contraseña de admin sin eco y genera las cuatro credenciales técnicas con aleatoriedad criptográfica. Conserva cualquier `.env` existente sin modificarlo. La generación usa un contenedor Python en POSIX y .NET en Windows; no requiere Python en el host.
+
+El launcher Windows incluye pruebas estáticas y pruebas runtime condicionadas a PowerShell/Windows. Este entorno macOS no dispone de PowerShell: no se acredita aquí ejecución real del `.cmd`, entrada segura ni ACL Windows. Esas comprobaciones deben ejecutarse en Windows con `python -m unittest discover -s infra/local -p test_start_windows.py -v` (Python requerido únicamente para los tests, no para arrancar). El arranque completo requiere Docker Desktop iniciado.
+
+Validación del launcher (16 de noviembre de 2026): `sh -n start.sh` aprobado; 11 pruebas de `infra/local/test_start.py` aprobadas y una omitida porque el entorno no permite pseudoterminales. Se ejercitaron los flujos con terminal simulada y el roundtrip de caracteres especiales con Compose real, sin daemon. Las cuatro pruebas de configuración Compose también aprobaron. No se ejecutó un arranque completo: el motor Docker estaba detenido. Pendiente comprobar entrada oculta en terminal real y medir el flujo completo con Docker en ejecución.
+
+Las mediciones y pruebas de arranque completo que siguen son históricas: no acreditan por sí solas el tiempo total del nuevo launcher ni de las dependencias actuales. La aclaración anterior sobre completar `.env` manualmente describe el procedimiento previo, no el vigente.
+
+## Validación histórica: credenciales elegidas en `.env`
 
 La aclaración posterior del profesor permite completar `.env` antes del arranque y prohíbe mostrar credenciales por consola. La configuración actual usa la plantilla comentada de la raíz, exige sus cinco valores y no incluye comandos para imprimirlos. La CA y los certificados locales siguen generándose automáticamente.
 
