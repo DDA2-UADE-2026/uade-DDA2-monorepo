@@ -28,7 +28,8 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [x] Implementar cliente HTTP M1, DTOs, configuración opt-in, validaciones de identidad y errores locales sin secretos; pruebas con HTTP simulado.
 - [x] Resolver cuentas por UUID M1 o crear identidad externa con `CIUDADANO`, sin contraseña local; preservar cuentas existentes y auditar el alta atómica. Concurrencia probada con JPA/H2.
 - [ ] Implementar la vinculación explícita de cuentas locales previas sin UUID, verificando el control de ambas identidades.
-- [ ] Implementar el login proxy y la sesión M8 con permisos locales de ciudadano.
+- [x] Exponer `/auth/session/m1/login` con CSRF y límite de intentos, emitir cookie M8 y conservar el origen firmado M1 para impedir cambios a roles administrativos; probar HTTP/JPA local y documentar OpenAPI.
+- [ ] Verificar login proxy contra el despliegue M1 con la cuenta privada coordinada.
 - [ ] Acordar e implementar la obtención autorizada del contenido documental por UUID.
 
 ## Etapa B3 Atención Ciudadana

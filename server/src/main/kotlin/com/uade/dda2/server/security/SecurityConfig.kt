@@ -74,7 +74,7 @@ class SecurityConfig(
             }
             .authorizeHttpRequests {
                 it.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/select-role").permitAll()
-                it.requestMatchers(HttpMethod.POST, "/auth/session/login", "/auth/session/select-role", "/auth/session/logout").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/auth/session/login", "/auth/session/m1/login", "/auth/session/select-role", "/auth/session/logout").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/auth/session/csrf", "/auth/session/role-selection").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/programs", "/api/programs/**").permitAll()
                 it.requestMatchers(HttpMethod.GET, "/api/images/**").permitAll()

@@ -6,7 +6,7 @@
 
 | Contraparte funcional | Qué recibe M8 | Qué envía M8 | Medio implementado |
 | --- | --- | --- | --- |
-| M1 Ciudadanos, organizaciones y expedientes | Datos/estado de ciudadanos vinculados; referencias de expedientes y documentación pedida. | Pedido de requisitos documentales de una solicitud. | Eventos mediante Core. Cliente HTTP de login disponible, desactivado por defecto; endpoint proxy y sesión pendientes. Acceso al archivo pendiente de acuerdo. |
+| M1 Ciudadanos, organizaciones y expedientes | Identidad autenticada, datos/estado de ciudadanos vinculados y referencias documentales. | Credenciales de login por HTTPS y pedido documental por Core. | Login proxy con sesión propia implementado, desactivado por defecto. Eventos mediante Core. Acceso al archivo pendiente de acuerdo. |
 | M2 Atención Ciudadana | Tickets derivados, respuestas, cambios de prioridad/escalamiento, reaperturas y cierres. | Hechos de inicio, avance, información requerida, devolución, resolución o rechazo operativo. | Eventos mediante Core. |
 | M5 Rentas | Deudas vencidas/canceladas, pedidos y resultados de exención. | Alta y cambios de cada beneficio otorgado. | Eventos mediante Core. |
 | M9 Core | Entrega de eventos y respuestas de diagnóstico/registro. | Eventos producidos y consultas técnicas autenticadas. | AMQPS para mensajes; HTTPS para API de máquina. |
@@ -27,11 +27,11 @@ flowchart LR
 
 ## 2. M1: vinculación e identidad
 
-El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint confirmado, el uso de `citizenId` UUID y los ejemplos documentados de éxito `200` y error `401`. Están implementados el cliente HTTP, desactivado por defecto, y el servicio que reutiliza o crea la cuenta local por UUID. El endpoint proxy y su sesión todavía están pendientes, junto con variantes del contrato y la cuenta privada para probar el ingreso real.
+El [contrato de login integrado con M1](../technical/m1-auth-contract.md) registra el endpoint `POST /auth/session/m1/login`, el uso de `citizenId` UUID y los ejemplos de éxito `200` y error `401`. Están implementados cliente HTTP, resolución de cuenta y sesión propia de M8 con cookies y CSRF, limitada a `CIUDADANO`. El ingreso está desactivado por defecto. Quedan variantes del contrato y la cuenta privada para probar el login real.
 
 | Paso | Entrada o acción | Datos que utiliza M8 | Resultado local | Salida |
 | --- | --- | --- | --- | --- |
-| 1 | Resolver la identidad aceptada por el login M1. | UUID canónico y correo del ingreso autenticado. | Servicio disponible: reutiliza la cuenta vinculada o crea una externa con `CIUDADANO` y sin contraseña. No fusiona cuentas por correo. Endpoint proxy y sesión pendientes. | No emite eventos de negocio; audita cada alta local. |
+| 1 | Ingresar por `/auth/session/m1/login` con CSRF y credenciales M1. | UUID canónico y correo del ingreso autenticado. | Reutiliza o crea cuenta externa sin contraseña local y emite cookie propia de M8, solo `CIUDADANO`. No fusiona por correo ni habilita otros roles. | Audita el alta cuando corresponde y el ingreso. No emite eventos de negocio. |
 | 2 | Recibir `citizenUpdated`. | `citizenId`, `updateType`, `details`, actor y fecha del sobre. | Busca usuario vinculado; si no existe, confirma e ignora sin aprovisionarlo. | Ninguna por desconocido. |
 | 3a | `REGISTERED`. | DNI, nombre/apellido y domicilio del payload. | Actualiza snapshot de nombre/DNI y domicilio con sus relojes. No crea una cuenta ni copia todo `details` al modelo local. | Ninguna. |
 | 3b | `ADDRESS_UPDATED`. | `previousAddress`, `newAddress`; usa la nueva calle/número. | Actualiza domicilio si la fecha no es anterior al último cambio aplicado. | Ninguna. |

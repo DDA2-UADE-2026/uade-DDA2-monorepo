@@ -1,8 +1,8 @@
 # Contrato de login integrado con M1
 
-Estado al 16 de noviembre de 2026: contrato mínimo registrado a partir de la comunicación de M1 y las capturas de sus ejemplos de éxito y error aportadas por el equipo. El cliente HTTP y la resolución de cuentas locales por UUID están implementados. El cliente está desactivado por defecto. El endpoint proxy y la emisión de la sesión propia de M8 corresponden al paso siguiente.
+Estado al 16 de noviembre de 2026: implementados el cliente HTTP, la resolución de cuentas por UUID y `POST /auth/session/m1/login`, que emite una sesión propia de M8 limitada al rol `CIUDADANO`. El ingreso está desactivado por defecto con `M1_AUTH_ENABLED=false`. La autenticación real contra el despliegue de M1 sigue pendiente de cuenta de prueba privada.
 
-Este documento cubre el contrato del primer paso, el cliente HTTP del segundo y el servicio de cuentas del tercero. Los ejemplos documentados de HTTP `200` y `401` son la base de sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
+Este documento cubre los cuatro primeros pasos: contrato, cliente HTTP, cuenta local y sesión proxy. Los ejemplos documentados de HTTP `200` y `401` son la base de sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
 
 ## Fuentes y precedencia
 
@@ -90,14 +90,14 @@ Para el aprovisionamiento previsto, `User.name` se obtiene de `nombre` y `apelli
 
 El nuevo ejemplo tiene `contactos: []` y no incluye un campo de correo en la raíz. M8 podrá guardar como `User.email` el correo enviado en el login que M1 autenticó, como dato de acceso local. Ese dato no acredita un contacto verificado, no prueba el control de otra cuenta local y no se utiliza para fusionar identidades. La estructura de los contactos y la nulabilidad general de los campos de perfil siguen pendientes; no se inventa un contacto para completar el ejemplo.
 
-## Sesión y vinculación que resolverá M8
+## Sesión y vinculación en M8
 
 Estas son decisiones locales del plan, no campos de la respuesta de M1:
 
 - El frontend enviará sus credenciales a M8; el backend llamará a M1 y usará su resultado para resolver el usuario local por `external_citizen_id`.
-- La ruta propuesta es `POST /auth/session/m1/login` con `{email, password}`. M8 transformará `email` en `gmail`. No está implementada ni publicada en OpenAPI.
-- La sesión utilizará JWT propio de M8 en cookie `HttpOnly`, CSRF y el contrato `CookieSessionResponse` existente. Sus permisos serán los del rol local `CIUDADANO`.
-- El ingreso externo no habilitará selección ni cambio hacia roles administrativos, incluso si la cuenta local los tiene asignados. Esa restricción deberá cubrir también las rutas existentes de cambio de rol.
+- La ruta implementada es `POST /auth/session/m1/login` con `{email, password}`. M8 transforma `email` en `gmail` y la documenta en OpenAPI.
+- La sesión utiliza JWT propio de M8 en cookie `HttpOnly`, CSRF y el contrato `CookieSessionResponse` existente. Sus permisos son los del rol local `CIUDADANO`.
+- El ingreso externo no habilita selección ni cambio hacia roles administrativos, incluso si la cuenta local los tiene asignados. La restricción se conserva en las rutas de cambio de rol con cookies y Bearer.
 - Los usuarios locales inactivos no podrán ingresar. El aprovisionamiento no reactivará cuentas ni eliminará restricciones ciudadanas conocidas.
 - El primer ingreso podrá crear una cuenta externa sin contraseña local. Vincularla a una cuenta local previa requiere verificar el control de ambas identidades y auditar la operación. Coincidencias de correo, DNI, nombre o teléfono no autorizan una fusión.
 - Los roles y permisos enviados por M1 no se copiarán como permisos administrativos de M8. La clave JWT de M8 permanece independiente de cualquier clave de M1.
@@ -126,6 +126,7 @@ Los códigos implementados y su estado HTTP local son:
 
 | Código M8 | HTTP local | Situación |
 | --- | --- | --- |
+| `M1_AUTH_DISABLED` | `503` | El ingreso está desactivado mediante `M1_AUTH_ENABLED=false`. |
 | `M1_AUTH_INVALID_REQUEST` | `400` | Correo o contraseña vacíos; no se llama a M1. |
 | `M1_AUTH_INVALID_CREDENTIALS` | `401` | HTTP `401` remoto o `200` con booleano `auth: false`. |
 | `M1_AUTH_ACCOUNT_FORBIDDEN` | `403` | HTTP `403` remoto, sin deducir un motivo no informado. |
@@ -136,7 +137,7 @@ Los códigos implementados y su estado HTTP local son:
 | `M1_AUTH_UNAVAILABLE` | `503` | HTTP `503` remoto o falla de conexión, DNS o TLS. |
 | `M1_AUTH_TIMEOUT` | `504` | Se agota el tiempo de espera del cliente M8 al llamar a M1. |
 
-`M1AuthException` extiende `ApiException`, por lo que utiliza el contrato de errores existente de M8 cuando se conecte a una ruta. Conserva únicamente el código local y, si se conoce, el estado HTTP remoto; no conserva la excepción original, URLs, cuerpos ni headers. No se copian mensajes de M1 al frontend. El rate limiting de la futura ruta proxy se implementará en el paso de sesión.
+`M1AuthException` extiende `ApiException` y utiliza el contrato de errores existente de M8. Conserva únicamente el código local y, si se conoce, el estado HTTP remoto; no conserva la excepción original, URLs, cuerpos ni headers. No se copian mensajes de M1 al frontend. La ruta comparte el filtro local de intentos con los demás ingresos.
 
 ## Cliente HTTP implementado
 
@@ -163,11 +164,11 @@ Las [pruebas HTTP](../../src/test/kotlin/com/uade/dda2/server/feature/integratio
 
 Verificación local del 16 de noviembre de 2026: 72 pruebas nuevas de M1 y 24 de regresión de autenticación, cookies y arranque aprobadas, sin omisiones. `bootJar` generado correctamente. Se comprobó el timeout tanto antes de los headers como durante la lectura del cuerpo, el rechazo de redirecciones y la ausencia de reenvíos tras errores. Estas pruebas no contactan al despliegue de M1.
 
-El cliente HTTP no crea usuarios ni modifica roles o sesiones locales. La cuenta local se resuelve con el servicio siguiente. El endpoint `POST /auth/session/m1/login` sigue pendiente de implementación.
+El cliente HTTP no crea usuarios ni modifica roles o sesiones locales. El servicio de sesión coordina la autenticación remota, la resolución de cuenta y la emisión del JWT propio.
 
 ## Resolución de cuenta local implementada
 
-[M1CitizenAccountService](../../src/main/kotlin/com/uade/dda2/server/feature/auth/service/M1CitizenAccountService.kt) recibe la identidad aceptada por `M1AuthClient` y el correo utilizado en ese mismo login. Su método interno es `resolve(identity, authenticatedEmail)`. El futuro endpoint debe invocarlo después de que termine la llamada HTTPS, sin mantener una transacción de base abierta durante la autenticación remota. No se admite que el navegador elija un `citizenId` para este flujo.
+[M1CitizenAccountService](../../src/main/kotlin/com/uade/dda2/server/feature/auth/service/M1CitizenAccountService.kt) recibe la identidad aceptada por `M1AuthClient` y el correo utilizado en ese mismo login. Su método interno es `resolve(identity, authenticatedEmail)`. `M1SessionService` lo invoca después de terminar la llamada HTTPS, sin mantener una transacción de base abierta durante la autenticación remota. No se admite que el navegador elija un `citizenId` para este flujo.
 
 El resultado [M1LocalAccount](../../src/main/kotlin/com/uade/dda2/server/feature/auth/dto/M1LocalAccount.kt) contiene `userId` local de M8, `citizenId` UUID y `created`. No contiene roles, permisos, contraseñas ni tokens y no concede una sesión.
 
@@ -186,11 +187,11 @@ Los límites locales son nombre de 1 a 150 caracteres y correo de acceso de 1 a 
 
 La snapshot ciudadana no se crea ni modifica durante el aprovisionamiento. Se conservan bloqueos, fallecimiento y alertas ya recibidas. Su efecto sobre nuevas solicitudes sigue bajo la política de negocio existente; el servicio no deduce nuevas restricciones de login a partir de esa copia.
 
-El alta y su auditoría `CREATE/USER` se confirman juntas. El registro identifica la fuente `M1`, el UUID y el rol asignado; no guarda correo, contraseña, tokens ni el cuerpo del login. Reutilizar una cuenta no registra otra alta ni un `LOGIN`: el registro de ingreso corresponde a la emisión de sesión del paso siguiente.
+El alta y su auditoría `CREATE/USER` se confirman juntas. El registro identifica la fuente `M1`, el UUID y el rol asignado; no guarda correo, contraseña, tokens ni el cuerpo del login. Reutilizar una cuenta no registra otra alta ni un `LOGIN`: el registro de ingreso corresponde a la emisión de sesión.
 
 Se usa [TransactionTemplate](https://docs.spring.io/spring-framework/reference/data-access/transaction/programmatic.html) con una transacción independiente por intento. La restricción única existente de `external_citizen_id` arbitra los primeros ingresos simultáneos, que siempre insertan el UUID canónico en minúsculas. Si una inserción pierde esa carrera, se revierte por completo y se consulta la cuenta ganadora en una transacción nueva, volviendo a comprobar su estado y rol. No se consulta dentro de la transacción abortada ni se repite el login HTTP. Si no existe una cuenta ganadora, se devuelve `503 M1_AUTH_PROVISIONING_FAILED` sin conservar la causa de base de datos.
 
-El aprovisionamiento queda confirmado de forma independiente de una eventual transacción exterior. El paso de sesión debe volver a consultar el usuario activo y su rol antes de emitir el JWT ciudadano. No se requieren migraciones: se reutilizan las columnas, la restricción de credenciales y la unicidad existentes. La vinculación de una cuenta local previa sin UUID sigue requiriendo un flujo separado que verifique ambas identidades.
+El aprovisionamiento queda confirmado de forma independiente de una eventual transacción exterior. El servicio de sesión vuelve a consultar el usuario activo, el vínculo y su rol antes de emitir el JWT ciudadano. No se requieren migraciones: se reutilizan las columnas, la restricción de credenciales y la unicidad existentes. La vinculación de una cuenta local previa sin UUID sigue requiriendo un flujo separado que verifique ambas identidades.
 
 Las [pruebas de cuentas](../../src/test/kotlin/com/uade/dda2/server/feature/auth/M1CitizenAccountServiceTest.kt) usan JPA y una base H2 descartable en modo PostgreSQL. Cubren la reutilización, restricciones locales, ausencia de fusiones por datos personales, auditoría y rollback. La carrera fuerza que ocho llamadas desde dos instancias lean inicialmente que no existe la cuenta: las ocho deben resolver al mismo ID, con una sola asignación de rol y una sola alta auditada. Ejecutar desde `server`:
 
@@ -200,7 +201,48 @@ Las [pruebas de cuentas](../../src/test/kotlin/com/uade/dda2/server/feature/auth
 
 Verificación local del paso 3, 16 de noviembre de 2026: 18 pruebas nuevas de cuentas y 119 de regresión aprobadas, sin omisiones, incluyendo cliente M1, autenticación local, cookies, modelo ciudadano, eventos M8 y arranque. `bootJar` generado correctamente. La prueba de concurrencia se ejecutó sobre H2; no se verificó esta etapa sobre PostgreSQL ni contra el login remoto de M1.
 
-El endpoint proxy y la emisión de cookies/JWT todavía no están implementados. No se agregan rutas ni cambios de estructura al contrato OpenAPI actual.
+## Login proxy y sesión M8 implementados
+
+El [controlador de sesión](../../src/main/kotlin/com/uade/dda2/server/feature/auth/controller/CookieSessionController.kt) expone `POST /auth/session/m1/login`. [M1SessionService](../../src/main/kotlin/com/uade/dda2/server/feature/auth/service/M1SessionService.kt) coordina el login HTTPS sin una transacción de base abierta, resuelve la cuenta y solicita a `AuthService` que vuelva a comprobar el vínculo, el usuario activo y el rol `CIUDADANO` antes de emitir el JWT de M8.
+
+Para habilitarlo, configurar `M1_AUTH_ENABLED=true` y disponer del rol `CIUDADANO` en el catálogo local. La URL y los tiempos se describen en la sección del cliente HTTP. Con `false`, una solicitud válida con CSRF responde `503 M1_AUTH_DISABLED` sin contactar M1 ni consultar cuentas. El arranque no realiza logins remotos.
+
+El recorrido del navegador es:
+
+1. Consultar `GET /auth/session/csrf` con `credentials: 'include'`. Conservar las cookies y el `token` de la respuesta para el siguiente POST.
+2. Enviar el POST siguiente, también con `credentials: 'include'` y `X-XSRF-TOKEN`. Solo se aceptan `email` y `password`; el correo debe ser válido y de hasta 180 caracteres, y la contraseña no puede estar vacía. No se admiten `citizenId`, roles, origen de autenticación ni tokens elegidos por el cliente.
+
+```http
+POST /auth/session/m1/login
+Content-Type: application/json
+X-XSRF-TOKEN: <token devuelto por M8>
+
+{"email":"<correo de M1>","password":"<contraseña de M1>"}
+```
+
+3. El éxito devuelve `200` con el contrato `CookieSessionResponse` existente: `user`, `requiresRoleSelection: false` y `expiresIn`. `user.id` es el ID numérico local de M8; `user.roles` contiene únicamente `CIUDADANO`, con ese rol activo y sus permisos locales.
+4. El encabezado `Set-Cookie` instala `uade_session` HttpOnly con el JWT de M8. Conserva la configuración `Secure`, `SameSite` y `Path=/` existente. Se eliminan las cookies anteriores de selección y CSRF; consultar CSRF otra vez antes de la siguiente escritura.
+5. Consultar `GET /auth/me` y operar con las cookies de M8. Para salir, obtener CSRF vigente y usar `POST /auth/session/logout`.
+
+Ni el body ni los headers de la respuesta de ingreso exponen access token, refresh token o Bearer de M1. Tampoco se devuelve el JWT de M8 en JSON. La vigencia de M8 sigue siendo `JWT_EXPIRATION_SECONDS`, 28800 segundos por defecto, independiente de los 900 del ejemplo remoto. No hay refresh ni logout remoto de M1.
+
+La ruta exige CSRF aun cuando se envíe un header `Authorization`, puede utilizarse con una cookie de acceso anterior inválida y comparte el límite local de intentos por IP con los demás logins. Sus errores usan `application/problem+json`. No se emite una nueva cookie de sesión ante errores de M1, validación o restricciones locales.
+
+### Origen firmado y límite al rol ciudadano
+
+Los nuevos JWT de M8 contienen el claim firmado `auth_source`, con `LOCAL` para el login local y `M1` para este flujo. El origen llega al principal autenticado desde la firma de M8; no se toma del body del navegador ni de los claims del JWT de M1. Los JWT locales anteriores sin ese claim conservan compatibilidad como `LOCAL`. Un origen desconocido o un JWT marcado `M1` con otro rol activo es inválido.
+
+Las rutas `/auth/switch-role` y `/auth/session/switch-role` rechazan cualquier rol distinto de `CIUDADANO` para una sesión M1 con `403 AUTH_ROLE_NOT_ALLOWED_FOR_SOURCE`. Cambiar al mismo rol ciudadano conserva el origen M1 en el JWT nuevo, de modo que un segundo cambio tampoco habilita gestión. El ingreso M1 no emite JWT de selección y su token operativo no puede utilizarse como token de selección.
+
+`/auth/me` también limita los roles disponibles de una sesión M1 a `CIUDADANO`. Las asignaciones administrativas guardadas en la cuenta permanecen intactas y se utilizan mediante autenticación local autorizada. El login local conserva su selección y cambio de roles actuales.
+
+La emisión de sesión y su auditoría `LOGIN/USER` se confirman antes de escribir las cookies. La preparación de la cuenta tiene la transacción independiente descrita antes: si luego falla la emisión de sesión, puede existir el alta confirmada, pero no se entrega una sesión nueva. No se requieren migraciones de base de datos.
+
+Las [pruebas del proxy](../../src/test/kotlin/com/uade/dda2/server/feature/auth/M1SessionFlowTest.kt) recorren HTTP local simulado, JPA/H2, la cadena real de seguridad y CSRF. Cubren cookies, errores, rate limiting, cambio de rol por cookies y Bearer, revalidación de identidad antes de firmar y ausencia de tokens remotos en la respuesta. Las [pruebas de ruta desactivada](../../src/test/kotlin/com/uade/dda2/server/feature/auth/M1DisabledSessionFlowTest.kt) verifican el `503` sin infraestructura remota. OpenAPI se genera con el endpoint público, header CSRF obligatorio, schema de entrada y errores `400/401/403/409/429/502/503/504`.
+
+La [colección de Postman para M1](../postman/m1-session.postman_collection.json) permite probar el recorrido manual cuando esté disponible la cuenta privada, usando el jar de cookies de Postman y variables privadas de entorno. No se ha ejecutado contra el despliegue de M1.
+
+Verificación del paso 4, 16 de noviembre de 2026: suite local completa con 738 casos, 733 aprobados y cinco migraciones exclusivas de PostgreSQL omitidas como en la suite previa. Se agregaron 31 casos para sesión M1, origen JWT y límite de intentos. `bootJar` y OpenAPI generados correctamente; los siete requests de Postman y sus scripts se verificaron localmente. Las pruebas usan HTTP loopback simulado y H2, sin un login real contra M1.
 
 ## Pendientes y criterio de cierre del primer paso
 

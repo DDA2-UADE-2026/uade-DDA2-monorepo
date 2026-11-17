@@ -4,6 +4,7 @@ import com.uade.dda2.server.error.ApiException
 import org.springframework.http.HttpStatus
 
 enum class M1AuthFailure(val status: HttpStatus, val code: String, val publicMessage: String) {
+    DISABLED(HttpStatus.SERVICE_UNAVAILABLE, "M1_AUTH_DISABLED", "El ingreso con M1 no está habilitado."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M1_AUTH_INVALID_REQUEST", "El correo y la contraseña son obligatorios."),
     INVALID_EMAIL(HttpStatus.BAD_REQUEST, "M1_AUTH_INVALID_EMAIL", "El correo de acceso debe tener entre 1 y 180 caracteres."),
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "M1_AUTH_INVALID_CREDENTIALS", "Correo o contraseña incorrectos."),

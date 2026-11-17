@@ -4,6 +4,14 @@ Importar [program-feature.postman_collection.json](program-feature.postman_colle
 
 La variable global `baseUrl` toma `http://localhost:8080` si no está configurada. Las variables de las historias nuevas están en la colección. Evitar variables de entorno con los mismos nombres para que no oculten los identificadores que guardan los scripts.
 
+## Login ciudadano mediante M1
+
+Importar [m1-session.postman_collection.json](m1-session.postman_collection.json) para probar `POST /auth/session/m1/login` con cookies y CSRF. Configurar `baseUrl`, activar `M1_AUTH_ENABLED=true` y reiniciar el backend. El catálogo local debe contener `CIUDADANO`.
+
+Crear las variables `m1Email` y `m1Password` en un entorno privado de Postman, sin exportar sus valores ni agregarlos al repositorio. La colección omite sus requests si faltan esas variables. Mantener habilitado el jar de cookies y ejecutar las siete peticiones en orden: CSRF, login, perfil, CSRF vigente, rechazo de cambio a `ADMIN`, logout y comprobación de salida.
+
+El recorrido usa las cookies HttpOnly de M8 y no guarda JWT en variables. Después del login y del logout se limpia el token CSRF temporal de la colección. Las peticiones se prepararon y sus scripts se validaron localmente; el recorrido real requiere la cuenta privada acordada con M1. Ver [contrato y funcionamiento del proxy](../technical/m1-auth-contract.md).
+
 ## Autenticación y permisos
 
 Completar el login y, si corresponde, seleccionar el rol activo. Copiar el JWT operativo a `adminAccessToken` para las operaciones administrativas. Para crear planes y registrar seguimientos, copiar el JWT del trabajador asignado a `interventionAccessToken`; puede ser la misma persona que registró la evaluación. Un token de selección de rol no sirve para estas operaciones.
