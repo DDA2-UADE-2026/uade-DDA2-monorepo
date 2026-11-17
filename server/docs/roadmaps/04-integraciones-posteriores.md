@@ -19,6 +19,7 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [x] Pedido documental al presentar solicitud con requisitos, máximo diez y correlación por solicitud.
 - [x] Exigir UUID canónico M1 antes de permitir operaciones que necesitan publicarlo; rollback completo si falta.
 - [x] Referencias de expedientes/documentos separadas de archivos locales; COMPLETED no equivale a VALID.
+- [x] Verificar [ambas respuestas documentales en aislamiento](../technical/m1-documentation-responses.md): identidad y tipo contra el pedido original, duplicados, orden temporal, rollback y revisión humana; 40 casos nuevos y 73 locales aprobados, sin contactar M1/Core.
 - [x] Revisión administrativa protegida y estados documentales compartidos con evaluación/renovación.
 - [x] Eventos por otorgamiento, renovación, suspensión, finalización y vencimiento; beneficio estable y amount presente aunque sea null.
 - [x] Registrar el [contrato mínimo de login M1](../technical/m1-auth-contract.md), las diferencias con la guía 2.1 y el uso de una sesión propia de M8; sin implementación ni prueba remota de login.

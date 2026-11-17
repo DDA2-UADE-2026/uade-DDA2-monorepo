@@ -53,9 +53,11 @@ Nombre/DNI y domicilio tienen relojes separados para evitar que un registro inic
 | 7 | Administrativo autorizado | Referencia del documento entregado. | Revisa como `VALID` u `OBSERVED`. Debe contar con acceso autorizado al contenido de M1, todavía pendiente de coordinar. | Sin evento externo nuevo. |
 | 8 | Resolución/renovación | Revisión vigente de requisitos obligatorios. | Integra la revisión externa al control documental; una entrega local del mismo requisito prevalece si existe. | El siguiente evento depende de la decisión/otorgamiento, no de la mera revisión. |
 
-La correlación del pedido es `application.id`. La respuesta debe conservar ese `correlationId` y usar como `causationId` el `eventId` del pedido. El cruce documental utiliza `requirementId`, no el nombre visible del archivo.
+La correlación del pedido es `application.id`. Ambas respuestas deben conservar ese `correlationId` y usar como `causationId` el `eventId` del pedido. M1 confirmó esta causa para la inicial; falta confirmarla para la entrega posterior. El cruce documental utiliza `requirementId` y el tipo guardado en el pedido original, además del catálogo vigente. Cada `requestId` aparece una sola vez por sobre.
 
 Un cambio de referencia o estado recibido vuelve a dejar pendiente la revisión. Los mensajes se comparan temporalmente para no sustituir referencias con una actualización anterior. El evento no incluye bytes ni autoriza a inventar una URL de descarga. El archivo local y el `documentId` de M1 son referencias de sistemas distintos.
+
+La [verificación de las dos respuestas](../technical/m1-documentation-responses.md) se realizó con eventos simulados y H2, sin contactar a M1/Core ni publicar mensajes. Incluye duplicados, respuesta inicial atrasada, entregas parciales, rechazo de identidad o requisitos incorrectos y rollback completo ante un ítem inválido.
 
 ## 4. M2: recibir la derivación y abrir gestión
 
