@@ -147,6 +147,7 @@ class LauncherTests(unittest.TestCase):
         before = path.stat()
         result = self.run_plain()
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(b'http://localhost:5173', result.stdout)
         self.assertEqual(path.read_bytes(), b'# existing\nDB_PASSWORD=unchanged\n')
         self.assertEqual(stat.S_IMODE(path.stat().st_mode), 0o640)
         self.assertEqual(path.stat().st_ino, before.st_ino)
@@ -276,8 +277,9 @@ class LauncherTests(unittest.TestCase):
                                 'Compose altered the administrator password')
 
     def test_compose_failure_propagates_but_keeps_config(self):
-        code, _ = self.run_tty(FAIL_UP='23')
+        code, output = self.run_tty(FAIL_UP='23')
         self.assertEqual(code, 23)
+        self.assertNotIn('http://localhost:5173', output)
         self.assertTrue((self.root / '.env').is_file())
         self.assert_clean()
 
