@@ -120,6 +120,7 @@ try {
     if (-not (Get-ExistingConfig $configPath)) { throw '.env no esta disponible.' }
     & $docker.Source compose up --build --wait --wait-timeout 300
     $exitCode = $LASTEXITCODE
+    if ($exitCode -eq 0) { [Console]::WriteLine('La aplicacion ya esta corriendo en http://localhost:5173') }
 }
 catch {
     # Never print exception details: native/IO diagnostics might contain secrets.

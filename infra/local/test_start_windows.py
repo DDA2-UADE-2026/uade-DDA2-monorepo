@@ -76,6 +76,7 @@ class StaticWindowsContracts(unittest.TestCase):
         self.assertIn("SetEnvironmentVariable($name, $null, 'Process')", self.ps)
         self.assertIn("SetEnvironmentVariable($name, $savedEnvironment[$name], 'Process')", self.ps)
         self.assertIn('compose up --build --wait --wait-timeout 300', self.ps)
+        self.assertIn('http://localhost:5173', self.ps)
         self.assertIn('$exitCode = $LASTEXITCODE', self.ps)
         self.assertIn('exit $exitCode', self.ps)
 

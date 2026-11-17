@@ -73,3 +73,4 @@ fi
 cleanup
 tmp=
 docker compose up --build --wait --wait-timeout 300
+printf 'La aplicación ya está corriendo en http://localhost:5173\n'
