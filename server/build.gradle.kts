@@ -12,6 +12,8 @@ version = "0.0.1-SNAPSHOT"
 
 // Override oficial del BOM de Boot, aplicado a todos los classpaths administrados.
 extra["rabbit-amqp-client.version"] = "5.37.0"
+// Actualiza la familia OpenTelemetry usada por el tooling SwiftExport del plugin Kotlin (fuera del runtime).
+extra["opentelemetry.version"] = "1.67.0"
 
 java {
     toolchain {
