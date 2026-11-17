@@ -56,6 +56,13 @@ class OpenApiDocsGenerationTest {
         assertEquals(setOf("page", "size"), (0 until parameters.size()).map { parameters[it].get("name").stringValue() }.toSet())
         val paths = json.readTree(spec).get("paths")
         val m1Login = paths.get("/auth/session/m1/login").get("post")
+        val m1File = paths["/api/admin/applications/{applicationId}/external-documents/{requestId}/file"]["get"]
+        assertTrue(m1File["security"].size() > 0)
+        for (code in listOf("200", "400", "401", "403", "404", "409", "502", "503", "504"))
+            assertTrue(m1File["responses"].has(code), "M1 file $code")
+        assertEquals("binary", m1File["responses"]["200"]["content"]["application/octet-stream"]["schema"]["format"].asString())
+        for (code in listOf("409", "502", "503", "504"))
+            assertTrue(m1File["responses"][code]["content"].has("application/problem+json"))
         assertEquals("sessionM1Login", m1Login["operationId"].asString())
         assertTrue(m1Login["security"] == null || m1Login["security"].isEmpty)
         for (code in listOf("200", "400", "401", "403", "409", "429", "502", "503", "504"))

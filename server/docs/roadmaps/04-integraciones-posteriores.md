@@ -31,7 +31,8 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [ ] Implementar la vinculación explícita de cuentas locales previas sin UUID, verificando el control de ambas identidades.
 - [x] Exponer `/auth/session/m1/login` con CSRF y límite de intentos, emitir cookie M8 y conservar el origen firmado M1 para impedir cambios a roles administrativos; probar HTTP/JPA local y documentar OpenAPI.
 - [ ] Verificar login proxy contra el despliegue M1 con la cuenta privada coordinada.
-- [ ] Acordar e implementar la obtención autorizada del contenido documental por UUID.
+- [x] Implementar el [proxy administrativo de archivos](../technical/m1-file-proxy.md), protegido por M8, con consulta UUID y credencial de servicio configurables, desactivado por defecto; validación HTTP/JPA local.
+- [ ] Acordar con M1 la ruta por UUID y autorización de servicio; configurar y verificar la interoperabilidad del proxy cuando se autorice una prueba remota.
 
 ## Etapa B3 Atención Ciudadana
 

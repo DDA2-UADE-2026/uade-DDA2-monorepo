@@ -97,7 +97,7 @@ class SecurityConfig(
             allowedOrigins = corsProperties.nonBlankOrigins
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("Authorization", "Content-Type", "Idempotency-Key", "If-Match", "X-XSRF-TOKEN")
-            exposedHeaders = listOf("Authorization", "Location", "Idempotency-Replayed", "ETag", "Retry-After")
+            exposedHeaders = listOf("Authorization", "Location", "Idempotency-Replayed", "ETag", "Retry-After", "Content-Disposition")
             allowCredentials = true
         }
 

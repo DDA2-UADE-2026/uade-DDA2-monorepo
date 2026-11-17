@@ -71,4 +71,4 @@ La regresión local realizada fue:
 
 Resultado: **73 casos aprobados, sin fallos ni omisiones**, incluidos 40 casos nuevos de documentación. `bootJar` y AsyncAPI generados correctamente. Los reportes quedan en `build/reports/tests/test/` y `build/test-results/test/` después de ejecutar el comando.
 
-No se requieren migraciones ni cambios de rutas HTTP. La confirmación del contrato de la entrega posterior y el acceso administrativo al archivo por UUID siguen siendo acuerdos externos pendientes; no se ejecutan en este paso.
+Este paso de verificación no requirió migraciones ni agregó rutas HTTP. La descarga se implementó posteriormente en el [proxy administrativo de archivos](m1-file-proxy.md), desactivado por defecto. La confirmación del contrato de la entrega posterior y el acceso administrativo al archivo por UUID siguen siendo acuerdos externos pendientes.

@@ -101,6 +101,9 @@ Todos exigen JWT y permiso en el rol activo; el servicio vuelve a comprobar que 
 | `GET /api/admin/integrations/core/citizen-alerts` | `users:view` |
 | `GET /api/admin/applications/{applicationId}/external-documents` | `applications:management:documents:view` |
 | `PATCH .../external-documents/{requestId}/review` | `applications:management:documents:review` |
+| `GET .../external-documents/{requestId}/file` | `applications:management:documents:view` |
+
+El [proxy de archivos](m1-file-proxy.md) está desactivado por defecto hasta acordar y configurar la ruta UUID y la credencial de servicio de M1. Descarga desde M8 como adjunto, sin reenviar tokens remotos ni cambiar la revisión.
 
 Listados de tickets, Rentas y alertas: páginas desde cero, `size` entre 1 y 100. Tickets admite `state` y `attention`; Rentas `citizenId`. Los cuerpos se describen en Swagger. La actualización de tickets devuelve `202 {eventId,status:"PENDING"}`: indica persistencia local, no entrega a M2. Los siete endpoints anteriores del dashboard técnico siguen disponibles.
 

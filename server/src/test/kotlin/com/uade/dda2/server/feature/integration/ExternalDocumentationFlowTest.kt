@@ -430,8 +430,19 @@ class ExternalDocumentationFlowTest {
         mvc.perform(get(path).header("Authorization", "Bearer $viewerToken")).andExpect(status().isForbidden)
     }
 
+    @Test fun `archivo pendiente no se descarga y proxy desactivado responde 503 tras entrega`() {
+        receive(event())
+        val path = "/api/admin/applications/${f.applicationId}/external-documents/${f.requestId}/file"
+        mvc.perform(get(path).header("Authorization", "Bearer ${f.token}"))
+            .andExpect(status().isConflict).andExpect(jsonPath("$.code").value("M8_DOCUMENT_FILE_NOT_READY"))
+        receive(event(data(ExternalDocumentationStatus.COMPLETED, UUID.randomUUID()), 2))
+        mvc.perform(get(path).header("Authorization", "Bearer ${f.token}"))
+            .andExpect(status().isServiceUnavailable).andExpect(jsonPath("$.code").value("M1_DOCUMENT_DISABLED"))
+    }
+
     @Test fun `contexto de verificacion no tiene clientes M1 Core ni conexiones AMQP`() {
         assertTrue(context.getBeansOfType(M1AuthClient::class.java).isEmpty())
+        assertTrue(context.getBeansOfType(com.uade.dda2.server.feature.integration.client.M1DocumentClient::class.java).isEmpty())
         assertTrue(context.getBeansOfType(CoreTokenClient::class.java).isEmpty())
         assertTrue(context.getBeansOfType(ConnectionFactory::class.java).isEmpty())
         assertTrue(context.getBeansOfType(CoreOutboxPublisher::class.java).isEmpty())

@@ -95,6 +95,17 @@ class ExternalDocumentationService(
         return receipts.findAllByApplicationId(applicationId).map { response(it) }
     }
 
+    @Transactional(readOnly = true)
+    fun fileDocumentId(applicationId: UUID, requestId: UUID): UUID {
+        access.check("applications:management:documents:view")
+        if (!applications.existsById(applicationId)) throw NotFoundException("APPLICATION_NOT_FOUND", "No se encontró la solicitud.")
+        val receipt = receipts.findById(requestId).orElse(null)?.takeIf { it.applicationId == applicationId }
+            ?: throw NotFoundException("M8_DOCUMENT_NOT_FOUND", "No se encontró la referencia documental.")
+        if (receipt.status != "COMPLETED" || receipt.documentId == null)
+            throw ConflictException("M8_DOCUMENT_FILE_NOT_READY", "La referencia documental todavía no tiene un archivo entregado.")
+        return requireNotNull(receipt.documentId)
+    }
+
     @Transactional
     fun review(applicationId: UUID, requestId: UUID, request: ReviewApplicationDocumentRequest): ExternalDocumentationResponse {
         val actor = access.check("applications:management:documents:review")

@@ -6,7 +6,7 @@
 
 | Contraparte funcional | Qué recibe M8 | Qué envía M8 | Medio implementado |
 | --- | --- | --- | --- |
-| M1 Ciudadanos, organizaciones y expedientes | Identidad autenticada, datos/estado de ciudadanos vinculados y referencias documentales. | Credenciales de login por HTTPS y pedido documental por Core. | Login proxy con sesión propia implementado, desactivado por defecto. Eventos mediante Core. Acceso al archivo pendiente de acuerdo. |
+| M1 Ciudadanos, organizaciones y expedientes | Identidad autenticada, datos/estado de ciudadanos vinculados y referencias documentales. | Credenciales de login por HTTPS y pedido documental por Core. | Login y proxy de archivos implementados, desactivados por defecto. Eventos mediante Core. Ruta UUID y autorización del archivo pendientes de acuerdo. |
 | M2 Atención Ciudadana | Tickets derivados, respuestas, cambios de prioridad/escalamiento, reaperturas y cierres. | Hechos de inicio, avance, información requerida, devolución, resolución o rechazo operativo. | Eventos mediante Core. |
 | M5 Rentas | Deudas vencidas/canceladas, pedidos y resultados de exención. | Alta y cambios de cada beneficio otorgado. | Eventos mediante Core. |
 | M9 Core | Entrega de eventos y respuestas de diagnóstico/registro. | Eventos producidos y consultas técnicas autenticadas. | AMQPS para mensajes; HTTPS para API de máquina. |
@@ -58,6 +58,8 @@ La correlación del pedido es `application.id`. Ambas respuestas deben conservar
 Un cambio de referencia o estado recibido vuelve a dejar pendiente la revisión. Los mensajes se comparan temporalmente para no sustituir referencias con una actualización anterior. El evento no incluye bytes ni autoriza a inventar una URL de descarga. El archivo local y el `documentId` de M1 son referencias de sistemas distintos.
 
 La [verificación de las dos respuestas](../technical/m1-documentation-responses.md) se realizó con eventos simulados y H2, sin contactar a M1/Core ni publicar mensajes. Incluye duplicados, respuesta inicial atrasada, entregas parciales, rechazo de identidad o requisitos incorrectos y rollback completo ante un ítem inválido.
+
+El [proxy administrativo de archivos](../technical/m1-file-proxy.md) descarga por la referencia persistida con permiso `applications:management:documents:view`. Está desactivado hasta acordar y configurar la ruta UUID y la credencial de servicio de M1. El navegador recibe un adjunto desde M8, sin tokens remotos; la descarga no valida automáticamente la entrega.
 
 ## 4. M2: recibir la derivación y abrir gestión
 
