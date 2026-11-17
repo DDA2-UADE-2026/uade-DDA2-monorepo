@@ -5,6 +5,11 @@ El frontend usa exclusivamente cookies HttpOnly; no guarda JWT en `localStorage`
 `sessionStorage` ni estado React. Al actualizar desde la versión anterior se eliminan
 los tokens del almacenamiento y es necesario iniciar sesión otra vez.
 
+El [login integrado con M1](m1-auth-contract.md) usa `POST /auth/session/m1/login`
+para autenticar de servidor a servidor, resolver la cuenta por UUID y emitir una
+sesión propia de M8 limitada a `CIUDADANO`. Está desactivado por defecto con
+`M1_AUTH_ENABLED=false`. La cuenta privada para probar el ingreso real sigue pendiente.
+
 ## Contratos
 
 Los clientes Bearer conservan `POST /auth/login`, `POST /auth/select-role` y
@@ -18,6 +23,7 @@ El navegador usa estos endpoints:
 | --- | --- | --- |
 | GET | `/auth/session/csrf` | Obtener `{headerName, token}` antes de escribir. Público, incluso con sesión vencida. |
 | POST | `/auth/session/login` | `{username, password}`; emite cookie operativa o de selección. |
+| POST | `/auth/session/m1/login` | `{email, password}` de M1; emite cookie operativa de M8 solo para `CIUDADANO`, sin selección. Requiere activar M1 y CSRF. |
 | GET | `/auth/session/role-selection` | Recuperar usuario y roles pendientes tras recargar, validando la cookie temporal. |
 | POST | `/auth/session/select-role` | `{role}`; valida la cookie temporal y emite cookie operativa. |
 | POST | `/auth/session/switch-role` | `{role}`; valida identidad/rol asignado y reemplaza la cookie operativa. |
@@ -29,6 +35,12 @@ sin `token` ni `selectionToken`. La selección pendiente no concede acceso a rec
 Se mantienen los tiempos configurados de JWT: 8 horas de acceso y 5 minutos de selección
 por defecto. No se agrega refresh token ni renovación silenciosa. Al vencer, se vuelve
 al login. Cambiar de rol emite otro JWT con la vigencia configurada.
+
+Los JWT nuevos incluyen el origen firmado `auth_source`. Una sesión M1 solo muestra
+`CIUDADANO` en los roles disponibles y no puede cambiar a otro rol, ni mediante cookies
+ni mediante Bearer. Cambiar al mismo rol conserva ese origen y sus restricciones. Las
+asignaciones administrativas en la base permanecen disponibles para el login local.
+Los JWT locales anteriores sin origen explícito siguen siendo válidos hasta vencer.
 
 ## Cookies y CSRF
 

@@ -32,8 +32,12 @@ class M8PayloadValidator(private val validator: Validator) {
                 if (escalation?.active == true) valid(escalation.reasonCode in setOf("CRITICAL_PRIORITY", "SLA_BREACHED", "MANUAL") && escalation.escalatedAt != null)
             }
             is CitizenUpdatedData -> validateCitizen(payload)
-            is SocialDocumentationDeliveredData -> payload.files.flatMap { it.documentationRequests }.forEach {
-                valid((it.status == ExternalDocumentationStatus.COMPLETED) == (it.documentId != null))
+            is SocialDocumentationDeliveredData -> {
+                val requests = payload.files.flatMap { it.documentationRequests }
+                valid(requests.map { it.requestId }.toSet().size == requests.size)
+                requests.forEach {
+                    valid((it.status == ExternalDocumentationStatus.COMPLETED) == (it.documentId != null))
+                }
             }
             is ExemptionRequestedData -> valid(payload.requestedUntil >= payload.requestedFrom)
             is UpdateExemptionStatusData -> if (payload.status == ExemptionEventStatus.APPROVED) {

@@ -61,6 +61,13 @@ class LoginRateLimitFilterTest {
         assertTrue(trackedAddresses(filter).isEmpty())
     }
 
+    @Test fun `login M1 comparte el limite de credenciales con el login local`() {
+        val filter = LoginRateLimitFilter(errors, maxAttempts = 2, windowMillis = 60_000)
+        assertEquals(401, login(path = "/auth/session/m1/login").through(filter).status)
+        assertEquals(401, login(path = "/auth/session/login").through(filter).status)
+        assertEquals(429, login(path = "/auth/session/m1/login").through(filter).status)
+    }
+
     @Test
     fun `descarta las direcciones vencidas cuando el registro crece demasiado`() {
         val filter = LoginRateLimitFilter(errors, maxAttempts = 5, windowMillis = 1)

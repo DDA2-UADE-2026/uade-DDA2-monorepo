@@ -102,6 +102,20 @@ springwolf:
       publishing:
         enabled: false
 app:
+  m1:
+    auth:
+      enabled: ${M1_AUTH_ENABLED:false}
+      base-url: ${M1_AUTH_BASE_URL:https://ciudadanos-m1-backend.onrender.com}
+      connect-timeout: ${M1_AUTH_CONNECT_TIMEOUT:5s}
+      read-timeout: ${M1_AUTH_READ_TIMEOUT:15s}
+    documents:
+      enabled: ${M1_DOCUMENTS_ENABLED:false}
+      base-url: ${M1_DOCUMENTS_BASE_URL:https://ciudadanos-m1-backend.onrender.com}
+      file-path-template: ${M1_DOCUMENTS_FILE_PATH_TEMPLATE:}
+      service-bearer-token: ${M1_DOCUMENTS_SERVICE_BEARER_TOKEN:}
+      connect-timeout: ${M1_DOCUMENTS_CONNECT_TIMEOUT:5s}
+      read-timeout: ${M1_DOCUMENTS_READ_TIMEOUT:15s}
+      max-file-bytes: ${M1_DOCUMENTS_MAX_FILE_BYTES:10485760}
   core:
     enabled: ${CORE_ENABLED:false}
     business:
