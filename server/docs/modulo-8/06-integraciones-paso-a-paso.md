@@ -13,6 +13,8 @@
 
 Las contrapartes de la tabla indican el destino de negocio. M8 publica en el ingreso compartido y Core decide el ruteo efectivo a partir de su registro. No se crean conexiones directas a bases ajenas ni se escriben sus datos.
 
+La [verificación local consolidada de M1](../technical/m1-integration-verification.md) cubre login, identidad local, sesión, eventos y proxy de archivos. Se ejecuta con `verifyM1Integration`, HTTP loopback y H2, sin contactar a M1/Core ni retomar la prueba suspendida del ciudadano sintético.
+
 ```mermaid
 flowchart LR
     M1[M1 Ciudadanos y expedientes] -->|citizenUpdated y socialDocumentationDelivered| C[M9 Core]

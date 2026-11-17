@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.io.File
 import tools.jackson.databind.json.JsonMapper
+import tools.jackson.databind.JsonNode
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -55,6 +56,7 @@ class OpenApiDocsGenerationTest {
         val parameters = json.readTree(spec).get("paths").get("/api/benefit-grants").get("get").get("parameters")
         assertEquals(setOf("page", "size"), (0 until parameters.size()).map { parameters[it].get("name").stringValue() }.toSet())
         val paths = json.readTree(spec).get("paths")
+        assertM1PostmanContracts(paths)
         val m1Login = paths.get("/auth/session/m1/login").get("post")
         val m1File = paths["/api/admin/applications/{applicationId}/external-documents/{requestId}/file"]["get"]
         assertTrue(m1File["security"].size() > 0)
@@ -118,5 +120,28 @@ class OpenApiDocsGenerationTest {
         val outputDir = File("build/openapi")
         outputDir.mkdirs()
         File(outputDir, "openapi.json").writeText(spec)
+    }
+
+    private fun assertM1PostmanContracts(paths: JsonNode) {
+        for (name in listOf("m1-session", "m1-documents")) {
+            val collection = json.readTree(File("docs/postman/$name.postman_collection.json").readText())
+            assertEquals("http://localhost:8080", collection["variable"].first { it["key"].asString() == "baseUrl" }["value"].asString())
+            collection["variable"].forEach { variable ->
+                if (Regex("password|token|secret", RegexOption.IGNORE_CASE).containsMatchIn(variable["key"].asString()))
+                    assertTrue(variable["value"].asString().isEmpty(), "No exportar credenciales en $name")
+            }
+            collection["item"].forEach { item ->
+                val request = item["request"]
+                val url = request["url"].asString()
+                assertTrue(url.startsWith("{{baseUrl}}/"), "Los requests deben dirigirse a M8")
+                val path = Regex("\\{\\{(\\w+)}}").replace(url.removePrefix("{{baseUrl}}")) { "{${it.groupValues[1]}}" }
+                assertTrue(paths[path]?.has(request["method"].asString().lowercase()) == true, "Contrato ausente: $name $path")
+            }
+            if (name == "m1-documents") {
+                assertEquals("{{m8AdminAccessToken}}", collection["auth"]["bearer"][0]["value"].asString())
+                assertEquals("false", collection["variable"].first { it["key"].asString() == "m1FileProxyReadEnabled" }["value"].asString())
+                assertTrue(collection["item"].all { it["request"]["method"].asString() == "GET" })
+            }
+        }
     }
 }

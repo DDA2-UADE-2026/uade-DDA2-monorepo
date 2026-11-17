@@ -33,6 +33,7 @@ La [guía de eventos M8](../technical/m8-events.md) contiene los contratos, endp
 - [ ] Verificar login proxy contra el despliegue M1 con la cuenta privada coordinada.
 - [x] Implementar el [proxy administrativo de archivos](../technical/m1-file-proxy.md), protegido por M8, con consulta UUID y credencial de servicio configurables, desactivado por defecto; validación HTTP/JPA local.
 - [ ] Acordar con M1 la ruta por UUID y autorización de servicio; configurar y verificar la interoperabilidad del proxy cuando se autorice una prueba remota.
+- [x] Consolidar el [cierre local de M1](../technical/m1-integration-verification.md): tarea `verifyM1Integration`, cobertura de login/cuentas/sesión/eventos/archivos, OpenAPI/AsyncAPI y colecciones Postman contrastadas con las rutas M8. Sin pruebas contra M1/Core ni reanudar la prueba detenida del ciudadano sintético.
 
 ## Etapa B3 Atención Ciudadana
 

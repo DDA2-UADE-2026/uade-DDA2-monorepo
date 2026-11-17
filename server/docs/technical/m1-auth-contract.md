@@ -4,6 +4,8 @@ Estado al 16 de noviembre de 2026: implementados el cliente HTTP, la resolución
 
 Este documento cubre los cuatro primeros pasos: contrato, cliente HTTP, cuenta local y sesión proxy. Los ejemplos documentados de HTTP `200` y `401` son la base de sus pruebas locales. Quedan pendientes de confirmación los casos adicionales de error, la nulabilidad no especificada y la cuenta de prueba privada. Las capturas son documentación de M1; no se ha verificado un login real contra su despliegue.
 
+El [cierre local del paso 8](m1-integration-verification.md) reúne la verificación de login, cuentas, sesión, eventos y archivos mediante `verifyM1Integration`, junto con el estado de los acuerdos pendientes. No ejecuta pruebas contra M1/Core.
+
 ## Fuentes y precedencia
 
 1. Comunicación reciente de M1 aportada por el equipo en este chat y registrada el 16 de noviembre de 2026: endpoint desplegado, condiciones de éxito, identidad canónica y autorización para emitir una sesión propia de M8.

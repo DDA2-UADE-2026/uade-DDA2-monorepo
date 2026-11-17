@@ -226,6 +226,56 @@ tasks.named<Test>("test") {
     useJUnitPlatform { excludeTags("core-smoke", "testcontainers") }
 }
 
+val testM1Integration by tasks.registering(Test::class) {
+    group = "verification"
+    description = "Verifica M1 con HTTP loopback, H2 y adaptadores locales; genera OpenAPI/AsyncAPI sin contactar a M1 ni Core."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { excludeTags("core-smoke", "testcontainers") }
+    filter {
+        // Lista explícita: no incorporar pruebas remotas nuevas mediante un comodín.
+        listOf(
+            "feature.integration.M1AuthClientTest",
+            "feature.integration.M1AuthConfigurationTest",
+            "feature.auth.M1CitizenAccountServiceTest",
+            "feature.auth.M1SessionFlowTest",
+            "feature.auth.M1DisabledSessionFlowTest",
+            "feature.integration.M1DocumentClientTest",
+            "feature.integration.M1DocumentsConfigurationTest",
+            "feature.integration.ExternalDocumentFileFlowTest",
+            "feature.integration.ExternalDocumentationFlowTest",
+            "feature.integration.M8ContractCodecTest",
+            "feature.integration.M8BusinessFlowTest",
+            "feature.auth.AuthFlowTest",
+            "feature.auth.CookieAuthFlowTest",
+            "feature.auth.CitizenModelTest",
+            "security.JwtServiceTest",
+            "security.LoginRateLimitFilterTest",
+            "OpenApiDocsGenerationTest",
+            "AsyncApiDocsGenerationTest",
+        ).forEach { includeTestsMatching("com.uade.dda2.server.$it") }
+    }
+    // Evitar que flags heredados del despliegue habiliten transportes. Los tests
+    // que requieren HTTP optan explícitamente por un servidor efímero loopback.
+    listOf("CORE_ENABLED", "CORE_BUSINESS_ENABLED", "CORE_AMQP_CHECK_ON_STARTUP", "CORE_PUBLISHER_ENABLED",
+        "CORE_CONSUMER_ENABLED", "CORE_SMOKE_ENABLED", "M1_AUTH_ENABLED", "M1_DOCUMENTS_ENABLED")
+        .forEach { environment(it, "false") }
+    inputs.files(
+        "docs/external/m1-auth/login-success.json",
+        "docs/external/m1-auth/login-invalid-credentials.json",
+        "docs/postman/m1-session.postman_collection.json",
+        "docs/postman/m1-documents.postman_collection.json",
+    )
+    outputs.dir(layout.buildDirectory.dir("openapi"))
+    outputs.dir(layout.buildDirectory.dir("asyncapi"))
+}
+
+tasks.register("verifyM1Integration") {
+    group = "verification"
+    description = "Cierre local de M1: pruebas seleccionadas, contratos OpenAPI/AsyncAPI, colecciones Postman y bootJar."
+    dependsOn(testM1Integration, tasks.named("bootJar"))
+}
+
 tasks.register<Test>("testContainers") {
     group = "verification"
     description = "Integration tests against disposable PostgreSQL and RabbitMQ containers."

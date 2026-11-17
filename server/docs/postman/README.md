@@ -12,6 +12,14 @@ Crear las variables `m1Email` y `m1Password` en un entorno privado de Postman, s
 
 El recorrido usa las cookies HttpOnly de M8 y no guarda JWT en variables. Después del login y del logout se limpia el token CSRF temporal de la colección. Las peticiones se prepararon y sus scripts se validaron localmente; el recorrido real requiere la cuenta privada acordada con M1. Ver [contrato y funcionamiento del proxy](../technical/m1-auth-contract.md).
 
+## Documentación externa de M1
+
+La colección [m1-documents.postman_collection.json](m1-documents.postman_collection.json) contiene dos consultas a M8: listar referencias y descargar una entrega por el proxy. Configurar `baseUrl`, `applicationId` y `requestId`; el token `m8AdminAccessToken` va únicamente en el entorno privado y requiere `applications:management:documents:view`.
+
+La descarga se omite por defecto. Solo habilitar `m1FileProxyReadEnabled=true` después de acordar con M1 el acceso por UUID, configurar el proxy y autorizar una prueba real. La colección no crea solicitudes, publica eventos ni revisa documentos. No se usa el token ciudadano de M1 como acceso administrativo.
+
+Las dos colecciones se contrastan localmente con OpenAPI mediante `.\gradlew.bat verifyM1Integration --console=plain --offline`; esa tarea no ejecuta Postman ni consulta despliegues. Ver [cierre local, cobertura y resultados](../technical/m1-integration-verification.md).
+
 ## Autenticación y permisos
 
 Completar el login y, si corresponde, seleccionar el rol activo. Copiar el JWT operativo a `adminAccessToken` para las operaciones administrativas. Para crear planes y registrar seguimientos, copiar el JWT del trabajador asignado a `interventionAccessToken`; puede ser la misma persona que registró la evaluación. Un token de selección de rol no sirve para estas operaciones.
