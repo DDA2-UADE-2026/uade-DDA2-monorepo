@@ -39,6 +39,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { listAvailableProgramsOptions } from "@/generated/@tanstack/react-query.gen"
 import { formatProgramDate } from "@/lib/program-dates"
 import { PROGRAM_IMAGE_FALLBACK, programImageSource } from "@/lib/program-images"
+import {
+  isLastSharedTransition,
+  markSharedTransition,
+  programSharedKey,
+  sharedTransitionStyle,
+} from "@/lib/portal-view-transitions"
 
 const PAGE_SIZE = 9
 const PROGRAM_DESCRIPTION_FALLBACK = "El objetivo de este programa se informará próximamente."
@@ -120,6 +126,7 @@ function RouteComponent() {
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {programs.map((program) => {
                   const editionCount = program.availableEditions ?? 0
+                  const sharedKey = program.id ? programSharedKey(program.id) : undefined
 
                   return (
                     <Card key={program.id ?? program.name} className="h-full transition-shadow hover:shadow-md">
@@ -128,6 +135,9 @@ function RouteComponent() {
                         alt=""
                         className="aspect-[1.91/1] w-full object-cover"
                         loading="lazy"
+                        // Al volver del detalle, la portada regresa a su tarjeta.
+                        data-vt-shared={sharedKey && isLastSharedTransition(sharedKey) ? "" : undefined}
+                        style={sharedKey ? sharedTransitionStyle(sharedKey) : undefined}
                       />
                       <CardHeader>
                         <CardTitle className="text-lg">{program.name || "Programa sin nombre"}</CardTitle>
@@ -158,6 +168,13 @@ function RouteComponent() {
                             <Link
                               to="/portal/programas/$programaId"
                               params={{ programaId: program.id ?? "" }}
+                              onClick={(event) => {
+                                if (!sharedKey) return
+                                markSharedTransition(
+                                  event.currentTarget.closest("[data-slot=card]")?.querySelector("img"),
+                                  sharedKey,
+                                )
+                              }}
                             />
                           }
                         >

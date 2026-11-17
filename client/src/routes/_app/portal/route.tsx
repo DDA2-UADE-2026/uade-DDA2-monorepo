@@ -3,6 +3,7 @@ import { CatchBoundary, Outlet, createFileRoute, redirect, useLocation, useRoute
 
 import { PortalSidebar } from "@/components/layout/PortalSidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { portalViewTransition } from "@/lib/portal-view-transitions"
 import { SectionErrorFallback } from "@/components/errors/SectionErrorFallback"
 import { RouteErrorPage } from "@/components/errors/RouteErrorPage"
 import { RouteNotFoundPage } from "@/components/errors/RouteNotFoundPage"
@@ -35,7 +36,7 @@ function PortalLayout() {
     router.update({
       ...router.options,
       defaultPreload: "intent",
-      defaultViewTransition: true,
+      defaultViewTransition: portalViewTransition,
     })
 
     return () => {
